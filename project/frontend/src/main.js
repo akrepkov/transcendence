@@ -5,7 +5,7 @@ import { openTournamentTab } from './tournament.js';
 import { setupAuth } from './auth.js';
 import { openTestTab } from './test.js';
 import { openRemoteTab } from './remote.js';
-import {openSnakeTab, pauseSnakeGame} from './snake.js';
+import {openSnakeTab} from './snake.js';
 
 
 let user = null
