@@ -44,6 +44,7 @@ const startGameLoop = () => {
     }
 };
 
+//doesnt work yet
 const stopGameLoop = () => {   
     console.log("Stopping game loop!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     if (gameLoopStarted) {
@@ -54,8 +55,14 @@ const stopGameLoop = () => {
 }
 
 //Sends a a list of players to all clients in the waiting room.
-function broadcastWaitingRoom(message) {
-    const stringifiedMessage = JSON.stringify(message);
+function broadcastWaitingRoom() {
+    //.map() is a JavaScript array method that goes through each element in an array and 
+    // creates a new array by applying a function to every element.
+    const playersList = players.map(p => ({ id: p.id }))
+    const stringifiedMessage = JSON.stringify({ 
+        type: 'waitingRoom', 
+        players: playersList 
+    });
     for (const client of gameClients) {
         if (client.readyState === 1)
             client.send(stringifiedMessage);
@@ -73,94 +80,93 @@ function broadcastWaitingRoom(message) {
 //When a player disconnects, it removes them from the gameClients set and updates the player list.
 //It also resets the game state and sends a disconnection message to all clients.
 const snakeWebsocketHandler = (socket) => {
+    // Register new player
     gameClients.add(socket);
     const newPlayer = { id: players.length + 1, socket };
     players.push(newPlayer);
 
-    // Send player ID to the new client
+    // Send the new player their ID
     socket.send(JSON.stringify({
         type: 'playerId',
         playerId: newPlayer.id
     }));
 
     // Send waiting room list for everyone when someone connects
-    broadcastWaitingRoom({
-        type: "waitingRoom",
-        //.map() is a JavaScript array method that goes through each element in an array and 
-        // creates a new array by applying a function to every element.
-        players: players.map(p => ({ id: p.id }))
-    });
+    broadcastWaitingRoom();
     
     socket.on('message', (message) => {
         //This is a message I receive from the client
         const data = JSON.parse(message);
-
+        const {type} = data; //the same as const type = data.type
         console.log("ID " + newPlayer.id); //check
         
-        //client pressed a key
-        if (data.type === 'move') {
-            snake.movePlayer(data.key, newPlayer.id);
-        }
-        //client sent a game invitation
-        //inviterID its me
-        if (data.type === 'gameInvitation') {
-            const { opponentId, inviterId } = data;
-            console.log(`Player ${inviterId} is inviting player ${opponentId} to play!`);
-            // Find the opponent's socket
-            const opponent = players.find(p => p.id === opponentId);
-            //Send invitation to the opponent
-            if (opponent) {
-                console.log(`Sending game invitation to player ${opponentId}`);
-                // Send game invitation to the opponent
-                opponent.socket.send(JSON.stringify({
-                    type: 'gameInvitationReceived',
-                    inviterId: inviterId,
-                    message: `Player ${inviterId} wants to play! Accept or deny the game.`
-                }));
+        switch (type) {
+            case 'move':
+                snake.movePlayer(data.key, newPlayer.id);
+                break;
+
+            case 'gameInvitation': {
+                const { opponentId, inviterId } = data;
+                const opponent = players.find(p => p.id === opponentId);
+                if (opponent) {
+                    opponent.socket.send(JSON.stringify({
+                        type: 'gameInvitationReceived',
+                        inviterId,
+                        message: `Player ${inviterId} wants to play!`
+                    }));
+                }
+                break;
             }
-        }
-        //send message that game accepted to both players and start game
-        if (data.type === 'gameAccepted') {
-            const {inviterId, opponentId} = data;
-            console.log(`Player ${newPlayer.id} accepted the game invitation from player ${inviterId}`);
-            const inviter = players.find(p => p.id === inviterId);
-            const opponent = players.find(p => p.id === opponentId);
-            opponent.socket.send(JSON.stringify({
-                type: 'gameAccepted',
-                message: `Player ${inviterId} accepted the game!`
-            }));
-            inviter.socket.send(JSON.stringify({
-                type: 'gameAccepted',
-                message: `Player ${opponentId} accepted the game!`
-            }));
-            startGameLoop();
-        }
-        if (data.type === "gameDenied") {
-            const { inviterId, opponentId } = data;
-            const inviter = players.find(p => p.id === inviterId);
-            inviter.socket.send(JSON.stringify({
-                type: 'gameDenied',
-                message: `Player ${opponentId} denied the game!`
-            }));
-        }
-        if (data.type === "stopGame"){
-            const { inviterId, opponentId } = data;
-            const inviter = players.find(p => p.id === inviterId);
-            const opponent = players.find(p => p.id === opponentId);
-            if (inviter) {
-                inviter.socket.send(JSON.stringify({
-                    type: 'leaveGame',
-                    message: `Opponent ${opponentId} has left the game.`
-                }));
+            case 'gameAccepted': {
+                const { inviterId, opponentId } = data;
+                const inviter = players.find(p => p.id === inviterId);
+                const opponent = players.find(p => p.id === opponentId);
+                if (inviter && opponent) {
+                    [inviter.socket, opponent.socket].forEach(sock =>
+                        sock.send(JSON.stringify({
+                            type: 'gameAccepted',
+                            message: `Game accepted!`
+                        }))
+                    );
+                    startGameLoop();
+                }
+                break;
             }
-            if (opponent) {
-                opponent.socket.send(JSON.stringify({
-                    type: 'leaveGame',
-                    message: `You have left the game.`
-                }));
+
+            case 'gameDenied': {
+                const { inviterId, opponentId } = data;
+                const inviter = players.find(p => p.id === inviterId);
+                if (inviter) {
+                    inviter.socket.send(JSON.stringify({
+                        type: 'gameDenied',
+                        message: `Player ${opponentId} declined the game.`
+                    }));
+                }
+                break;
             }
-            if (data.type === "leaveGame") {
+
+            //doesnt work yet
+            case 'stopGame': {
+                const { inviterId, opponentId } = data;
+                const inviter = players.find(p => p.id === inviterId);
+                const opponent = players.find(p => p.id === opponentId);
+
+                if (inviter) {
+                    inviter.socket.send(JSON.stringify({
+                        type: 'leaveGame',
+                        message: `Opponent ${opponentId} has left the game.`
+                    }));
+                }
+
+                if (opponent) {
+                    opponent.socket.send(JSON.stringify({
+                        type: 'leaveGame',
+                        message: `You have left the game.`
+                    }));
+                }
+
                 stopGameLoop();
+                break;
             }
         }
     });
