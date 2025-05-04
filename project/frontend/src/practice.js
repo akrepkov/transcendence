@@ -6,40 +6,64 @@ const keys = {
 	ArrowUp: false,
 	ArrowDown: false,
 };
-
+let balls = [];
+let red= " ";
+let green = '';
+let blue = '';
+let rgbColor = "white";
 let animationId = null;
-let names1 = ["NullPointerPrince","404NotFoundYou","StackOverflowed",
-	"CtrlAltElite","CommitCrimes","RubberDuckieDev","PingMePlz","BrbCompiling","FatalSyntax",
-	"BuggedButHappy","InfiniteLoopHole","SegFaultyLogic","ByteMeMaybe","SpaghettiCoder",
-	"FullSnackDev","KernelSandwich","BoolinDev","NaNStopper","DevNullius",
-	"TabbyTheDebugger","LootBoxLad","NoScopeCSharp","Lagzilla","RespawnResume", "CacheMeOutside"];
-let names2 = ["AimBotany","CrashTestCutie","YeetCompiler",
-	"PixelPuncher","AFKChef","TeaBagger3000","CaffeineLoop","RAMenNoodles",
-	"404SnaccNotFound","HelloWorldDomination","JavaTheHutt",
-	"WiFried","DebuggerDuck","ExceptionHunter","TheRealSlimShader",
-	"SyntaxTerror","ClickyMcClickface","BananaForScale","Devzilla",
-	"MrRobotoCallsHome","SudoNym","OopsIDidItAgain","MemeDrivenDev",
-	"TypoNinja","BitFlipper"];
+let names1 = ["NullPointerPrince", "404NotFoundYou", "StackOverflowed",
+	"CtrlAltElite", "CommitCrimes", "RubberDuckieDev", "PingMePlz", "BrbCompiling", "FatalSyntax",
+	"BuggedButHappy", "InfiniteLoopHole", "SegFaultyLogic", "ByteMeMaybe", "SpaghettiCoder",
+	"FullSnackDev", "KernelSandwich", "BoolinDev", "NaNStopper", "DevNullius",
+	"TabbyTheDebugger", "LootBoxLad", "NoScopeCSharp", "Lagzilla", "RespawnResume", "CacheMeOutside"];
+let names2 = ["AimBotany", "CrashTestCutie", "YeetCompiler",
+	"PixelPuncher", "AFKChef", "TeaBagger3000", "CaffeineLoop", "RAMenNoodles",
+	"404SnaccNotFound", "HelloWorldDomination", "JavaTheHutt",
+	"WiFried", "DebuggerDuck", "ExceptionHunter", "TheRealSlimShader",
+	"SyntaxTerror", "ClickyMcClickface", "BananaForScale", "Devzilla",
+	"MrRobotoCallsHome", "SudoNym", "OopsIDidItAgain", "MemeDrivenDev",
+	"TypoNinja", "BitFlipper"];
 const randomIndex = Math.floor(Math.random() * names1.length);
 let player1Name = names1[randomIndex];
 let player2Name = names2[randomIndex];
 let leftPlayerScore = 0;
 let rightPlayerScore = 0;
+let maxScore = 3;
+export function openPracticeTab() {
+	const buttonStart = document.getElementById("startGame");
+	const buttonStop = document.getElementById("stopGame");
+	const gameOptions = document.getElementById("options");
+
+	buttonStart.addEventListener("click", () => {
+		const counter = parseInt(document.getElementById("ballCount").value);
+		gameOptions.style.display = "none";
+		buttonStop.style.display = "block";
+		handleStartGame(counter);
+	});
+	buttonStop.addEventListener("click", () => {
+		gameOptions.style.display = "block";
+		buttonStop.style.display = "none";
+		handleStopGame();
+	});
+}
+
 
 class Ball {
-	constructor() {
+	constructor(dirX, dirY, ballColor) {
 		this.x = canvas.width / 2;
 		this.y = canvas.height / 2;
-		this.speedX = 1;
-		this.speedY = 1;
+		this.speedX = dirX;
+		this.speedY = dirY;
 		this.size = 10;
+		this.color = ballColor;
 	}
 	update() {
 		this.x += this.speedX;
 		this.y += this.speedY;
 	}
 	drawBall() {
-		context.fillStyle = 'red';
+		context.fillStyle = this.color;
 		context.fillRect(this.x, this.y, this.size, this.size);
 	}
 	reset() {
@@ -63,27 +87,18 @@ class Paddle {
 	}
 }
 
-let ball = new Ball();
+// let ball = new Ball(1, 1, "red");
+
 let leftPaddle = new Paddle(0);
-let rightPaddle = new Paddle(canvas.width);
+let rightPaddle = new Paddle(canvas.width - 10);
 
-export function openPracticeTab() {
-	const buttonStart = document.getElementById("startGame");
-	const buttonStop = document.getElementById("stopGame");
 
-	buttonStart.addEventListener("click", () => {
-		buttonStart.style.display = "none";
-		buttonStop.style.display = "block";
-		handleStartGame();
-	});
-	buttonStop.addEventListener("click", () => {
-		buttonStart.style.display = "block";
-		buttonStop.style.display = "none";
-		handleStopGame();
-	});
+function createBall(dirX, dirY, ballColor) {
+	let ball = new Ball(dirX, dirY, ballColor);
+	balls.push(ball);
 }
 
-function checkBall() {
+function checkBall(ball) {
 	// Top/bottom wall collision
 	if (ball.y <= 0 || ball.y + ball.size >= canvas.height) {
 		ball.speedY = -ball.speedY;
@@ -91,6 +106,7 @@ function checkBall() {
 	// Left paddle collision
 	if (ball.x <= leftPaddle.x + leftPaddle.width &&
 		ball.y + ball.size >= leftPaddle.y && ball.y <= leftPaddle.y + leftPaddle.height) {
+		ball.x = leftPaddle.x + leftPaddle.width;
 		ball.speedX = -ball.speedX;
 	}
 	// Right paddle collision
@@ -98,6 +114,7 @@ function checkBall() {
 		ball.x <= rightPaddle.x + rightPaddle.width &&
 		ball.y + ball.size >= rightPaddle.y &&
 		ball.y <= rightPaddle.y + rightPaddle.height) {
+		ball.x = rightPaddle.x - ball.size;
 		ball.speedX = -ball.speedX;
 	}
 	if (ball.x <= 0) {
@@ -131,12 +148,12 @@ function movePaddles() {
 }
 
 document.addEventListener('keydown', (event) => {
-	if (event.key in keys){
+	if (event.key in keys) {
 		keys[event.key] = true;
 	}
 });
 document.addEventListener('keyup', (event) => {
-	if (event.key in keys){
+	if (event.key in keys) {
 		keys[event.key] = false;
 	}
 })
@@ -144,20 +161,58 @@ document.addEventListener('keyup', (event) => {
 function gameLoop() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	movePaddles();
-	ball.update();
-	checkBall();
-	ball.drawBall();
 	leftPaddle.drawPaddle();
 	rightPaddle.drawPaddle();
+	for (const ball of balls) {
+		ball.update();
+		ball.drawBall();
+		checkBall(ball);
+	}
 	updateGameStatus();
-	if (leftPlayerScore >= 3 || rightPlayerScore >= 3) { //add winner here
+	if (leftPlayerScore >= maxScore || rightPlayerScore >= maxScore) { //add winner here
+		showModal();
 		cancelAnimationFrame(animationId);
 		return;
 	}
 	animationId = requestAnimationFrame(gameLoop);
 }
 
-function handleStartGame() {
+function getRandomColor() {
+	return `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`;
+}
+
+function getRandomDirection() {
+	const directionSign = Math.random() > 0.5 ? -1 : 1;
+	return (Math.floor(Math.random() * 90) + 20) / 100 * directionSign;
+}
+
+function showModal(){
+	console.log("Showing modal");
+	const modal = document.getElementById("myModal");
+	modal.style.display = "flex";
+}
+
+let closeBtn = document.getElementById("closeButton");
+closeBtn.addEventListener("click", () => {
+	const modal = document.getElementById("myModal"); 
+	modal.style.display = "none";
+});
+
+function handleStartGame(counter) {
+	console.log("ball ", counter);
+	const ballCount = counter || 1;
+	balls = [];
+	if (ballCount === 1)
+		createBall(1, 1, rgbColor);
+	else {
+		maxScore = 30;
+		for (let i = 0; i < ballCount; i++) {
+			rgbColor = getRandomColor();
+			const dirX = getRandomDirection();
+			const dirY = getRandomDirection();
+			createBall(dirX, dirY, rgbColor);
+		}
+	}
 	gameLoop();
 }
 
@@ -165,14 +220,13 @@ function handleStopGame() {
 	console.log('Stopping game');
 	if (animationId) {
 		cancelAnimationFrame(animationId);
-		animationId = null; //do i need it?
-		document.removeEventListener('keydown', movePaddles); //????????????
+		animationId = null;
 	}
-
-	if (ball)
+	for (const ball of balls)
 		ball.reset();
 	leftPlayerScore = 0;
 	rightPlayerScore = 0;
+	maxScore = 3;
 	updateGameStatus();
 	context.clearRect(0, 0, canvas.width, canvas.height);
 }

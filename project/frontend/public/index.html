@@ -25,8 +25,24 @@
 
 	<!-- ID for content inside the tabs -->
 	<div id="Practice" class="tabcontent">
-		<button id="startGame">Start Game</button>
+    <div class="game-options" id="options">
+      <label for="ballCount">Balls:</label>
+      <select id="ballCount">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="10">Go crazy</option>
+      </select>
+      <button id="startGame">Start Game</button>
+    </div>
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span id="closeButton" class="close">&times;</span>
+        <h1>The winner is: </h1>
+      </div>
+    </div>
 		<button id="stopGame" style="display: none">Stop Game</button>
+    
 		<div id="gameContainer">
 			<div id="gameStatus">0 - 0</div>
 		</div>
