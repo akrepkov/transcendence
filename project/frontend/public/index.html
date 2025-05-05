@@ -2,29 +2,29 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Pong Game</title>
-	<link rel="stylesheet" href="./styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pong Game</title>
+  <link rel="stylesheet" href="./styles.css">
 </head>
 
 <body>
-	<div class="header">
-		<div class="name">Pong Game</div>
-	</div>
-	<!-- TAB Buttons on the left -->
-	<div class="tab">
-		<button class="tablinks" data-tab="Profile">Profile</button>
-		<button class="tablinks" data-tab="Practice">Practice pong not logged in, on frontend</button>
-		<button class="tablinks" data-tab="Chat">Chat</button>
-		<button class="tablinks" data-tab="Tournament">Tournament empty</button>
-		<button class="tablinks" data-tab="Remote">Remote game- test for the game on backend</button>
-		<button class="tablinks" data-tab="Snake">Snake</button>
-		<button class="tablinks" data-tab="Visibility" style="display: none">Tab for testing visibility</button>
-	</div>
+  <div class="header">
+    <div class="name">Pong Game</div>
+  </div>
+  <!-- TAB Buttons on the left -->
+  <div class="tab">
+    <button class="tablinks" data-tab="Profile">Profile</button>
+    <button class="tablinks" data-tab="Practice">Practice pong not logged in, on frontend</button>
+    <button class="tablinks" data-tab="Chat">Chat</button>
+    <button class="tablinks" data-tab="Tournament">Tournament empty</button>
+    <button class="tablinks" data-tab="Remote">Remote game- test for the game on backend</button>
+    <button class="tablinks" data-tab="Snake">Snake</button>
+    <button class="tablinks" data-tab="Visibility" style="display: none">Tab for testing visibility</button>
+  </div>
 
-	<!-- ID for content inside the tabs -->
-	<div id="Practice" class="tabcontent">
+  <!-- ID for content inside the tabs -->
+  <div id="Practice" class="tabcontent">
     <div class="game-options" id="options">
       <label for="ballCount">Balls:</label>
       <select id="ballCount">
@@ -35,32 +35,36 @@
       </select>
       <button id="startGame">Start Game</button>
     </div>
+    <div class="stopBlock" id="stop" style="display: none">
+      <button id="stopGame" >Stop Game</button>
+    </div>
+
+
+    <div id="gameStatusGrid">
+      <div id="players"></div>
+      <div id="gameStatus">0 - 0</div>
+    </div>
+    <canvas id="pong" width="800" height="600" style="border:1px solid #ffffff; margin-top: 20px;"></canvas>
     <div id="myModal" class="modal">
       <div class="modal-content">
         <span id="closeButton" class="close">&times;</span>
-        <h1>The winner is: </h1>
+        <h1 id="winner"></h1>
       </div>
     </div>
-		<button id="stopGame" style="display: none">Stop Game</button>
-    
-		<div id="gameContainer">
-			<div id="gameStatus">0 - 0</div>
-		</div>
-		<canvas id="pong" width="800" height="600" style="border:1px solid #ffffff; margin-top: 20px;"></canvas>
-	</div>
-	<div id="Chat" class="tabcontent">
-		<h3>Chat</h3>
-		<input type="text" id="messageInput" placeholder="Type a message" />
-		<button id="sendBtn">Send Message</button>
-		<div id="messages"></div>
-	</div>
-	<div id="Tournament" class="tabcontent">
-		<h3>Tournament</h3>
-	</div>
-	<div id="Visibility" class="tabcontent">
-		<h3>Visibility</h3>
-	</div>
-	<!-- <div id="Profile" class="tabcontent">
+  </div>
+  <div id="Chat" class="tabcontent">
+    <h3>Chat</h3>
+    <input type="text" id="messageInput" placeholder="Type a message" />
+    <button id="sendBtn">Send Message</button>
+    <div id="messages"></div>
+  </div>
+  <div id="Tournament" class="tabcontent">
+    <h3>Tournament</h3>
+  </div>
+  <div id="Visibility" class="tabcontent">
+    <h3>Visibility</h3>
+  </div>
+  <!-- <div id="Profile" class="tabcontent">
     <h3>Login</h3>
     <form id=loginForm>
       <input type="text" id="email" placeholder="Email" required autocomplete="current-username">
@@ -79,7 +83,7 @@
     </form>
     <div id="registerError" class="hidden">Invalid email or password</div>
   </div> -->
-	<!-- <div id="Profile" class="tabcontent">
+  <!-- <div id="Profile" class="tabcontent">
     <div class="profileGrid">
       <div class="profilePhoto">
         <input type="file" id="fileInput" accept="image/*" style="display: none;" />
@@ -96,13 +100,13 @@
   </div> -->
 
   <!-- They have separate html pages -->
-	<div id="Profile" class="tabcontent"></div>
-	<div id="Remote" class="tabcontent"></div>
-  	<div id="Snake" class="tabcontent"></div>
+  <div id="Profile" class="tabcontent"></div>
+  <div id="Remote" class="tabcontent"></div>
+  <div id="Snake" class="tabcontent"></div>
 
-	<!-- Main Script -->
-	<script type="module" src="../src/main.js">
-	</script>
+  <!-- Main Script -->
+  <script type="module" src="../src/main.js">
+  </script>
 </body>
 
 </html>

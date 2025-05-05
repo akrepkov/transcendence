@@ -1,6 +1,7 @@
 /* === RESET & GLOBAL STYLES === */
 * {
-  box-sizing: border-box;
+  box-sizing: border-box; 
+  /*box-sizing property allows us to include the padding and border in an element's total width and height. */
   margin: 0;
   padding: 0;
 }
@@ -17,8 +18,6 @@ body {
 
 /* === HEADER === */
 .header {
-  /* display: grid;
-  grid-template-columns: 1fr auto; */
   align-items: center;
   height: 10dvh;
   padding: 22px 16px;
@@ -26,47 +25,14 @@ body {
 }
 
 .name {
-  font-size: clamp(12px, 40px, 64px);
+  font-size: clamp(16px, 6vw, 64px);
+  color: #e2e2e2;
 }
-/* 
-.login {
-  text-align: right;
-}
-
-.header button,
-#login,
-#register {
-  height: 40px;
-  width: 100px;
-  border-radius: 6px;
-  color: white;
-  cursor: pointer;
-  border: none;
-  transition: all 0.3s;
-}
-
-#login {
-  background-color: #444;
-}
-#login:hover {
-  background-color: #666;
-  width: 120px;
-  height: 60px;
-}
-
-#register {
-  background-color: #221422;
-}
-#register:hover {
-  background-color: #3b233b;
-  width: 120px;
-  height: 60px;
-} */
 
 /* === TAB LAYOUT === */
 .tab {
   float: left;
-  width: 20%;
+  width: 100px 2vw 200px;
   height: 80dvh;
   background-color: black;
 }
@@ -81,7 +47,7 @@ body {
   border: none;
   cursor: pointer;
   /* transition: background-color 0.3s; */
-}
+} 
 
 .tab button:hover {
   background-color: #444;
@@ -135,12 +101,19 @@ body {
 }
 
 /* === GAME STATUS === */
-#gameStatus {
-  height: 10dvh;
-  margin-top: 4dvh;
-  text-align: center;
-  font-size: clamp(12px, 40px, 64px);
+#gameStatusGrid .row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
+
+#players, #gameStatus {
+  display: flex;
+  justify-content: space-around;
+  margin: 8px;
+  font-size: clamp(16px, 2vw, 64px);
+}
+
+
 
 /* === CHAT === */
 #messages {
@@ -302,7 +275,7 @@ form button.form-action-btn:hover {
 .usernameField,
 .friends {
   background-color: #000;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .statistics {
@@ -354,7 +327,8 @@ https://webcode.tools/html-generator/image
 */
 
 /* === Practice === */
-.game-options {
+.game-options,
+.stopBlock {
   display: flex;
   padding: 20px;
   align-items: center;
@@ -392,12 +366,15 @@ https://webcode.tools/html-generator/image
 }
 
 .modal-content {
-  background-color: white;
+  background-color: rgb(37, 37, 37);
+  position: absolute;
+  top: 50%;
+  left: 50%;
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 6px;
   width: 300px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  position: relative;
+  color: white;
   text-align: center;
 }
 
@@ -407,7 +384,7 @@ https://webcode.tools/html-generator/image
   right: 12px;
   font-size: 24px;
   cursor: pointer;
-  color: #aaa;
+  color: #ffffff;
 }
 
 .close:hover {

@@ -7,11 +7,9 @@ const keys = {
 	ArrowDown: false,
 };
 let balls = [];
-let red= " ";
-let green = '';
-let blue = '';
 let rgbColor = "white";
 let animationId = null;
+let winner = ""
 let names1 = ["NullPointerPrince", "404NotFoundYou", "StackOverflowed",
 	"CtrlAltElite", "CommitCrimes", "RubberDuckieDev", "PingMePlz", "BrbCompiling", "FatalSyntax",
 	"BuggedButHappy", "InfiniteLoopHole", "SegFaultyLogic", "ByteMeMaybe", "SpaghettiCoder",
@@ -29,21 +27,22 @@ let player1Name = names1[randomIndex];
 let player2Name = names2[randomIndex];
 let leftPlayerScore = 0;
 let rightPlayerScore = 0;
-let maxScore = 3;
+let maxScore = 1;
 export function openPracticeTab() {
 	const buttonStart = document.getElementById("startGame");
 	const buttonStop = document.getElementById("stopGame");
 	const gameOptions = document.getElementById("options");
+	const stopOptions = document.getElementById("stop");
 
 	buttonStart.addEventListener("click", () => {
 		const counter = parseInt(document.getElementById("ballCount").value);
 		gameOptions.style.display = "none";
-		buttonStop.style.display = "block";
+		stopOptions.style.display = "block";
 		handleStartGame(counter);
 	});
 	buttonStop.addEventListener("click", () => {
-		gameOptions.style.display = "block";
-		buttonStop.style.display = "none";
+		gameOptions.style.display = "flex";
+		stopOptions.style.display = "none";
 		handleStopGame();
 	});
 }
@@ -129,7 +128,16 @@ function checkBall(ball) {
 
 function updateGameStatus() {
 	const gameStatusDiv = document.getElementById('gameStatus');
-	gameStatusDiv.innerHTML = `${player1Name}   ${leftPlayerScore} - ${rightPlayerScore}   ${player2Name}`;
+	const gamePlayers = document.getElementById('players');
+	gamePlayers.innerHTML = `
+		<span>${player1Name}</span>
+		<span>${player2Name}</span>
+		`;
+	gameStatusDiv.innerHTML = `
+		<span>${leftPlayerScore}</span>
+		<span>${rightPlayerScore}</span>
+		`;
+
 }
 
 function movePaddles() {
@@ -169,7 +177,12 @@ function gameLoop() {
 		checkBall(ball);
 	}
 	updateGameStatus();
-	if (leftPlayerScore >= maxScore || rightPlayerScore >= maxScore) { //add winner here
+	if (leftPlayerScore >= maxScore || rightPlayerScore >= maxScore) {
+		if (leftPlayerScore >= maxScore) {
+			winner = player1Name;
+		} else {
+			winner = player2Name;
+		}
 		showModal();
 		cancelAnimationFrame(animationId);
 		return;
@@ -186,15 +199,17 @@ function getRandomDirection() {
 	return (Math.floor(Math.random() * 90) + 20) / 100 * directionSign;
 }
 
-function showModal(){
+function showModal() {
 	console.log("Showing modal");
 	const modal = document.getElementById("myModal");
+	const winnerText = document.getElementById("winner");
+	winnerText.textContent = `Winner: ${winner}`;
 	modal.style.display = "flex";
 }
 
 let closeBtn = document.getElementById("closeButton");
 closeBtn.addEventListener("click", () => {
-	const modal = document.getElementById("myModal"); 
+	const modal = document.getElementById("myModal");
 	modal.style.display = "none";
 });
 
@@ -205,7 +220,8 @@ function handleStartGame(counter) {
 	if (ballCount === 1)
 		createBall(1, 1, rgbColor);
 	else {
-		maxScore = 30;
+		if (ballCount > 2)
+			maxScore = 30;
 		for (let i = 0; i < ballCount; i++) {
 			rgbColor = getRandomColor();
 			const dirX = getRandomDirection();
@@ -220,8 +236,8 @@ function handleStopGame() {
 	console.log('Stopping game');
 	if (animationId) {
 		cancelAnimationFrame(animationId);
-		animationId = null;
 	}
+	animationId = null;
 	for (const ball of balls)
 		ball.reset();
 	leftPlayerScore = 0;
