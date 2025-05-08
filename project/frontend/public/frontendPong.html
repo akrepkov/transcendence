@@ -1,0 +1,25 @@
+
+    <div class="game-options" id="options">
+      <label for="ballCount">Balls:</label>
+      <select id="ballCount">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="10">Go crazy</option>
+      </select>
+      <button id="startGame">Start Game</button>
+    </div>
+    <div class="stopBlock" id="stop" style="display: none">
+      <button id="stopGame" >Stop Game</button>
+    </div>
+    <div id="gameStatusGrid">
+      <div id="players"></div>
+      <div id="gameStatusFrontend">0 - 0</div>
+    </div>
+    <canvas id="pong" width="800" height="600" style="border:1px solid #ffffff; margin-top: 20px;"></canvas>
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span id="closeButton" class="close">&times;</span>
+        <h1 id="winner"></h1>
+      </div>
+    </div>

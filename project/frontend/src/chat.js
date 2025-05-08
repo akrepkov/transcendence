@@ -1,7 +1,7 @@
 export function openChatTab() {
-    // const socket = new WebSocket('wss://congenial-system-x76557wwgx93px46-3000.app.github.dev/ws/chat');
+    const socket = new WebSocket('wss://congenial-system-x76557wwgx93px46-3000.app.github.dev/ws/chat');
     // For using outside codespaces:
-    const socket = new WebSocket('ws://127.0.0.1:3000/ws');
+    // const socket = new WebSocket('ws://127.0.0.1:3000/ws');
   
   
   

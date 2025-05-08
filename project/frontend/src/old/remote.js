@@ -3,6 +3,7 @@ export function openRemoteTab() {
   const canvas = document.getElementById('gameRemote');
   const ctx = canvas.getContext('2d');
 
+    console.log("Im in REMOTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
   //socket for codeapaces__))
 //   const socket = new WebSocket('wss://congenial-system-x76557wwgx93px46-3000.app.github.dev/ws/game');
   let gameState = {

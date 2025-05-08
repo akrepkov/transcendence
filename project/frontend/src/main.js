@@ -1,15 +1,18 @@
 
 
-import { openPracticeTab } from './practice.js';
-// import { openChatTab } from './chat.js';
+
+import { openChatTab } from './chat.js';
 // import { openTournamentTab } from './tournament.js';
 // import { setupAuth } from './auth.js';
 import { openProfileTab } from './profile.js'; //change
 // import { openRemoteTab } from './remote.js';
 // import {openSnakeTab} from './snake.js';
+import { openPracticeTab } from './practice.js';
+
 
 //managers
 import AuthManager from './managers/authManager.js';
+import ActivityManager from './managers/activityManager.js';
 
 
 let snakeOn = false
@@ -61,6 +64,16 @@ export function setupTabs() {
 			if (activeTab) {
 				activeTab.style.display = 'block';
 			}
+			if (ActivityManager.getPracticePong() && tabName !='Practice'){
+				console.log("Want to stop the game");
+				const stopOptions = document.getElementById("stop");
+				const gameOptions = document.getElementById("options");
+				gameOptions.style.display = "flex";
+				stopOptions.style.display = "none";
+				import ("./practice.js").then(module => {
+					module.handleStopGame();
+				});
+			}
 			//Add "active" class to the clicked button
 			button.classList.add('active');
 			currentTab = tabName;
@@ -68,14 +81,11 @@ export function setupTabs() {
 				openProfileTab()
 			}
 			if (tabName === 'Practice') {
-			    openPracticeTab();
+				openPracticeTab();
 			}
-			// if (tabName === 'Profile') {
-			// openProfileTab();
-			// }
-			// if (tabName === 'Chat') {
-			//     openChatTab();
-			// }
+			if (tabName === 'Chat') {
+			    openChatTab();
+			}
 			// if (tabName === 'Tournament') {
 			//     openTournamentTab();
 			// }
@@ -101,7 +111,7 @@ const verifyLogin = async () => {
 		if (response.ok) {
 			const data = await response.json();
 			AuthManager.login(data.username);
-			console.log('User is logged in:', AuthManager.getUsername());
+			// console.log('User is logged in:', AuthManager.getUsername());
 		}
 	} catch (err) {
 		AuthManager.logout();
@@ -122,12 +132,14 @@ async function loadTabHtml(tabName, fileName) {
 		return;
 	}
 	container.innerHTML = html;
+	console.log("I uploaded ", tabName, fileName);
 }
 
 async function loadAllHTMLpages() {
 	await loadTabHtml('Profile', 'profile_login.html');
 	await loadTabHtml('Remote', 'remote.html');
 	await loadTabHtml('Snake', 'snake.html');
+	// await loadTabHtml('Practice', 'frontendPong.html');	
 }
 
 

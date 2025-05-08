@@ -33,7 +33,7 @@ export async function openProfileTab() {
 
 	// Show profile if already logged in
 	if (AuthManager.isLoggedIn()) {
-		console.log('User is logged in profile.js');
+		// console.log('User is logged in profile.js');
 		flipCard.classList.add("flipped");
 		flipCard.style.display = "block";
 		openProfileCard();

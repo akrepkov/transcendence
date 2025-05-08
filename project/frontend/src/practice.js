@@ -1,3 +1,6 @@
+import ActivityManager from "./managers/activityManager.js"
+
+
 var canvas = document.getElementById('pong');
 var context = canvas.getContext('2d');
 const keys = {
@@ -27,13 +30,26 @@ let player1Name = names1[randomIndex];
 let player2Name = names2[randomIndex];
 let leftPlayerScore = 0;
 let rightPlayerScore = 0;
-let maxScore = 1;
+let maxScore = 3;
+
+
+
+function resetGame() {
+	balls = [];
+	rgbColor = "white";
+	animationId = null;
+	winner = ""
+	leftPlayerScore = 0;
+	rightPlayerScore = 0;
+	maxScore = 3;
+}
 export function openPracticeTab() {
 	const buttonStart = document.getElementById("startGame");
 	const buttonStop = document.getElementById("stopGame");
 	const gameOptions = document.getElementById("options");
 	const stopOptions = document.getElementById("stop");
 
+	resetGame();
 	buttonStart.addEventListener("click", () => {
 		const counter = parseInt(document.getElementById("ballCount").value);
 		gameOptions.style.display = "none";
@@ -54,7 +70,7 @@ class Ball {
 		this.y = canvas.height / 2;
 		this.speedX = dirX;
 		this.speedY = dirY;
-		this.size = 10;
+		this.size = 20;
 		this.color = ballColor;
 	}
 	update() {
@@ -69,6 +85,7 @@ class Ball {
 		this.x = canvas.width / 2;
 		this.y = canvas.height / 2;
 		this.speedX = -this.speedX;
+		console.log("Speed in reset  ", this.speedX)
 	}
 }
 
@@ -94,6 +111,7 @@ let rightPaddle = new Paddle(canvas.width - 10);
 
 function createBall(dirX, dirY, ballColor) {
 	let ball = new Ball(dirX, dirY, ballColor);
+	console.log("The ball is created: ", dirX, dirY, ballColor);
 	balls.push(ball);
 }
 
@@ -122,22 +140,14 @@ function checkBall(ball) {
 	}
 	if (ball.x + ball.size >= canvas.width) {
 		leftPlayerScore++;
+		console.log("leftPlayerScore", leftPlayerScore);
 		ball.reset();
 	}
 }
 
 function updateGameStatus() {
-	const gameStatusDiv = document.getElementById('gameStatus');
-	const gamePlayers = document.getElementById('players');
-	gamePlayers.innerHTML = `
-		<span>${player1Name}</span>
-		<span>${player2Name}</span>
-		`;
-	gameStatusDiv.innerHTML = `
-		<span>${leftPlayerScore}</span>
-		<span>${rightPlayerScore}</span>
-		`;
-
+	const gameStatus = document.getElementById('gameStatusFrontend');
+	gameStatus.innerHTML = `${leftPlayerScore} - ${rightPlayerScore}`; // Correct syntax
 }
 
 function movePaddles() {
@@ -168,6 +178,7 @@ document.addEventListener('keyup', (event) => {
 
 function gameLoop() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
+	console.log(" ", ActivityManager.getPracticePong())
 	movePaddles();
 	leftPaddle.drawPaddle();
 	rightPaddle.drawPaddle();
@@ -183,8 +194,8 @@ function gameLoop() {
 		} else {
 			winner = player2Name;
 		}
-		showModal();
-		cancelAnimationFrame(animationId);
+		// showModal();
+		document.getElementById("stopGame").click();
 		return;
 	}
 	animationId = requestAnimationFrame(gameLoop);
@@ -203,7 +214,7 @@ function showModal() {
 	console.log("Showing modal");
 	const modal = document.getElementById("myModal");
 	const winnerText = document.getElementById("winner");
-	winnerText.textContent = `Winner: ${winner}`;
+	winnerText.innerHTML = `<span style="font-size: 40px;">Winner:</span> <span style="font-size: 60px;">${winner}</span>`;
 	modal.style.display = "flex";
 }
 
@@ -214,7 +225,11 @@ closeBtn.addEventListener("click", () => {
 });
 
 function handleStartGame(counter) {
+	ActivityManager.setPracticePong();
 	console.log("ball ", counter);
+	const gamePlayers = document.getElementById('players');
+	gamePlayers.innerHTML = `
+		<span>${player1Name}</span><span>${player2Name}</span>`;
 	const ballCount = counter || 1;
 	balls = [];
 	if (ballCount === 1)
@@ -232,7 +247,7 @@ function handleStartGame(counter) {
 	gameLoop();
 }
 
-function handleStopGame() {
+export function handleStopGame() {
 	console.log('Stopping game');
 	if (animationId) {
 		cancelAnimationFrame(animationId);
@@ -244,5 +259,18 @@ function handleStopGame() {
 	rightPlayerScore = 0;
 	maxScore = 3;
 	updateGameStatus();
+	ActivityManager.unsetPracticePong();
 	context.clearRect(0, 0, canvas.width, canvas.height);
 }
+
+
+document.addEventListener("visibilitychange", () => {
+	console.log("visibilityState is: ", document.visibilityState);
+	if (document.visibilityState === "hidden") {
+		console.log("Tab hidden – user switched or minimized");
+	} else if (document.visibilityState === "visible") {
+
+		console.log("Tab visible again");
+
+	}
+});
