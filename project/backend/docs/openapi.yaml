@@ -1,0 +1,327 @@
+openapi: 3.0.0
+info:
+  title: User & Game API
+  version: 1.0.0
+  description: API documentation for user management, authentication, and WebSocket routes.
+servers:
+  - url: https://congenial-system-x76557wwgx93px46-3000.app.github.dev/docs
+paths:
+  /api/users:
+    get:
+      summary: Get all users
+      description: Retrieve a list of all users in the database.
+      operationId: getAllUsers
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    username:
+                      type: string
+        '401':
+          description: Unauthorized. Invalid or missing token.
+        '500':
+          description: Internal Server Error.
+    delete:
+      summary: Delete a user
+      description: Delete a user from the database.
+      operationId: deleteUser
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+              properties:
+                username:
+                  type: string
+      responses:
+        '200':
+          description: User successfully deleted.
+        '403':
+          description: Forbidden. Insufficient permissions to process the request.
+        '422':
+          description: Unprocessable Entity. Validation error.
+        '500':
+          description: Internal Server Error.
+    post:
+      summary: Create a new user
+      description: Create a new user in the database.
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+              properties:
+                username:
+                  type: string
+      responses:
+        '200':
+          description: User created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  username:
+                    type: string
+        '422':
+          description: Unprocessable Entity. Validation error.
+        '500':
+          description: Internal Server Error.
+
+  /api/players:
+    post:
+      summary: Add players
+      description: Add two players to a game.
+      operationId: addPlayers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - player1
+                - player2
+              properties:
+                player1:
+                  type: string
+                player2:
+                  type: string
+      responses:
+        '200':
+          description: Players added successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  gameId:
+                    type: string
+        '400':
+          description: Bad Request. Missing player names.
+
+  /api/winner:
+    post:
+      summary: Save game winner
+      description: Save the winner of a game.
+      operationId: saveWinner
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - player1
+                - player2
+                - winner_name
+              properties:
+                player1:
+                  type: string
+                player2:
+                  type: string
+                winner_name:
+                  type: string
+      responses:
+        '200':
+          description: Game results saved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  gameId:
+                    type: string
+        '400':
+          description: Bad Request. Missing player names or winner.
+        '500':
+          description: Internal Server Error.
+
+  /api/upload-avatar:
+    post:
+      summary: Upload avatar
+      description: Upload a user avatar image.
+      operationId: uploadAvatar
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Avatar uploaded successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  avatar:
+                    type: string
+        '500':
+          description: Internal Server Error.
+
+  /api/auth/me:
+    get:
+      summary: Get current user
+      description: Get the currently authenticated user.
+      operationId: getCurrentUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Current authenticated user.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                      username:
+                        type: string
+        '401':
+          description: Unauthorized. Invalid or missing token.
+
+  /api/auth/login:
+    post:
+      summary: Login
+      description: Log in to the application.
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  username:
+                    type: string
+        '400':
+          description: Bad Request. Email or password missing.
+        '401':
+          description: Unauthorized. Invalid credentials.
+
+  /api/auth/register:
+    post:
+      summary: Register
+      description: Register a new user.
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - username
+                - password
+              properties:
+                email:
+                  type: string
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: Registration successful.
+        '400':
+          description: Bad Request. Missing email, username, or password.
+        '500':
+          description: Internal Server Error.
+
+  /api/auth/logout:
+    post:
+      summary: Logout
+      description: Log out of the application.
+      operationId: logout
+      responses:
+        '200':
+          description: Logout successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /ws/chat:
+    get:
+      summary: Chat WebSocket
+      description: WebSocket connection for chat.
+      operationId: chatWebsocket
+      responses:
+        '101':
+          description: WebSocket connection established.
+
+  /ws/game:
+    get:
+      summary: Game WebSocket
+      description: WebSocket connection for game.
+      operationId: gameWebsocket
+      responses:
+        '101':
+          description: WebSocket connection established.
+
+  /ws/snake:
+    get:
+      summary: Snake WebSocket
+      description: WebSocket connection for snake game.
+      operationId: snakeWebsocket
+      responses:
+        '101':
+          description: WebSocket connection established.
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

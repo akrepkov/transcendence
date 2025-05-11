@@ -2,12 +2,17 @@ import Fastify from 'fastify';
 import path from 'path';
 import fastifyStatic from '@fastify/static';
 import userRoutes from './routes/userRoutes.js';
-import  fastifyWebSocket from '@fastify/websocket';
+import fastifyWebSocket from '@fastify/websocket';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import fastifyMultipart from '@fastify/multipart';
 import dotenv from 'dotenv';
 import cookie from '@fastify/cookie';
+
+//npm install @fastify/swagger @fastify/swagger-ui
+import swagger from '@fastify/swagger';
+import swaggerUi from '@fastify/swagger-ui';
+import fs from 'fs';
 dotenv.config();   // loads environment variables from the .env file and makes them accessible in process.env.
 
 //console.log('Environment Variables:', process.env); // Log all environment variables for debugging
@@ -64,11 +69,24 @@ fastify.register(userRoutes);
 //   console.log(fastify.printRoutes());
 // });
 
+// Swagger setup
+await fastify.register(swagger, {
+  mode: 'static',
+  specification: {
+    path: './docs/openapi.yaml',
+    baseDir: './',
+  }
+});
 
-//WHAT ARE HOOKS?
-// fastify.addHook('onRequest', async (req, res) => {
-//   console.log('[Request]', req.method, req.url);
-// });
+await fastify.register(swaggerUi, {
+  routePrefix: '/docs',
+  uiConfig: {
+    deepLinking: false,
+    defaultModelsExpandDepth: -1,
+
+  },
+  staticCSP: true,
+});
 
 
 fastify.listen({ port }, (err, address) => {
