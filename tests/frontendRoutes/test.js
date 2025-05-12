@@ -1,45 +1,37 @@
-const routes = {
-    home: function() {
-      showView('home');
-    },
-    practice: function() {
-      showView('practice');
-      console.log("Practice started");
-    },
-    tournament: function() {
-      showView('tournament');
-      console.log("Tournament started");
-    }
-  };
-  
-  let currentRoute = '';
-  
-  function showView(viewId) {
-    document.querySelectorAll('.tab-view').forEach(el => {
-      el.style.display = 'none';
-    });
-  
-    const view = document.getElementById(`view-${viewId}`);
-    if (view) view.style.display = 'block';
+const tabs = {
+  home(){
+    showView("home")
+    console.log("Home");
+  },
+  game() {
+    showView("game")
+    console.log("game");
+  },
+  newPage() {
+    showView("newPage")
+    console.log("new");
   }
-  
-  function router() {
-    const hash = window.location.hash.replace('#', '') || 'home';
-  
-    if (hash !== currentRoute) {
-      if (currentRoute === 'practice') {
-        console.log("Practice stopped");
-        // handleStopGame();
-      }
-      currentRoute = hash;
-      if (routes[hash]) {
-        routes[hash]();
-      } else {
-        showView('home');
-      }
+}
+
+let currentTab = ""
+
+function showView(tabName){
+  const view = document.getElementById(`view-${tabName}`);
+  if (view) {
+    view.style.display="block";
+  }
+}
+
+function tabChange() {
+  const hash = window.location.hash.replace("#","") || "home";
+  console.log(hash);
+ if (hash !== currentTab) {
+    currentTab = hash;
+    if (tabs[hash]) {
+      tabs[hash]();
     }
   }
-  
-  window.addEventListener('hashchange', router);
-  window.addEventListener('load', router);
-  
+}
+
+window.addEventListener("hashchange", tabChange)
+window.addEventListener("load", tabChange);

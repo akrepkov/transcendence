@@ -1,4 +1,4 @@
-Frontend - using canvas (totally illegal)
+Frontend - using canvas (totally illegal or not)
 Frontend should be done with Typescript
 Delete .env
 Is @fastify/oauth2 allowed?

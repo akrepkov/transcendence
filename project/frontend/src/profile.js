@@ -1,4 +1,4 @@
-import { setupTabs } from "./main.js";
+// import { setupTabs } from "./main.js";
 import {uploadAvatar } from "./avatar.js"
 import AuthManager from "./managers/authManager.js";
 
@@ -78,7 +78,7 @@ export async function openProfileTab() {
 				console.log ("I FLIP HERE")
 				flipCard.classList.add("flipped");
 				AuthManager.login(data.username);
-				setupTabs();
+				// setupTabs();
 				openProfileCard();
 			} catch (error) {
 				console.error('Error:', error);
@@ -109,7 +109,7 @@ export async function openProfileTab() {
 				const data = await response.json();
 				flipCard.classList.add("flipped");
 				AuthManager.login(data.username);
-				setupTabs();
+				// setupTabs();
 				openProfileCard();
 			} catch (error) {
 				console.error('Error:', error);
@@ -130,7 +130,7 @@ export async function openProfileTab() {
 						AuthManager.logout();
 						console.log('User logged out');
 						flipCard.classList.remove("flipped");
-						setupTabs();
+						// setupTabs();
 					} else {
 						console.error('Logout failed:', response.statusText);
 					}
