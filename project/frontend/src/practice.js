@@ -2,7 +2,12 @@ import ActivityManager from "./managers/activityManager.js"
 
 
 var canvas = document.getElementById('pong');
-var context = canvas.getContext('2d');
+var context = null;
+if (canvas) {
+	context = canvas.getContext('2d');
+} else {
+	console.warn('Canvas not yet available. Will try later.');
+}
 const keys = {
 	w: false,
 	s: false,
@@ -31,19 +36,26 @@ let player2Name = names2[randomIndex];
 let leftPlayerScore = 0;
 let rightPlayerScore = 0;
 let maxScore = 3;
-
+let isRunning = false;
 
 
 function resetGame() {
 	balls = [];
 	rgbColor = "white";
 	animationId = null;
+	cancelAnimationFrame(animationId);
 	winner = ""
 	leftPlayerScore = 0;
 	rightPlayerScore = 0;
 	maxScore = 3;
 }
 export function openPracticeTab() {
+	canvas = document.getElementById('pong');
+	if (!canvas) {
+		console.error('Canvas not found in practice tab.');
+		return;
+	}
+	context = canvas.getContext('2d');
 	const buttonStart = document.getElementById("startGame");
 	const buttonStop = document.getElementById("stopGame");
 	const gameOptions = document.getElementById("options");
@@ -178,12 +190,12 @@ document.addEventListener('keyup', (event) => {
 
 function gameLoop() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
-	console.log(" ", ActivityManager.getPracticePong())
 	movePaddles();
 	leftPaddle.drawPaddle();
 	rightPaddle.drawPaddle();
 	for (const ball of balls) {
 		ball.update();
+		console.log("Speed: ", ball.dirX, ball.dirY)
 		ball.drawBall();
 		checkBall(ball);
 	}
@@ -218,13 +230,15 @@ function showModal() {
 	modal.style.display = "flex";
 }
 
-let closeBtn = document.getElementById("closeButton");
-closeBtn.addEventListener("click", () => {
-	const modal = document.getElementById("myModal");
-	modal.style.display = "none";
-});
+// let closeBtn = document.getElementById("closeButton");
+// closeBtn.addEventListener("click", () => {
+// 	const modal = document.getElementById("myModal");
+// 	modal.style.display = "none";
+// });
 
 function handleStartGame(counter) {
+	if (isRunning) return;
+	isRunning = true;
 	ActivityManager.setPracticePong();
 	console.log("ball ", counter);
 	const gamePlayers = document.getElementById('players');
@@ -249,28 +263,48 @@ function handleStartGame(counter) {
 
 export function handleStopGame() {
 	console.log('Stopping game');
-	if (animationId) {
+	if (animationId !== null) {
 		cancelAnimationFrame(animationId);
+		animationId = null;
+		let isRunning = false;
 	}
-	animationId = null;
-	for (const ball of balls)
-		ball.reset();
+
+	// Reset DOM and UI
+	document.getElementById("players").innerHTML = "";
+	document.getElementById("gameStatusFrontend").innerHTML = "0 - 0";
+
+	// Reset game state
+	balls = [];
 	leftPlayerScore = 0;
 	rightPlayerScore = 0;
 	maxScore = 3;
-	updateGameStatus();
-	ActivityManager.unsetPracticePong();
+
+	// Reset canvas
 	context.clearRect(0, 0, canvas.width, canvas.height);
+
+	// Reset paddles
+	leftPaddle = new Paddle(0);
+	rightPaddle = new Paddle(canvas.width - 10);
+
+	// Reset Activity state
+	ActivityManager.unsetPracticePong();
+
+	console.log("Game fully stopped and cleared.");
 }
 
-
-document.addEventListener("visibilitychange", () => {
-	console.log("visibilityState is: ", document.visibilityState);
-	if (document.visibilityState === "hidden") {
-		console.log("Tab hidden – user switched or minimized");
-	} else if (document.visibilityState === "visible") {
-
-		console.log("Tab visible again");
-
+window.addEventListener('hashchange', function(event) {
+    //blocking change of url
+    if (isRunning) {
+        event.preventDefault(); // Prevent the hash change
+        alert("Please stop the game before switching tabs.");
+		handleStopGame();
+    }
+	isRunning = false;
+});
+window.addEventListener('beforeunload', function(event) {
+	//blocking leaving the page (reload)
+    if (isRunning) {
+		handleStopGame();
 	}
+	isRunning = false;
 });

@@ -1,18 +1,24 @@
-import { openProfileTab } from './profile.js';
+import {openProfileTab} from './profile.js';
+import {openPracticeTab} from './practice.js';
+// import {PracticeGame} from './gameClass.js';
+// import ActivityManager from './managers/activityManager.js';
 
-(function init() {
-	loadTabHtml('view-profile', 'profile_login.html');
+(async function init() {
+	await loadTabHtml('view-profile', 'profile_login.html');
 })();
 
+// let  practiceGame = null;
 const tabs = {
 	profile() {
 		showView("profile");
 		openProfileTab();
-		console.log("profile");
 	},
 	chat() {
-		showView("chat")
-		console.log("chat");
+		showView("chat");
+	},
+	practice() {
+		showView("practice");
+		openPracticeTab();
 	},
 
 }
@@ -33,6 +39,9 @@ function tabChange() {
 	const hash = window.location.hash.replace("#", "") || "profile";
 	console.log(hash);
 	if (hash !== currentTab) {
+        // if (currentTab === "practice" && practiceGame) {
+        //     practiceGame.destroy(); // Cleanup game when leaving the practice tab
+        // }
 		currentTab = hash;
 		if (tabs[hash]) {
 			tabs[hash]();
