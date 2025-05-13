@@ -14,7 +14,7 @@ let names2 = ["AimBotany", "CrashTestCutie", "YeetCompiler",
 const randomIndex = Math.floor(Math.random() * names1.length);
 export const player1Name = names1[randomIndex];
 export const player2Name = names2[randomIndex];
-
+let isRunning = false;
 
 export function getRandomColor() {
 	return `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`;
@@ -28,4 +28,17 @@ export function getRandomDirection() {
 export function updateGameStatus() {
 	const gameStatus = document.getElementById('gameStatusFrontend');
 	gameStatus.innerHTML = `${leftPlayerScore} - ${rightPlayerScore}`; // Correct syntax
+}
+
+export function addPlayersNames() {
+	const players = document.getElementById('players');
+	players.innerHTML = `${player1Name} vs ${player2Name}`;
+}
+
+export function getIsRunning() {
+	return isRunning;
+}
+
+export function setIsRunning(value) {
+	isRunning = value;
 }

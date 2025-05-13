@@ -2,7 +2,8 @@ import { getRandomColor, getRandomDirection } from "./utils.js";
 import { Ball, Paddle } from "./gameClass.js";
 import { getCanvas, getContext } from "./practice.js";
 import {movePaddles} from "./controls.js";
-import { updateGameStatus } from "./utils.js";
+import { updateGameStatus, getIsRunning, setIsRunning } from "./utils.js";
+import { player1Name, player2Name, addPlayersNames } from "./utils.js";
 
 
 
@@ -10,7 +11,6 @@ const canvas = getCanvas();
 const context = getContext();
 let rgbColor = "white";
 let animationId = null;
-let isRunning = false;
 let balls = [];
 let maxScore = 3;
 export let leftPlayerScore = 0;
@@ -22,14 +22,6 @@ export let leftPaddle = new Paddle(0);
 export let rightPaddle = new Paddle(canvas.width - 10);
 
 
-
-export function getIsRunning() {
-	return isRunning;
-}
-
-export function setIsRunning(value) {
-	isRunning = value;
-}
 function createBall(dirX, dirY, ballColor) {
 	let ball = new Ball(dirX, dirY, ballColor);
 	console.log("The ball is created: ", dirX, dirY, ballColor);
@@ -96,7 +88,7 @@ function gameLoop() {
 export function handleStartGame(counter) {
     if (getIsRunning()) return;
     setIsRunning(true)
-
+	addPlayersNames();
     const ballCount = counter || 1;
     balls = [];
     if (ballCount === 1)
@@ -120,6 +112,8 @@ export function resetGame() {
 		setIsRunning(false);
 	}
     context.clearRect(0, 0, canvas.width, canvas.height);
+	document.getElementById("players").innerHTML = "";
+	document.getElementById("gameStatusFrontend").innerHTML = "0 - 0";
 	balls = [];
 	rgbColor = "white";
 	animationId = null;
