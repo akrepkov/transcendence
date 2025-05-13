@@ -1,5 +1,5 @@
 import {openProfileTab} from './profile.js';
-import {openPracticeTab} from './practice.js';
+import {openPracticeTab} from './practice/practice.js';
 // import {PracticeGame} from './gameClass.js';
 // import ActivityManager from './managers/activityManager.js';
 
