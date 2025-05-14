@@ -1,10 +1,10 @@
 // import { setupTabs } from "./main.js";
-import {uploadAvatar } from "./avatar.js"
+import {avatarHandler } from "./avatar.js"
 import AuthManager from "../managers/authManager.js";
 import { logIntoDatabase, signupInDatabase, logout } from "./authRequests.js";
 
 export function openProfileCard() {
-	uploadAvatar();
+	avatarHandler();
 }
 
 export async function openProfileTab() {

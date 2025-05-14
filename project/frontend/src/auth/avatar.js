@@ -8,7 +8,7 @@
  */
 
 
-export async function uploadAvatar () {
+export async function avatarHandler() {
 
 	const defaultAvatar = document.getElementById("defaultAvatar");
 
@@ -21,11 +21,9 @@ export async function uploadAvatar () {
 			const data = await response.json();
 			defaultAvatar.src = data.avatar; // Set the image source to the uploaded file
 			console.log("Avatar URL:", data.avatar); // Debugging
-		} else {
-			console.error("Error fetching avatar");
 		}
 	} catch (error) {
-		console.error("Error:", error);	
+		console.error("Error uploading avatar:", error);
 	}
 	const fileInput = document.getElementById("fileInput");
 
@@ -34,35 +32,35 @@ export async function uploadAvatar () {
 		fileInput.click();
 	});
 	fileInput.addEventListener("change", async function (event) {
-		const file = event.target.files[0]; //get the selected file
-		if (file) {
-			const reader = new FileReader();
-			reader.onload = function (e) {
-				defaultAvatar.src = e.target.result; // Set the image source to the selected file
-			};
-			reader.readAsDataURL(file);
-		}
-
-		//uploading the image to backend
-		const formData = new FormData();
-		formData.append("avatar", file);
-		try {
-			const response = await fetch("/api/upload-avatar", {
-				method: "POST",
-				body: formData,
-				credentials: 'include' // Include cookies in the request
-			});
-			if (response.ok) {
-				console.log("Avatar uploaded successfully");
-				const data = await response.json();
-				document.getElementById("defaultAvatar").src = data.avatar; // Set the image source to the uploaded file
-				console.log("Avatar URL:", data.avatar); // Debugging
-			} else {
-				console.error("Error uploading avatar");
-			}
-		}
-		catch (error) {
-			console.error("Error:", error);
-		}
+		changeAvatar(event);
 	});
+}
+
+
+async function changeAvatar(event) {
+	const file = event.target.files[0]; //get the selected file
+	if (file) {
+		const reader = new FileReader();
+		reader.onload = function (e) {
+			defaultAvatar.src = e.target.result; // Set the image source to the selected file
+		};
+		reader.readAsDataURL(file);
+	}
+
+	//uploading the image to backend
+	const formData = new FormData();
+	formData.append("avatar", file);
+	try {
+		const response = await fetch("/api/upload-avatar", {
+			method: "POST",
+			body: formData,
+			credentials: 'include' // Include cookies in the request
+		});
+		if (response.ok) {
+			console.log("Avatar uploaded successfully");
+		}
+	}
+	catch (error) {
+		console.error("Error uploading avatar:", error);
+	}
 }

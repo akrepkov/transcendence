@@ -11,7 +11,9 @@ export default async function userRoutes(fastify) {
     fastify.post('/api/users', userControllers.createUserHandler);
     fastify.post('/api/players', userControllers.addingPlayersHandler);
     fastify.post('/api/winner', userControllers.saveWinnerHandler);
-    fastify.post('/api/upload-avatar', userControllers.uploadAvatarHandler);
+    //Avatar
+    fastify.post('/api/upload-avatar', { preHandler: authControllers.getUserFromRequest },  userControllers.uploadAvatarHandler);
+    fastify.get('/api/getAvatar', { preHandler: authControllers.getUserFromRequest },  userControllers.getAvatarHandler);
     //Chat:
     fastify.get('/ws/chat', { websocket: true }, websocket.chatWebsocketHandler);
     //Remote

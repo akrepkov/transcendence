@@ -1,4 +1,5 @@
 import * as authServices  from '../services/authServices.js';
+import * as userServices from '../services/userServices.js';
 import {handleError} from '../utils/utils.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -123,12 +124,33 @@ const verificationHandler = async(request, reply) => {
     }
 }
 
+const getUserFromRequest = async(request, reply) => {
+    try {
+        const token = await request.cookies.token;
+        if (!token) {
+            return handleError(reply,new Error('Unauthorized: No token'), 401);
+        }
+        const decoded = jwt.verify(token, JWT_SECRET);
+        console.log("EMAIL in getUserFromRequest: ", decoded.email);
+        let user = userServices.getUserByEmail(decoded.email);
+        if (!user) {
+            return handleError(reply, new Error('Invalid credentials'), 401);
+        }
+        request.user = user; // Attach user to request object
+    }
+    catch(error) {
+        console.error('getUserFromRequest:', error);
+        return handleError(reply, error, 401);
+    }
+}
+
 export default {
 	loginHandler,
 	registerHandler,
 	logoutHandler,
 	verificationHandler,
-	authenticate
+	authenticate,
+    getUserFromRequest
 
 };
 

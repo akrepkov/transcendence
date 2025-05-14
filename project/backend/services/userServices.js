@@ -25,7 +25,7 @@ export function getUserById(id) {
 }
 
 export function getUserByEmail(email){
-    return db.prepare('SELECT * FROM users WHERE email').get(email);
+    return db.prepare('SELECT * FROM users WHERE email = ?').get(email);
 }
 
 export function addPlayers(player1, player2) {
@@ -61,4 +61,26 @@ export function saveGameResults(player1, player2, winner_name) {
     const stmt = db.prepare('INSERT INTO games (player1_id, player2_id) VALUES (?, ?)');
     const info = stmt.run(user1.id, user2.id);
     return info.lastInsertRowid;
+}
+
+
+export function uploadAvatarinDatabase(filepath, username) {
+    const checkUser = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
+    if (!checkUser) {
+        console.log("User doesn't exist:", username);
+        return ;
+    }
+    const stmt = db.prepare('UPDATE users SET avatar = ? WHERE username = ?');
+    stmt.run(filepath, username);
+}
+
+export function getAvatarFromDatabase(username) {
+    const checkUser = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
+    if (!checkUser) {
+        console.log("User doesn't exist:", username);
+        return ;
+    }
+    const stmt = db.prepare('SELECT avatar FROM users WHERE username = ?');
+    const info = stmt.get(username);
+    return info.avatar;
 }
