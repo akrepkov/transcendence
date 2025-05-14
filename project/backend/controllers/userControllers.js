@@ -90,16 +90,24 @@ const uploadAvatarHandler = async(request, reply) => {
         console.log("File name:", filename); // Debugging
         const filepath = path.join(__dirname,'..', 'uploads', filename);
         pump(data.file, fs.createWriteStream(filepath));
-        const avatarUrl = `/uploads/${filename}`;
+        let avatarUrl = `../uploads/${filename}`;
+		console.log("Avatar URL:", avatarUrl); // Debugging
+		console.log("File path:", filepath); // Debugging
+		return (reply.code(200).send({ 
+			success: true, 
+			avatar: avatarUrl 
+		}));
 	} catch (error) {
 		console.error('Upload error:', error);
-		return reply.code(500).send({ success: false, error: 'Upload failed' });
+		return reply.code(500).send({ 
+				success: false, 
+				error: 'Upload failed' 
+			});
 	}
 
 	//if you have some cleanup, logging, or additional logic after reply.send(), 
 	// and you don't await it — those lines might execute before the response is properly sent. 
 	// It can cause weird bugs or unexpected behavior.
-    return (await reply.code(200).send({ success: true, avatar: avatarUrl }));
 }
 
 

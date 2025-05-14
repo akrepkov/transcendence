@@ -20,3 +20,4 @@
 (20, '11', '11', '$2b$10$iZ92.741L239HJ0BbLDIo.sdO/4Wd9jmIhPK5py.vo7Uc3628XhVC', 'default_avatar.jpg', None, '2025-05-01 10:06:51')
 (21, '2', '2', '$2b$10$safsB7lALXdG.CvbQzmRMuZlxYvBJxypDC5Km6EZS5hn8Okom79U2', 'default_avatar.jpg', None, '2025-05-01 10:08:38')
 (22, '1212121212121212121212', '1212121212121212121', '$2b$10$mOk1QDHaW7su2JXn1K1f8OWDKfENh9rFZPPE8CIeMNzw2BD0LuZk6', 'default_avatar.jpg', None, '2025-05-01 12:10:19')
+(23, '1112', '1112', '$2b$10$l9HM2s6eGsesbcSaNG/xhu4waVkqkmQoGr52/d5fahK0BwOY4mNfi', 'default_avatar.jpg', None, '2025-05-03 18:01:06')

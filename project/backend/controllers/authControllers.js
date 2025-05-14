@@ -22,7 +22,7 @@ const loginHandler = async(request, reply) => {
     if (!isMatch) {
         return handleError(reply, new Error('Invalid credentials'), 401);
     }
-    const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ email}, JWT_SECRET, { expiresIn: '1h' });
     // Set the JWT in an HTTP-only cookie
     reply.setCookie('token', token, {
         httpOnly: true,  // Ensures it's not accessible via JavaScript
@@ -53,7 +53,6 @@ const registerHandler = async (request, reply) => {
     }
     try {
         const registerUser = authServices.registerInDatabase(email, password, username);
-
         if (!registerUser) {
             return handleError(reply, new Error('Registration failed'), 500);
         }
@@ -93,7 +92,7 @@ const logoutHandler = async(request, reply) => {
 const authenticate = async(request, reply) => {
     const token = await request.cookies.token;
     if (!token) {
-        return res.status(401).send({ error: 'Unauthorized: No token' });
+        return handleError(reply,new Error('Unauthorized: No token'), 401);
     }
     try {
         const payload = jwt.verify(token, JWT_SECRET);
@@ -107,11 +106,18 @@ const authenticate = async(request, reply) => {
 const verificationHandler = async(request, reply) => {
     const token = await request.cookies.token;
     if (!token) {
-        return res.status(401).send({ error: 'Unauthorized: No token' });
+		console.log("No token in verificationHandler");
+        return handleError(reply,new Error('Unauthorized: No token'), 401);
     }
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        reply.send({ user: decoded });
+		console.log("Decoded in verificationHandler: ", decoded);
+		const user = await authServices.checkCredentials(decoded.email);
+		if (!user) {
+			return handleError(reply, new Error('Invalid credentials'), 401);
+		}
+		let username = user.username;
+        reply.send({ user: decoded, username });
     } catch (err) {
         return handleError(reply, err, 401);
     }

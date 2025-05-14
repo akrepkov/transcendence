@@ -1,15 +1,19 @@
 import {openProfileTab} from './auth/profile.js';
 import {openPracticeTab} from './practice/practice.js';
-
+import {verifyLogin} from './auth/authRequests.js';
 
 (async function init() {
-	await loadTabHtml('view-profile', 'profile_login.html');
+	console.log('Page loaded init .......');
+	// await loadTabHtml('view-profile', 'profile_login.html');
+	await verifyLogin();
 })();
 
 const tabs = {
-	profile() {
+	profile: async function() {
+		console.log("I am In profile tab");
+		await loadTabHtml('view-profile', 'profile_login.html'); // Wait for HTML to be inserted
 		showView("profile");
-		openProfileTab();
+		openProfileTab(); // Now that DOM elements are in the document, you can safely bind events
 	},
 	chat() {
 		showView("chat");
@@ -34,6 +38,7 @@ function showView(tabName) {
 }
 
 function tabChange() {
+	// verifyLogin();
 	const hash = window.location.hash.replace("#", "") || "profile";
 	console.log(hash);
 	if (hash !== currentTab) {
@@ -62,7 +67,11 @@ async function loadTabHtml(tabName, fileName) {
 
 
 window.addEventListener("hashchange", tabChange)
-window.addEventListener("load", tabChange);
+window.addEventListener("load", async() => {
+	console.log("Page Verifying on page load");
+	await verifyLogin();
+	tabChange();
+})
 
 
 // import { openChatTab } from './chat.js';
