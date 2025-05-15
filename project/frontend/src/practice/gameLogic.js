@@ -1,9 +1,10 @@
 import { getRandomColor, getRandomDirection } from "./utils.js";
 import { Ball, Paddle } from "./gameClass.js";
-import { getCanvas, getContext } from "./practice.js";
+import { getCanvas, getContext, cleanUp } from "./practice.js";
 import {movePaddles} from "./controls.js";
 import { updateGameStatus, getIsRunning, setIsRunning } from "./utils.js";
 import { player1Name, player2Name, addPlayersNames } from "./utils.js";
+
 
 
 
@@ -16,11 +17,22 @@ let maxScore = 3;
 export let leftPlayerScore = 0;
 export let rightPlayerScore = 0;
 let winner = null;
-
+let loser = null;
 
 export let leftPaddle = new Paddle(0);
 export let rightPaddle = new Paddle(canvas.width - 10);
 
+
+function showWinner(name) {
+  const banner = document.getElementById("winnerBanner");
+  const winnerName = document.getElementById("winnerName");
+  winnerName.textContent = name;
+  banner.classList.remove("hidden");
+
+  setTimeout(() => {
+    banner.classList.add("hidden");
+  }, 4000);
+}
 
 function createBall(dirX, dirY, ballColor) {
 	let ball = new Ball(dirX, dirY, ballColor);
@@ -74,12 +86,16 @@ function gameLoop() {
 	if (leftPlayerScore >= maxScore || rightPlayerScore >= maxScore) {
 		if (leftPlayerScore >= maxScore) {
 			winner = player1Name;
+			loser = player2Name;
 		} else {
 			winner = player2Name;
+			loser = player1Name;
+
 		}
 		// // showModal();
-		// document.getElementById("stopGame").click();
-        resetGame();
+		showWinner(winner);
+        cleanUp();
+		// sendGameResults(winner, loser);
 		return;
 	}
 	animationId = requestAnimationFrame(gameLoop);

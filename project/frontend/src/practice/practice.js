@@ -1,3 +1,4 @@
+
 import { resetGame, handleStartGame } from "./gameLogic.js";
 import { getIsRunning, setIsRunning } from "./utils.js";
 export function getCanvas() {
@@ -21,7 +22,7 @@ export function openPracticeTab() {
 	buttonStart.addEventListener("click", () => {
 		const counter = parseInt(document.getElementById("ballCount").value);
 		gameOptions.style.display = "none";
-		stopOptions.style.display = "block";
+		stopOptions.style.display = "flex";
 		handleStartGame(counter);
 	});
 	buttonStop.addEventListener("click", () => {
@@ -31,7 +32,7 @@ export function openPracticeTab() {
 	});
 }
 
-function cleanUp() {
+export function cleanUp() {
 	const gameOptions = document.getElementById("options");
 	const stopOptions = document.getElementById("stop");
 	gameOptions.style.display = "flex";
@@ -40,7 +41,7 @@ function cleanUp() {
 	setIsRunning(false);
 }
 
-window.addEventListener('hashchange', function (event) {
+window.addEventListener('popstate', function (event) {
 	if (getIsRunning()) {
 		cleanUp();
 	}
@@ -51,3 +52,20 @@ window.addEventListener('beforeunload', function (event) {
 		cleanUp();
 	}
 });
+
+// export async function sendGameResults(winner, loser) {
+// 	try {
+// 		const data = await fetch('/api/winner', {
+// 			method: 'POST',
+// 			headers: {
+// 				'Content-Type': 'application/json'
+// 			},
+// 			body: JSON.stringify({ winner_name: winner, loser_name: loser }),
+// 		});
+// 		if (!data.ok) {
+// 			throw new Error('Network response was not ok');
+// 		}
+// 	} catch(error) {
+// 		console.error('Error in sendGameResults:', error);
+// 	}
+// }

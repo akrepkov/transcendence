@@ -3,9 +3,6 @@ import {avatarHandler } from "./avatar.js"
 import AuthManager from "../managers/authManager.js";
 import { logIntoDatabase, signupInDatabase, logout } from "./authRequests.js";
 
-export function openProfileCard() {
-	avatarHandler();
-}
 
 export async function openProfileTab() {
 	const signup = document.getElementById("signupTest");
@@ -26,8 +23,14 @@ export async function openProfileTab() {
 	const passwordInputSign = document.getElementById("passwordInputSign");
 	const usernameInputSign = document.getElementById("usernameInputSign");
 
+	const defaultAvatar = document.getElementById("defaultAvatar");
+	
+	
 	// Show profile if already logged in
 	if (AuthManager.isLoggedIn()) {
+		document.querySelectorAll("a[data-requires-auth='true']").forEach(link => {
+			link.style.display = "block";
+		});
 		flipCard.classList.add("flipped");
 		flipCard.style.display = "block";
 		openProfileCard();
@@ -60,4 +63,10 @@ export async function openProfileTab() {
 	}
 
 
+}
+
+export function openProfileCard() {
+	defaultAvatar.src = "";
+	console.log("defaultAvatar: ", defaultAvatar);
+	avatarHandler();
 }

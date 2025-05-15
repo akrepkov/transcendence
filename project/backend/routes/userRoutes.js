@@ -6,10 +6,10 @@ import snake from '../plugins/websocketSnake.js';
 
 
 export default async function userRoutes(fastify) {
-    fastify.get('/api/users', { preHandler: authControllers.authenticate }, userControllers.getAllUsersHandler);
-    fastify.delete('/api/users', { preHandler: authControllers.authenticate }, userControllers.deleteUserHandler);
-    fastify.post('/api/users', userControllers.createUserHandler);
-    fastify.post('/api/players', userControllers.addingPlayersHandler);
+    //user manipulation
+    fastify.post('/api/users', userControllers.addUserHandler);
+    fastify.get('/api/users', userControllers.getAllUsersHandler);
+    fastify.delete('/api/users', userControllers.deleteUserHandler);
     fastify.post('/api/winner', userControllers.saveWinnerHandler);
     //Avatar
     fastify.post('/api/upload-avatar', { preHandler: authControllers.getUserFromRequest },  userControllers.uploadAvatarHandler);
@@ -20,17 +20,13 @@ export default async function userRoutes(fastify) {
     fastify.get('/ws/game', { websocket: true }, remote.gameWebsocketHandler);
     //Snake
     fastify.get('/ws/snake', { websocket: true }, snake.snakeWebsocketHandler);
+
+
 	//Auth:
     fastify.get('/api/auth/me', authControllers.verificationHandler);
 	fastify.post('/api/auth/login', authControllers.loginHandler);
 	fastify.post('/api/auth/register', authControllers.registerHandler);
 	fastify.post('/api/auth/logout', authControllers.logoutHandler);// ??
-	// fastify.get('/api/auth/user', authControllers.getUserHandler); //??
-    
-    //Google
-    // fastify.get('/api/auth/google', authControllers.googleHandler);
-    // fastify.get('/api/auth/callback', authControllers.callbackHandler);
-    
 
     // fastify.get('/api/remote', userControllers.remoteHandler);
     // fastify.post('/api/remote', userControllers.remoteHandler);

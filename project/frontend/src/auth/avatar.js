@@ -11,7 +11,8 @@
 export async function avatarHandler() {
 
 	const defaultAvatar = document.getElementById("defaultAvatar");
-
+	console.log("defaultAvatar: ", defaultAvatar);
+	setTimeout(() => { console.log('World!') }, 4000)
 	try {
 		const response = await fetch("/api/getAvatar", {
 			method: "GET",

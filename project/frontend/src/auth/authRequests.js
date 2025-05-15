@@ -59,7 +59,9 @@ export function logIntoDatabase() {
 			const data = await response.json();
 			flipCard.classList.add("flipped");
 			AuthManager.login(data.username);
-			// setupTabs();
+			document.querySelectorAll("a[data-requires-auth='true']").forEach(link => {
+				link.style.display = "block";
+			});
 			openProfileCard();
 		} catch (error) {
 			console.error('Error:', error);
@@ -90,6 +92,9 @@ export function signupInDatabase() {
 			const data = await response.json();
 			flipCard.classList.add("flipped");
 			AuthManager.login(data.username);
+			document.querySelectorAll("a[data-requires-auth='true']").forEach(link => {
+				link.style.display = "block";
+			});
 			openProfileCard();
 		} catch (error) {
 			console.error('Error:', error);
@@ -100,6 +105,9 @@ export function signupInDatabase() {
 export function logout() {
 	logoutBtn.addEventListener('click', (event) => {
 		event.preventDefault();
+		const defaultAvatar = document.getElementById("defaultAvatar");
+		defaultAvatar.src = "/assets/default_avatar.jpg"; // immediately reset
+
 		fetch('/api/auth/logout', {
 			method: 'POST',
 			credentials: 'include'
@@ -109,7 +117,9 @@ export function logout() {
 					AuthManager.logout();
 					console.log('User logged out');
 					flipCard.classList.remove("flipped");
-					// setupTabs();
+					document.querySelectorAll("a[data-requires-auth='true']").forEach(link => {
+						link.style.display = "none";
+					});
 				} else {
 					console.error('Logout failed:', response.statusText);
 				}

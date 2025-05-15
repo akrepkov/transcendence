@@ -1,18 +1,18 @@
 
 export function openRemoteTab() {
-  const canvas = document.getElementById('gameRemote');
-  const ctx = canvas.getContext('2d');
+  // const canvas = document.getElementById('gameRemote');
+  // const ctx = canvas.getContext('2d');
 
-    console.log("Im in REMOTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    // console.log("Im in REMOTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
   //socket for codeapaces__))
-//   const socket = new WebSocket('wss://congenial-system-x76557wwgx93px46-3000.app.github.dev/ws/game');
-  let gameState = {
-    leftPaddleY: 250,
-    rightPaddleY: 250,
-    ball: { x: 400, y: 300 },
-    score: [0, 0]
-  };
-  let usernames = ["Player 1", "Player 2"];
+  const socket = new WebSocket('wss://congenial-system-x76557wwgx93px46-3000.app.github.dev/ws/game');
+  // let gameState = {
+  //   leftPaddleY: 250,
+  //   rightPaddleY: 250,
+  //   ball: { x: 400, y: 300 },
+  //   score: [0, 0]
+  // };
+  // let usernames = ["Player 1", "Player 2"];
   socket.onopen = function () {
     console.log('Connected to WebSocket server!');
   };

@@ -1,19 +1,22 @@
-import {openProfileTab} from './auth/profile.js';
-import {openPracticeTab} from './practice/practice.js';
-import {verifyLogin} from './auth/authRequests.js';
+import { openProfileTab } from './auth/profile.js';
+import { openPracticeTab } from './practice/practice.js';
+import { openRemoteTab } from './remote/remote.js';
+import { verifyLogin } from './auth/authRequests.js';
+import AuthManager from './managers/authManager.js';
+
+
 
 (async function init() {
 	console.log('Page loaded init .......');
-	// await loadTabHtml('view-profile', 'profile_login.html');
-	await verifyLogin();
+	await loadTabHtml('view-remote', 'remote.html');
 })();
 
 const tabs = {
-	profile: async function() {
+	profile: async function () {
 		console.log("I am In profile tab");
-		await loadTabHtml('view-profile', 'profile_login.html'); // Wait for HTML to be inserted
+		await loadTabHtml('view-profile', 'profile_login.html');
 		showView("profile");
-		openProfileTab(); // Now that DOM elements are in the document, you can safely bind events
+		openProfileTab();
 	},
 	chat() {
 		showView("chat");
@@ -22,6 +25,15 @@ const tabs = {
 		showView("practice");
 		openPracticeTab();
 	},
+	remote() {
+		if (!AuthManager.isLoggedIn()) {
+			console.log("User is not logged in");
+			this.profile();
+			return;
+		}
+		showView("remote");
+		openRemoteTab();
+	},
 
 }
 
@@ -29,7 +41,7 @@ let currentTab = ""
 
 function showView(tabName) {
 	document.querySelectorAll(".tab-view").forEach(el => {
-		el.style.display="none";
+		el.style.display = "none";
 	})
 	const view = document.getElementById(`view-${tabName}`);
 	if (view) {
@@ -38,7 +50,6 @@ function showView(tabName) {
 }
 
 function tabChange() {
-	// verifyLogin();
 	const hash = window.location.hash.replace("#", "") || "profile";
 	console.log(hash);
 	if (hash !== currentTab) {
@@ -66,13 +77,30 @@ async function loadTabHtml(tabName, fileName) {
 }
 
 
+
 window.addEventListener("hashchange", tabChange)
-window.addEventListener("load", async() => {
+window.addEventListener("load", async () => {
 	console.log("Page Verifying on page load");
 	await verifyLogin();
+	await updateAuthLinks()
 	tabChange();
 })
 
+
+async function updateAuthLinks() {
+	document.querySelectorAll(".tab-link").forEach(el => {
+		el.style.display = "block";
+	})
+	if (!AuthManager.isLoggedIn()) {
+		document.querySelectorAll("a[data-requires-auth='true']").forEach(link => {
+			link.style.display = "none";
+		});
+	} else {
+		document.querySelectorAll("a[data-requires-auth='true']").forEach(link => {
+			link.style.display = "block"; // or block/inline depending on layout
+		});
+	}
+}
 
 // import { openChatTab } from './chat.js';
 // // import { openTournamentTab } from './tournament.js';
