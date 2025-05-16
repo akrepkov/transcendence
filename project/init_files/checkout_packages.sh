@@ -8,16 +8,18 @@ MAGENTA='\033[1;35m'
 CYAN='\033[1;36m'
 END='\033[0m'
 
-
+git add $PACKAGE_FILES
+git commit -m "updating package files" || (echo -e $RED"Something went wrong with committing, possibly no files have changed, please fix first or just dont do this if none of the package files changed"$END && exit 1) || exit 1
 CURRENT_WORKING_BRANCH=$(git branch --show-current)
 echo $CURRENT_WORKING_BRANCH
-git checkout main || (echo -e $RED"Something went wrong with checking out main, you might need to stash first, please fix first"$END && exit 1)
+git add $PACKAGE_FILES
+git checkout main || (echo -e $RED"Something went wrong with checking out main, you might need to stash first, please fix first"$END && exit 1) || exit 1
 
-git pull || (echo -e $RED"Something went wrong with pulling in main, possibly merge conflicts or smth, please fix first"$END && exit 1)
+git pull || (echo -e $RED"Something went wrong with pulling in main, possibly merge conflicts or smth, please fix first"$END && exit 1) || exit 1
 
 git checkout $CURRENT_WORKING_BRANCH $PACKAGE_FILES
 git add $PACKAGE_FILES
-git commit -m "updating packages"
+git commit -m "updating package files"
 git push
 
 git checkout $CURRENT_WORKING_BRANCH

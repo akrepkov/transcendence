@@ -74,7 +74,7 @@ reset: clean
 	@${RM} ${FRONTEND}/package.json
 	@${RM} ${FRONTEND}/package-lock.json
 
-package_update:
+update_json:
 	@echo "${YELLOW}Updating packages...${END}"
 	@${PACKAGE_SCRIPT}
 
