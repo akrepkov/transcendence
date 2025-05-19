@@ -1,6 +1,6 @@
 import * as network from './network.js';
-
-let inviter = [];
+import { updateGameState } from './gameStatic.js';
+let inviter = {};
 export function setupSocketEvents(socket) {
     inviter.socket = socket;
     socket.onopen = () => {
@@ -22,13 +22,16 @@ export function setupSocketEvents(socket) {
                 network.updateGameState(data);
                 break;
             case 'gameAccepted':
-                network.startGame();
+                network.startGame(data, socket);
                 break;
             case 'gameDenied':
                 network.showRejectionNotice();
                 break;
-            case 'disconnected':
-                handleWaitingRoomDisconnection(data);
+            case 'playerDisconnected':
+                handleWaitingRoomDisconnection(data.players);
+                break;
+            case 'stateUpdate':
+                network.updateGameState(data);
                 break;
         }
     };
@@ -38,6 +41,22 @@ export function setupSocketEvents(socket) {
     socket.onclose = function () {
         console.log('WebSocket connection closed.');
     };
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'w' || e.key === 'ArrowUp') {
+            socket.send(JSON.stringify({
+                type: "move",
+                direction: "up",
+                playerId: inviter.id
+            }));
+        }
+        else if (e.key === 's' || e.key === 'ArrowDown') {
+            socket.send(JSON.stringify({
+                type: "move",
+                direction: "down",
+                playerId: inviter.id
+        }));
+        }
+    });
 }
 
 export function updatePlayersList(players) {
@@ -57,6 +76,6 @@ export function updatePlayersList(players) {
     });
 }
 
-function handleDisconnection(data) {
+function handleWaitingRoomDisconnection(players) {
     updatePlayersList(players);
 }

@@ -1,44 +1,72 @@
 
 
 console.log('gameStatic.js loaded, requesting for view-remote');
-export class Game {
-    constructor() {
-        let canvas = document.getElementById('gameRemote');
-        if (!canvas) {
-            console.error('Canvas element not found');
-            return ;
-        }
-        this.ctx = canvas.getContext('2d');
-        this.gameState = {
-            leftPaddleY: 250,
-            rightPaddleY: 250,
-            ball: { x: 400, y: 300 },
-            score: [0, 0],
-            player1: "",
-            player2: ""
-        };
-    }
-    drawGame() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'red';
-        ctx.fillRect(0, this.gameState.leftPaddleY, 10, 100);
-        ctx.fillRect(canvas.width - 10, this.gameState.rightPaddleY, 10, 100);
-        ctx.fillRect(this.gameState.ball.x, this.gameState.ball.y, 10, 10);
 
-        // Score
-        // ctx.font = '24px Arial';
-        // ctx.fillText(`${this.gameState.player1} ${this.gameState.score[0]} - ${this.gameState.score[1]} ${this.gameState.player2}`, 370, 50);
-
-        requestAnimationFrame(this.drawGame.bind(this));
+let state = {
+    leftPlayer: 100,
+    rightPlayer: 100,
+    ball: {
+        x: 50,
+        y: 50
+    },
+    ballDirection: {
+        x: 1,
+        y: 1
     }
 }
 
-//game updates for canvas
-function updateGameState(data) {
-    gameState.leftPlayer = data.leftPlayer || [];
-    gameState.rightPlayer = data.rightPlayer || [];
-    gameState.apple = data.apple || { x: 0, y: 0 };
-    gameState.directionLeft = data.directionLeft || { x: 1, y: 0 };
-    gameState.directionRight = data.directionRight || { x: -1, y: 0 };
+
+export function draw(canvas) {
+    updateGameState();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw ball
+    ctx.fillStyle = "white";
+    ctx.fillRect(state.ball.x, state.ball.y, 10, 10);
+
+    // Draw paddles
+    ctx.fillStyle = "white";
+    if (state.players.length === 2) {
+        ctx.fillRect(0, state.players[0].y, 10, 100); // left
+        ctx.fillRect(canvas.width - 10, state.players[1].y, 10, 100); // right
+    }
+
+    requestAnimationFrame(draw(canvas));
+}
+
+
+
+
+
+export function updateGameState(data) {
+    if (data) {
+        state = {
+            leftPlayer: state.leftPlayerY,
+            rightPlayer: state.rightPlayerY,
+            ball: {
+                x: state.ball.x,
+                y: state.ball.y
+            },
+            ballDirection: {
+                x: state.ballDirection.x,
+                y: state.ballDirection.y
+            }
+
+        }
+    } else {
+        state = {
+            leftPlayer: 100,
+            rightPlayer: 100,
+            ball: {
+                x: 50,
+                y: 50
+            },
+            ballDirection: {
+                x: 1,
+                y: 1
+            }
+        }
+        console.log("Game state updated:", state);
+    }
 }
 
