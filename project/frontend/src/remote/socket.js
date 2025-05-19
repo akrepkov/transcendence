@@ -30,8 +30,8 @@ export function setupSocketEvents(socket) {
             case 'playerDisconnected':
                 handleWaitingRoomDisconnection(data.players);
                 break;
-            case 'stateUpdate':
-                network.updateGameState(data);
+            case 'updateGameState':
+                updateGameState(data);
                 break;
         }
     };

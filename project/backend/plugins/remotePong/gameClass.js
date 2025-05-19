@@ -1,19 +1,20 @@
+import { players } from "./websocketRemote.js";
+
 class Player {
-    constructor(id, canvas) {
+    constructor(id, height) {
         this.id = id;
-        this.paddleY = canvas.height / 2;
+        this.paddleY = height / 2;
         this.paddleHeight = 100;
         this.paddleWidth = 10;
         this.score = 0;
-        this.canvas = canvas;
         this.speed = 10;
     }
 }
 
 class Ball {
-    constructor(canvas) {
-        this.x = canvas.width / 2;
-        this.y = canvas.height / 2;
+    constructor(height, width) {
+        this.x = width / 2;
+        this.y = height / 2;
         this.size = 10;
         this.speedX = 2;
         this.speedY = 2;
@@ -21,16 +22,17 @@ class Ball {
     }
 }
 
-class Game {
-    constructor(canvas) {
-        this.canvas = canvas;
+export class Game {
+    constructor(height, width) {
+        this.height = height;
+        this.width = width;
         this.players = [];
-        this.ball = new Ball(canvas);
+        this.ball = new Ball(height, width);
         this.running = false;
     }
 
     addPlayer(id) {
-        const player = new Player(id, this.canvas);
+        const player = new Player(id, this.height);
         this.players.push(player);
     }
     handleInput(playerId, direction) {
@@ -39,13 +41,13 @@ class Game {
         if (direction === 'up' && player.paddleY > 0) {
             player.paddleY -= this.paddleSpeed;
         }
-        if (direction === 'down' && player.paddleY + player.paddleHeight < this.canvas.height) {
+        if (direction === 'down' && player.paddleY + player.paddleHeight < this.height) {
             player.paddleY += this.paddleSpeed;
         }
     }
     checkBallCollision() {
         // Top/bottom wall collision
-        if (this.ball.y <= 0 || this.ball.y + this.ball.size >= this.canvas.height) {
+        if (this.ball.y <= 0 || this.ball.y + this.ball.size >= this.height) {
             this.ball.speedY = -this.ball.speedY;
         }
         // Left paddle collision
@@ -58,11 +60,11 @@ class Game {
         }
         // Right paddle collision
         const rightPlayer = this.players[1];
-        if (this.ball.x + this.ball.size >= rightPlayer.canvas.width - rightPlayer.paddleWidth &&
-            this.ball.x <= rightPlayer.canvas.width - rightPlayer.paddleWidth &&
+        if (this.ball.x + this.ball.size >= rightPlayer.width - rightPlayer.paddleWidth &&
+            this.ball.x <= rightPlayer.width - rightPlayer.paddleWidth &&
             this.ball.y + this.ball.size >= rightPlayer.paddleY &&
             this.ball.y <= rightPlayer.paddleY + rightPlayer.paddleHeight) {
-            this.ball.x = rightPlayer.canvas.width - rightPlayer.paddleWidth - this.ball.size;
+            this.ball.x = rightPlayer.width - rightPlayer.paddleWidth - this.ball.size;
             this.ball.speedX = -this.ball.speedX;
         }
     }
@@ -86,15 +88,17 @@ class Game {
     }
     broadcastGameState() {
         const state = this.getGameState();
-        const message = JSON.stringify({
+        console.log ("Broadcasting game state:", state);
+        const message = {
             type: 'stateUpdate',
             leftPlayerY: state.leftPlayerY,
             rightPlayerY: state.rightPlayerY,
             ball: state.ball,
             ballDirection: state.ballDirection
-        });
-        const inviter = players.find(p => p.id === players[0].id);
-        const opponent = players.find(p => p.id === players[1].id);
+        };
+        const inviter = players.find(p => p.id === players[0]?.id);
+        const opponent = players.find(p => p.id === players[1]?.id);
+        
         if (inviter && opponent) {
             [inviter.socket, opponent.socket].forEach(sock =>
                 sock.send(JSON.stringify({
@@ -106,12 +110,12 @@ class Game {
     }
 
     gameLoop() {
+        this.running = true;
         setInterval(() => {
             this.updateBall();
             this.checkBallCollision();
-            this.getGameState();
             this.broadcastGameState();
-        }, 1000 / 60);
+        }, 3000)// 60 FPS
     }
 
 }

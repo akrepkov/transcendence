@@ -1,10 +1,10 @@
 
-
+let loop = "";
 console.log('gameStatic.js loaded, requesting for view-remote');
 
 let state = {
-    leftPlayer: 100,
-    rightPlayer: 100,
+    leftPlayerY: 100,
+    rightPlayerY: 100,
     ball: {
         x: 50,
         y: 50
@@ -16,8 +16,8 @@ let state = {
 }
 
 
-export function draw(canvas) {
-    updateGameState();
+export function draw(canvas, ctx) {
+    // updateGameState();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Draw ball
@@ -26,47 +26,26 @@ export function draw(canvas) {
 
     // Draw paddles
     ctx.fillStyle = "white";
-    if (state.players.length === 2) {
-        ctx.fillRect(0, state.players[0].y, 10, 100); // left
-        ctx.fillRect(canvas.width - 10, state.players[1].y, 10, 100); // right
-    }
-
-    requestAnimationFrame(draw(canvas));
+    ctx.fillRect(0, state.leftPlayerY, 10, 100); // left
+    ctx.fillRect(canvas.width - 10, state.rightPlayerY, 10, 100); // right
+    // setTimeout(() => {
+    // }, 1000);
+    // loop = requestAnimationFrame(() => draw(canvas, ctx));
 }
-
-
 
 
 
 export function updateGameState(data) {
+    console.log("updateGameState called with data:", data);
     if (data) {
-        state = {
-            leftPlayer: state.leftPlayerY,
-            rightPlayer: state.rightPlayerY,
-            ball: {
-                x: state.ball.x,
-                y: state.ball.y
-            },
-            ballDirection: {
-                x: state.ballDirection.x,
-                y: state.ballDirection.y
-            }
+        state.leftPlayerY = data.leftPlayerY;
+        state.rightPlayerY = data.rightPlayerY;
+        state.ball.x = data.ball.x;
+        state.ball.y = data.ball.y;
+        state.ballDirection = data.ballDirection;
 
-        }
-    } else {
-        state = {
-            leftPlayer: 100,
-            rightPlayer: 100,
-            ball: {
-                x: 50,
-                y: 50
-            },
-            ballDirection: {
-                x: 1,
-                y: 1
-            }
-        }
-        console.log("Game state updated:", state);
+        const canvas = document.getElementById('gameRemote');
+        const ctx = canvas.getContext('2d');
+        draw(canvas, ctx);
     }
 }
-

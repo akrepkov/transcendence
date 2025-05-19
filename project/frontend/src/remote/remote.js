@@ -1,6 +1,6 @@
 
 import { setupSocketEvents } from './socket.js';
-import { setupKeyboardControls } from './controls.js';
+// import { setupKeyboardControls } from './controls.js';
 
 
 
@@ -10,7 +10,7 @@ export async function openRemoteTab() {
     
     // updatePlayersList();
     setupSocketEvents(socket);
-    setupKeyboardControls(socket);
+    // setupKeyboardControls(socket);
 }
 // your code here
 

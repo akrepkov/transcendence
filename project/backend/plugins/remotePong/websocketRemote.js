@@ -2,7 +2,7 @@ import {startGameEngine} from './gameLogic.js';
 
 
 // const gameClients = new Set();
-let players = [];
+export let players = [];
 let nextPlayerId = 1;
 // Game state object to keep track of all entities
 // let gameState = {
@@ -64,7 +64,7 @@ function handleMessage(player, message) {
             denyGameInvitation(data.inviterId, data.opponentId);
             break;
         case 'startGame':
-            startGameEngine(data.canvas, data.inviterId, data.opponentId);
+            startGameEngine(data.height, data.width, data.inviterId, data.opponentId);
             break;
         default:
             console.error('Unknown message type:', data.type);
