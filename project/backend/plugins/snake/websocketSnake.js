@@ -88,7 +88,7 @@ const snakeWebsocketHandler = (socket) => {
     // Send the new player their ID
     socket.send(JSON.stringify({
         type: 'playerId',
-        playerId: newPlayer.id
+        playerId: newPlayer.id 
     }));
 
     // Send waiting room list for everyone when someone connects

@@ -1,3 +1,4 @@
+console.log("Main.js loading");
 import { openProfileTab } from './auth/profile.js';
 import { openPracticeTab } from './practice/practice.js';
 import { openRemoteTab } from './remote/remote.js';
@@ -5,11 +6,10 @@ import { verifyLogin } from './auth/authRequests.js';
 import AuthManager from './managers/authManager.js';
 
 
-
-(async function init() {
-	console.log('Page loaded init .......');
-	await loadTabHtml('view-remote', 'remote.html');
-})();
+// (async function init() {
+// 	console.log('Page loaded init .......');
+// 	await loadTabHtml('view-remote', 'remote.html');
+// })();
 
 const tabs = {
 	profile: async function () {
@@ -25,13 +25,16 @@ const tabs = {
 		showView("practice");
 		openPracticeTab();
 	},
-	remote() {
+	remote: async function() {
 		if (!AuthManager.isLoggedIn()) {
 			console.log("User is not logged in");
 			this.profile();
 			return;
 		}
 		showView("remote");
+		console.log('Page loaded init .......');
+		// await loadTabHtml('view-remote', 'remote.html');
+		console.log("I am In remote tab... loaded");
 		openRemoteTab();
 	},
 
