@@ -6,7 +6,7 @@
 #on:
 #  push:
 #    branches:
-      - "**" # two wildcards make sure branches with a slash in them also get matched, f.e. feature/game
+#      - "**" # two wildcards make sure branches with a slash in them also get matched, f.e. feature/game
 
 #jobs:
 #  prettier:
