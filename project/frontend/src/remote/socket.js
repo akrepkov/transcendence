@@ -1,6 +1,9 @@
 import * as network from './network.js';
-import { updateGameState } from './gameStatic.js';
+// import { updateGameState } from './gameStatic.js';
 let inviter = {};
+
+
+
 export function setupSocketEvents(socket) {
     inviter.socket = socket;
     socket.onopen = () => {
@@ -10,6 +13,7 @@ export function setupSocketEvents(socket) {
         const data = JSON.parse(event.data);
         switch (data.type) {
             case 'playerId':
+				console.log("Player ID received:", data.playerId);
                 inviter.id = data.playerId; //find out your own ID from gameWebsocketHandler
                 break;
             case 'waitingRoom':
@@ -18,8 +22,9 @@ export function setupSocketEvents(socket) {
             case 'gameInvitationReceived':
                 network.showInvitationPrompt(data, socket);
                 break;
-            case 'stateUpdate':
-                network.updateGameState(data);
+            case 'updateGameState':
+				console.log("updateGameState called with data:", data);
+                network.updateGameState(data.message);
                 break;
             case 'gameAccepted':
                 network.startGame(data, socket);
@@ -30,9 +35,6 @@ export function setupSocketEvents(socket) {
             case 'playerDisconnected':
                 handleWaitingRoomDisconnection(data.players);
                 break;
-            case 'updateGameState':
-                updateGameState(data);
-                break;
         }
     };
     socket.onerror = function (error) {
@@ -41,22 +43,6 @@ export function setupSocketEvents(socket) {
     socket.onclose = function () {
         console.log('WebSocket connection closed.');
     };
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'w' || e.key === 'ArrowUp') {
-            socket.send(JSON.stringify({
-                type: "move",
-                direction: "up",
-                playerId: inviter.id
-            }));
-        }
-        else if (e.key === 's' || e.key === 'ArrowDown') {
-            socket.send(JSON.stringify({
-                type: "move",
-                direction: "down",
-                playerId: inviter.id
-        }));
-        }
-    });
 }
 
 export function updatePlayersList(players) {
@@ -78,4 +64,30 @@ export function updatePlayersList(players) {
 
 function handleWaitingRoomDisconnection(players) {
     updatePlayersList(players);
+}
+
+window.addEventListener("hashchange", function(event) {
+	console.log("Hash changed");
+	if (event.oldURL !== event.newURL) {
+		console.log("Hash changed from ", event.oldURL, " to ", event.newURL);
+	}
+})
+
+export function setupKeyboardControls(socket) {	
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'w' || e.key === 'ArrowUp') {
+            socket.send(JSON.stringify({
+                type: "move",
+                direction: "up",
+                playerId: inviter.id
+            }));
+        }
+        else if (e.key === 's' || e.key === 'ArrowDown') {
+            socket.send(JSON.stringify({
+                type: "move",
+                direction: "down",
+                playerId: inviter.id
+        }));
+        }
+    });
 }

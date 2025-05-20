@@ -1,8 +1,8 @@
 import {startGameEngine} from './gameLogic.js';
-
+import {handlepaddleMovement} from './gameLogic.js';
 
 // const gameClients = new Set();
-export let players = [];
+export let globalPlayers = [];
 let nextPlayerId = 1;
 // Game state object to keep track of all entities
 // let gameState = {
@@ -11,32 +11,32 @@ let nextPlayerId = 1;
 // };
 
 function sendMessageEveryone(message) {
-    for (const player of players) {
+    for (const player of globalPlayers) {
         if (player.socket.readyState === 1) { // 1 - Websocket is open
             player.socket.send(message);
         }
     }
 }
 
-function broadcastGameState() {
-    // const {
-    //     leftPlayer,
-    //     rightPlayer,
-    //     ball
-    // } = gameState;
-    // const state = {
-    //     type: 'stateUpdate',
-    //     leftPlayer,  // Passing the whole leftPlayer array
-    //     rightPlayer, // Passing the whole rightPlayer array
-    // };
-    // const message = JSON.stringify(pong.getGameState());
-    // sendMessageEveryone(message);
-    // for (const client of gameClients) {
-    //     if (client.readyState === 1) {
-    //         client.send(message);
-    //     }
-    // }
-}
+// function broadcastGameState() {
+//     // const {
+//     //     leftPlayer,
+//     //     rightPlayer,
+//     //     ball
+//     // } = gameState;
+//     // const state = {
+//     //     type: 'stateUpdate',
+//     //     leftPlayer,  // Passing the whole leftPlayer array
+//     //     rightPlayer, // Passing the whole rightPlayer array
+//     // };
+//     // const message = JSON.stringify(pong.getGameState());
+//     // sendMessageEveryone(message);
+//     // for (const client of gameClients) {
+//     //     if (client.readyState === 1) {
+//     //         client.send(message);
+//     //     }
+//     // }
+// }
 
 
 
@@ -52,7 +52,7 @@ function handleMessage(player, message) {
     const data = JSON.parse(message);
     switch (data.type) {
         case 'move':
-            handlepaddleMovement(player, data.direction);
+            handlepaddleMovement(data.playerId, data.direction);
             break;
         case 'gameInvitation':
             sendGameInvitation(data.opponentId, data.inviterId);
@@ -71,7 +71,7 @@ function handleMessage(player, message) {
     }
 }
 function denyGameInvitation(inviterId, opponentId) {
-    const inviter = players.find(p => p.id === inviterId);
+    const inviter = globalPlayers.find(p => p.id === inviterId);
     console.log("Sending game invitation to opponent: ", opponentId, " from ", inviterId);
 
     if (inviter) {
@@ -84,8 +84,8 @@ function denyGameInvitation(inviterId, opponentId) {
 
 
 function acceptGameInvitation(inviterId, opponentId) {
-    const inviter = players.find(p => p.id === inviterId);
-    const opponent = players.find(p => p.id === opponentId);
+    const inviter = globalPlayers.find(p => p.id === inviterId);
+    const opponent = globalPlayers.find(p => p.id === opponentId);
     inviter.status = 'playing';
     opponent.status = 'playing';
     if (inviter && opponent) {
@@ -102,8 +102,8 @@ function acceptGameInvitation(inviterId, opponentId) {
 }
 
 function sendGameInvitation(opponentId, inviterId) {
-    const opponent = players.find(p => p.id === opponentId);
-    const inviter = players.find(p => p.id === inviterId);
+    const opponent = globalPlayers.find(p => p.id === opponentId);
+    const inviter = globalPlayers.find(p => p.id === inviterId);
     console.log("Sending game invitation to opponent: ", opponentId, " from ", inviterId);
     if (opponent) {
         opponent.socket.send(JSON.stringify({
@@ -117,9 +117,9 @@ function sendGameInvitation(opponentId, inviterId) {
 
 
 function handleDisconnect(socket, player) {
-    players = players.filter(player => player.socket !== socket);
-    console.log("Player lisT : ", players);
-    const playersList = players.map(player => ({ id: player.id }));
+    globalPlayers = globalPlayers.filter(player => player.socket !== socket);
+    console.log("Player lisT : ", globalPlayers);
+    const playersList = globalPlayers.map(player => ({ id: player.id }));
     // player.socket.delete();
     // players.forEach((players, index) => {
     //     players.id = index + 1;
@@ -136,7 +136,7 @@ function handleDisconnect(socket, player) {
 
 function broadcastWaitingRoom() {
     //For each player in players, create a new object that only includes { id: player.id }.
-    const playersList = players
+    const playersList = globalPlayers
         .filter(player => player.status === 'waiting')
         .map(player => ({ id: player.id }));
     //playersList = [
@@ -159,7 +159,7 @@ const gameWebsocketHandler = (socket) => {
         status: 'waiting',
         opponentId: null
     };
-    players.push(player);
+    globalPlayers.push(player);
     socket.send(JSON.stringify({
         type: 'playerId',
         playerId: player.id
@@ -178,7 +178,7 @@ const gameWebsocketHandler = (socket) => {
 
 export default {
     gameWebsocketHandler,
-    broadcastGameState,
+    // broadcastGameState,
     handleMessage,
     handleDisconnect
 };

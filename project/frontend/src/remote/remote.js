@@ -1,16 +1,17 @@
 
-import { setupSocketEvents } from './socket.js';
+import { setupSocketEvents, setupKeyboardControls } from './socket.js';
 // import { setupKeyboardControls } from './controls.js';
 
 
 
 export async function openRemoteTab() {
-    const socket = new WebSocket('wss://congenial-system-x76557wwgx93px46-3000.app.github.dev/ws/game');
-    console.log("connected to socket", socket);	
+    // const socket = new WebSocket('wss://congenial-system-x76557wwgx93px46-3000.app.github.dev/ws/game');
+    const socket  = new WebSocket('ws://localhost:3000/ws/game');
+	console.log("connected to socket", socket);	
     
     // updatePlayersList();
     setupSocketEvents(socket);
-    // setupKeyboardControls(socket);
+    setupKeyboardControls(socket);
 }
 // your code here
 
