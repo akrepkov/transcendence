@@ -13,7 +13,7 @@ def export_users():
             file.write(str(row) + '\n')
 
     conn.close()
-    print("users.txt updated.")
+    # print("users.txt updated.")
 
 # Repeat every few seconds
 while True:

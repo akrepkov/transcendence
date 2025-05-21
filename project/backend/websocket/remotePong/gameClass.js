@@ -1,7 +1,7 @@
 import { globalPlayers } from "./websocketRemote.js";
 import { broadcastGameState } from "./gameLogic.js";
 
-let gameLoopId = null;
+
 class Player {
 	constructor(id, height) {
 		this.id = id;
@@ -14,13 +14,14 @@ class Player {
 }
 
 class Ball {
-	constructor(height, width) {
+	constructor(height, width, gameId) {
 		this.x = width / 2;
 		this.y = height / 2;
 		this.size = 10;
 		this.speedX = 2;
 		this.speedY = 2;
 		this.color = "white";
+		this.gameId = gameId;
 	}
 }
 
@@ -31,6 +32,7 @@ export class Game {
 		this.players = [];
 		this.ball = new Ball(height, width);
 		this.running = false;
+		this.gameLoopId = null;
 	}
 
 	addPlayer(id) {
@@ -85,8 +87,6 @@ export class Game {
 		}
 		return {
 			players: this.players,
-			// leftPlayerY: this.players[0].paddleY,
-			// rightPlayerY: this.players[1].paddleY,
 			ball: {
 				x: this.ball.x,
 				y: this.ball.y
@@ -97,51 +97,22 @@ export class Game {
 			}
 		};
 	}
-	// broadcastGameState() {
-	// 	const state = this.getGameState();
-	// 	if (!state) return;
-	// 	console.log("Broadcasting game state:", state);
-	// 	const message = {
-	// 		type: 'stateUpdate',
-	// 		leftPlayerY: state.leftPlayerY,
-	// 		rightPlayerY: state.rightPlayerY,
-	// 		ball: state.ball,
-	// 		ballDirection: state.ballDirection
-	// 	};
-	// 	let inviterId = this.players[0].id;
-	// 	let opponentId = this.players[1].id;
-	// 	let inviter = globalPlayers.find(player => player.id === inviterId);
-	// 	let opponent = globalPlayers.find(player => player.id === opponentId);		
-	// 	console.log("Inviter: ", inviter.id, "Opponent: ", opponent.id);
-	// 	if (inviter && opponent) {
-	// 		[inviter.socket, opponent.socket].forEach(sock =>
-	// 			sock.send(JSON.stringify({
-	// 				type: 'updateGameState',
-	// 				...message //instead of passing the whole object, I pass the properties
-	// 			}))
-	// 		);
-	// 	}
-	// 	else {
-	// 		console.error("Inviter or opponent not found in globalPlayers");
-	// 	}
-	// }
-
 	gameLoop() {
 		this.running = true;
-		gameLoopId = setInterval(() => {
+		this.gameLoopId = setInterval(() => {
 			this.updateBall();
 			this.checkBallCollision();
 			let state = this.getGameState();
 			console.log ("Game state in :", state);
 			broadcastGameState(state);
-		}, 3000)// 60 FPS
+		}, 1000/60)// 60 FPS
 	}
 
 	stopGame() {
-		if (!this.running) {
-			this.running = false;
+		if (this.running) {
 			this.players = [];
-			clearInterval(gameLoopId);
+			clearInterval(this.gameLoopId);
+			this.running = false;
 			console.log("Game stopped");
 		}
 	}

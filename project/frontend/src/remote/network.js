@@ -1,13 +1,13 @@
-// import { Game } from './gameStatic.js';
-// import {draw} from './gameStatic.js';
-
 
 let state = {
-    leftPlayerY: 0,
-    rightPlayerY: 0,
-    ball: { x: 100, y: 100 },
-    ballDirection: { x: 1, y: 1 }
+    players: [
+        { id: 2, paddleY: 300, paddleHeight: 100, paddleWidth: 10, score: 0, paddleSpeed: 10 },
+        { id: 1, paddleY: 300, paddleHeight: 100, paddleWidth: 10, score: 0, paddleSpeed: 10 }
+    ],
+    ball: { x: 412, y: 312 },
+    ballDirection: { x: 2, y: 2 }
 };
+
 let canvas = null;
 let ctx = null;
 
@@ -83,14 +83,13 @@ export function startGame({inviterId, opponentId}, socket) {
 
 
 export function updateGameState(data) {
-	console.log("updateGameState called with data:", data);
-	if (data) {
-		state.leftPlayerY = data.leftPlayerY;
-		state.rightPlayerY = data.rightPlayerY;
+	console.log("updateGameState called with data in:", data);
+	if (data.players && data.ball && data.ballDirection) {
+		state.players = data.players;
 		state.ball.x = data.ball.x;
 		state.ball.y = data.ball.y;
 		state.ballDirection = data.ballDirection;
-		draw();
+		draw(); // Redraw after updating the state
 	}
 	else {
 		console.error("No data received in updateGameState");
@@ -98,7 +97,7 @@ export function updateGameState(data) {
 			cancelAnimationFrame(loop);
 			loop = null;
 		}
-		context.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		
 	}
 }
@@ -117,10 +116,23 @@ export function draw() {
 	console.log("Ball position:", state.ball.x, state.ball.y);
     // Draw paddles
     ctx.fillStyle = "white";
-    ctx.fillRect(0, state.leftPlayerY, 10, 100); // left
-    ctx.fillRect(canvas.width - 10, state.rightPlayerY, 10, 100); // right
-    setTimeout(() => {
-    }, 3000);
+    ctx.fillRect(0, state.players[0].paddleY, 10, 100); // left
+    ctx.fillRect(canvas.width - 10, state.players[1].paddleY, 10, 100); // right
+    // setTimeout(() => {
+	// 	if (!state.ball) {
+	// 		cancelAnimationFrame(loop);
+	// 	}
+    // }, 3000);
     loop = requestAnimationFrame(draw);
 }
 
+
+export function stopGame() {
+	if (loop !== null) {
+		cancelAnimationFrame(loop);
+		loop = null;
+	}
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	document.getElementById('remote-game-container').style.display = 'none';
+	document.getElementById('waitingRoom').style.display = 'block';
+}

@@ -43,7 +43,7 @@ const deleteUserHandler = (request, reply) => {
     reply.send({ success: true, username });
 }
 
-//automatically adds the game to the counter
+//automatically adds the game to the counter, records winner and looser
 const saveWinnerHandler = (request, reply) => {
     const {winner_name, loser_name } = request.body;
     if (!winner_name || !loser_name) {

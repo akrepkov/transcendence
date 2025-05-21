@@ -1,14 +1,10 @@
-import {startGameEngine} from './gameLogic.js';
+import {startGameEngine, stopGame} from './gameLogic.js';
 import {handlepaddleMovement} from './gameLogic.js';
 
 // const gameClients = new Set();
 export let globalPlayers = [];
 let nextPlayerId = 1;
-// Game state object to keep track of all entities
-// let gameState = {
-//     leftPlayer: "player1",
-//     rightPlayer: "player2",
-// };
+
 
 function sendMessageEveryone(message) {
     for (const player of globalPlayers) {
@@ -17,36 +13,6 @@ function sendMessageEveryone(message) {
         }
     }
 }
-
-// function broadcastGameState() {
-//     // const {
-//     //     leftPlayer,
-//     //     rightPlayer,
-//     //     ball
-//     // } = gameState;
-//     // const state = {
-//     //     type: 'stateUpdate',
-//     //     leftPlayer,  // Passing the whole leftPlayer array
-//     //     rightPlayer, // Passing the whole rightPlayer array
-//     // };
-//     // const message = JSON.stringify(pong.getGameState());
-//     // sendMessageEveryone(message);
-//     // for (const client of gameClients) {
-//     //     if (client.readyState === 1) {
-//     //         client.send(message);
-//     //     }
-//     // }
-// }
-
-
-
-// Initialize game state
-
-// const startGameLoop = () => {
-//     console.log("Starting game loop!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-//     //add ststus after finishing the game
-// }
-
 
 function handleMessage(player, message) {
     const data = JSON.parse(message);
@@ -66,6 +32,8 @@ function handleMessage(player, message) {
         case 'startGame':
             startGameEngine(data.height, data.width, data.inviterId, data.opponentId);
             break;
+		case 'stopGame':
+			stopGame();
         default:
             console.error('Unknown message type:', data.type);
     }
@@ -117,6 +85,7 @@ function sendGameInvitation(opponentId, inviterId) {
 
 
 function handleDisconnect(socket, player) {
+	stopGame(player.id);
     globalPlayers = globalPlayers.filter(player => player.socket !== socket);
     console.log("Player lisT : ", globalPlayers);
     const playersList = globalPlayers.map(player => ({ id: player.id }));
@@ -152,11 +121,11 @@ function broadcastWaitingRoom() {
 
 const gameWebsocketHandler = (socket) => {
     // gameClients.add(socket);
-
     const player = {
         id: nextPlayerId++,
         socket,
         status: 'waiting',
+		gameId: null,
         opponentId: null
     };
     globalPlayers.push(player);
@@ -178,7 +147,6 @@ const gameWebsocketHandler = (socket) => {
 
 export default {
     gameWebsocketHandler,
-    // broadcastGameState,
     handleMessage,
     handleDisconnect
 };

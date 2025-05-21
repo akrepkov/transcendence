@@ -1,5 +1,5 @@
 import { getRandomColor, getRandomDirection } from "./utils.js";
-import { Ball, Paddle } from "./gameClass.js";
+import { Balls, Paddle } from "./gameClass.js";
 import { getCanvas, getContext, cleanUp } from "./practice.js";
 import {movePaddles} from "./controls.js";
 import { updateGameStatus, getIsRunning, setIsRunning } from "./utils.js";
@@ -14,11 +14,11 @@ let rgbColor = "white";
 let animationId = null;
 let balls = [];
 let maxScore = 3;
-export let leftPlayerScore = 0;
-export let rightPlayerScore = 0;
 let winner = null;
 let loser = null;
 
+export let leftPlayerScore = 0;
+export let rightPlayerScore = 0;
 export let leftPaddle = new Paddle(0);
 export let rightPaddle = new Paddle(canvas.width - 10);
 
@@ -35,7 +35,7 @@ function showWinner(name) {
 }
 
 function createBall(dirX, dirY, ballColor) {
-	let ball = new Ball(dirX, dirY, ballColor);
+	let ball = new Balls(dirX, dirY, ballColor);
 	console.log("The ball is created: ", dirX, dirY, ballColor);
 	balls.push(ball);
 }
@@ -72,13 +72,13 @@ function checkBall(ball) {
 
 function gameLoop() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
-    console.log( "In the loop")
+    // console.log( "In the loop")
 	movePaddles();
 	leftPaddle.drawPaddle();
 	rightPaddle.drawPaddle();
 	for (const ball of balls) {
 		ball.update();
-		console.log("Speed: ", ball.dirX, ball.dirY)
+		// console.log("Speed: ", ball.dirX, ball.dirY)
 		ball.drawBall();
 		checkBall(ball);
 	}

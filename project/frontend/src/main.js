@@ -28,6 +28,7 @@ const tabs = {
 	remote: async function() {
 		if (!AuthManager.isLoggedIn()) {
 			console.log("User is not logged in");
+			window.location.hash = "profile";
 			this.profile();
 			return;
 		}

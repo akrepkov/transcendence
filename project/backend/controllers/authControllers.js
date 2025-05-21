@@ -8,9 +8,6 @@ const JWT_SECRET = "" + process.env.JWT_SECRET; //using environmental variable f
 
 
 const loginHandler = async(request, reply) => {
-    // console.log('SECRET in Login:', process.env.JWT_SECRET);
-    // console.log('Incoming data in Login:', request.body);
-    // console.log ("Password: ", user.password, password);
     const { email, password } = request.body;
     if (!email || !password) {
         return handleError(reply, new Error('Email and password are required'), 400);

@@ -31,7 +31,13 @@ console.log("Dirname name in index.js:", __dirname); // Debugging
 
 
 
-const fastify = Fastify({ logger: true });
+const fastify = Fastify({
+	logger: false,
+	https: {
+	  key: fs.readFileSync(path.join(__dirname, 'certs/key.pem')),
+	  cert: fs.readFileSync(path.join(__dirname, 'certs/cert.pem'))
+	}
+  });
 fastify.register(fastifyMultipart, {
   limits: {
     fileSize: 1 * 1024 * 1024 // optional: max file size (10MB here)
@@ -79,7 +85,7 @@ await fastify.register(swagger, {
 });
 
 await fastify.register(swaggerUi, {
-  routePrefix: '/docs',
+  routePrefix: 'docs',
   uiConfig: {
     deepLinking: false,
     defaultModelsExpandDepth: -1,

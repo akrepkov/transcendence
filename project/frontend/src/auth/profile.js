@@ -35,6 +35,12 @@ export async function openProfileTab() {
 		flipCard.style.display = "block";
 		openProfileCard();
 	}
+	else {
+		document.querySelectorAll("a[data-requires-auth='true']").forEach(link => {
+			link.style.display = "none";
+		});
+		flipCard.classList.remove("flipped");//add here block???????????????????
+	}
 
 	//This is for choosing between login and signup
 	if (showLoginBtn) {
