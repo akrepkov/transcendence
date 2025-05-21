@@ -34,6 +34,8 @@ eslint-config-prettier
 eslint-plugin-prettier
 husky
 
+
+
 3. frontend_dependencies
 
 
