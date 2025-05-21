@@ -22,9 +22,6 @@ fastify-websocket
 typescript
 ws
 
-
-
-
 2. backend_dev_dependencies
 nodemon
 typedoc
