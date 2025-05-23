@@ -1,10 +1,11 @@
-import { globalPlayers } from "./websocketRemote.js";
+// import { globalPlayers } from "./websocketRemote.js";
 import { broadcastGameState } from "./gameLogic.js";
 
 
 class Player {
 	constructor(id, height) {
 		this.id = id;
+		this.gameId = this.gameId;
 		this.paddleY = height / 2;
 		this.paddleHeight = 100;
 		this.paddleWidth = 10;
@@ -26,17 +27,18 @@ class Ball {
 }
 
 export class Game {
-	constructor(height, width) {
+	constructor(height, width, gameId) {
 		this.height = height;
 		this.width = width;
 		this.players = [];
 		this.ball = new Ball(height, width);
 		this.running = false;
 		this.gameLoopId = null;
+		this.gameId = gameId;
 	}
 
 	addPlayer(id) {
-		const player = new Player(id, this.height);
+		const player = new Player(id, this.height, this.gameId);
 		this.players.push(player);
 	}
 	handleInput(playerId, direction) {
@@ -103,18 +105,18 @@ export class Game {
 			this.updateBall();
 			this.checkBallCollision();
 			let state = this.getGameState();
-			console.log ("Game state in :", state);
+			// console.log ("Game state in :", state);
 			broadcastGameState(state);
-		}, 1000/60)// 60 FPS
+		}, 1000)// 60 FPS
 	}
 
 	stopGame() {
 		if (this.running) {
-			this.players = [];
 			clearInterval(this.gameLoopId);
 			this.running = false;
 			console.log("Game stopped");
 		}
+		this.players = [];
 	}
 
 }

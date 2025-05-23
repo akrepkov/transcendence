@@ -5,8 +5,8 @@ import { setupSocketEvents} from './socket.js';
 
 
 export async function openRemoteTab() {
-    // const socket = new WebSocket('wss://congenial-system-x76557wwgx93px46-3000.app.github.dev/ws/game');
-    const socket  = new WebSocket('wss://localhost:3000/ws/game');
+    const socket = new WebSocket('wss://congenial-system-x76557wwgx93px46-3000.app.github.dev/ws/game');
+    // const socket  = new WebSocket('wss://localhost:3000/ws/game');
 	console.log("connected to socket", socket);	
     
     // updatePlayersList();

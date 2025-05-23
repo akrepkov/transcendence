@@ -18,8 +18,15 @@
     <a href="#practice" class="tab-link" data-tab="practice" style="display:none">Practice</a>
     <a href="#remote" class="tab-link" data-tab="remote" data-requires-auth="true" style="display:none">Remote</a>
   </nav>
+
+<!-- Added html - profile_login -->
   <div id="view-profile" class="tab-view" style="display:none"></div>
+
+<!-- Not done yet -->
   <div id="view-chat" class="tab-view" style="display:none">I am CHAT</div>
+
+
+  <!-- Frontend Game: -->
   <div id="view-practice" class="tab-view" style="display:none">
     <div class="game-options" id="options">
       <label for="ballCount">Balls:</label>
@@ -41,29 +48,52 @@
     </div>
     <canvas id="pong" width="800" height="600" style="border:1px solid #ffffff; margin-top: 20px;"></canvas>
   </div>
+
+
+  <!-- Remote Game: -->
   <div id="view-remote" class="tab-view" style="display:none">
-    <div id="gameContainer">
-      <div id="waitingRoom">
-        <div id="playerList">
-          <h2>Players:</h2>
-          <ul id="playersList"></ul>
-        </div>
-        <div id="invitation" style="display: none;">
-          <div class="invitation-content">
-            <p>You have a new game invitation!</p>
-            <button id="acceptInvite">Accept</button>
-            <button id="declineInvite">Decline</button>
-          </div>
-        </div>
-        <div id="rejection" src="../../backend/uploads/snake_failed.png" style="display: none;">
-          REJECTION!!!!!!!!!!!!!!!!
-        </div>
-        <div id="gameStatus">0 - 0</div>
+
+    <!-- Waiting room -->
+    <div id="waitingRoom" class="hidden">
+      <div id="playerList">
+        <h2>Players:</h2>
+        <ul id="playersList"></ul>
       </div>
-      <div id="remote-game-container" style="display: none;">
+    </div>
+
+    <!-- Invitation -->
+    <div id="invitation" class="hidden">
+      <div class="invitation-content">
+        <p>You have a new game invitation!</p>
+        <button id="acceptInvite">Accept</button>
+        <button id="declineInvite">Decline</button>
+      </div>
+    </div>
+
+
+    <!-- Rejection not used yet -->
+    <div id="rejection" src="../../backend/uploads/snake_failed.png" class="hidden">
+      REJECTION!!!!!!!!!!!!!!!!
+    </div>
+
+    <!-- THE GAME: -->
+    <div id="gameContainer" class="hidden">
+      <!-- Score -->
+      <div id="gameStatus">0 - 0</div>
+
+      <!-- Canvas -->
+      <div id="canvas-container">
         <canvas id="gameRemote" width="800" height="600" style="border:1px solid #ffffff; margin-top: 20px;"></canvas>
       </div>
-      <script type="module" src="../src/main.js"></script>
+
+    </div>
+    <!-- THE GAME XXXXXXXXX -->
+  </div>
+
+
+
+  <!-- JS  -->
+  <script type="module" src="../src/main.js"></script>
 </body>
 
 </html>

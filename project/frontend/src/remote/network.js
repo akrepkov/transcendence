@@ -1,3 +1,4 @@
+import { showSection } from "./socket.js";
 
 let state = {
     players: [
@@ -11,23 +12,51 @@ let state = {
 let canvas = null;
 let ctx = null;
 
+let inviterTimeout = null;
+let opponentTimeout = null;
 
-//User pressed play next to opponent, I send my and opponentId to backend
+function clearAllInvitationTimeouts() {
+    clearTimeout(inviterTimeout);
+    clearTimeout(opponentTimeout);
+    inviterTimeout = null;
+    opponentTimeout = null;
+}
+
 export function sendGameInvitation(opponentId, inviter) {
+    showSection("");
     inviter.socket.send(JSON.stringify({
         type: 'gameInvitation',
         opponentId,
         inviterId: inviter.id
     }));
+
+    inviterTimeout = setTimeout(() => {
+        console.log("Game invitation timeout. I am Inviter");
+        inviter.socket.send(JSON.stringify({
+            type: 'gameDenied',
+            inviterId: inviter.id,
+            opponentId
+        }));
+        clearAllInvitationTimeouts();
+    }, 5000);
 }
-//opponent gets div block open with a choice to play or not
-export function showInvitationPrompt(data, socket) {
-    const { theOnewhoInvited, me } = data;
-    const popup = document.getElementById('invitation');
-    popup.style.display = "block";
+
+export function showInvitationPrompt({ theOnewhoInvited, me }, socket) {
+    showSection("invitation");
+
+    opponentTimeout = setTimeout(() => {
+        console.log("Game invitation timeout. I am opponent");
+        socket.send(JSON.stringify({
+            type: 'gameDenied',
+            inviterId: theOnewhoInvited,
+            opponentId: me
+        }));
+        clearAllInvitationTimeouts();
+        showSection("waitingRoom");
+    }, 5000);
 
     document.getElementById('acceptInvite').onclick = () => {
-        popup.style.display = "none";
+        clearAllInvitationTimeouts();
         socket.send(JSON.stringify({
             type: 'gameAccepted',
             inviterId: theOnewhoInvited,
@@ -36,36 +65,29 @@ export function showInvitationPrompt(data, socket) {
     };
 
     document.getElementById('declineInvite').onclick = () => {
-        popup.style.display = "none";
+        clearAllInvitationTimeouts();
         socket.send(JSON.stringify({
             type: 'gameDenied',
             inviterId: theOnewhoInvited,
             opponentId: me
         }));
+        showSection("waitingRoom");
     };
 }
 
-
-//inviter gets a message that opponent rejected the game
 export function showRejectionNotice() {
-    const popup = document.getElementById('rejection');
-    const room = document.getElementById('waitingRoom');
-    popup.style.display = "block";
-    room.style.display = "none";
-    setTimeout(() => {
-        popup.style.display = "none";
-        room.style.display = "block";
-    }, 4000);
+    showSection("rejection");
+    setTimeout(() => showSection("waitingRoom"), 2000);
 }
 
-//starts if json data.type is game accepted
-export function startGame({inviterId, opponentId}, socket) {
-    document.getElementById('waitingRoom').style.display = 'none';
-    document.getElementById('remote-game-container').style.display = 'block';
+// Start game (called when accepted)
+export function startGame({ inviterId, opponentId }, socket) {
+    clearAllInvitationTimeouts();
+    showSection("gameContainer");
     console.log("start Game called — starting game...");
     canvas = document.getElementById('gameRemote');
     if (!canvas) {
-        console.error("Canvas not found in updatePlayersList");
+        console.error("Canvas not found in startGame");
         return;
     }
     ctx = canvas.getContext('2d');
@@ -77,62 +99,48 @@ export function startGame({inviterId, opponentId}, socket) {
         opponentId
     }));
     draw();
-    
     console.log('Game constructor called');
 }
 
-
+// Update game visuals
 export function updateGameState(data) {
-	console.log("updateGameState called with data in:", data);
-	if (data.players && data.ball && data.ballDirection) {
-		state.players = data.players;
-		state.ball.x = data.ball.x;
-		state.ball.y = data.ball.y;
-		state.ballDirection = data.ballDirection;
-		draw(); // Redraw after updating the state
-	}
-	else {
-		console.error("No data received in updateGameState");
-		if (loop !== null) {
-			cancelAnimationFrame(loop);
-			loop = null;
-		}
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		
-	}
+    if (data.players && data.ball && data.ballDirection) {
+        state.players = data.players;
+        state.ball = { ...data.ball };
+        state.ballDirection = { ...data.ballDirection };
+        draw();
+    } else {
+        console.error("Invalid data in updateGameState");
+        if (loop !== null) {
+            cancelAnimationFrame(loop);
+            loop = null;
+        }
+        if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
 }
 
+let loop = null;
+console.log('gameStatic.js loaded, requesting view-remote');
 
-let loop = "";
-console.log('gameStatic.js loaded, requesting for view-remote');
-
+// Draw loop
 export function draw() {
-    // updateGameState();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw ball
     ctx.fillStyle = "white";
     ctx.fillRect(state.ball.x, state.ball.y, 10, 10);
-	console.log("Ball position:", state.ball.x, state.ball.y);
-    // Draw paddles
-    ctx.fillStyle = "white";
     ctx.fillRect(0, state.players[0].paddleY, 10, 100); // left
     ctx.fillRect(canvas.width - 10, state.players[1].paddleY, 10, 100); // right
-    // setTimeout(() => {
-	// 	if (!state.ball) {
-	// 		cancelAnimationFrame(loop);
-	// 	}
-    // }, 3000);
     loop = requestAnimationFrame(draw);
 }
 
-
+// Stop game
 export function stopGame() {
-	if (loop !== null) {
-		cancelAnimationFrame(loop);
-		loop = null;
-	}
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	document.getElementById('remote-game-container').style.display = 'none';
-	document.getElementById('waitingRoom').style.display = 'block';
+    if (loop !== null) {
+        cancelAnimationFrame(loop);
+        loop = null;
+    }
+    if (ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    clearAllInvitationTimeouts();
+    showSection("waitingRoom");
 }
