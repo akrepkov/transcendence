@@ -1,3 +1,4 @@
+import { GameClient } from "./gameStatic.js";
 import { showSection } from "./socket.js";
 
 let state = {
@@ -8,9 +9,10 @@ let state = {
     ball: { x: 412, y: 312 },
     ballDirection: { x: 2, y: 2 }
 };
+let gameClient = null;
 
-let canvas = null;
-let ctx = null;
+// let canvas = null;
+// let ctx = null;
 
 let inviterTimeout = null;
 let opponentTimeout = null;
@@ -71,76 +73,80 @@ export function showInvitationPrompt({ theOnewhoInvited, me }, socket) {
             inviterId: theOnewhoInvited,
             opponentId: me
         }));
-        showSection("waitingRoom");
     };
+    // clearAllInvitationTimeouts();
 }
 
 export function showRejectionNotice() {
-    showSection("rejection");
-    setTimeout(() => showSection("waitingRoom"), 2000);
+    showSection("waitingRoom");
 }
 
 // Start game (called when accepted)
-export function startGame({ inviterId, opponentId }, socket) {
+export function startGame(data, socket) {
     clearAllInvitationTimeouts();
     showSection("gameContainer");
     console.log("start Game called — starting game...");
-    canvas = document.getElementById('gameRemote');
-    if (!canvas) {
-        console.error("Canvas not found in startGame");
-        return;
-    }
-    ctx = canvas.getContext('2d');
+    // canvas = document.getElementById('gameRemote');
+    // if (!canvas) {
+    //     console.error("Canvas not found in startGame");
+    //     return;
+    // }
+    gameClient = new GameClient('gameRemote');
+    // ctx = canvas.getContext('2d');
     socket.send(JSON.stringify({
         type: 'startGame',
-        height: canvas.height,
-        width: canvas.width,
-        inviterId,
-        opponentId
+        height: gameClient.canvas.height,
+        width: gameClient.canvas.width,
+        inviterId: data.inviterId,
+        opponentId: data.opponentId
     }));
-    draw();
+    // gameClient.draw();
     console.log('Game constructor called');
 }
 
 // Update game visuals
 export function updateGameState(data) {
-    if (data.players && data.ball && data.ballDirection) {
-        state.players = data.players;
-        state.ball = { ...data.ball };
-        state.ballDirection = { ...data.ballDirection };
-        draw();
-    } else {
-        console.error("Invalid data in updateGameState");
-        if (loop !== null) {
-            cancelAnimationFrame(loop);
-            loop = null;
-        }
-        if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
+    if (gameClient) gameClient.updateState(data);
+    // if (data.players && data.ball && data.ballDirection) {
+    //     state.players = data.players;
+    //     state.ball = { ...data.ball };
+    //     state.ballDirection = { ...data.ballDirection };
+    //     console.log(data, )
+    //     draw();
+    // } else {
+    //     console.error("Invalid data in updateGameState");
+    //     if (loop !== null) {
+    //         cancelAnimationFrame(loop);
+    //         loop = null;
+    //     }
+    //     if (ctx) 
+    //         ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // }
 }
 
-let loop = null;
-console.log('gameStatic.js loaded, requesting view-remote');
+// let loop = null;
+// console.log('gameStatic.js loaded, requesting view-remote');
 
-// Draw loop
-export function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "white";
-    ctx.fillRect(state.ball.x, state.ball.y, 10, 10);
-    ctx.fillRect(0, state.players[0].paddleY, 10, 100); // left
-    ctx.fillRect(canvas.width - 10, state.players[1].paddleY, 10, 100); // right
-    loop = requestAnimationFrame(draw);
-}
+// // Draw loop
+// export function draw() {
+//     ctx.clearRect(0, 0, canvas.width, canvas.height);
+//     ctx.fillStyle = "white";
+//     ctx.fillRect(state.ball.x, state.ball.y, 10, 10);
+//     ctx.fillRect(0, state.players[0].paddleY, 10, 100); // left
+//     ctx.fillRect(canvas.width - 10, state.players[1].paddleY, 10, 100); // right
+//     loop = requestAnimationFrame(draw);
+// }
 
 // Stop game
 export function stopGame() {
-    if (loop !== null) {
-        cancelAnimationFrame(loop);
-        loop = null;
-    }
-    if (ctx) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-    clearAllInvitationTimeouts();
+    if (gameClient) gameClient.stop();
+    // if (loop !== null) {
+    //     cancelAnimationFrame(loop);
+    //     loop = null;
+    // }
+    // if (ctx) {
+    //     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // }
+    // clearAllInvitationTimeouts();
     showSection("waitingRoom");
 }

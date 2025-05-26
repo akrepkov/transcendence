@@ -1,42 +1,58 @@
 
-let loop = "";
-console.log('gameStatic.js loaded, requesting for view-remote');
-
-export function draw(canvas, ctx) {
-    // updateGameState();
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw ball
-    ctx.fillStyle = "white";
-    ctx.fillRect(state.ball.x, state.ball.y, 10, 10);
-	console.log("Ball position:", state.ball.x, state.ball.y);
-    // Draw paddles
-    ctx.fillStyle = "white";
-    ctx.fillRect(0, state.leftPlayerY, 10, 100); // left
-    ctx.fillRect(canvas.width - 10, state.rightPlayerY, 10, 100); // right
-    // setTimeout(() => {
-    // }, 1000);
-    loop = requestAnimationFrame(() => draw(canvas, ctx));
-}
 
 
-
-export function updateGameState(data) {
-    console.log("updateGameState called with data:", data);
-    if (data) {
-        state.leftPlayerY = data.leftPlayerY;
-        state.rightPlayerY = data.rightPlayerY;
-        state.ball.x = data.ball.x;
-        state.ball.y = data.ball.y;
-        state.ballDirection = data.ballDirection;
+export class Player {
+    constructor(id, socket = null) {
+        this.id = id;
+        this.socket = socket;
+        this.paddleY = 300;
+        this.paddleHeight = 100;
+        this.paddleWidth = 10;
+        this.score = 0;
+        this.paddleSpeed = 10;
     }
-	else {
-		console.error("No data received in updateGameState");
-	if (loop !== null) {
-		cancelAnimationFrame(loop);
-		loop = null;
-	}
-	context.clearRect(0, 0, canvas.width, canvas.height);
-	
-	}
+}
+export class GameClient {
+    constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas.getContext("2d");
+        this.state = {
+            players: [],
+            ball: { x: 412, y: 312 },
+            ballDirection: { x: 2, y: 2 }
+        };
+        this.loop = null;
+    }
+
+    updateState(data) {
+        if (!data.players || !data.ball) {
+            console.error("Invalid game state");
+            return;
+        }
+
+        this.state.players = data.players;
+        this.state.ball = data.ball;
+        this.state.ballDirection = data.ballDirection;
+        this.draw();
+    }
+
+    draw() {
+        const { ctx, canvas, state } = this;
+        if (!state.players[0] || !state.players[1]) {
+            console.warn("Draw skipped: players not yet initialized");
+            return;
+        }
+        // console.log("state.players[0].paddleY", state.players[0].paddleY);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "white";
+        ctx.fillRect(state.ball.x, state.ball.y, 10, 10);
+        ctx.fillRect(0, state.players[0].paddleY, 10, 100);
+        ctx.fillRect(canvas.width - 10, state.players[1].paddleY, 10, 100);
+        this.loop = requestAnimationFrame(this.draw.bind(this));
+    }
+
+    stop() {
+        if (this.loop) cancelAnimationFrame(this.loop);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
 }

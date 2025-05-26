@@ -124,14 +124,11 @@ function handleStatusUpdate({ status, opponentId }) {
         case 'waiting':
             showSection('waitingRoom');
             break;
-        case 'invitation':
+        case 'invited':
             showSection('invitation');
             break;
         case 'playing':
             showSection('gameContainer');
-            break;
-        case 'rejected':
-            showSection('rejection');
             break;
     }
 }

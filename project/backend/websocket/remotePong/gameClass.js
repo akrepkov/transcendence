@@ -1,6 +1,4 @@
-// import { globalPlayers } from "./websocketRemote.js";
-import { broadcastGameState } from "./gameLogic.js";
-
+import { getPlayerById } from "./websocketRemote.js";
 
 class Player {
 	constructor(id, height) {
@@ -31,7 +29,7 @@ export class Game {
 		this.height = height;
 		this.width = width;
 		this.players = [];
-		this.ball = new Ball(height, width);
+		this.ball = new Ball(height, width, this.gameId);
 		this.running = false;
 		this.gameLoopId = null;
 		this.gameId = gameId;
@@ -99,6 +97,30 @@ export class Game {
 			}
 		};
 	}
+
+	broadcastState() {
+		const state = this.getGameState();
+		if (!state) return;
+
+		const inviterId = this.players[0].id;
+		const opponentId = this.players[1].id;
+		const inviter = getPlayerById(inviterId);
+		const opponent = getPlayerById(opponentId);
+
+		if (inviter && opponent) {
+			const message = JSON.stringify({
+				type: 'updateGameState',
+				players: state.players,
+				ball: state.ball,
+				ballDirection: state.ballDirection,
+				gameId: state.gameId
+			});
+			[inviter.socket, opponent.socket].forEach(sock => {
+				if (sock.readyState === 1) sock.send(message);
+			});
+		}
+	}
+
 	gameLoop() {
 		this.running = true;
 		this.gameLoopId = setInterval(() => {
@@ -106,8 +128,8 @@ export class Game {
 			this.checkBallCollision();
 			let state = this.getGameState();
 			// console.log ("Game state in :", state);
-			broadcastGameState(state);
-		}, 1000)// 60 FPS
+			this.broadcastState();
+		}, 1000/60)// 60 FPS
 	}
 
 	stopGame() {

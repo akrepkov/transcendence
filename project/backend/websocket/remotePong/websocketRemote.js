@@ -1,9 +1,11 @@
-import { startGameEngine, stopGame } from './gameLogic.js';
-import { handlepaddleMovement } from './gameLogic.js';
-
+import { startGameEngine} from './gameLogic.js';
+// import { handlepaddleMovement } from './gameLogic.js';
+import { gameManager } from './gameLogic.js';
 // const gameClients = new Set();
 export let globalPlayers = [];
 let nextPlayerId = 1;
+
+
 
 
 export function getPlayerById(id) {
@@ -39,7 +41,7 @@ function handleMessage(player, message) {
     }
     switch (data.type) {
         case 'move':
-            handlepaddleMovement(data.playerId, data.direction);
+            gameManager.handlepaddleMovement(data.playerId, data.direction);
             break;
         case 'gameInvitation':
             sendGameInvitation(data.opponentId, data.inviterId);
@@ -51,10 +53,10 @@ function handleMessage(player, message) {
             denyGameInvitation(data.inviterId, data.opponentId);
             break;
         case 'startGame':
-            startGameEngine(data.height, data.width, data.inviterId, data.opponentId);
+            startGameEngine(data);
             break;
         case 'stopGame':
-            stopGame(data.playerId);
+            gameManager.stopGame(data.playerId);
             break;
         default:
             console.error('Unknown message type:', data.type);
@@ -64,13 +66,16 @@ function denyGameInvitation(inviterId, opponentId) {
     const inviter = getPlayerById(inviterId);
     const opponent = getPlayerById(opponentId);
     if (!inviter || !opponent) return;
-    console.log("DENYED!!!!!!!!!!! Sending game invitation to opponent: ", opponentId, " from ", inviterId);
-    updatePlayerStatus(inviter, 'waiting');
-    updatePlayerStatus(opponent, 'waiting');
+    console.log("DENIED!!!!!!!!!!! Sending game invitation to opponent: ", opponentId, " from ", inviterId);
+    console.log("Inviter: ", inviter.status, " Opponent: ", opponent.status);
+    console.log("Inviter: ", inviter.status, " Opponent: ", opponent.status);
     inviter.socket.send(JSON.stringify({
         type: 'gameDenied',
         message: `Player ${opponentId} declined the game.`
     }));
+    updatePlayerStatus(inviter, 'waiting');
+    updatePlayerStatus(opponent, 'waiting');
+    broadcastWaitingRoom();
 
 }
 
@@ -97,7 +102,7 @@ function sendGameInvitation(opponentId, inviterId) {
     const opponent = getPlayerById(opponentId);
     if (!inviter || !opponent) return;
     console.log("Sending game invitation to opponent: ", opponentId, " from ", inviterId);
-    updatePlayerStatus(inviter, 'inviting', opponentId);
+    updatePlayerStatus(inviter, 'invitation', opponentId);
     updatePlayerStatus(opponent, 'invited', inviterId);
     opponent.socket.send(JSON.stringify({
         type: 'gameInvitationReceived',
@@ -114,7 +119,7 @@ function handleDisconnect(socket, player) {
     if (opponent) {
         updatePlayerStatus(opponent, 'waiting');
     }
-    stopGame(player.id);
+    gameManager.stopGame(player.id);
     globalPlayers = globalPlayers.filter(player => player.socket !== socket);
     // console.log("Player lisT : ", globalPlayers);
     const playersList = globalPlayers.map(player => ({ id: player.id }));
