@@ -1,0 +1,68 @@
+
+TROUBLESHOOTING GUIDE
+====================
+Hey! This file contains things you can try when you can't launch the project or some scripts aren't working.
+If none of these solutions work, contact JI (and feel free to bully him about his broken scripts).
+
+QUICK FIXES
+----------
+Sometimes the simplest solution is the best:
+
+* `make re` - This is safe to run and will delete all modules and install them fresh from the package files.
+* Disable Git Hooks - If git is being annoying, just comment out the text in the files in the .husky folder.
+  This will let you commit and checkout branches without all the complaints.
+
+1. NODE/APP LAUNCH ISSUES
+------------------------
+When typing 'make' tries to launch the app but node throws a tantrum:
+
+1.1 Code Problems
+    First, check the error message - maybe it's just the code being weird.
+    This could mean someone pushed something broken or a mistake slipped through.
+    Unfortunately, I can't help you with that one!
+
+1.2 Node Version Issues
+    - Check your version with `node -v` - should be 23.11.[xx]
+    - If it's wrong:
+        a) Try resetting your terminal
+        b) Or run: `[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"`
+        c) Still wrong? `nvm` probably isn't installed right. Try `make reset all`
+
+1.3 Makefile Bypass
+    You can try running the app without the makefile:
+    Just go to the backend and run npm start
+
+1.4 Corrupt Package Files
+    - Run `make reset all`
+    - Choose option (1) when prompted
+    This will download fresh package files from our main branch
+
+1.5 Missing Module Drama
+    If it's complaining about a missing module that's not in package.json:
+    - Install it: `npm install [module]`
+    - If this fixes things, we probably need this module
+    - Update the package files (check workflow.txt - "Adding new packages")
+
+1.6 Still Broken?
+    Time to figure it out yourself or contact JI
+
+2. GIT COMMIT ISSUES
+-------------------
+The pre-commit script is kind of strict - it fails if ANY command fails.
+Quick fix: Go to .husky/pre-commit and comment everything out.
+Try fixing manually and then contact JI about this problem (it's definitely his fault).
+
+3. BRANCH CHECKOUT ISSUES
+------------------------
+Same deal as the commit issues - go to .husky/post-checkout and comment everything out.
+Or don't pull or push when prompted. This is probably related to some divergent branch error.
+Try fixing manually and don't forget to contact JI about his failures and bully him for being a dumbo.
+
+4. PACKAGE UPDATE ISSUES
+-----------------------
+If `make update_json` isn't working:
+This could have many different reasons - I haven't tested it thoroughly.
+As we go through the project, I'll add more specific solutions here.
+Since updating package files isn't super critical, just contact JI and insult him good.
+
+Remember: When all else fails, blame JI!
