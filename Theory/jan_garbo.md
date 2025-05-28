@@ -43,7 +43,57 @@ There is a method you send, so GET just gets resource, POST posts it to the serv
 So Rest APIs have endpoints for resources and when a client request it the server returns all the information about that resource, ex. fetch user will return all the info about the user
 
 TODOS
-fix workflows to only do something for pushing to main
-setup makeifle rule to pull package.jsons form branches
 merge Anna code, check if it works and merge it back to Anna, we'll prbably have to do this with Anna there
+
+Okay so things we still need to do
+
+BACKEND
+
+FRONTEND
+
+DATABASE
+- figuring out the information we need to store in the database, what tables are we using and the relations between those tables (these are just examples and stuff Anna already setup):
+  - user information: login, password, email, avatar, id, display name, friends?, bloked users?
+  - match information: two players, winner, score, when
+
+- then we need ways to add things to the database
+- updating information in the database
+- deleting maybe?
+- handling duplicate emails, usernames
+- we need ways to retreive this information. This part is closely connected to the backend a I think? So might be good to discuss with the person doing that? Or, just have information about what API call returns what information?
+
+MODULES INVOLVED - User Management, Live Chat? backend framework (might have to use this one)?
+
+DOCKER
+- needs to run in rootless mode, this introduces issues with volumes and the runtime needs to be in goinfre or sgoinfre whatever this means
+
+GAME
+- Just the logic itself
+- remote players
+- tournament
+  - registration for the tournament
+  - matchmaking system for the tournament
+
+SECURITY
+- passwords must be hashed
+- SQL injections/XSS attacks
+- HTTPS connection for all aspects, so we need to use wss as well
+- need validation for forms or other user inputs in our case in the backend
+- need to protect API routes whatever that means, what are JWT tokens
+
+
+MODULES
+- MAJOR: framework to build backend
+- MAJOR: standard user management
+- MAJOR: remote players
+- MAJOR: Live chat
+- MAJOR: AI opponent
+- MAJOR: server side pong
+- MAJOR: multiplayer?
+- MAJOR: another game?
+- MINOR: toolkit for frontend
+- MINOR: database for the backend
+
+
+- making things work as a single page application, which also involves the back and forward buttons. We have it as an SPA right now, just not the back and forward buttons working
 
