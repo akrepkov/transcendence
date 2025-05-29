@@ -22,27 +22,32 @@ export class GameClient {
             ballDirection: { x: 2, y: 2 }
         };
         this.loop = null;
+		this.running = false;
     }
 
     updateState(data) {
-        if (!data.players || !data.ball) {
+        if (!data.players[0] || !data.players[1] || !data.ball) {
             console.error("Invalid game state");
             return;
         }
-
         this.state.players = data.players;
         this.state.ball = data.ball;
         this.state.ballDirection = data.ballDirection;
-        this.draw();
+		console.log("Backend sends update");
+        // this.draw();
     }
 
     draw() {
         const { ctx, canvas, state } = this;
+		console.log("Running");
         if (!state.players[0] || !state.players[1]) {
             console.warn("Draw skipped: players not yet initialized");
             return;
         }
-        // console.log("state.players[0].paddleY", state.players[0].paddleY);
+		if (!this.running){
+			console.log("Leave, please");
+			return ;
+		}
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "white";
         ctx.fillRect(state.ball.x, state.ball.y, 10, 10);
@@ -52,7 +57,12 @@ export class GameClient {
     }
 
     stop() {
-        if (this.loop) cancelAnimationFrame(this.loop);
+		console.log ("STOPPING INSIDE THE CALSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
+        if (this.loop) {
+			cancelAnimationFrame(this.loop);
+			this.loop = null;
+		}
+		this.running = false;
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }

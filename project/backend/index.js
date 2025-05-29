@@ -33,10 +33,10 @@ console.log("Dirname name in index.js:", __dirname); // Debugging
 
 const fastify = Fastify({
 	logger: false,
-	// https: {
-	//   key: fs.readFileSync(path.join(__dirname, 'certs/key.pem')),
-	//   cert: fs.readFileSync(path.join(__dirname, 'certs/cert.pem'))
-	// }
+	https: {
+	  key: fs.readFileSync(path.join(__dirname, 'certs/key.pem')),
+	  cert: fs.readFileSync(path.join(__dirname, 'certs/cert.pem'))
+	}
   });
 fastify.register(fastifyMultipart, {
   limits: {

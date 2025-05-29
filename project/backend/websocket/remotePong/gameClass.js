@@ -1,9 +1,10 @@
 import { getPlayerById } from "./websocketRemote.js";
 
 class Player {
-	constructor(id, height) {
+	constructor(id, height, gameId) {
+		console.log("Create a player");
 		this.id = id;
-		this.gameId = this.gameId;
+		this.gameId = gameId;
 		this.paddleY = height / 2;
 		this.paddleHeight = 100;
 		this.paddleWidth = 10;
@@ -14,6 +15,7 @@ class Player {
 
 class Ball {
 	constructor(height, width, gameId) {
+		console.log("Create a game");
 		this.x = width / 2;
 		this.y = height / 2;
 		this.size = 10;
@@ -99,6 +101,7 @@ export class Game {
 	}
 
 	broadcastState() {
+		if (!this.running) return;
 		const state = this.getGameState();
 		if (!state) return;
 
@@ -122,11 +125,12 @@ export class Game {
 	}
 
 	gameLoop() {
+		if (this.running) return; 
 		this.running = true;
 		this.gameLoopId = setInterval(() => {
 			this.updateBall();
 			this.checkBallCollision();
-			let state = this.getGameState();
+
 			// console.log ("Game state in :", state);
 			this.broadcastState();
 		}, 1000/60)// 60 FPS

@@ -1,21 +1,9 @@
 import * as network from './network.js';
-// import { updateGameState } from './gameStatic.js';
-let inviter = {};
+import { showSection, handleStatusUpdate } from './remote.js';
 
-export function showSection(divToShow) {
-    /*
-el.classList.toggle(className, force) is a DOM method that toggles a class on the element:
-If force is true, it adds the class.
-If force is false, it removes the class.
-    */
-    const sections = ['waitingRoom', 'invitation', 'rejection', 'gameContainer'];
-    sections.forEach(section => {
-        const el = document.getElementById(section);
-        if (el) {
-            el.classList.toggle('hidden', section !== divToShow);
-        }
-    });
-}
+
+
+let inviter = {};
 
 export function setupSocketEvents(socket) {
     showSection('waitingRoom');
@@ -37,14 +25,10 @@ export function setupSocketEvents(socket) {
                 network.showInvitationPrompt(data, socket);
                 break;
             case 'updateGameState':
-                // console.log("updateGameState called in socket with data:", data);
                 network.updateGameState(data);
                 break;
             case 'gameAccepted':
                 network.startGame(data, socket);
-                break;
-            case 'gameDenied':
-                network.showRejectionNotice();
                 break;
             case 'playerDisconnected':
                 handleWaitingRoomDisconnection(data.players);
@@ -81,6 +65,13 @@ export function setupSocketEvents(socket) {
     window.addEventListener("hashchange", function (event) {
         if (event.oldURL !== event.newURL) {
             console.log("Hash changed from ", event.oldURL, " to ", event.newURL);
+            socket.send(JSON.stringify({
+                type: "stopGame",
+                playerId: inviter.id
+            }));
+
+            network.stopGame();
+			
         }
     })
 
@@ -92,9 +83,19 @@ export function setupSocketEvents(socket) {
                 playerId: inviter.id
             }));
             network.stopGame();
-            // socket.close(); //??????????????????????
         }
     });
+	socket.onclose = function () {
+		console.log('WebSocket connection closed.');
+		// attemptReconnect();
+	};
+	
+	// function attemptReconnect() {
+	// 	setTimeout(() => {
+	// 		const newSocket = new WebSocket("ws://yourserver.com/path");
+	// 		setupSocketEvents(newSocket); // Re-attach handlers
+	// 	}, 3000); // Try again after a short delay
+	// }
 
 }
 
@@ -119,16 +120,16 @@ function handleWaitingRoomDisconnection(players) {
     updatePlayersList(players);
 }
 
-function handleStatusUpdate({ status, opponentId }) {
-    switch (status) {
-        case 'waiting':
-            showSection('waitingRoom');
-            break;
-        case 'invited':
-            showSection('invitation');
-            break;
-        case 'playing':
-            showSection('gameContainer');
-            break;
-    }
-}
+// function handleStatusUpdate({ status}) {
+//     switch (status) {
+//         case 'waiting':
+//             showSection('waitingRoom');
+//             break;
+//         case 'invited':
+//             showSection('invitation');
+//             break;
+//         case 'playing':
+//             showSection('gameContainer');
+//             break;
+//     }
+// }

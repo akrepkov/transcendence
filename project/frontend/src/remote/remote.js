@@ -1,19 +1,16 @@
 
 import { setupSocketEvents} from './socket.js';
-// import { setupKeyboardControls } from './controls.js';
-
-
-
+import * as network from "./network.js"
+// const socket  = new WebSocket('wss://localhost:3000/ws/game');
+let socket = null;
 export async function openRemoteTab() {
-    const socket = new WebSocket('wss://congenial-system-x76557wwgx93px46-3000.app.github.dev/ws/game');
-    // const socket  = new WebSocket('wss://localhost:3000/ws/game');
-	console.log("connected to socket", socket);	
+    // const socket = new WebSocket('wss://congenial-system-x76557wwgx93px46-3000.app.github.dev/ws/game');
     
-    // updatePlayersList();
+	if (socket === null)
+		socket  = new WebSocket('wss://localhost:3000/ws/game');
+	console.log("connected to socket", socket);	
     setupSocketEvents(socket);
-    // setupKeyboardControls(socket);
 }
-// your code here
 
 
 
@@ -21,60 +18,43 @@ export async function openRemoteTab() {
 
 
 
+/******************Extra functions *****************/
+export function showSection(divToShow) {
+    /*
+el.classList.toggle(className, force) is a DOM method that toggles a class on the element:
+If force is true, it adds the class.
+If force is false, it removes the class.
+    */
+    const sections = ['waitingRoom', 'invitation', 'rejection', 'gameContainer'];
+    sections.forEach(section => {
+        const el = document.getElementById(section);
+        if (el) {
+            el.classList.toggle('hidden', section !== divToShow);
+        }
+    });
+}
 
+export function handleStatusUpdate({ status }) {
+    switch (status) {
+        case 'waiting':
+            showSection('waitingRoom');
+			network.stopGame();
+            break;
+        case 'invited':
+            showSection('invitation');
+            break;
+        case 'playing':
+            showSection('gameContainer');
+            break;
+		case 'rejection':
+			showSection('rejection');
+			break;
+    }
+}
 
-
-
-
-
-
-
-
-
-// updates from server
-// socket.onmessage = (event) => {
-//   const data = JSON.parse(event.data);
-//   if (data.type === 'stateUpdate') {
-//     gameState = data;
-//     console.log("Game state updated: ", gameState);
-//   }
-//   if (data.type === "playerId") {
-//     usernames[data.playerId - 1] = `Player ${data.playerId}`;
-//   }
-// };
-// socket.onerror = function (error) {
-//   console.error('WebSocket error:', error);
-// };
-
-// socket.onclose = function () {
-//   console.log('WebSocket connection closed.');
-// };
-// //send the pressed keys
-// document.addEventListener('keydown', function (event) {
-//   console.log("Pressed key: ", event.key);
-//   const data = { type: 'move', key: event.key };
-//   socket.send(JSON.stringify(data)); // This sends to backend!
-// });
-
-// //draw the updates from server. This is canvas, needs to change
-// function drawGame() {
-//   ctx.clearRect(0, 0, canvas.width, canvas.height);
-//   ctx.fillStyle = 'white';
-
-//   // Left paddle
-//   ctx.fillRect(0, gameState.leftPaddleY, 10, 100);
-
-//   // Right paddle
-//   ctx.fillRect(canvas.width - 10, gameState.rightPaddleY, 10, 100);
-
-//   // Ball
-//   ctx.fillRect(gameState.ball.x, gameState.ball.y, 10, 10);
-
-//   // Score
-//   ctx.font = '24px Arial';
-//   ctx.fillText(`${usernames[0]} ${gameState.score[0]} - ${gameState.score[1]} ${usernames[1]} `, 370, 50);
-
-//   requestAnimationFrame(drawGame);
-// }
-
-// drawGame();
+export function clearAllInvitationTimeouts(inviterTimeout, opponentTimeout) {
+	clearTimeout(inviterTimeout);
+	clearTimeout(opponentTimeout);
+	inviterTimeout = null;
+	opponentTimeout = null;
+}
