@@ -1,0 +1,139 @@
+PROJECT TECHNICAL OVERVIEW
+========================
+
+BACKEND
+-------
+- JavaScript with Fastify and Node.js
+
+FRONTEND
+--------
+- TypeScript with Tailwind
+- Required Pages:
+  * Homepage
+  * Profile Page
+  * Chat
+    - Player game invitation feature
+    - User blocking system
+  * Game Interface
+    - Local gameplay (AI/Player)?
+    - Remote gameplay
+  * Tournament (Standalone or game page integration?)
+  * Friends (Separate tab or profile integration?)
+  * Backend API integration needed
+
+DATABASE (SQLite)
+----------------
+Data Structure Considerations:
+- User Information Storage:
+  * Login
+  * Password
+  * Email
+  * Avatar
+  * ID
+  * Display name
+  * Friends?
+  * Blocked users?
+- Match Information:
+  * Player participants
+  * Winner
+  * Score
+  * Timestamp
+Operations Needed:
+- Data insertion
+- Information updates
+- Deletion functionality?
+- Duplicate handling
+- Data retrieval
+- Backend integration planning
+
+DOCKER IMPLEMENTATION
+-------------------
+- Rootless mode requirement (volume/runtime considerations for goinfre/sgoinfre)
+- Container Structure:
+  * Backend container
+  * Frontend container
+  * Database container?
+- Volume configuration
+- backend would have to be setup to send requests to the frontend container for static files
+- Single container option? like do we just do everything in one container and call it a day
+
+GAME DEVELOPMENT
+--------------
+- Core logic implementation, is there already
+- Remote vs Local gameplay
+  * Local options:
+    - AI opponent
+    - Local multiplayer
+- Visual implementation
+- Remote player considerations:
+  * Disconnect handling
+  * Latency management
+
+TOURNAMENT SYSTEM
+---------------
+- Player registration
+- Matchmaking implementation
+
+SECURITY REQUIREMENTS
+-------------------
+- Password hashing
+- SQL injection protection
+- XSS attack prevention
+- HTTPS/WSS implementation
+- Form validation or other user inputs
+- API route protection whateve rthis means
+- JWT implementation, what are they
+
+
+MODULES
+-----------
+- MAJOR: framework to build backend
+  - just use fastify
+
+- MINOR: toolkit for frontend
+  - just use tailwind
+
+- MINOR: database for the backend
+  - just use a database that is SQLite
+
+- MAJOR: standard user management
+  ◦ Users can securely subscribe to the website.
+  ◦ Registered users can securely log in.
+  ◦ Users can select a unique display name to participate in tournaments.
+  ◦ Users can update their information.
+  ◦ Users can upload an avatar, with a default option if none is provided.
+  ◦ Users can add others as friends and view their online status.
+  ◦ User profiles display stats, such as wins and losses.
+  ◦ Each user has a Match History including 1v1 games, dates, and relevant details, accessible to logged-in users.
+
+- MAJOR: remote players
+  - It should be possible for two players to play remotely. Each player is located on a
+  separated computer, accessing the same website and playing the same Pong game.
+  - Consider things like lag, disconnects
+
+- MAJOR: Live chat
+  ◦ The user should be able to send direct messages to other users.
+  ◦ The user should be able to block other users, preventing them from seeing any further messages from the blocked account.
+  ◦ The user should be able to invite other users to play a Pong game through the chat interface.
+  ◦ The tournament system should be able to notify users about the next game.
+  ◦ The user should be able to access other players’ profiles through the chat interface.
+
+- MAJOR: AI opponent
+  - needs some sort of algorithm to choose the path to use that isn't A*
+  - can refresh the game every second
+
+- MAJOR: server side pong
+  ◦ Develop server-side logic for the Pong game to handle gameplay, ball movement, scoring, and player interactions.
+  ◦ Create an API that exposes the necessary resources and endpoints to interact with the Pong game, allowing partial usage of the game via the Command-Line Interface (CLI) and web interface.
+  ◦ Design and implement the API endpoints to support game initialization, player controls, and game state updates.
+  ◦ Ensure that the server-side Pong game is responsive, providing an engaging and enjoyable gaming experience.
+  ◦ Integrate the server-side Pong game with the web application, allowing users to play the game directly on the website.
+
+- MAJOR: multiplayer?
+  - make it possible to play with more than 2 players
+  - this would require new game logic, and a new route to the server to handle a game with more players
+  - dunno how hard this would be
+
+- MAJOR: another game?
+  - again, seems like alot of work, a completely new game with new logic needs to be made all with history, matchmaking
+    and statistics. Might be a lot to do
