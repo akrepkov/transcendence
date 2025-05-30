@@ -8,7 +8,7 @@ let password = {};
 let username = {};
 
 export const verifyLogin = async () => {
-	console.log('Verifying login status...');
+	// console.log('Verifying login status...');
 	try {
 		const response = await fetch('/api/auth/me', {
 			method: 'GET',
@@ -19,7 +19,7 @@ export const verifyLogin = async () => {
 		});
 		if (response.ok) {
 			const data = await response.json();
-			console.log('User data:', data);
+			// console.log('User data:', data);
 			AuthManager.login(data.username);
 			// console.log('User is logged in:', AuthManager.getUsername());
 		}
@@ -40,8 +40,8 @@ export function logIntoDatabase() {
 		event.preventDefault();
 		email = emailInput.value;
 		password = passwordInput.value;
-		console.log("email: ", email);
-		console.log("password: ", password);
+		// console.log("email: ", email);
+		// console.log("password: ", password);
 		try {
 			const response = await fetch('/api/auth/login', {
 				method: 'POST',
@@ -115,7 +115,7 @@ export function logout() {
 			.then(response => {
 				if (response.ok) {
 					AuthManager.logout();
-					console.log('User logged out');
+					// console.log('User logged out');
 					flipCard.classList.remove("flipped");
 					document.querySelectorAll("a[data-requires-auth='true']").forEach(link => {
 						link.style.display = "none";

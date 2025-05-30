@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="./styles.css">
 </head>
 
-<body>
+<body onhashchange="showAlert()">
   <div class="header">
     <div class="name">Pong Game</div>
   </div>
@@ -23,7 +23,13 @@
   <div id="view-profile" class="tab-view" style="display:none"></div>
 
 <!-- Not done yet -->
-  <div id="view-chat" class="tab-view" style="display:none">I am CHAT</div>
+  <div id="view-chat" class="tab-view" style="display:none">I am CHAT
+    <input type="text" id="messageInput" placeholder="Type a message" />
+    <button id="sendBtn">Send Message</button>
+    <div id="messages"></div>
+
+
+  </div>
 
 
   <!-- Frontend Game: -->

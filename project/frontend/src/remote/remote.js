@@ -49,6 +49,9 @@ export function handleStatusUpdate({ status }) {
 		case 'rejection':
 			showSection('rejection');
 			break;
+		case "left":
+			showSection('');
+			break;
     }
 }
 

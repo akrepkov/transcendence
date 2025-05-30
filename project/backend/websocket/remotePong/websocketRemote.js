@@ -57,8 +57,29 @@ function handleMessage(player, message) {
 		case 'stopGame':
 			gameManager.stopGame(data.playerId);
 			break;
+		case 'statusChange':
+			changeHash(data.playerId, data.status);
+			break;
 		default:
 			console.error('Unknown message type:', data.type);
+	}
+}
+
+function changeHash(playerId, status){
+	let game = gameManager.getGameByPlayerId(playerId);
+	if (game) {
+		gameManager.stopGame(playerId);
+	}
+	const player = getPlayerById(playerId);
+	//add logic for loosing game?
+	switch(status) {
+		case 'left':
+			updatePlayerStatus(player, 'left');
+			break;
+		case 'returned':
+			updatePlayerStatus(player, 'waiting');
+			break;
+
 	}
 }
 function denyGameInvitation(inviterId, opponentId) {
@@ -73,14 +94,19 @@ function denyGameInvitation(inviterId, opponentId) {
 	setTimeout(() => {
 		updatePlayerStatus(inviter, 'waiting');
 	}, 2000);
-	updatePlayerStatus(opponent, 'waiting');
+	if (opponent.status != "left")
+		updatePlayerStatus(opponent, 'waiting');
 }
 
 
 function acceptGameInvitation(inviterId, opponentId) {
 	const inviter = getPlayerById(inviterId);
 	const opponent = getPlayerById(opponentId);
-	if (!inviter || !opponent) return;
+	if (!inviter || !opponent ) return;
+	if (inviter.status === "left"){
+		updatePlayerStatus(opponent, 'waiting');
+		return ;
+	}
 	updatePlayerStatus(inviter, 'playing', opponentId);
 	updatePlayerStatus(opponent, 'playing', inviterId);
 	[inviter.socket, opponent.socket].forEach(sock =>
@@ -136,6 +162,7 @@ function broadcastWaitingRoom() {
 		type: 'waitingRoom',
 		players: playersList
 	});
+	console.log("changing waiting room with : ", playersList);
 	sendMessageEveryone(stringifiedMessage);
 }
 

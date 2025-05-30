@@ -11,8 +11,6 @@
 export async function avatarHandler() {
 
 	const defaultAvatar = document.getElementById("defaultAvatar");
-	console.log("defaultAvatar: ", defaultAvatar);
-	setTimeout(() => { console.log('World!') }, 4000)
 	try {
 		const response = await fetch("/api/getAvatar", {
 			method: "GET",
@@ -21,7 +19,7 @@ export async function avatarHandler() {
 		if (response.ok) {
 			const data = await response.json();
 			defaultAvatar.src = data.avatar; // Set the image source to the uploaded file
-			console.log("Avatar URL:", data.avatar); // Debugging
+			// console.log("Avatar URL:", data.avatar); // Debugging
 		}
 	} catch (error) {
 		console.error("Error uploading avatar:", error);

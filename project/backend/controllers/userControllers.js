@@ -82,9 +82,9 @@ const uploadAvatarHandler = async (request, reply) => {
 const getAvatarHandler = async (request, reply) => {
     try {
         let username = request.user.username;
-        console.log("Username in getAvatarHandler:", username); // Debugging
+        // console.log("Username in getAvatarHandler:", username); // Debugging
         let avatarFilepath = userServices.getAvatarFromDatabase(username);
-        console.log("Avatar URL:", avatarFilepath); // Debugging
+        // console.log("Avatar URL:", avatarFilepath); // Debugging
         const fileExistsResult = await fileExists(avatarFilepath);
         if (!fileExistsResult) {
             console.log("Avatar not found, using default avatar"); // Debugging

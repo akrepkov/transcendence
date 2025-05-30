@@ -73,6 +73,6 @@ export async function openProfileTab() {
 
 export function openProfileCard() {
 	defaultAvatar.src = "";
-	console.log("defaultAvatar: ", defaultAvatar);
+	// console.log("defaultAvatar: ", defaultAvatar);
 	avatarHandler();
 }

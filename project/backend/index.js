@@ -25,14 +25,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const port = 3000; //TODO do we need to do something with port?
 
-console.log("File name in index.js:", __filename); // Debugging
+// console.log("File name in index.js:", __filename); // Debugging
 
-console.log("Dirname name in index.js:", __dirname); // Debugging
+// console.log("Dirname name in index.js:", __dirname); // Debugging
 
 
 
 const fastify = Fastify({
-	logger: false,
+	logger: true,
 	https: {
 	  key: fs.readFileSync(path.join(__dirname, 'certs/key.pem')),
 	  cert: fs.readFileSync(path.join(__dirname, 'certs/cert.pem'))

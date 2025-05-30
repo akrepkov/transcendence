@@ -29,8 +29,8 @@ const loginHandler = async(request, reply) => {
         path: '/',  // Cookie is available on all routes
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
     });
-	console.log("its ok in login handler, send 201. Token in loginHandler:", token); // Debugging
-    console.log("BAckend user: ", user.username);
+	// console.log("its ok in login handler, send 201. Token in loginHandler:", token); // Debugging
+    // console.log("BAckend user: ", user.username);
 	return reply.status(200).send({ 
 		message: 'Registration successful',
 		username: user.username
@@ -104,12 +104,12 @@ const authenticate = async(request, reply) => {
 const verificationHandler = async(request, reply) => {
     const token = await request.cookies.token;
     if (!token) {
-		console.log("No token in verificationHandler");
+		// console.log("No token in verificationHandler");
         return handleError(reply,new Error('Unauthorized: No token'), 401);
     }
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-		console.log("Decoded in verificationHandler: ", decoded);
+		// console.log("Decoded in verificationHandler: ", decoded);
 		const user = await authServices.checkCredentials(decoded.email);
 		if (!user) {
 			return handleError(reply, new Error('Invalid credentials'), 401);
@@ -128,7 +128,7 @@ const getUserFromRequest = async(request, reply) => {
             return handleError(reply,new Error('Unauthorized: No token'), 401);
         }
         const decoded = jwt.verify(token, JWT_SECRET);
-        console.log("EMAIL in getUserFromRequest: ", decoded.email);
+        // console.log("EMAIL in getUserFromRequest: ", decoded.email);
         let user = userServices.getUserByEmail(decoded.email);
         if (!user) {
             return handleError(reply, new Error('Invalid credentials'), 401);

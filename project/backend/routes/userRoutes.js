@@ -36,10 +36,10 @@ export default async function userRoutes(fastify) {
     //Profile only for logged in
     // fastify.get('/api/profile', { preHandler: authControllers.authenticate }, userControllers.profileHandler);
 
-    //DEBUGGING
-    fastify.ready().then(() => {
-        console.log(fastify.printRoutes());
-      });
+    //DEBUGGING dont delete please
+    // fastify.ready().then(() => {
+    //     console.log(fastify.printRoutes());
+    //   });
 }
 
 

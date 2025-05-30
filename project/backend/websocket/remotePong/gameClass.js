@@ -1,5 +1,5 @@
-import { getPlayerById } from "./websocketRemote.js";
-
+import { getPlayerById, gameManager, globalPlayers, updatePlayerStatus} from "./websocketRemote.js";
+// import { gameManager } from './gameLogic.js';
 class Player {
 	constructor(id, height, gameId) {
 		console.log("Create a player");
@@ -23,6 +23,13 @@ class Ball {
 		this.speedY = 2;
 		this.color = "white";
 		this.gameId = gameId;
+		this.width = width;
+		this.height = height;
+	}
+	reset() {
+		this.x = this.width / 2;
+		this.y = this.height / 2;
+		this.speedX = -this.speedX;
 	}
 }
 
@@ -35,6 +42,7 @@ export class Game {
 		this.running = false;
 		this.gameLoopId = null;
 		this.gameId = gameId;
+		this.maxScore = 2;
 	}
 
 	addPlayer(id) {
@@ -77,6 +85,15 @@ export class Game {
 			this.ball.x = this.width - rightPlayer.paddleWidth - this.ball.size;
 			this.ball.speedX = -this.ball.speedX;
 		}
+		if (this.ball.x <= 0) {
+			this.players[1].score++;
+			this.ball.reset();
+		}
+		if (this.ball.x + this.ball.size >= this.width) {
+			this.players[0].score++;
+			this.ball.reset();
+		}
+
 	}
 	updateBall() {
 		this.ball.x += this.ball.speedX;
@@ -125,15 +142,32 @@ export class Game {
 	}
 
 	gameLoop() {
-		if (this.running) return; 
+		if (this.running) return;
 		this.running = true;
 		this.gameLoopId = setInterval(() => {
 			this.updateBall();
 			this.checkBallCollision();
-
-			// console.log ("Game state in :", state);
+			if (this.players[0].score >= this.maxScore || this.players[1].score >= this.maxScore) {
+				// if (leftPlayerScore >= maxScore) {
+				// 	winner = player1Name;
+				// 	loser = player2Name;
+				// } else {
+				// 	winner = player2Name;
+				// 	loser = player1Name;
+				// }
+				// // showModal();
+				// showWinner(winner);
+				globalPlayers.filter(p => p.gameId === this.gameId).forEach(p => {
+					console.log("Go to waiting ", p.id);
+					updatePlayerStatus(p, 'waiting');
+				});
+				this.stopGame(); //doesnt work cause i dont delete game from the games array
+				// sendGameResults(winner, loser);
+				gameManager.removeGame(this.gameId)
+				return;
+			}
 			this.broadcastState();
-		}, 1000/60)// 60 FPS
+		}, 1000 / 60)// 60 FPS
 	}
 
 	stopGame() {

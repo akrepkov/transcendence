@@ -1,19 +1,23 @@
-console.log("Main.js loading");
+
 import { openProfileTab } from './auth/profile.js';
 import { openPracticeTab } from './practice/practice.js';
 import { openRemoteTab } from './remote/remote.js';
 import { verifyLogin } from './auth/authRequests.js';
 import AuthManager from './managers/authManager.js';
+import {changeHashfromRemote, changeHashToRemote} from './remote/socket.js'
+
+let oldHash = "";
 
 
-// (async function init() {
-// 	console.log('Page loaded init .......');
-// 	await loadTabHtml('view-remote', 'remote.html');
-// })();
+export function showAlert() {
+	console.log("Changed hash");
+}
+
+window.showAlert = showAlert;
 
 const tabs = {
 	profile: async function () {
-		console.log("I am In profile tab");
+		// console.log("I am In profile tab");
 		await loadTabHtml('view-profile', 'profile_login.html');
 		showView("profile");
 		openProfileTab();
@@ -33,9 +37,9 @@ const tabs = {
 			return;
 		}
 		showView("remote");
-		console.log('Page loaded init .......');
+		// console.log('Page loaded init .......');
 		// await loadTabHtml('view-remote', 'remote.html');
-		console.log("I am In remote tab... loaded");
+		// console.log("I am In remote tab... loaded");
 		openRemoteTab();
 	},
 
@@ -55,8 +59,14 @@ function showView(tabName) {
 
 function tabChange() {
 	const hash = window.location.hash.replace("#", "") || "profile";
-	console.log(hash);
+	console.log("Hash on tab change", hash);
 	if (hash !== currentTab) {
+		if (currentTab === 'remote'){
+			changeHashfromRemote();
+		}
+		else if (hash === 'remote'){
+			changeHashToRemote();
+		}
 		currentTab = hash;
 		if (tabs[hash]) {
 			tabs[hash]();
@@ -77,12 +87,17 @@ async function loadTabHtml(tabName, fileName) {
 		return;
 	}
 	container.innerHTML = html;
-	console.log("I uploaded ", tabName, fileName);
+	// console.log("I uploaded ", tabName, fileName);
 }
 
 
 
-window.addEventListener("hashchange", tabChange)
+window.addEventListener('hashchange', (event) => {
+	oldHash = new URL(event.oldURL).hash;
+	tabChange();
+});
+
+
 window.addEventListener("load", async () => {
 	console.log("Page Verifying on page load");
 	await verifyLogin();

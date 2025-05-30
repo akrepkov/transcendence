@@ -33,13 +33,12 @@ export class GameClient {
         this.state.players = data.players;
         this.state.ball = data.ball;
         this.state.ballDirection = data.ballDirection;
-		console.log("Backend sends update");
-        // this.draw();
+		// console.log("Backend sends update");
     }
 
     draw() {
         const { ctx, canvas, state } = this;
-		console.log("Running");
+		// console.log("Running in frontend");
         if (!state.players[0] || !state.players[1]) {
             console.warn("Draw skipped: players not yet initialized");
             return;
