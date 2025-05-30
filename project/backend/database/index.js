@@ -2,10 +2,9 @@ import Database from 'better-sqlite3';
 import fs from 'fs';
 import path from 'path';
 
-
 const __filename = new URL(import.meta.url).pathname;
 
-//For windows: 
+//For windows:
 // const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
