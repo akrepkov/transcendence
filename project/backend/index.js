@@ -2,12 +2,17 @@ import Fastify from 'fastify';
 import path from 'path';
 import fastifyStatic from '@fastify/static';
 import userRoutes from './routes/userRoutes.js';
-import  fastifyWebSocket from '@fastify/websocket';
+import fastifyWebSocket from '@fastify/websocket';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import fastifyMultipart from '@fastify/multipart';
 import dotenv from 'dotenv';
 import cookie from '@fastify/cookie';
+
+//npm install @fastify/swagger @fastify/swagger-ui
+import swagger from '@fastify/swagger';
+import swaggerUi from '@fastify/swagger-ui';
+import fs from 'fs';
 dotenv.config();   // loads environment variables from the .env file and makes them accessible in process.env.
 
 //console.log('Environment Variables:', process.env); // Log all environment variables for debugging
@@ -20,13 +25,19 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const port = 3000; //TODO do we need to do something with port?
 
-console.log("File name in index.js:", __filename); // Debugging
+// console.log("File name in index.js:", __filename); // Debugging
 
-console.log("Dirname name in index.js:", __dirname); // Debugging
+// console.log("Dirname name in index.js:", __dirname); // Debugging
 
 
 
-const fastify = Fastify({ logger: true });
+const fastify = Fastify({
+	logger: true,
+	https: {
+	  key: fs.readFileSync(path.join(__dirname, 'certs/key.pem')),
+	  cert: fs.readFileSync(path.join(__dirname, 'certs/cert.pem'))
+	}
+  });
 fastify.register(fastifyMultipart, {
   limits: {
     fileSize: 1 * 1024 * 1024 // optional: max file size (10MB here)
@@ -64,11 +75,24 @@ fastify.register(userRoutes);
 //   console.log(fastify.printRoutes());
 // });
 
+// Swagger setup
+await fastify.register(swagger, {
+  mode: 'static',
+  specification: {
+    path: './docs/openapi.yaml',
+    baseDir: './',
+  }
+});
 
-//WHAT ARE HOOKS?
-// fastify.addHook('onRequest', async (req, res) => {
-//   console.log('[Request]', req.method, req.url);
-// });
+await fastify.register(swaggerUi, {
+  routePrefix: 'docs',
+  uiConfig: {
+    deepLinking: false,
+    defaultModelsExpandDepth: -1,
+
+  },
+  staticCSP: true,
+});
 
 
 fastify.listen({ port }, (err, address) => {

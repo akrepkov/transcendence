@@ -284,7 +284,7 @@ export function openSnakeTab() {
         animationFrame = requestAnimationFrame(drawGame);
     }
 
-<<<<<<< HEAD:project/frontend/src/snake.js
+
     //sends key pressed to the backend//here i react on pressed buttons
     function setupKeyboardControls(socket) {
         document.addEventListener('keydown', (event) => {
@@ -292,7 +292,8 @@ export function openSnakeTab() {
                 type: 'move', 
                 key: event.key }));
         });
-=======
+	}
+
     drawGame();
     if (snakeOn === true) {
     document.addEventListener('visibilitychange', () => {
@@ -320,49 +321,21 @@ export function openSnakeTab() {
             opponentId: opponentId,
             inviterId: currentPlayerId
         }));
->>>>>>> windows:project/frontend/src/old/snake.js
+
     }
 
 
-    //doesnt work yet
-    function handleVisibilityChange(socket) {
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden' && snakeOn) {
-                socket.send(JSON.stringify({
-                    type: 'stopGame',
-                    inviterId: currentPlayerId,
-                    opponentId: getOpponentId()
-                }));
-                cancelAnimationFrame(animationFrame);
-                animationFrame = null;
-                snakeOn = false;
-            }
-        });
-    }
-}
 
 
-<<<<<<< HEAD:project/frontend/src/snake.js
-// export function pauseSnakeGame() {
-//     if (!snakeOn) return;
 
-//     if (socket && socket.readyState === WebSocket.OPEN) {
-//         socket.send(JSON.stringify({
-//             type: 'stopGame',
-//             opponentId,
-//             inviterId: currentPlayerId
-//         }));
-//     }
 
-//     if (animationFrame != null) {
-//         cancelAnimationFrame(animationFrame);
-//         animationFrame = null;
-//     }
 
-//     snakeOn = false;
-//     console.log('Game paused (switched tab or visibility lost)');
-// }
-=======
+
+
+
+
+
+
 export function pauseSnakeGame() {
     if (!snakeOn) return;
 
@@ -382,4 +355,4 @@ export function pauseSnakeGame() {
     snakeOn = false;
     console.log('Game paused (switched tab or visibility lost)');
 }
->>>>>>> windows:project/frontend/src/old/snake.js
+

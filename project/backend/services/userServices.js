@@ -19,22 +19,15 @@ export function getUsers() {
     
 }
 
+// NOT USING RIGHT NOW, MIGHT BE NEEDED FOR COMMUNICATION BETWEEN TABLES??????
 // Function to get a user by ID
-export function getUserById(id) {
-    return db.prepare('SELECT * FROM users WHERE id = ?').get(id);
-}
+// export function getUserById(id) {
+//     return db.prepare('SELECT * FROM users WHERE id = ?').get(id);
+// }
 
 export function getUserByEmail(email){
-    return db.prepare('SELECT * FROM users WHERE email').get(email);
+    return db.prepare('SELECT * FROM users WHERE email = ?').get(email);
 }
-
-export function addPlayers(player1, player2) {
-    console.log('In userServices players:', player1, player2);
-    const info1 = addUser(player1);
-    const info2 = addUser(player2);
-    return [info1, info2];
-}
-
 
 export function deleteUser(username) {
     const stmt = db.prepare('DELETE FROM users WHERE username = ?');
@@ -45,20 +38,41 @@ export function deleteUser(username) {
 
 
 //Not working yet
-export function saveGameResults(player1, player2, winner_name) {
-    const user1 = db.prepare('SELECT * FROM users WHERE username = ?').get(player1);
-    const user2 = db.prepare('SELECT * FROM users WHERE username = ?').get(player2);
-
-    if (!user1 || !user2) {
-        console.log("One or both players not found in the database");
-        return;
-    }
+export function saveGameResults(winner_name, loser_name) {
     const winner = db.prepare('SELECT * FROM users WHERE username = ?').get(winner_name);
-    if (!winner) {
-        console.log("Winner not found in the database");
+    const loser = db.prepare('SELECT * FROM users WHERE username = ?').get(loser_name);
+    if (!winner || !loser) {
+        console.log("Player not found in the database");
         return;
     }
-    const stmt = db.prepare('INSERT INTO games (player1_id, player2_id) VALUES (?, ?)');
-    const info = stmt.run(user1.id, user2.id);
+    const stmt = db.prepare('UPDATE users SET wuins = wins + 1 where username = ?').run(winner_name);
+    const stmt2 = db.prepare('UPDATE users SET losses = losses + 1 where username = ?').run(loser_name);
+    const stmt3 = db.prepare('UPDATE users SET games = games + 1 where username = (?, ?)').run(winner_name, loser_name);
+    if (!stmt || !stmt2 || !stmt3) {
+        console.log("Failed to update game results");
+        return;
+    }
     return info.lastInsertRowid;
+}
+
+
+export function uploadAvatarinDatabase(filepath, username) {
+    const checkUser = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
+    if (!checkUser) {
+        console.log("User doesn't exist:", username);
+        return ;
+    }
+    const stmt = db.prepare('UPDATE users SET avatar = ? WHERE username = ?');
+    stmt.run(filepath, username);
+}
+
+export function getAvatarFromDatabase(username) {
+    const checkUser = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
+    if (!checkUser) {
+        console.log("User doesn't exist:", username);
+        return ;
+    }
+    const stmt = db.prepare('SELECT avatar FROM users WHERE username = ?');
+    const info = stmt.get(username);
+    return info.avatar;
 }
