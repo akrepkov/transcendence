@@ -96,3 +96,12 @@ And then depending on if we do remote or not. I guess if remote we need the whol
 and then start up a game with them. And then this times multiple games
 
 
+Okay so websockets
+We can have a websocket open whenever a client connects.
+Now the frontend would have a state for itself where it would have that it's in the online state
+Does it even need one?
+So whenever we enter the remote/waiting room tab we send a message through the socket that we're waiting. Whenever we swithc out we send a message that we're done
+Live chat?
+We always have a connection open.
+So we can make a chatroom, where you can chat with people. So then if we're in there we show up on a list. Again we would have a state in the server for this
+
