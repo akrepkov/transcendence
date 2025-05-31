@@ -14,7 +14,7 @@ const chatWebsocketHandler = (connection) => {
 
     // Broadcast the message to all other connected clients
     for (const client of clients) {
-      if (client.readyState === 1 && client!== connection) {
+      if (client.readyState === 1 && client !== connection) {
         client.send(msgText);
       }
     }
@@ -27,7 +27,6 @@ const chatWebsocketHandler = (connection) => {
   });
 };
 
-
 export default {
-  chatWebsocketHandler
+  chatWebsocketHandler,
 };

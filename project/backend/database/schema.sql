@@ -1,10 +1,12 @@
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT NOT NULL UNIQUE,
+        games INTEGER DEFAULT 0,
+        wins INTEGER DEFAULT 0,
+        losses INTEGER DEFAULT 0,
 		email TEXT NOT NULL UNIQUE,
 		password TEXT NOT NULL,
 		avatar TEXT DEFAULT '../../frontend/public/assets/default_avatar.jpg',
-		google_id TEXT UNIQUE,
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

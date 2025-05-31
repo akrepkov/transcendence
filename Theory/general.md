@@ -130,3 +130,16 @@ Operator	Purpose			Checks			Example			Result
 =			Assignment		—	let 		x = 10			x is 10
 ==			Loose equality	Value			'5' == 5		true
 ===			Strict equality Value & Type	'5' === 5		false
+
+
+
+
+
+
+Everyone must do: 
+
+CSS
+https://flukeout.github.io/
+https://flexboxfroggy.com
+https://cssgridgarden.com
+https://codepen.io/pen

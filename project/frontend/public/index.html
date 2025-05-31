@@ -2,380 +2,104 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Pong Game</title>
-	<link rel="stylesheet" href="./styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pong Game</title>
+  <link rel="stylesheet" href="./styles.css">
 </head>
 
-<body>
-	<div class="header">
-		<div class="name">Pong Game</div>
-	</div>
-	<!-- TAB Buttons on the left -->
-	<div class="tab">
-		<button class="tablinks" data-tab="Profile">Profile</button>
-		<button class="tablinks" data-tab="Practice">Practice pong not logged in, on frontend</button>
-		<button class="tablinks" data-tab="Chat">Chat</button>
-		<button class="tablinks" data-tab="Tournament">Tournament empty</button>
-		<button class="tablinks" data-tab="Remote">Remote game- test for the game on backend</button>
-		<button class="tablinks" data-tab="Snake">Snake</button>
-		<button class="tablinks" data-tab="Visibility" style="display: none">Tab for testing visibility</button>
-	</div>
+<body onhashchange="showAlert()">
+  <div class="header">
+    <div class="name">Pong Game</div>
+  </div>
+  <nav>
+    <a href="#profile" class="tab-link" data-tab="profile" style="display:none">Profile</a>
+    <a href="#chat" class="tab-link" data-tab="chat" style="display:none">Chat</a>
+    <a href="#practice" class="tab-link" data-tab="practice" style="display:none">Practice</a>
+    <a href="#remote" class="tab-link" data-tab="remote" data-requires-auth="true" style="display:none">Remote</a>
+  </nav>
 
-	<!-- ID for content inside the tabs -->
-	<div id="Practice" class="tabcontent">
-		<button id="startGame">Start Game</button>
-		<button id="stopGame" style="display: none">Stop Game</button>
-		<div id="gameContainer">
-			<div id="gameStatus">0 - 0</div>
-		</div>
-		<canvas id="pong" width="800" height="600" style="border:1px solid #ffffff; margin-top: 20px;"></canvas>
-	</div>
-	<div id="Chat" class="tabcontent">
-		<h3>Chat</h3>
-		<input type="text" id="messageInput" placeholder="Type a message" />
-		<button id="sendBtn">Send Message</button>
-		<div id="messages"></div>
-	</div>
-	<div id="Tournament" class="tabcontent">
-		<h3>Tournament</h3>
-	</div>
-	<div id="Visibility" class="tabcontent">
-		<h3>Visibility</h3>
-	</div>
-	<!-- <div id="Profile" class="tabcontent">
-    <h3>Login</h3>
-    <form id=loginForm>
-      <input type="text" id="email" placeholder="Email" required autocomplete="current-username">
-      <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
-      <button type="submit">Login</button>
-    </form>
-    <div id="LoginError" class="hidden">Invalid email or password</div>
-    <br>
-    <br>
-    <h3>Register</h3>
-    <form id=registerForm>
-      <input type="text" id="emailR" placeholder="Email" required autocomplete="current-username">
-      <input type="password" id="passwordR" placeholder="Password" required autocomplete="current-password">
-      <input type="text" id="username" placeholder="username" required autocomplete="current-username">
-      <button type="submit">Register</button>
-    </form>
-    <div id="registerError" class="hidden">Invalid email or password</div>
-  </div> -->
-	<!-- <div id="Profile" class="tabcontent">
-    <div class="profileGrid">
-      <div class="profilePhoto">
-        <input type="file" id="fileInput" accept="image/*" style="display: none;" />
-        <img id="defaultAvatar" src="/uploads/default_avatar.jpg" alt="Click to change avatar" />
-      </div>
-      <div class="usernameField">
-        <h1>Not Anna</h1><br> Here we gonna change user name, show frieds
-      </div>
-      <div class="logout">
-        <p><button class="logout" type="logout">Logout</button></p>
-      </div>
-      <div class="statistics"><br>Statistics, Tournament info, match history</div>
+<!-- Added html - profile_login -->
+  <div id="view-profile" class="tab-view" style="display:none"></div>
+
+<!-- Not done yet -->
+  <div id="view-chat" class="tab-view" style="display:none">I am CHAT
+    <input type="text" id="messageInput" placeholder="Type a message" />
+    <button id="sendBtn">Send Message</button>
+    <div id="messages"></div>
+
+
+  </div>
+
+
+  <!-- Frontend Game: -->
+  <div id="view-practice" class="tab-view" style="display:none">
+    <div class="game-options" id="options">
+      <label for="ballCount">Balls:</label>
+      <select id="ballCount">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="10">Go crazy</option>
+      </select>
+      <button id="startGame">Start Game</button>
     </div>
-  </div> -->
+    <div class="stopBlock" id="stop" style="display: none;  flex-direction: column;">
+      <button id="stopGame">Stop Game</button>
+      <div id="players"></div>
+      <div id="gameStatusFrontend">0 - 0</div>
+    </div>
+    <div id="winnerBanner" class="hidden">
+      <span id="winnerName"></span> wins the game!
+    </div>
+    <canvas id="pong" width="800" height="600" style="border:1px solid #ffffff; margin-top: 20px;"></canvas>
+  </div>
 
-  <!-- They have separate html pages -->
-	<div id="Profile" class="tabcontent"></div>
-	<div id="Remote" class="tabcontent"></div>
-  	<div id="Snake" class="tabcontent"></div>
 
-	<!-- Main Script -->
-	<script type="module" src="../src/main.js">
-	</script>
+  <!-- Remote Game: -->
+  <div id="view-remote" class="tab-view" style="display:none">
+
+    <!-- Waiting room -->
+    <div id="waitingRoom" class="hidden">
+      <div id="playerList">
+        <h2>Players:</h2>
+        <ul id="playersList"></ul>
+      </div>
+    </div>
+
+    <!-- Invitation -->
+    <div id="invitation" class="hidden">
+      <div class="invitation-content">
+        <p>You have a new game invitation!</p>
+        <button id="acceptInvite">Accept</button>
+        <button id="declineInvite">Decline</button>
+      </div>
+    </div>
+
+
+    <!-- Rejection not used yet -->
+    <div id="rejection" src="../../backend/uploads/snake_failed.png" class="hidden">
+      REJECTION!!!!!!!!!!!!!!!!
+    </div>
+
+    <!-- THE GAME: -->
+    <div id="gameContainer" class="hidden">
+      <!-- Score -->
+      <div id="gameStatus">0 - 0</div>
+
+      <!-- Canvas -->
+      <div id="canvas-container">
+        <canvas id="gameRemote" width="800" height="600" style="border:1px solid #ffffff; margin-top: 20px;"></canvas>
+      </div>
+
+    </div>
+    <!-- THE GAME XXXXXXXXX -->
+  </div>
+
+
+
+  <!-- JS  -->
+  <script type="module" src="../src/main.js"></script>
 </body>
 
 </html>
-<!-- <script>
-    let user = null
-    let isLoggedIn = false;
-    window.onload = async function () {
-      //Check if logged in
-      verifyLogin();
-      document.querySelector('.tablinks').click(); // Click the default tab
-    };
-    document.getElementById('login').addEventListener('click', function (event) {
-      openTab(event, 'Login'); // Call your tab-opening function
-    });
-    document.getElementById('register').addEventListener('click', function (event) {
-      openTab(event, 'Login'); // You can change 'Login' to 'Register' if needed
-    });
-    
-        if (isLoggedIn){
-          document.getElementById('login').style.display = 'none';
-          document.getElementById('register').style.display = 'none';
-      }
-
-
-    // Function to open tabs
-    function openTab(event, tabName) {
-      if (tabName === "Profile" && !isLoggedIn) {
-        alert("Please log in to access your profile.");
-        return;
-      }
-      // Hide all tab contents
-      var tabcontent = document.getElementsByClassName("tabcontent");
-      for (var i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-      }
-      // Remove "active" class from all tab links
-      var tablinks = document.getElementsByClassName("tablinks");
-      for (var i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-      }
-
-      // Show the selected tab
-      document.getElementById(tabName).style.display = "block";
-      // Add "active" class to clicked tab
-      event.currentTarget.className += " active";
-
-
-
-      // document.getElementById("defaultOpen").click(); /*IF WORK ON 1 TAB*/
-
-
-      // Handle specific tab logic
-      if (tabName === 'Chat') {
-        loadChatScript();
-      }
-
-      // Handle Login tab logic
-      if (tabName === 'Login') {
-        document.getElementById('loginForm').addEventListener('submit', async function (event) {
-          event.preventDefault(); // Prevent the form from submitting normally
-          var email = document.getElementById('email').value;
-          var password = document.getElementById('password').value;
-          //const loginError = document.getElementById('loginError');
-          // loginError.classList.add('hidden');
-          // loginError.style.display = "none";
-          try {
-            const response = await fetch('/api/auth/login', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ email, password }),
-              credentials: 'include' // Include cookies in the request
-            });
-            if (!response.ok) {
-              return;
-            }
-            //open profile page
-            isLoggedIn = true;
-            document.querySelector("button.tablinks[onclick*='Profile']").style.display = "inline-block";
-            openTab({ currentTarget: document.querySelector("button.tablinks[onclick*='Profile']") }, "Profile");
-
-            //hide login button
-            document.getElementById('login').style.display = 'none';
-            document.getElementById('register').style.display = 'none';
-            const data = await response.json();
-            // Redirect or update UI after successful login
-            // Example: Show user profile or navigate to another page
-            //window.location.href = '/dashboard';  // Redirect to a dashboard page or another protected route
-            console.log("Show profile");
-
-          } catch (err) {
-            console.error('Login failed:', err);
-            //loginError.style.display = 'block';
-          }
-        });
-
-        document.getElementById('registerForm').addEventListener('submit', async function (event) {
-          event.preventDefault(); // Prevent the form from submitting normally
-          var email = document.getElementById('emailR').value;
-          var password = document.getElementById('passwordR').value;
-          var username = document.getElementById('username').value;
-          //const registerError = document.getElementById('registerError');
-          // registerError.classList.add('hidden');
-          //registerError.style.display = "none";
-          try {
-            const response = await fetch('/api/auth/register', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ email, password, username })
-            });
-            if (!response.ok) {
-              //registerError.style.display = "block";
-              return;
-            }
-          } catch (err) {
-            console.error('registerForm failed:', err);
-            //registerError.style.display = 'block';
-          }
-        });
-      }
-
-
-      /*PROFILE PART*/
-      if (tabName === 'Profile') {
-        const defaultAvatar = document.getElementById("defaultAvatar");
-        const fileInput = document.getElementById("fileInput");
-
-        // When the image is clicked, trigger the file input
-        defaultAvatar.addEventListener("click", function () {
-          fileInput.click();
-        });
-        fileInput.addEventListener("change", function (event) {
-          const file = event.target.files[0]; //get the selected file
-          if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-              defaultAvatar.src = e.target.result; // Set the image source to the selected file
-            };
-            reader.readAsDataURL(file);
-          }
-
-          //uploading the image to backend
-          const formData = new FormData();
-          formData.append("avatar", file);
-          const response = fetch("/api/upload-avatar", {
-            method: "POST",
-            body: formData,
-            credentials: 'include' // Include cookies in the request
-          })
-            .then((response) => {
-              if (response.ok) {
-                console.log("Avatar uploaded successfully");
-              } else {
-                console.error("Error uploading avatar");
-              }
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-            });
-        });
-
-
-        /*Logout*/
-        const logout = document.querySelector('.logout').addEventListener('click', function () {
-          fetch('/api/auth/logout', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            credentials: 'include', // Include cookies in the request
-            body: JSON.stringify({})
-          })
-            .then(response => {
-              if (response.ok) {
-                document.querySelector("button.tablinks[onclick*='Profile']").style.display = "none";
-                openTab({ currentTarget: document.querySelector("button.tablinks[onclick*='Game']") }, "Game");
-                document.getElementById('login').style.display = 'inline-block';
-                document.getElementById('register').style.display = 'inline-block';
-              } else {
-                console.error('Logout failed');
-              }
-            })
-        })
-      }
-    }
-
-    // Load the game script if not already loaded
-    function loadGameScript() {
-      const input1 = document.getElementById("player1");
-      const input2 = document.getElementById("player2");
-      const buttonStart = document.getElementById("startGame");
-      if (input1 && input2 && buttonStart) {
-        // Hide inputs when game starts
-        input1.classList.add('hidden');
-        input2.classList.add('hidden');
-        buttonStart.classList.add('hidden');
-      }
-      let player1Name = document.getElementById('player1').value.trim() || "Player 1";
-      let player2Name = document.getElementById('player2').value.trim() || "Player 2";
-      if (player1Name === player2Name) {
-        alert("Player names must be different!");
-        return;
-      }
-      if (!document.querySelector('script[src="../src/players.js"]')) {
-        const scriptPlayers = document.createElement("script");
-        scriptPlayers.src = "../src/players.js";
-        scriptPlayers.onload = function () {
-          //console.log('CREATE players:', player1Name, player2Name);
-          createPlayers(player1Name, player2Name); // Start the game
-        };
-        document.head.appendChild(scriptPlayers);
-      }
-      if (!document.querySelector('script[src="../src/pong.js"]')) {
-        const scriptGame = document.createElement("script");
-        scriptGame.src = "../src/pong.js";
-        scriptGame.onload = function () {
-          startPongGame(player1Name, player2Name); // Start the game
-        };
-        document.head.appendChild(scriptGame);
-      } else {
-        // startPongGame(player1Name, player2Name); // If already loaded, just start the game
-      }
-    }
-
-    // Load the chat script if not already loaded
-    function loadChatScript() {
-      if (!document.querySelector('script[src="../src/chat.js"]')) {
-        const scriptChat = document.createElement("script");
-        scriptChat.src = "../src/chat.js";
-        scriptChat.onload = function () {
-          startChat("Player 1", "Player 2"); // Start the chat
-        };
-        document.head.appendChild(scriptChat);
-      } else {
-        startChat("Player 1", "Player 2"); // If already loaded, just start the chat
-      }
-    }
-
-
-
-    const verifyLogin = async () => {
-      try {
-        const response = await fetch('/api/auth/me', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          credentials: 'include' // Include cookies in the request
-        });
-        if (response.ok) {
-          isLoggedIn = true;
-          let user  = await response.json();
-          console.log("User data:", user);
-        }
-      } catch (err) {
-        console.error('Login verification failed:', err);
-      }
-    };
-  </script> -->
-<!-- </body>
-
-</html> -->
-
-<!-- document refers to the entire HTML document. It's a global object that represents the content of the page you're working with in JavaScript. Through document, you can access and modify the page's structure.
-head:
-document.head refers to the <head> element of the HTML document. The <head> is a part of the HTML that contains metadata (such as the title of the page, links to stylesheets, and scripts).
-
-Why <head>?: Scripts are often added to the <head> section because it allows the script to load before the rest of the page is rendered (depending on whether you use async or defer attributes). In this case, we're adding the script to the <head> to ensure it loads and executes before other scripts or elements that might rely on it
-  appendChild(pongScript):
-appendChild() is a method that adds a new child element (or node) to a parent element in the DOM (Document Object Model).
-
-In this case, pongScript is the child that we are adding, and the parent is document.head.
-
-pongScript is the dynamically created <script> element that has the src set to "../src/pong.js". This tells the browser to load the JavaScript file located at that path. -->
-
-
-
-
-
-
-<!-- https://codepen.io/pen/ 
-   
-  https://cssgridgenerator.io/ 
-  -->
-<!-- 
-
-
-  //TODO create fetch(api/mi) and according to that recieve stats for frontend
-  //TODO save avatar in backend(no need to use database), return the path and in html add choice between default and the path -->

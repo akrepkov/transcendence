@@ -1,5 +1,1 @@
-export function openTournamentTab() {
-
-
-    
-}
+export function openTournamentTab() {}
