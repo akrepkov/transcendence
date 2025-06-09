@@ -4,6 +4,7 @@ import { openRemoteTab } from './remote/remote.js';
 import { verifyLogin } from './auth/authRequests.js';
 import AuthManager from './managers/authManager.js';
 import { changeHashfromRemote, changeHashToRemote } from './remote/socket.js';
+import { openConnection } from './websocket/websocket.js';
 
 let oldHash = '';
 
@@ -11,6 +12,7 @@ export function showAlert() {
   console.log('Changed hash');
 }
 
+// what is this line of code doing @Anna?
 window.showAlert = showAlert;
 
 const tabs = {
@@ -95,6 +97,7 @@ window.addEventListener('load', async () => {
   console.log('Page Verifying on page load');
   await verifyLogin();
   await updateAuthLinks();
+  openConnection();
   tabChange();
 });
 

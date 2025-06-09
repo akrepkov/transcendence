@@ -43,7 +43,73 @@ There is a method you send, so GET just gets resource, POST posts it to the serv
 So Rest APIs have endpoints for resources and when a client request it the server returns all the information about that resource, ex. fetch user will return all the info about the user
 
 TODOS
-fix workflows to only do something for pushing to main
-setup makeifle rule to pull package.jsons form branches
 merge Anna code, check if it works and merge it back to Anna, we'll prbably have to do this with Anna there
 
+
+Tournament
+
+Do we store the tournament matches and scores anywhere? Subject doesn't state it as necessary
+
+Local tournament? Everyone would play on one computer, since we're doing user management it means we need to use people's accounts
+Could we maybe just do local, and then have prompt for amoutn fo players, f.e. 8, and then for each player we give a prompt
+to either put in a username or login to their account, fetch the configured display name for that account and use that.
+This way we setup the whole tournament with just unique names, and both people with accounts and without can play
+We then do all the matches locally on one computer.
+Issue, storing the tournament score somewhere
+Makes things easier since you don't have to use remote players and server-side pong
+
+Remote tournament? Everyone on different accounts
+So we start tournament and then I guess the person starting is automatically signed up, you then might be prompted for amount of participants
+you put that in and then continue to add people from you friend list?, or just people that are online. This would send prompts to these people
+asking to participate. Once enough people are added you can start tournament.
+It would then create matches and prompt the users that matched eachother for a game. If they both accept the match starts (maybe give a 1 minute timer)
+
+Matchmaking
+
+Round robin tournament. Everyone plays against everyone. This might be a lot of matches when you get more participants
+
+Swiss system. this is like the chess thing, you have less matches and people get matched based on the score they have currently
+but without having repeat matchings. This one would be a bit harder to implement, but it allows for a multitude of different amount
+of competitors
+
+Then there is the standard knockout system that pigeonholes you into powers of two
+
+You could also do a football tournament type, with first round robins and then knockout
+
+Or way more complicated things with losers and winners brackets
+
+Database
+Do we even store the tournament scores
+If we do, we could have a table with tournament IDs, maybe amoutn of participants, when it happened and the amount of rounds and the id of the winner
+Then the round would have all the matches and the scores, you could then have a display of the tournament as well
+The user would have something that stores the amount of tournaments he won and which ones.
+
+
+Then there is all the forntend stuff
+I guess I would have a tab for the tournament. Then clicking there could have a link to all the previous tournaments (if we store them)
+And a button to start a new one. Once started we would be able to invite other players
+There would be a general overview of the tournament. Like next round, who is up against whom etc.
+If we do locally we just move through the round one match at a time. <---- a lot depend shere on decisions I make beforehand
+
+
+And then depending on if we do remote or not. I guess if remote we need the whole thing where the backend will open sockets to both players
+and then start up a game with them. And then this times multiple games
+
+
+Okay so websockets
+We can have a websocket open whenever a client connects.
+Now the frontend would have a state for itself where it would have that it's in the online state
+Does it even need one?
+So whenever we enter the remote/waiting room tab we send a message through the socket that we're waiting. Whenever we swithc out we send a message that we're done
+Live chat?
+We always have a connection open.
+So we can make a chatroom, where you can chat with people. So then if we're in there we show up on a list. Again we would have a state in the server for this
+
+
+We have to have a websocket connect when client logs in, so I guess there is a request if there is cookies already
+If there is we can mark the connection as online, have it have a bunch of info in it, like the credentials of the player
+So we're always open to messages?
+So the chat window might just have everyone that is online on there - blocked users and maybe a thing to show they are friends
+Then we have the remote play. Maybe whenever it is clicked on you get sent to a waiting room, so the state of the connection changes. Ergo, there need to be ways to send change of state to the backend, like, I'm now in waiting room, I'm now in normal browsing mode, I'm now in game. And then there is ways to catch messages in the frontend
+
+So in our backend we can have a Set of connection classes with the websockets there, these can open everytime someone logs in

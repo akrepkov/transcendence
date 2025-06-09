@@ -2,6 +2,7 @@ import userControllers from '../controllers/userControllers.js';
 import authControllers from '../controllers/authControllers.js';
 import websocket from '../websocket/websocketChat.js';
 import pong from '../websocket/remotePong/websocketRemote.js';
+import websocketController from '../websocket/websocket.js';
 // import snake from '../plugins/websocketSnake.js';
 
 export default async function userRoutes(fastify) {
@@ -10,6 +11,7 @@ export default async function userRoutes(fastify) {
   fastify.get('/api/users', userControllers.getAllUsersHandler);
   fastify.delete('/api/users', userControllers.deleteUserHandler);
   fastify.post('/api/winner', userControllers.saveWinnerHandler);
+
   //Avatar
   fastify.post(
     '/api/upload-avatar',
@@ -21,6 +23,9 @@ export default async function userRoutes(fastify) {
     { preHandler: authControllers.getUserFromRequest },
     userControllers.getAvatarHandler,
   );
+
+  // Websocket
+  fastify.get('/ws/connect', { websocket: true }, websocketController.websocketHandler);
   //Chat:
   fastify.get('/ws/chat', { websocket: true }, websocket.chatWebsocketHandler);
   //Remote
