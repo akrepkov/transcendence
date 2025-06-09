@@ -29,7 +29,26 @@ const port = 3000; //TODO do we need to do something with port?
 // console.log("Dirname name in index.js:", __dirname); // Debugging
 
 const fastify = Fastify({
-  logger: true,
+  // logger: true,
+  logger: {
+    level: 'info',
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        ignore: 'pid,hostname,reqId,responseTime,worker',
+        translateTime: 'HH:MM:ss',
+      },
+    },
+    serializers: {
+      req(request) {
+        return `{ method: ${request.method}, url: ${request.url}}`;
+      },
+      res(response) {
+        return `{ statusCode: ${response.statusCode} } for req { method: ${response.request.method}, url: '${response.request.url}' }`;
+      },
+    },
+  },
+
   https: {
     key: fs.readFileSync(path.join(__dirname, 'certs/key.pem')),
     cert: fs.readFileSync(path.join(__dirname, 'certs/cert.pem')),
