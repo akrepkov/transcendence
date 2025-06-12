@@ -91,7 +91,7 @@ function denyGameInvitation(inviterId, opponentId) {
   // 	message: `Player ${opponentId} declined the game.`
   // }));
   updatePlayerStatus(inviter, 'rejection');
-  setTimeout(() => {
+  setTimeout(() => {socket.on
     updatePlayerStatus(inviter, 'waiting');
   }, 2000);
   if (opponent.status != 'left') updatePlayerStatus(opponent, 'waiting');

@@ -22,7 +22,7 @@ console.log('JWT_SECRET:', process.env.JWT_SECRET); // Log the JWT_SECRET for de
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const port = 3000; //TODO do we need to do something with port?
+const port = 3001; //TODO do we need to do something with port?
 
 // console.log("File name in index.js:", __filename); // Debugging
 
@@ -90,11 +90,26 @@ await fastify.register(swaggerUi, {
   staticCSP: true,
 });
 
+
+// fastify.get('/ws', { websocket: true }, (ws, req) => {
+//   console.log('WebSocket route hit');
+
+//   ws.on('message', message => {
+//     console.log('Received:', message.toString());
+//     ws.send(`You said: ${message}`);
+//   });
+
+//   ws.on('close', () => {
+//     console.log('WebSocket closed');
+//   });
+// });
+
 fastify.listen({ port }, (err, address) => {
   if (err) {
     fastify.log.error(err);
     process.exit(1);
   }
+  console.log(`Server listening at ${address}`);
 });
 
 // https://medium.com/@adarshahelvar/navigating-file-paths-in-node-js-with-filename-and-dirname-1dd2656f8d7e
