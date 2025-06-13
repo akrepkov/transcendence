@@ -30,24 +30,24 @@ const port = 3000; //TODO do we need to do something with port?
 
 const fastify = Fastify({
   // logger: true,
-  logger: {
-    level: 'info',
-    transport: {
-      target: 'pino-pretty',
-      options: {
-        ignore: 'pid,hostname,reqId,responseTime,worker',
-        translateTime: 'HH:MM:ss',
-      },
-    },
-    serializers: {
-      req(request) {
-        return `{ method: ${request.method}, url: ${request.url}}`;
-      },
-      res(response) {
-        return `{ statusCode: ${response.statusCode} } for req { method: ${response.request.method}, url: '${response.request.url}' }`;
-      },
-    },
-  },
+  // logger: {
+  //   level: 'info',
+  //   transport: {
+  //     target: 'pino-pretty',
+  //     options: {
+  //       ignore: 'pid,hostname,reqId,responseTime,worker',
+  //       translateTime: 'HH:MM:ss',
+  //     },
+  //   },
+  //   serializers: {
+  //     req(request) {
+  //       return `{ method: ${request.method}, url: ${request.url}}`;
+  //     },
+  //     res(response) {
+  //       return `{ statusCode: ${response.statusCode} } for req { method: ${response.request.method}, url: '${response.request.url}' }`;
+  //     },
+  //   },
+  // },
 
   https: {
     key: fs.readFileSync(path.join(__dirname, 'certs/key.pem')),

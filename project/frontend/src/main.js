@@ -4,7 +4,7 @@ import { openRemoteTab } from './remote/remote.js';
 import { verifyLogin } from './auth/authRequests.js';
 import AuthManager from './managers/authManager.js';
 import { changeHashfromRemote, changeHashToRemote } from './remote/socket.js';
-import { openConnection } from './websocket/websocket.js';
+import { openConnection, sendMessage } from './websocket/websocket.js';
 
 let oldHash = '';
 
@@ -97,7 +97,8 @@ window.addEventListener('load', async () => {
   console.log('Page Verifying on page load');
   await verifyLogin();
   await updateAuthLinks();
-  openConnection();
+  await openConnection();
+  sendMessage();
   tabChange();
 });
 
