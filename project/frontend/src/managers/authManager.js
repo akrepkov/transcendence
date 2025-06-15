@@ -3,6 +3,7 @@
 //It exposes only the allowed actions (public functions).
 //(function() { ... })() →  runs immediately
 // (this is called an Immediately Invoked Function Expression — IIFE).
+import { openConnection, closeConnection } from '../websocket/websocket.js';
 
 const AuthManager = (function () {
   let loggedIn = false;
@@ -11,10 +12,12 @@ const AuthManager = (function () {
     login(userdata) {
       loggedIn = true;
       user = userdata;
+      openConnection();
     },
     logout() {
       loggedIn = false;
       user = null;
+      closeConnection();
     },
     isLoggedIn() {
       return loggedIn;

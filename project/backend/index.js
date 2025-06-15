@@ -28,38 +28,47 @@ const port = 3000; //TODO do we need to do something with port?
 
 // console.log("Dirname name in index.js:", __dirname); // Debugging
 
+let isLoggerEnabled = false;
+
+const getLoggerConfig = () =>
+  isLoggerEnabled
+    ? {
+        level: 'info',
+        transport: {
+          target: 'pino-pretty',
+          options: {
+            ignore: 'pid,hostname,reqId,responseTime,worker',
+            translateTime: 'HH:MM:ss',
+          },
+        },
+        serializers: {
+          req(request) {
+            return `{ method: ${request.method}, url: ${request.url}}`;
+          },
+          res(response) {
+            return `{ statusCode: ${response.statusCode} } for req { method: ${response.request.method}, url: '${response.request.url}' }`;
+          },
+        },
+      }
+    : false;
+
 const fastify = Fastify({
   // logger: true,
-  // logger: {
-  //   level: 'info',
-  //   transport: {
-  //     target: 'pino-pretty',
-  //     options: {
-  //       ignore: 'pid,hostname,reqId,responseTime,worker',
-  //       translateTime: 'HH:MM:ss',
-  //     },
-  //   },
-  //   serializers: {
-  //     req(request) {
-  //       return `{ method: ${request.method}, url: ${request.url}}`;
-  //     },
-  //     res(response) {
-  //       return `{ statusCode: ${response.statusCode} } for req { method: ${response.request.method}, url: '${response.request.url}' }`;
-  //     },
-  //   },
-  // },
-
+  logger: getLoggerConfig(),
   https: {
     key: fs.readFileSync(path.join(__dirname, 'certs/key.pem')),
     cert: fs.readFileSync(path.join(__dirname, 'certs/cert.pem')),
   },
 });
+
 fastify.register(fastifyMultipart, {
   limits: {
     fileSize: 1 * 1024 * 1024, // optional: max file size (10MB here)
   },
 });
+
 fastify.register(fastifyWebSocket);
+
 fastify.register(fastifyStatic, {
   root: path.join(__dirname, '../frontend/public'),
   prefix: '/', // Serve static files from the root URL (e.g., /index.html, /style.css)
@@ -77,10 +86,12 @@ fastify.register(fastifyStatic, {
   prefix: '/uploads/', // Serve JS files under the /src/ path (e.g., /src/pong.js, /src/players.js)
   decorateReply: false,
 });
+
 // Serve index.html
 fastify.get('/', (request, reply) => {
   reply.sendFile('index.html');
 });
+
 fastify.register(cookie, {});
 
 // Register all routes

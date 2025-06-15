@@ -2,7 +2,7 @@ import userControllers from '../controllers/userControllers.js';
 import authControllers from '../controllers/authControllers.js';
 import websocket from '../websocket/websocketChat.js';
 import pong from '../websocket/remotePong/websocketRemote.js';
-import websocketController from '../websocket/websocket.js';
+import { websocketHandler } from '../websocket/websocket.js';
 // import snake from '../plugins/websocketSnake.js';
 
 export default async function userRoutes(fastify) {
@@ -25,7 +25,7 @@ export default async function userRoutes(fastify) {
   );
 
   // Websocket
-  fastify.get('/ws/connect', { websocket: true }, websocketController.websocketHandler);
+  fastify.get('/ws/connect', { websocket: true }, websocketHandler);
   //Chat:
   fastify.get('/ws/chat', { websocket: true }, websocket.chatWebsocketHandler);
   //Remote

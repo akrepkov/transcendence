@@ -97,8 +97,6 @@ window.addEventListener('load', async () => {
   console.log('Page Verifying on page load');
   await verifyLogin();
   await updateAuthLinks();
-  await openConnection();
-  sendMessage();
   tabChange();
 });
 

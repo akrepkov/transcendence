@@ -1,7 +1,7 @@
 let socket = null;
 
 export function openConnection() {
-  console.log('opening websocket');
+  console.log('%c opening websocket', 'color:green');
   if (socket === null) {
     socket = new WebSocket('wss://localhost:3000/ws/connect');
   }
@@ -28,4 +28,10 @@ export function openConnection() {
 export function sendMessage() {
   socket.send(JSON.stringify({ type: 'connect' }));
   socket.send('connect');
+}
+
+export function closeConnection() {
+  console.log('%c closing websocket', 'color:green');
+  socket.close(1000, 'Closing connection');
+  socket = null;
 }
