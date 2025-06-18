@@ -3,7 +3,7 @@ import * as userServices from '../services/userServices.js';
 import { handleError } from '../utils/utils.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-const JWT_SECRET = '' + process.env.JWT_SECRET; //using environmental variable for JWT secret
+import { JWT_SECRET } from '../config.js';
 
 const loginHandler = async (request, reply) => {
   const { email, password } = request.body;
