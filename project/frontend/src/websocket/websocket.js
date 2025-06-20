@@ -8,14 +8,15 @@ export function openConnection() {
   socket.onopen = () => {
     console.log('WebSocket connection opened.');
     socket.send(JSON.stringify({ type: 'connect' }));
+    // socket.send('connect');
   };
 
   socket.onmessage = (event) => {
     console.log('Message received:', event.data);
   };
 
-  socket.onclose = () => {
-    console.log('Websocket connection closed.');
+  socket.onclose = (error) => {
+    console.log('Websocket connection closed.', error.code, error.reason);
     socket = null;
   };
 

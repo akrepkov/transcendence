@@ -136,6 +136,24 @@ const getUserFromRequest = async (request, reply) => {
   }
 };
 
+const authenticateSocketConnection = (request, socket) => {
+  const token = request.cookies.token;
+  if (!token) {
+    console.log('No token found in socket connection');
+    socket.close(1008, 'No token provided');
+    return;
+  }
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    console.log('Succes decoding token for the socket connection, decoded token: ', decoded);
+    return decoded;
+  } catch (error) {
+    console.error('%c Token verification failed, with error: ', 'color:red', error.message);
+    socket.close(1008, 'Invalid token: ' + error.name + ': ' + error.message);
+    return;
+  }
+};
+
 export default {
   loginHandler,
   registerHandler,
@@ -143,6 +161,7 @@ export default {
   verificationHandler,
   authenticate,
   getUserFromRequest,
+  authenticateSocketConnection,
 };
 
 // Plan:
