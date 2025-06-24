@@ -1,7 +1,7 @@
-export class Connection {
+export class Client {
   constructor(socket, userId) {
     this.userId = userId;
     this.socket = socket;
-    this.state = 'online';
+    this.state = 'idle';
   }
 }

@@ -1,4 +1,4 @@
-import { Connection } from '../models/Connection.js';
+import { Client } from '../models/Client.js';
 
 export class WebSocketManager {
   constructor() {
@@ -6,8 +6,8 @@ export class WebSocketManager {
     console.log('Created websocket manager');
   }
 
-  #addConnection(newConnection) {
-    const userId = newConnection.userId;
+  #addClient(newClient) {
+    const userId = newClient.userId;
     console.log('New connection from user:', userId);
 
     if (!this.connectedUsers.has(userId)) {
@@ -17,17 +17,17 @@ export class WebSocketManager {
       console.log('We already had this one');
     }
 
-    let userConnections = this.connectedUsers.get(userId);
-    userConnections.add(newConnection);
+    let userClients = this.connectedUsers.get(userId);
+    userClients.add(newClient);
     this.#printUsers();
   }
 
-  #removeConnection(connection) {
+  #removeClient(client) {
     // possibly add stuff for removing from game
-    let userConnections = this.connectedUsers.get(connection.userId);
-    userConnections.delete(connection);
-    if (userConnections.size === 0) {
-      this.connectedUsers.delete(connection.userId);
+    let userClients = this.connectedUsers.get(client.userId);
+    userClients.delete(client);
+    if (userClients.size === 0) {
+      this.connectedUsers.delete(client.userId);
     }
     this.#printUsers();
   }
@@ -39,14 +39,14 @@ export class WebSocketManager {
     });
   }
 
-  #setupSocketEvents(socket, connection) {
+  #setupSocketEvents(socket, client) {
     socket.on('message', (message) => {
       console.log('Message.');
     });
 
     socket.on('close', (code, reason) => {
       console.log('Connection closed.:', code, ':', reason.toString());
-      this.#removeConnection(connection);
+      this.#removeClient(client);
     });
 
     socket.on('error', (error) => {
@@ -55,11 +55,11 @@ export class WebSocketManager {
   }
 
   handleNewConnection(socket, decodedToken) {
-    let newConnection = new Connection(socket, decodedToken.email);
-    this.#addConnection(newConnection);
+    let newClient = new Client(socket, decodedToken.email);
+    this.#addClient(newClient);
 
-    console.log('New connection from user:', newConnection.userId);
+    console.log('New connection from user:', newClient.userId);
 
-    this.#setupSocketEvents(socket, newConnection);
+    this.#setupSocketEvents(socket, newClient);
   }
 }
