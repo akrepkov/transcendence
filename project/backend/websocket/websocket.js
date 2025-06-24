@@ -1,10 +1,29 @@
-import { WebSocketManager } from './managers/WebSocketManager.js';
-import jwt from 'jsonwebtoken';
-import cookie from '@fastify/cookie';
-import authcontrollers from '../controllers/authControllers.js';
-const { authenticateSocketConnection } = authcontrollers;
+import authControllers from '../controllers/authControllers.js';
+const { authenticateSocketConnection } = authControllers;
+import { connectionManager } from './managers/connectionManager.js';
+import { Connection } from './models/Connection.js';
 
-const wsManager = new WebSocketManager();
+function setupSocketEvents(socket, connection) {
+  socket.on('message', (message) => {
+    console.log('Message.');
+  });
+
+  socket.on('close', (code, reason) => {
+    console.log('Connection closed.:', code, ':', reason.toString());
+    connectionManager.removeConnection(connection);
+  });
+
+  socket.on('error', (error) => {
+    console.error('Websocket error:', error);
+  });
+}
+
+function handleNewConnection(socket, decodedToken) {
+  let newConnection = new Connection(socket, decodedToken.email);
+  connectionManager.addConnection(newConnection);
+  console.log('New connection from user:', newConnection.userId);
+  setupSocketEvents(socket, newConnection);
+}
 
 export function websocketHandler(socket, req) {
   const decodedToken = authenticateSocketConnection(req, socket);
@@ -12,5 +31,5 @@ export function websocketHandler(socket, req) {
   if (!decodedToken) {
     return;
   }
-  wsManager.handleNewConnection(socket, decodedToken);
+  handleNewConnection(socket, decodedToken);
 }
