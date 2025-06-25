@@ -2,15 +2,20 @@ import authControllers from '../controllers/authControllers.js';
 const { authenticateSocketConnection } = authControllers;
 import { connectionManager } from './managers/connectionManager.js';
 import { Connection } from './models/Connection.js';
+import { messageManager } from './managers/messageManager.js';
 
 function setupSocketEvents(socket, connection) {
   socket.on('message', (message) => {
     console.log('Message.');
+    console.log(message.toString());
   });
 
   socket.on('close', (code, reason) => {
     console.log('Connection closed.:', code, ':', reason.toString());
     connectionManager.removeConnection(connection);
+    if (!connectionManager.getUserConnections(connection.userId)) {
+      messageManager.sendOnlineUsers('all');
+    }
   });
 
   socket.on('error', (error) => {
@@ -23,11 +28,16 @@ function handleNewConnection(socket, decodedToken) {
   connectionManager.addConnection(newConnection);
   console.log('New connection from user:', newConnection.userId);
   setupSocketEvents(socket, newConnection);
+  if (connectionManager.getUserConnections(newConnection.userId).size === 1) {
+    messageManager.sendOnlineUsers('all');
+  } else {
+    messageManager.sendOnlineUsers('single', socket);
+  }
 }
 
 export function websocketHandler(socket, req) {
   const decodedToken = authenticateSocketConnection(req, socket);
-  console.log('Decoded token:', decodedToken);
+  // console.log('Decoded token:', decodedToken);
   if (!decodedToken) {
     return;
   }

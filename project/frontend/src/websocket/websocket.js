@@ -1,5 +1,17 @@
 let socket = null;
 
+function handleMessage(event) {
+  let data = JSON.parse(event.data);
+  console.log(`[${new Date().toLocaleTimeString()}] Message received of type: `, data.type);
+  switch (data.type) {
+    case 'onlineUsers':
+      console.log('online users', data.users);
+      break;
+    case 'default':
+      console.log('Unknown message type');
+  }
+}
+
 export function openConnection() {
   console.log('%c opening websocket', 'color:green');
   if (socket === null) {
@@ -12,7 +24,8 @@ export function openConnection() {
   };
 
   socket.onmessage = (event) => {
-    console.log('Message received:', event.data);
+    handleMessage(event);
+    // console.log('Message received:', event.data);
   };
 
   socket.onclose = (error) => {
