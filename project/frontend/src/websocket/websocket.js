@@ -1,3 +1,5 @@
+import AuthManager from '../managers/authManager.js';
+
 let socket = null;
 
 function handleMessage(event) {
@@ -6,6 +8,10 @@ function handleMessage(event) {
   switch (data.type) {
     case 'onlineUsers':
       console.log('online users', data.users);
+      break;
+    case 'logoutRequest':
+      console.log('logout requested');
+      AuthManager.requestedLogout();
       break;
     case 'default':
       console.log('Unknown message type');
@@ -44,8 +50,8 @@ export function sendMessage() {
   socket.send('connect');
 }
 
-export function closeConnection() {
+export function closeConnection(code, reason) {
   console.log('%c closing websocket', 'color:green');
-  socket.close(1000, 'Closing connection');
+  socket.close(code, reason);
   socket = null;
 }

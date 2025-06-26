@@ -23,6 +23,16 @@ function removeConnection(connection) {
   printUsers();
 }
 
+// function removeAllUserConnections(userId) {
+//   let userConnections = getUserConnections(userId);
+//   console.log(userConnections);
+//   console.log(Array.from(userConnections).map((connection) => connection.socket));
+//   // userConnections.forEach((connection) => connection.socket.close());
+//   userConnections.clear();
+//   connectedUsers.delete(userId);
+//   printUsers();
+// }
+
 function printUsers() {
   console.log('We currently have', connectedUsers.size, 'unique users connected:\n');
   connectedUsers.forEach((connections, userId) => {
@@ -41,6 +51,7 @@ function getConnectedUsers() {
 export const connectionManager = {
   addConnection,
   removeConnection,
+  // removeAllUserConnections,
   getUserConnections,
   getConnectedUsers,
   printUsers,
