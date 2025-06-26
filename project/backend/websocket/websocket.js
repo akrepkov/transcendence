@@ -28,6 +28,8 @@ function handleNewConnection(socket, decodedToken) {
   connectionManager.addConnection(newConnection);
   console.log('New connection from user:', newConnection.userId);
   setupSocketEvents(socket, newConnection);
+
+  // if a new user connected, send updated online users to all connected sockets
   if (connectionManager.getUserConnections(newConnection.userId).size === 1) {
     messageManager.sendOnlineUsers('all');
   } else {
@@ -37,7 +39,6 @@ function handleNewConnection(socket, decodedToken) {
 
 export function websocketHandler(socket, req) {
   const decodedToken = authenticateSocketConnection(req, socket);
-  // console.log('Decoded token:', decodedToken);
   if (!decodedToken) {
     return;
   }

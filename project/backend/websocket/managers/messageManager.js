@@ -12,16 +12,29 @@ function broadcastToAll(message) {
   });
 }
 
-function sendOnlineUsers(target, socket = null) {
-  const connectedUsers = connectionManager.getConnectedUsers().keys();
-  if (target === 'all') {
-    broadcastToAll(JSON.stringify({ type: 'onlineUsers', users: Array.from(connectedUsers) }));
-  } else if (target === 'single') {
-    socket.send(JSON.stringify({ type: 'onlineUsers', users: Array.from(connectedUsers) }));
+function createBroadcast(message) {
+  if (typeof message !== 'string') {
+    message = JSON.stringify(message);
   }
+
+  return {
+    to: {
+      all: () => broadcastToAll(message),
+      single: (socket) => socket.send(message),
+      sockets: (sockets) => sockets.forEach((socket) => socket.send(message)),
+    },
+  };
+}
+
+function sendOnlineUsers(target, sockets = null) {
+  createBroadcast({
+    type: 'onlineUsers',
+    users: Array.from(connectionManager.getConnectedUsers().keys()),
+  }).to[target](sockets);
 }
 
 export const messageManager = {
   broadcastToAll,
+  createBroadcast,
   sendOnlineUsers,
 };
