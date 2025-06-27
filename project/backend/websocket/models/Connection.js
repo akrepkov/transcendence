@@ -1,6 +1,7 @@
 export class Connection {
-  constructor(socket, userId) {
-    this.userId = userId;
+  constructor(socket, decodedToken) {
+    this.userId = decodedToken.email;
+    this.sessionId = decodedToken.sessionId;
     this.socket = socket;
     this.state = 'idle';
   }

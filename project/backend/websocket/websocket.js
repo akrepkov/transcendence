@@ -11,11 +11,14 @@ function closeConnection(connection, code) {
   connectionManager.removeConnection(connection);
 
   // checks if the user logged out and if so, send logout request to all other sockets opened by that user
-  let userConnections = connectionManager.getUserConnections(connection.userId);
+  let userConnections = connectionManager.getUserConnectionsBySession(
+    connection.userId,
+    connection.sessionId,
+  );
   if (code === USER_LOGOUT && userConnections) {
     messageManager
       .createBroadcast({ type: 'logoutRequest' })
-      .to.sockets(Array.from(userConnections).map((connection) => connection.socket));
+      .to.sockets(userConnections.map((connection) => connection.socket));
   }
 
   // if this was the last connection for the user, send updated online users to all other sockets
@@ -41,7 +44,7 @@ function setupSocketEvents(socket, connection) {
 }
 
 function handleNewConnection(socket, decodedToken) {
-  let newConnection = new Connection(socket, decodedToken.email);
+  let newConnection = new Connection(socket, decodedToken);
   connectionManager.addConnection(newConnection);
   setupSocketEvents(socket, newConnection);
 

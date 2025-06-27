@@ -3,6 +3,7 @@ import * as userServices from '../services/userServices.js';
 import { handleError } from '../utils/utils.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 import { JWT_SECRET } from '../config.js';
 
 const loginHandler = async (request, reply) => {
@@ -18,7 +19,8 @@ const loginHandler = async (request, reply) => {
   if (!isMatch) {
     return handleError(reply, new Error('Invalid credentials'), 401);
   }
-  const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: '1h' });
+  const sessionId = crypto.randomBytes(32).toString('hex');
+  const token = jwt.sign({ email, sessionId }, JWT_SECRET, { expiresIn: '1h' });
   // Set the JWT in an HTTP-only cookie
   reply.setCookie('token', token, {
     httpOnly: true, // Ensures it's not accessible via JavaScript

@@ -21,7 +21,7 @@ function handleMessage(event) {
 export function openConnection() {
   console.log('%c opening websocket', 'color:green');
   if (socket === null) {
-    socket = new WebSocket('wss://localhost:3000/ws/connect');
+    socket = new WebSocket(`wss://${window.location.hostname}:3000/ws/connect`);
   }
   socket.onopen = () => {
     console.log('WebSocket connection opened.');

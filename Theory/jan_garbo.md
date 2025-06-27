@@ -113,3 +113,11 @@ So the chat window might just have everyone that is online on there - blocked us
 Then we have the remote play. Maybe whenever it is clicked on you get sent to a waiting room, so the state of the connection changes. Ergo, there need to be ways to send change of state to the backend, like, I'm now in waiting room, I'm now in normal browsing mode, I'm now in game. And then there is ways to catch messages in the frontend
 
 So in our backend we can have a Set of connection classes with the websockets there, these can open everytime someone logs in
+
+
+TODO, add token reauthorization, so when JWT expires
+
+Discuss with Lena about what will be used to identify users, probably IDs
+Split things up a bit in authControllers, some functions are unecessary
+Add handling of reconnection for websockets in frontend
+When a user logs out on a tab we need to disconnect all websockets

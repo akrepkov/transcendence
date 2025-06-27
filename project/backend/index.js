@@ -27,7 +27,7 @@ let isLoggerEnabled = true;
 const getLoggerConfig = () =>
   isLoggerEnabled
     ? {
-        level: 'warn',
+        level: 'warn', // can change to info for more info
         transport: {
           target: 'pino-pretty',
           options: {
@@ -114,7 +114,7 @@ await fastify.register(swaggerUi, {
   staticCSP: true,
 });
 
-fastify.listen({ port }, (err, address) => {
+fastify.listen({ port, host: '0.0.0.0' }, (err, address) => {
   if (err) {
     fastify.log.error(err);
     process.exit(1);

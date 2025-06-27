@@ -38,6 +38,14 @@ function printUsers() {
   });
 }
 
+function getUserConnectionsBySession(userId, sessionId) {
+  const userConnections = getUserConnections(userId);
+  if (!userConnections) {
+    return null;
+  }
+  return Array.from(userConnections).filter((connection) => connection.sessionId === sessionId);
+}
+
 function getUserConnections(userId) {
   return connectedUsers.get(userId);
 }
@@ -50,6 +58,7 @@ export const connectionManager = {
   addConnection,
   removeConnection,
   getUserConnections,
+  getUserConnectionsBySession,
   getConnectedUsers,
   printUsers,
 };
