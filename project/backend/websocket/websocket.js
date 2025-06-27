@@ -6,6 +6,24 @@ import { messageManager } from './managers/messageManager.js';
 
 export const USER_LOGOUT = 3000;
 
+function closeConnection(connection, code) {
+  // TODO possibly add stuff for removing from game
+  connectionManager.removeConnection(connection);
+
+  // checks if the user logged out and if so, send logout request to all other sockets opened by that user
+  let userConnections = connectionManager.getUserConnections(connection.userId);
+  if (code === USER_LOGOUT && userConnections) {
+    messageManager
+      .createBroadcast({ type: 'logoutRequest' })
+      .to.sockets(Array.from(userConnections).map((connection) => connection.socket));
+  }
+
+  // if this was the last connection for the user, send updated online users to all other sockets
+  if (connectionManager.getConnectedUsers().has(connection.userId) === false) {
+    messageManager.sendOnlineUsers('all');
+  }
+}
+
 function setupSocketEvents(socket, connection) {
   socket.on('message', (message) => {
     console.log('Message.');
@@ -14,19 +32,7 @@ function setupSocketEvents(socket, connection) {
 
   socket.on('close', (code, reason) => {
     console.log('Connection closed.:', code, ':', reason.toString());
-    connectionManager.removeConnection(connection);
-    if (code === USER_LOGOUT && connectionManager.getUserConnections(connection.userId)) {
-      messageManager
-        .createBroadcast({ type: 'logoutRequest' })
-        .to.sockets(
-          Array.from(connectionManager.getUserConnections(connection.userId)).map(
-            (connection) => connection.socket,
-          ),
-        );
-    }
-    if (!connectionManager.getUserConnections(connection.userId)) {
-      messageManager.sendOnlineUsers('all');
-    }
+    closeConnection(connection, code);
   });
 
   socket.on('error', (error) => {
@@ -39,7 +45,8 @@ function handleNewConnection(socket, decodedToken) {
   connectionManager.addConnection(newConnection);
   setupSocketEvents(socket, newConnection);
 
-  // if a new user connected, send updated online users to all connected sockets
+  // if a new user connected, send updated online users to all connected sockets,
+  // otherwise send the online users to the new socket
   if (connectionManager.getUserConnections(newConnection.userId).size === 1) {
     messageManager.sendOnlineUsers('all');
   } else {

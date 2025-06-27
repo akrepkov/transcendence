@@ -1,9 +1,16 @@
+// map that holds all the users, it connects their IDs to a set of their connections
+// a user can have multiple connections, think multiple browser tabs logged into the same account
+import { messageManager } from './messageManager.js';
+
 const connectedUsers = new Map();
 
+// function to add a connection (socket) to a user
+// if it is a new user, will create a new set in the map identifying the user's connections
 function addConnection(newConnection) {
   const userId = newConnection.userId;
   console.log('New connection from user:', userId);
 
+  // if it's a new user, create a new set in the map for the users connections
   if (!connectedUsers.has(userId)) {
     console.log('New User connected');
     connectedUsers.set(userId, new Set());
@@ -13,8 +20,9 @@ function addConnection(newConnection) {
   printUsers();
 }
 
+// function to remove a single connection (socket) from a user
+// if the user has no more connections, removes the user from the map
 function removeConnection(connection) {
-  // possibly add stuff for removing from game
   let userConnections = getUserConnections(connection.userId);
   userConnections.delete(connection);
   if (userConnections.size === 0) {
@@ -22,16 +30,6 @@ function removeConnection(connection) {
   }
   printUsers();
 }
-
-// function removeAllUserConnections(userId) {
-//   let userConnections = getUserConnections(userId);
-//   console.log(userConnections);
-//   console.log(Array.from(userConnections).map((connection) => connection.socket));
-//   // userConnections.forEach((connection) => connection.socket.close());
-//   userConnections.clear();
-//   connectedUsers.delete(userId);
-//   printUsers();
-// }
 
 function printUsers() {
   console.log('We currently have', connectedUsers.size, 'unique users connected:\n');
@@ -51,7 +49,6 @@ function getConnectedUsers() {
 export const connectionManager = {
   addConnection,
   removeConnection,
-  // removeAllUserConnections,
   getUserConnections,
   getConnectedUsers,
   printUsers,
