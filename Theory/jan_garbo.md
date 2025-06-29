@@ -114,6 +114,13 @@ Then we have the remote play. Maybe whenever it is clicked on you get sent to a 
 
 So in our backend we can have a Set of connection classes with the websockets there, these can open everytime someone logs in
 
+So games, one option is to have a tab, you go there and can see veryone waiting in the tab, you can then invite them ot a game, they can accept and when they do a room gets created and you and the other person get put in and play the game, i think this works? It's kind of reliant on Djoyke as well
+
+At any rate, in the backend there needs to keep track of this
+One is the game itself and the logic behind it. A game could keep track of the state the game is in, the position of the players paddles, the position of the ball etc. Then whenever a new input is given it will adjust those positions, and do the same for the ball itself.
+Then maybe a gameManager, that holds all these games, can start a game, stop one etc
+Then maybe rooms?
+
 
 TODO, add token reauthorization, so when JWT expires
 

@@ -3,6 +3,7 @@ export class Connection {
     this.userId = decodedToken.email;
     this.sessionId = decodedToken.sessionId;
     this.socket = socket;
+    this.socket.isAlive = true;
     this.state = 'idle';
   }
 }

@@ -41,6 +41,10 @@ function setupSocketEvents(socket, connection) {
   socket.on('error', (error) => {
     console.error('Websocket error:', error);
   });
+
+  socket.on('pong', () => {
+    socket.isAlive = true;
+  });
 }
 
 function handleNewConnection(socket, decodedToken) {

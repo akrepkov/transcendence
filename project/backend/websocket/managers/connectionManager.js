@@ -1,7 +1,5 @@
 // map that holds all the users, it connects their IDs to a set of their connections
 // a user can have multiple connections, think multiple browser tabs logged into the same account
-import { messageManager } from './messageManager.js';
-
 const connectedUsers = new Map();
 
 // function to add a connection (socket) to a user

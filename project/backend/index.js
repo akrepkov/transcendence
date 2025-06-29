@@ -17,6 +17,7 @@ import fs from 'fs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const port = 3000; //TODO do we need to do something with port?
+const PINGINTERVAL = 30000;
 
 // console.log("File name in index.js:", __filename); // Debugging
 
@@ -112,6 +113,19 @@ await fastify.register(swaggerUi, {
     defaultModelsExpandDepth: -1,
   },
   staticCSP: true,
+});
+
+fastify.ready().then(() => {
+  const interval = setInterval(() => {
+    fastify.websocketServer.clients.forEach((socket) => {
+      if (!socket.isAlive) {
+        console.log('Terminating stale client');
+        return socket.terminate();
+      }
+      socket.isAlive = false;
+      socket.ping();
+    });
+  }, PINGINTERVAL);
 });
 
 fastify.listen({ port, host: '0.0.0.0' }, (err, address) => {
