@@ -124,7 +124,11 @@ Then maybe rooms?
 
 TODO, add token reauthorization, so when JWT expires
 
+websockets - maybe add rate limiting, better error handling and maybe a cleanup, error handling for messages if what comes in is not in json format
+
 Discuss with Lena about what will be used to identify users, probably IDs
 Split things up a bit in authControllers, some functions are unecessary
 Add handling of reconnection for websockets in frontend
 When a user logs out on a tab we need to disconnect all websockets
+
+add cleanup on server shutdown, involves websocket cleanup
