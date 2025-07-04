@@ -5,8 +5,6 @@ import { Connection, wsState } from './models/Connection.js';
 import { messageManager } from './managers/messageManager.js';
 
 export const USER_LOGOUT = 3000;
-export const WIDTH = 800;
-export const HEIGHT = 600;
 
 function closeConnection(connection, code) {
   // TODO possibly add stuff for removing from game
