@@ -1,7 +1,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -18,6 +17,7 @@ model User {
   games       Int      @default(0)
   wins        Int      @default(0)
   losses      Int      @default(0)
+  rank        Int      @default(0)
   createdAt   DateTime @default(now())
 	password		String	 
   friends			User[]	@relation("UserFriends")

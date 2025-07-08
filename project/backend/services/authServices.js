@@ -1,34 +1,37 @@
-import db from '../database/index.js';
+import prisma from '../../prisma/prismaClient.js';
 import bcrypt from 'bcrypt';
-// import {handleError} from '../utils/utils.js';
 
-//get(email) in sqlite3 is asynchronous,it returns promise, need await
-export async function checkCredentials(email) {
-  const user = await db.prepare('SELECT * FROM users WHERE email = ?').get(email);
-  if (!user) {
-    return null; // Return null if no user is found
+// Register a new user
+export async function registerUser({ username, email, password }) {
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      OR: [{ username }, { email }],
+    },
+  });
+  if (existingUser) {
+    return 418;
   }
-  // console.log("Type of function: ",typeof user.then); // Will be 'function' if it's a Promise and needs await
-  return user;
-}
-
-export async function checkUniqueUsername(username) {
-  const user = await db.prepare('SELECT * FROM users WHERE username = ?').get(username);
-  if (!user) {
-    return null; // Return null if no user is found
-  }
-  // console.log("Type of function: ",typeof user.then); // Will be 'function' if it's a Promise and needs await
-  return user;
-}
-//bcrypt is asynchronous, I have to use await
-export async function registerInDatabase(email, password, username) {
+  // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10);
-  const stmt = db.prepare('INSERT INTO users (email, password, username) VALUES (?, ?, ?)');
-  const info = stmt.run(email, hashedPassword, username);
-  return info;
+
+  // Create the user
+  return prisma.user.create({
+    data: { username, email, password: hashedPassword },
+  });
 }
 
-// Export the database instance for direct use if needed
-export default db;
+// Authenticate user (login)
+export async function authenticateUser({ email, password }) {
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) return null;
+  const isValid = await bcrypt.compare(password, user.password);
+  if (!isValid) return null;
+  // Optionally, remove password before returning user object
+  const { password: _, ...userWithoutPassword } = user;
+  return userWithoutPassword;
+}
 
-//if use better-sqlite - everything should be async
+// Get user by ID (optional helper)
+export async function getUserById(userId) {
+  return prisma.user.findUnique({ where: { userId } });
+}

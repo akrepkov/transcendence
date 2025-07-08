@@ -1,51 +1,69 @@
-import userControllers from '../controllers/userControllers.js';
-import authControllers from '../controllers/authControllers.js';
-import websocket from '../websocket/websocketChat.js';
-import pong from '../websocket/remotePong/websocketRemote.js';
-// import snake from '../plugins/websocketSnake.js';
+import {
+  addUser,
+  getUsers,
+  getUserByEmail,
+  deleteUser,
+  saveGameResults,
+  uploadAvatarInDatabase,
+  getAvatarFromDatabase,
+} from '../services/userServices.js';
 
-export default async function userRoutes(fastify) {
-  //user manipulation
-  fastify.post('/api/users', userControllers.addUserHandler);
-  fastify.get('/api/users', userControllers.getAllUsersHandler);
-  fastify.delete('/api/users', userControllers.deleteUserHandler);
-  fastify.post('/api/winner', userControllers.saveWinnerHandler);
-  //Avatar
-  fastify.post(
-    '/api/upload-avatar',
-    { preHandler: authControllers.getUserFromRequest },
-    userControllers.uploadAvatarHandler,
-  );
-  fastify.get(
-    '/api/getAvatar',
-    { preHandler: authControllers.getUserFromRequest },
-    userControllers.getAvatarHandler,
-  );
-  //Chat:
-  fastify.get('/ws/chat', { websocket: true }, websocket.chatWebsocketHandler);
-  //Remote
-  fastify.get('/ws/game', { websocket: true }, pong.gameWebsocketHandler);
-  //Snake
-  // fastify.get('/ws/snake', { websocket: true }, snake.snakeWebsocketHandler);
+export default async function (fastify, opts) {
+  // Get all users
+  fastify.get('/users', async (request, reply) => {
+    const users = await getUsers();
+    reply.send(users);
+  });
 
-  //Auth:
-  fastify.get('/api/auth/me', authControllers.verificationHandler);
-  fastify.post('/api/auth/login', authControllers.loginHandler);
-  fastify.post('/api/auth/register', authControllers.registerHandler);
-  fastify.post('/api/auth/logout', authControllers.logoutHandler); // ??
+  // Add a new user
+  fastify.post('/users', async (request, reply) => {
+    const { username, email, password } = request.body;
+    const user = await addUser({ username, email, password });
+    reply.send(user);
+  });
 
-  // fastify.get('/api/remote', userControllers.remoteHandler);
-  // fastify.post('/api/remote', userControllers.remoteHandler);
-  // fastify.post('/api/remote/players', userControllers.remotePlayersHandler);
-  // fastify.post('/api/remote/winner', userControllers.remoteWinnerHandler);
+  // Get user by email
+  fastify.get('/users/:email', async (request, reply) => {
+    const { email } = request.params;
+    const user = await getUserByEmail(email);
+    if (!user) {
+      return reply.status(404).send({ error: 'User not found' });
+    }
+    reply.send(user);
+  });
 
-  //Profile only for logged in
-  // fastify.get('/api/profile', { preHandler: authControllers.authenticate }, userControllers.profileHandler);
+  // Delete user by username
+  fastify.delete('/users/:username', async (request, reply) => {
+    const { username } = request.params;
+    const deleted = await deleteUser(username);
+    if (!deleted) {
+      return reply.status(404).send({ error: 'User not found' });
+    }
+    reply.send({ success: true });
+  });
 
-  //DEBUGGING dont delete please
-  // fastify.ready().then(() => {
-  //     console.log(fastify.printRoutes());
-  //   });
+  // Save game results
+  fastify.post('/users/game-results', async (request, reply) => {
+    const { winnerName, loserName } = request.body;
+    const result = await saveGameResults(winnerName, loserName);
+    reply.send({ success: !!result });
+  });
+
+  // Upload avatar
+  fastify.post('/users/:username/avatar', async (request, reply) => {
+    const { username } = request.params;
+    const { filepath } = request.body;
+    const user = await uploadAvatarInDatabase(filepath, username);
+    reply.send(user);
+  });
+
+  // Get avatar
+  fastify.get('/users/:username/avatar', async (request, reply) => {
+    const { username } = request.params;
+    const avatar = await getAvatarFromDatabase(username);
+    if (!avatar) {
+      return reply.status(404).send({ error: 'Avatar not found' });
+    }
+    reply.send({ avatar });
+  });
 }
-
-//Create a middleware hook to check for authenticated users (via session or token) and protect routes like /game, /profile, etc. - What is it????
