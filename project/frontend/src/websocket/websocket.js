@@ -13,6 +13,9 @@ function handleMessage(event) {
       console.log('logout requested');
       AuthManager.requestedLogout();
       break;
+    case 'updateGameState':
+      console.log('game update');
+      break;
     case 'default':
       console.log('Unknown message type');
   }

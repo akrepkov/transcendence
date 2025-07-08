@@ -3,6 +3,7 @@ const { authenticateSocketConnection } = authControllers;
 import { connectionManager } from './managers/connectionManager.js';
 import { Connection, wsState } from './models/Connection.js';
 import { messageManager } from './managers/messageManager.js';
+import { Game } from './models/Game.js';
 
 export const USER_LOGOUT = 3000;
 

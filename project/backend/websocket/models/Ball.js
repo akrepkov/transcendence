@@ -23,7 +23,7 @@ export class Ball {
   }
 
   topOrBottomCollision() {
-    if (this.y - this.size <= 0 || this.y + this.size >= GAME_CONSTS.HEIGHT) {
+    if (this.y <= 0 || this.y + this.size >= GAME_CONSTS.HEIGHT) {
       return true;
     }
   }
@@ -36,12 +36,22 @@ export class Ball {
     this.speedX *= -1;
   }
 
-  collidesWith(player) {
+  collidesWithLeftPlayer(player) {
     if (
-      this.x - this.size <= player.x + player.width &&
-      this.x + this.size >= player.x &&
-      this.y - this.size <= player.y + player.height &&
-      this.y + this.size >= player.y
+      this.x <= player.paddleWidth &&
+      this.y + this.size >= player.y &&
+      this.y <= player.y + player.paddleHeight
+    ) {
+      return true;
+    }
+  }
+
+  collidesWithRightPlayer(player) {
+    if (
+      this.x + this.size >= GAME_CONSTS.WIDTH - player.paddleWidth &&
+      this.x <= GAME_CONSTS.WIDTH - player.paddleWidth &&
+      this.y + this.size >= player.y &&
+      this.y <= player.y + player.paddleHeight
     ) {
       return true;
     }

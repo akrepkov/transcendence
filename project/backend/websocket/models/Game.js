@@ -55,14 +55,43 @@ export class Game {
   }
 
   handlePlayerCollision() {
-    if (this.ball.collidesWith(this.players[0])) {
+    if (this.ball.collidesWithLeftPlayer(this.players[0])) {
       this.ball.reverseXSpeed();
-    } else if (this.ball.collidesWith(this.players[1])) {
+    } else if (this.ball.collidesWithRightPlayer(this.players[1])) {
       this.ball.reverseXSpeed();
     }
   }
 
-  handleScoring() {}
+  checkWinCondition() {
+    if (
+      this.players[0].score >= GAME_CONSTS.MAX_SCORE ||
+      this.players[1].score >= GAME_CONSTS.MAX_SCORE
+    ) {
+      this.stopGame();
+      messageManager
+        .createBroadcast({
+          type: 'gameOver',
+          players: this.state.players,
+          winner:
+            this.players[0].score > this.players[1].score
+              ? this.players[0].playerName
+              : this.players[1].playerName,
+        })
+        .to.sockets(this.playerSockets);
+    }
+  }
+
+  handleScoring() {
+    if (this.ball.x <= 0) {
+      this.players[1].score++;
+      this.ball.reset();
+      this.checkWinCondition();
+    } else if (this.ball.x >= GAME_CONSTS.WIDTH) {
+      this.players[0].score++;
+      this.ball.reset();
+      this.checkWinCondition();
+    }
+  }
 
   handleBallEvents() {
     this.handleWallCollision();
@@ -70,35 +99,25 @@ export class Game {
     this.handleScoring();
   }
 
-  startGame() {
-    this.gameLoop = setInterval(() => {
-      this.ball.updateBall();
-    });
+  stopGame() {
+    if (this.gameLoop) {
+      clearInterval(this.gameLoop);
+      this.gameLoop = null;
+    }
+    this.running = false;
   }
 
-  // function for disconnect
+  startGame() {
+    if (this.running) return;
+
+    this.running = true;
+    this.gameLoop = setInterval(() => {
+      this.ball.updateBall();
+      this.handleBallEvents();
+      this.broadcastState();
+    }, 1000 / 60); // 60 FPS
+  }
+
   // function for pausing and resuming?
   // function for the loop
-  // function for broadasting
-  // function for stopping
-  // function for the game logic
 }
-
-// getState() {
-//   return {
-//     player1: {
-//       position: this.players[0].paddleY,
-//       score: this.players[0].score,
-//       id: this.players[0].connection.userId,
-//     },
-//     player2: {
-//       position: this.players[1].paddleY,
-//       score: this.players[1].score,
-//       id: this.players[1].connection.userId,
-//     },
-//     ball: {
-//       position: { x: this.ball.x, y: this.ball.y },
-//     },
-//     players: this.players,
-//     ball: this.ball,
-//   };
