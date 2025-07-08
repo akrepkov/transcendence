@@ -14,10 +14,15 @@ export const GAME_CONSTS = {
 };
 
 export class Game {
-  constructor(connection1, connection2) {
+  constructor(connection1, connection2, gameId) {
+    this.gameId = gameId;
     this.ball = new Ball();
-    this.players = [new Player(connection1, 0), new Player(connection2, GAME_CONSTS.WIDTH)];
+    this.players = [
+      new Player(connection1.userId, 0),
+      new Player(connection2.userId, GAME_CONSTS.WIDTH),
+    ];
     this.playerSockets = [connection1.socket, connection2.socket];
+    this.playerConnections = [connection1, connection2];
     this.state = {
       players: this.players,
       ball: this.ball,

@@ -1,8 +1,8 @@
-import { messageManager } from '../managers/messageManager.js';
-import { Game } from './Game.js';
+import { messageManager } from 'messageManager.js';
+import { Game } from '../models/Game.js';
 
 const activeGames = new Map();
-const connectedUsers = new Set();
+const playingUsers = new Map();
 const waitingPlayers = [];
 
 // Counter for generating unique game IDs
@@ -13,19 +13,21 @@ function generateGameId() {
 }
 
 function addPlayerToWaitingList(connection) {
-  if () {
+  if (playingUsers.has(connection.userId)) {
     console.log('Player already in game:', connection.userId);
     return;
   }
-  const existingPlayer = waitingPlayers.find((player) => player.userId === connection.userId);
-  if (existingPlayer) {
+  if (waitingPlayers.some((player) => player.userId === connection.userId)) {
     console.log('Player already in waiting list:', connection.userId);
     return;
   }
+  connection.updateState('waitingRoom');
   waitingPlayers.push(connection);
-  messageManager.createBroadcast({
-    type: 'waitingForOpponent',
-  }).to.socket(connection.socket);
+  messageManager
+    .createBroadcast({
+      type: 'waitingForOpponent',
+    })
+    .to.socket(connection.socket);
 
   console.log('Added player to waiting list:', connection.userId);
   matchPlayers();
@@ -52,19 +54,22 @@ function matchPlayers() {
 
 function createGame(connection1, connection2) {
   const gameId = generateGameId();
-  const game = new Game(connection1, connection2);
-
+  const game = new Game(connection1, connection2, gameId);
   activeGames.set(gameId, game);
 
   connection1.updateState('inGame');
   connection2.updateState('inGame');
 
-  messageManager.createBroadcast({
-    type: 'gameStarting',
-    opponent1: connection1.userId,
-    opponent2: connection2.userId,
-  }).to.sockets([connection1.socket, connection2.socket]);
+  messageManager
+    .createBroadcast({
+      type: 'gameStarting',
+      opponent1: connection1.userId,
+      opponent2: connection2.userId,
+    })
+    .to.sockets([connection1.socket, connection2.socket]);
 
+  playingUsers.set(connection1.userId, gameId);
+  playingUsers.set(connection2.userId, gameId);
   game.startGame();
   console.log('Created new game:', gameId);
 }
@@ -73,25 +78,17 @@ function removeGame(gameId) {
   const game = activeGames.get(gameId);
   if (game) {
     game.stopGame();
-    game.players.forEach(player => {
-      player.connection.updateState('idle');
+    game.playerConnections.forEach((connection) => {
+      connection.updateState('idle');
+      playingUsers.delete(connection.userId);
     });
     activeGames.delete(gameId);
     console.log('Removed game:', gameId);
   }
 }
 
-function findGameByPlayerId(userId) {
-  for (const [_, game] of activeGames) {
-    if (game.players.some(p => p.connection.userId === userId)) {
-      return game;
-    }
-  }
-  return null;
-}
-
 function handleInput(userId, direction) {
-  const game = findGameByPlayerId(userId);
+  const game = activeGames.get(playingUsers.get(userId)) || null;
   if (game) {
     game.handleInput(userId, direction);
   } else {
@@ -100,46 +97,21 @@ function handleInput(userId, direction) {
 }
 
 function handleDisconnect(userId) {
-  // Remove from waiting list if present
   removeFromWaitingList(userId);
 
-  // Find and end any active game
-  const game = findGameByPlayerId(userId);
+  const game = activeGames.get(playingUsers.get(userId)) || null;
   if (game) {
-    const [gameId] = Array.from(activeGames.entries())
-      .find(([_, g]) => g === game) || [];
-
-    if (gameId) {
-      // Notify other player
-      const otherPlayer = game.players.find(p => p.connection.userId !== userId);
-      if (otherPlayer) {
-        messageManager.createMessage({
-          type: 'opponentDisconnected'
-        }).to.socket(otherPlayer.connection.socket);
-      }
-
-      removeGame(gameId);
+    const otherPlayer = game.playerConnections.find((connection) => connection.userId !== userId);
+    if (otherPlayer) {
+      messageManager
+        .createBroadcast({
+          type: 'opponentDisconnected',
+        })
+        .to.socket(otherPlayer.socket);
     }
+    removeGame(game.gameId);
   }
 }
-
-function cleanupInactivePlayers() {
-  const TIMEOUT = 5 * 60 * 1000; // 5 minutes
-  const now = Date.now();
-
-  waitingPlayers.forEach((player, index) => {
-    if (now - player.timestamp > TIMEOUT) {
-      messageManager.createMessage({
-        type: 'matchmakingTimeout'
-      }).to.socket(player.connection.socket);
-
-      waitingPlayers.splice(index, 1);
-    }
-  });
-}
-
-// Set up cleanup interval
-setInterval(cleanupInactivePlayers, 60000); // Run every minute
 
 function getActiveGamesCount() {
   return activeGames.size;
@@ -149,13 +121,45 @@ function getWaitingPlayersCount() {
   return waitingPlayers.length;
 }
 
+// function printGameSystemStatus() {
+//   let statusReport = '=== Game System Status ===\n';
+//
+//   statusReport += `\nWaiting Players (${waitingPlayers.length}):\n`;
+//   if (waitingCount > 0) {
+//     waitingPlayers.forEach(player => {
+//       const waitTime = Math.round((Date.now() - player.timestamp) / 1000);
+//       statusReport += `- Player ${player.userId} (waiting for ${waitTime} seconds)\n`;
+//     });
+//   } else {
+//     statusReport += '- No players waiting\n';
+//   }
+//
+//   // Active games info
+//   statusReport += `\nActive Games (${activeGames}):\n`;
+//   if (activeGames > 0) {
+//     activeGames.forEach((game, gameId) => {
+//       const player1 = game.players[0].connection.userId;
+//       const player2 = game.players[1].connection.userId;
+//       statusReport += `- Game ${gameId}: ${player1} vs ${player2}\n`;
+//     });
+//   } else {
+//     statusReport += '- No active games\n';
+//   }
+//
+//   // Connected users info
+//   statusReport += `\nTotal Connected Users: ${connectedUsers.size}\n`;
+//
+//   console.log(statusReport);
+//   return statusReport;
+// }
+
 export const gameManager = {
   addPlayerToWaitingList,
+  printGameSystemStatus,
   removeFromWaitingList,
   handleInput,
   handleDisconnect,
   removeGame,
-  findGameByPlayerId,
   getActiveGamesCount,
-  getWaitingPlayersCount
+  getWaitingPlayersCount,
 };
