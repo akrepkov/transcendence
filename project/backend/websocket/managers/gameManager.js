@@ -155,7 +155,7 @@ function getWaitingPlayersCount() {
 
 export const gameManager = {
   addPlayerToWaitingList,
-  printGameSystemStatus,
+  // printGameSystemStatus,
   removeFromWaitingList,
   handleInput,
   handleDisconnect,
