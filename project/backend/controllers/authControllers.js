@@ -1,5 +1,5 @@
-import * as authServices from '../services/authServices.js';
-import * as userServices from '../services/userServices.js';
+import * as authServices from '../database/services/authServices.js';
+import * as userServices from '../database/services/userServices.js';
 import { handleError } from '../utils/utils.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';

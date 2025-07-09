@@ -1,4 +1,4 @@
-import db from '../database/index.js';
+import db from '../index.js';
 // import {handleError} from '../utils/utils.js';
 
 // Function to insert a user
