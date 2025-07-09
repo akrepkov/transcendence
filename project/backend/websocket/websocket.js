@@ -1,11 +1,38 @@
 import authControllers from '../controllers/authControllers.js';
 const { authenticateSocketConnection } = authControllers;
 import { connectionManager } from './managers/connectionManager.js';
-import { Connection, wsState } from './models/Connection.js';
+import { Connection } from './models/Connection.js';
 import { messageManager } from './managers/messageManager.js';
-import { Game } from './models/Game.js';
+import { gameManager } from './managers/gameManager.js';
 
 export const USER_LOGOUT = 3000;
+
+function handleMessage(connection, message) {
+  const data = JSON.parse(message);
+  switch (data.type) {
+    case 'joinWaitingRoom':
+      gameManager.addPlayerToWaitingList(connection);
+      gameManager.printGameSystemStatus();
+      break;
+    case 'leaveWaitingRoom':
+      gameManager.removeFromWaitingList(connection.userId);
+      gameManager.printGameSystemStatus();
+      break;
+    case 'move':
+      gameManager.handleInput(connection.userId, data.direction);
+      break;
+    case 'stopGame':
+      gameManager.handleDisconnect(connection.userId, 'opponent requested to stop the game');
+      gameManager.printGameSystemStatus();
+      break;
+    case 'disconnectFromGame':
+      gameManager.handleDisconnect(connection.userId, 'opponent disconnected');
+      gameManager.printGameSystemStatus();
+      break;
+    default:
+      console.warn('Unknown message type:', data.type);
+  }
+}
 
 function closeConnection(connection, code) {
   // TODO possibly add stuff for removing from game
@@ -32,6 +59,7 @@ function setupSocketEvents(socket, connection) {
   socket.on('message', (message) => {
     console.log('Message.');
     console.log(message.toString());
+    handleMessage(connection, message);
   });
 
   socket.on('close', (code, reason) => {

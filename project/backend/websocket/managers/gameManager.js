@@ -1,4 +1,4 @@
-import { messageManager } from 'messageManager.js';
+import { messageManager } from './messageManager.js';
 import { Game } from '../models/Game.js';
 
 const activeGames = new Map();
@@ -27,7 +27,7 @@ function addPlayerToWaitingList(connection) {
     .createBroadcast({
       type: 'waitingForOpponent',
     })
-    .to.socket(connection.socket);
+    .to.single(connection.socket);
 
   console.log('Added player to waiting list:', connection.userId);
   matchPlayers();
@@ -96,7 +96,7 @@ function handleInput(userId, direction) {
   }
 }
 
-function handleDisconnect(userId) {
+function handleDisconnect(userId, reason = 'disconnected') {
   removeFromWaitingList(userId);
 
   const game = activeGames.get(playingUsers.get(userId)) || null;
@@ -106,8 +106,9 @@ function handleDisconnect(userId) {
       messageManager
         .createBroadcast({
           type: 'opponentDisconnected',
+          reason: reason,
         })
-        .to.socket(otherPlayer.socket);
+        .to.single(otherPlayer.socket);
     }
     removeGame(game.gameId);
   }
@@ -121,41 +122,43 @@ function getWaitingPlayersCount() {
   return waitingPlayers.length;
 }
 
-// function printGameSystemStatus() {
-//   let statusReport = '=== Game System Status ===\n';
-//
-//   statusReport += `\nWaiting Players (${waitingPlayers.length}):\n`;
-//   if (waitingCount > 0) {
-//     waitingPlayers.forEach(player => {
-//       const waitTime = Math.round((Date.now() - player.timestamp) / 1000);
-//       statusReport += `- Player ${player.userId} (waiting for ${waitTime} seconds)\n`;
-//     });
-//   } else {
-//     statusReport += '- No players waiting\n';
-//   }
-//
-//   // Active games info
-//   statusReport += `\nActive Games (${activeGames}):\n`;
-//   if (activeGames > 0) {
-//     activeGames.forEach((game, gameId) => {
-//       const player1 = game.players[0].connection.userId;
-//       const player2 = game.players[1].connection.userId;
-//       statusReport += `- Game ${gameId}: ${player1} vs ${player2}\n`;
-//     });
-//   } else {
-//     statusReport += '- No active games\n';
-//   }
-//
-//   // Connected users info
-//   statusReport += `\nTotal Connected Users: ${connectedUsers.size}\n`;
-//
-//   console.log(statusReport);
-//   return statusReport;
-// }
+function printGameSystemStatus() {
+  let statusReport = '=== Game System Status ===\n';
+
+  let amountOfGames = getActiveGamesCount();
+  let amountOfWaitingPlayers = getWaitingPlayersCount();
+
+  statusReport += `\nWaiting Players (${amountOfWaitingPlayers}):\n`;
+  if (amountOfWaitingPlayers > 0) {
+    waitingPlayers.forEach((player) => {
+      statusReport += `- Player ${player.userId}\n`;
+    });
+  } else {
+    statusReport += '- No players waiting\n';
+  }
+
+  // Active games info
+  statusReport += `\nActive Games (${amountOfGames}):\n`;
+  if (amountOfGames > 0) {
+    activeGames.forEach((game, gameId) => {
+      const player1 = game.players[0].userId;
+      const player2 = game.players[1].userId;
+      statusReport += `- Game ${gameId}: ${player1} vs ${player2}\n`;
+    });
+  } else {
+    statusReport += '- No active games\n';
+  }
+
+  // Connected users info
+  statusReport += `\nTotal Connected Users: ${playingUsers.size}\n`;
+
+  console.log(statusReport);
+  return statusReport;
+}
 
 export const gameManager = {
   addPlayerToWaitingList,
-  // printGameSystemStatus,
+  printGameSystemStatus,
   removeFromWaitingList,
   handleInput,
   handleDisconnect,
