@@ -1,5 +1,5 @@
-import prisma from '../../prisma/prismaClient.js';
-import * as authServices from '../services/authServices.js';
+import prisma from '../database/prisma/prismaClient.js';
+import * as authServices from '../database/services/authServices.js';
 
 export default async function (fastify, opts) {
   // Register

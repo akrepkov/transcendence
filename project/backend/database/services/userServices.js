@@ -1,4 +1,4 @@
-import prisma from '../../prisma/prismaClient.js';
+import prisma from '../prisma/prismaClient.js';
 
 // Add a new user
 export async function addUser({ username, email, password }) {

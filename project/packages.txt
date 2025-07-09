@@ -21,7 +21,7 @@ concurrently
 fastify-websocket
 typescript
 ws
-prisma
+@prisma/client
 
 2. backend_dev_dependencies
 nodemon
@@ -58,4 +58,3 @@ fastify-websocket
 typescript
 typescript-eslint
 ws
-

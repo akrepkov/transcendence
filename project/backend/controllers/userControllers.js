@@ -1,4 +1,4 @@
-import * as userServices from '../services/userServices.js';
+import * as userServices from '../database/services/userServices.js';
 import path from 'path';
 import fs from 'fs';
 import pump from 'pump';
