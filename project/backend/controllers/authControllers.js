@@ -3,7 +3,8 @@ import * as userServices from '../services/userServices.js';
 import { handleError } from '../utils/utils.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-const JWT_SECRET = '' + process.env.JWT_SECRET; //using environmental variable for JWT secret
+import crypto from 'crypto';
+import { JWT_SECRET } from '../config.js';
 
 const loginHandler = async (request, reply) => {
   const { email, password } = request.body;
@@ -18,7 +19,8 @@ const loginHandler = async (request, reply) => {
   if (!isMatch) {
     return handleError(reply, new Error('Invalid credentials'), 401);
   }
-  const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: '1h' });
+  const sessionId = crypto.randomBytes(32).toString('hex');
+  const token = jwt.sign({ email, sessionId }, JWT_SECRET, { expiresIn: '1h' });
   // Set the JWT in an HTTP-only cookie
   reply.setCookie('token', token, {
     httpOnly: true, // Ensures it's not accessible via JavaScript
@@ -136,6 +138,24 @@ const getUserFromRequest = async (request, reply) => {
   }
 };
 
+const authenticateSocketConnection = (request, socket) => {
+  const token = request.cookies.token;
+  if (!token) {
+    console.log('No token found in socket connection');
+    socket.close(1008, 'No token provided');
+    return;
+  }
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    console.log('Succes decoding token for the socket connection, decoded token: ', decoded);
+    return decoded;
+  } catch (error) {
+    console.error('%c Token verification failed, with error: ', 'color:red', error.message);
+    socket.close(1008, 'Invalid token: ' + error.name + ': ' + error.message);
+    return;
+  }
+};
+
 export default {
   loginHandler,
   registerHandler,
@@ -143,6 +163,7 @@ export default {
   verificationHandler,
   authenticate,
   getUserFromRequest,
+  authenticateSocketConnection,
 };
 
 // Plan:
