@@ -20,6 +20,8 @@ export const verifyLogin = async () => {
       // console.log('User data:', data);
       AuthManager.login(data.username);
       // console.log('User is logged in:', AuthManager.getUsername());
+    } else {
+      console.log('User is not logged in');
     }
   } catch (err) {
     AuthManager.logout();

@@ -6,41 +6,64 @@ import fastifyWebSocket from '@fastify/websocket';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import fastifyMultipart from '@fastify/multipart';
-import dotenv from 'dotenv';
 import cookie from '@fastify/cookie';
 
 //npm install @fastify/swagger @fastify/swagger-ui
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import fs from 'fs';
-dotenv.config(); // loads environment variables from the .env file and makes them accessible in process.env.
-
 //console.log('Environment Variables:', process.env); // Log all environment variables for debugging
-
-//Cant find JWT IN process.env
-console.log('JWT_SECRET:', process.env.JWT_SECRET); // Log the JWT_SECRET for debugging
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const port = 3000; //TODO do we need to do something with port?
+const PINGINTERVAL = 30000;
 
 // console.log("File name in index.js:", __filename); // Debugging
 
 // console.log("Dirname name in index.js:", __dirname); // Debugging
 
+let isLoggerEnabled = true;
+
+const getLoggerConfig = () =>
+  isLoggerEnabled
+    ? {
+        level: 'warn', // can change to info for more info
+        transport: {
+          target: 'pino-pretty',
+          options: {
+            ignore: 'pid,hostname,reqId,responseTime,worker',
+            translateTime: 'HH:MM:ss',
+          },
+        },
+        serializers: {
+          req(request) {
+            return `{ method: ${request.method}, url: ${request.url}}`;
+          },
+          res(response) {
+            return `{ statusCode: ${response.statusCode} } for req { method: ${response.request.method}, url: '${response.request.url}' }`;
+          },
+        },
+      }
+    : false;
+
 const fastify = Fastify({
-  logger: true,
+  // logger: true,
+  logger: getLoggerConfig(),
   https: {
     key: fs.readFileSync(path.join(__dirname, 'certs/key.pem')),
     cert: fs.readFileSync(path.join(__dirname, 'certs/cert.pem')),
   },
 });
+
 fastify.register(fastifyMultipart, {
   limits: {
     fileSize: 1 * 1024 * 1024, // optional: max file size (10MB here)
   },
 });
+
 fastify.register(fastifyWebSocket);
+
 fastify.register(fastifyStatic, {
   root: path.join(__dirname, '../frontend/public'),
   prefix: '/', // Serve static files from the root URL (e.g., /index.html, /style.css)
@@ -58,10 +81,12 @@ fastify.register(fastifyStatic, {
   prefix: '/uploads/', // Serve JS files under the /src/ path (e.g., /src/pong.js, /src/players.js)
   decorateReply: false,
 });
+
 // Serve index.html
 fastify.get('/', (request, reply) => {
   reply.sendFile('index.html');
 });
+
 fastify.register(cookie, {});
 
 // Register all routes
@@ -90,7 +115,20 @@ await fastify.register(swaggerUi, {
   staticCSP: true,
 });
 
-fastify.listen({ port }, (err, address) => {
+fastify.ready().then(() => {
+  const interval = setInterval(() => {
+    fastify.websocketServer.clients.forEach((socket) => {
+      if (!socket.isAlive) {
+        console.log('Terminating stale client');
+        return socket.terminate();
+      }
+      socket.isAlive = false;
+      socket.ping();
+    });
+  }, PINGINTERVAL);
+});
+
+fastify.listen({ port, host: '0.0.0.0' }, (err, address) => {
   if (err) {
     fastify.log.error(err);
     process.exit(1);
