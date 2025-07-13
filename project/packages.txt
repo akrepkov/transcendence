@@ -23,6 +23,7 @@ typescript
 ws
 prisma
 @prisma/client
+@fastify/multipart
 
 2. backend_dev_dependencies
 nodemon
