@@ -1,4 +1,4 @@
-import db from '../database/index.js';
+import db from '../index.js';
 import bcrypt from 'bcrypt';
 // import {handleError} from '../utils/utils.js';
 
