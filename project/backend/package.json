@@ -5,15 +5,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "jest",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "start": "concurrently \"nodemon index.js\" \"python3 liveDatabase.py\"",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "cd ../.. && husky"
-  },
-  "jest": {
-    "testEnvironment": "node"
   },
   "keywords": [],
   "author": "",

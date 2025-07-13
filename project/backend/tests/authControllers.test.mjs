@@ -1,12 +1,15 @@
-import { loginHandler } from '../src/routes/login.js';
-import * as authServices from '../src/services/auth.js';
-import bcrypt from 'bcrypt';
+// authControllers.test.mjs
+import { jest } from '@jest/globals';
 
 jest.unstable_mockModule('bcrypt', () => ({
   compare: jest.fn(),
 }));
 
 jest.mock('../src/services/auth.js');
+
+const { loginHandler } = await import('../src/routes/login.js');
+const authServices = await import('../src/services/auth.js');
+const bcrypt = await import('bcrypt');
 
 describe('loginHandler', () => {
   let mockReply;
@@ -32,7 +35,7 @@ describe('loginHandler', () => {
 
   test('authenticates valid credentials', async () => {
     authServices.checkCredentials.mockResolvedValue({ password: 'hashed', username: 'user1' });
-    bcrypt.compare = jest.fn().mockResolvedValue(true);
+    bcrypt.compare.mockResolvedValue(true);
     await loginHandler({ body: { email: 'x@y.com', password: 'abc' } }, mockReply);
     expect(mockReply.setCookie).toHaveBeenCalled();
     expect(mockReply.status).toHaveBeenCalledWith(200);
