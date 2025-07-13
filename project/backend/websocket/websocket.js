@@ -8,25 +8,31 @@ import { gameManager } from './managers/gameManager.js';
 export const USER_LOGOUT = 3000;
 
 function handleMessage(connection, message) {
-  const data = JSON.parse(message);
+  let data;
+  try {
+    data = JSON.parse(message);
+  } catch (err) {
+    console.error('Invalid JSON from client:', message);
+    return;
+  }
   switch (data.type) {
     case 'joinWaitingRoom':
       gameManager.addPlayerToWaitingList(connection);
       gameManager.printGameSystemStatus();
       break;
     case 'leaveWaitingRoom':
-      gameManager.removeFromWaitingList(connection.userId);
+      gameManager.removeFromWaitingList(connection);
       gameManager.printGameSystemStatus();
       break;
     case 'move':
-      gameManager.handleInput(connection.userId, data.direction);
+      gameManager.handleInput(connection, data.direction);
       break;
     case 'stopGame':
-      gameManager.handleDisconnect(connection.userId, 'opponent requested to stop the game');
+      gameManager.handleDisconnect(connection, 'opponent requested to stop the game');
       gameManager.printGameSystemStatus();
       break;
     case 'disconnectFromGame':
-      gameManager.handleDisconnect(connection.userId, 'opponent disconnected');
+      gameManager.handleDisconnect(connection, 'opponent disconnected');
       gameManager.printGameSystemStatus();
       break;
     default:

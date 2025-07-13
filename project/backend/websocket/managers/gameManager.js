@@ -1,5 +1,6 @@
 import { messageManager } from './messageManager.js';
 import { Game } from '../models/Game.js';
+import { REJECT } from './messageManager.js';
 
 const activeGames = new Map();
 const playingUsers = new Map();
@@ -12,13 +13,25 @@ function generateGameId() {
   return `game_${gameIdCounter++}`;
 }
 
+function sendGameError(socket, code, message) {
+  messageManager
+    .createBroadcast({
+      type: 'gameError',
+      code: code,
+      message: message,
+    })
+    .to.single(socket);
+}
+
 function addPlayerToWaitingList(connection) {
   if (playingUsers.has(connection.userId)) {
     console.log('Player already in game:', connection.userId);
+    messageManager.sendSocketRejection(connection.socket, REJECT.PLAYER_IN_GAME);
     return;
   }
   if (waitingPlayers.some((player) => player.userId === connection.userId)) {
     console.log('Player already in waiting list:', connection.userId);
+    messageManager.sendSocketRejection(connection.socket, REJECT.PLAYER_IN_WAITING_ROOM);
     return;
   }
   connection.updateState('waitingRoom');
@@ -33,14 +46,6 @@ function addPlayerToWaitingList(connection) {
   matchPlayers();
 }
 
-function removeFromWaitingList(userId) {
-  const index = waitingPlayers.findIndex((player) => player.userId === userId);
-  if (index !== -1) {
-    waitingPlayers.splice(index, 1);
-    console.log('Removed player from waiting list:', userId);
-  }
-}
-
 function matchPlayers() {
   while (waitingPlayers.length >= 2) {
     const player1 = waitingPlayers.shift();
@@ -49,6 +54,19 @@ function matchPlayers() {
     if (player1 && player2) {
       createGame(player1, player2);
     }
+  }
+}
+
+function removeFromWaitingList(connection) {
+  if (connection.state !== 'waitingRoom') {
+    console.warn('Player is not in waiting list:', connection.userId);
+
+    return;
+  }
+  const index = waitingPlayers.findIndex((player) => player.userId === userId);
+  if (index !== -1) {
+    waitingPlayers.splice(index, 1);
+    console.log('Removed player from waiting list:', userId);
   }
 }
 

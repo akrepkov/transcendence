@@ -1,4 +1,35 @@
 import { connectionManager } from './connectionManager.js';
+import WebsocketSnake from '../snake/websocketSnake.js';
+
+export const REJECT = {
+  NOT_AUTHENTICATED: 4001,
+  PLAYER_IN_GAME: 4002,
+  PLAYER_IN_WAITING_ROOM: 4003,
+};
+
+const SOCKET_REJECTS = {
+  [REJECT.NOT_AUTHENTICATED]: 'You must be logged in to perform this action.',
+  [REJECT.PLAYER_IN_GAME]: 'You are already in a game.',
+  [REJECT.PLAYER_IN_WAITING_ROOM]: 'You are already in the waiting list.',
+};
+
+function sendSocketRejection(socket, code) {
+  console.log('Sending socket rejection:', SOCKET_REJECTS);
+  console.log('Sending socket rejection:', REJECT);
+  console.log('Sending socket rejection:', SOCKET_REJECTS[code]);
+  if (!Object.values(REJECT).includes(code)) {
+    // throw new Error(`Invalid socket rejection code: ${code}`);
+    return;
+  }
+
+  messageManager
+    .createBroadcast({
+      type: 'socketRejection',
+      code: code,
+      message: SOCKET_REJECTS[code],
+    })
+    .to.single(socket);
+}
 
 function broadcastToAll(message) {
   const connectedUsers = connectionManager.getConnectedUsers();
@@ -37,4 +68,5 @@ export const messageManager = {
   broadcastToAll,
   createBroadcast,
   sendOnlineUsers,
+  sendSocketRejection,
 };
