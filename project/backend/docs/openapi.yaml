@@ -129,13 +129,13 @@ paths:
               required:
                 - player1
                 - player2
-                - winner_name
+                - winnerName
               properties:
                 player1:
                   type: string
                 player2:
                   type: string
-                winner_name:
+                winnerName:
                   type: string
       responses:
         '200':

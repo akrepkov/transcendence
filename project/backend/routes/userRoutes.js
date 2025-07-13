@@ -7,9 +7,9 @@ import { websocketHandler } from '../websocket/websocket.js';
 
 export default async function userRoutes(fastify) {
   //user manipulation
-  fastify.post('/api/users', userControllers.addUserHandler);
+  // fastify.post('/api/users', userControllers.addUserHandler);
   fastify.get('/api/users', userControllers.getAllUsersHandler);
-  fastify.delete('/api/users', userControllers.deleteUserHandler);
+  // fastify.delete('/api/users', userControllers.deleteUserHandler);
   fastify.post('/api/winner', userControllers.saveWinnerHandler);
 
   //Avatar

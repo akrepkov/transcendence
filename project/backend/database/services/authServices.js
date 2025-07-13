@@ -1,34 +1,36 @@
 import prisma from '../prisma/prismaClient.js';
-import bcrypt from 'bcrypt';
 
 // Register a new user
 export async function registerUser({ username, email, password }) {
+  // Check if the user does not exist already
   const existingUser = await prisma.user.findUnique({
     where: {
       OR: [{ username }, { email }],
     },
   });
   if (existingUser) {
-    return 418;
+    return null;
   }
-  // Hash the password
-  const hashedPassword = await bcrypt.hash(password, 10);
-
   // Create the user
   return prisma.user.create({
-    data: { username, email, password: hashedPassword },
+    data: { username, email, password },
   });
 }
 
-// Authenticate user (login)
-export async function authenticateUser({ email, password }) {
-  const user = await prisma.user.findUnique({ where: { email } });
+// Find user by email
+export async function checkCredentials({ email }) {
+  const user = await prisma.user.findFirst({ where: { email } });
+  if (!user) {
+    return null;
+  }
+  return user;
+}
+
+// Find user by username
+export async function checkUniqueUsername(username) {
+  const user = await prisma.user.findFirst({ where: { username } });
   if (!user) return null;
-  const isValid = await bcrypt.compare(password, user.password);
-  if (!isValid) return null;
-  // Optionally, remove password before returning user object
-  const { password: _, ...userWithoutPassword } = user;
-  return userWithoutPassword;
+  return user;
 }
 
 // Get user by ID (optional helper)

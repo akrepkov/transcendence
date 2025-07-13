@@ -2,6 +2,7 @@ import * as userServices from '../database/services/userServices.js';
 import path from 'path';
 import fs from 'fs';
 import pump from 'pump';
+// import {handleError} from '../utils/utils.js';
 // import jwt from 'jsonwebtoken';
 // const JWT_SECRET = "" + process.env.JWT_SECRET; //using environmental variable for JWT secret
 import { fileURLToPath } from 'url';
@@ -10,17 +11,7 @@ import { fileExists } from '../utils/utils.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// import {handleError} from '../utils/utils.js';
-
-const addUserHandler = (request, reply) => {
-  const { username } = request.body;
-  if (!username) {
-    return reply.status(400).send({ error: 'username is required' });
-  }
-  const userId = userServices.addUser(username);
-  reply.send({ id: userId, username });
-};
-
+// Returns all users registered in the db
 const getAllUsersHandler = (request, reply) => {
   const users = userServices.getUsers(); // Retrieve all users from the database
   if (!users || users.length === 0) {
@@ -29,29 +20,19 @@ const getAllUsersHandler = (request, reply) => {
   reply.send(users); // Send the list of users as the response
 };
 
-const deleteUserHandler = (request, reply) => {
-  const { username } = request.body;
-  // console.log("Deleting user with username:", username); // Debugging
-  if (!username) {
-    return reply.status(400).send({ error: 'username is required' });
-  }
-  const success = userServices.deleteUser(username);
-  if (!success) {
-    return reply.status(404).send({ error: 'User not found' });
-  }
-  reply.send({ success: true, username });
-};
-
 //automatically adds the game to the counter, records winner and looser
 const saveWinnerHandler = (request, reply) => {
-  const { winner_name, loser_name } = request.body;
-  if (!winner_name || !loser_name) {
+  const { winnerName, loserName } = request.body;
+  if (!winnerName || !loserName) {
     return reply.status(400).send({ error: 'Player names are required' });
   }
-  const gameId = userServices.saveGameResults(player1, player2, winner_name);
-  if (!gameId) {
+
+  const gameId = gameServices.saveGame(winnerName, loserName);
+
+  if (!userServices.saveGameResults(winnerName, loserName) || !gameId) {
     return reply.status(500).send({ error: 'Failed to save game results' });
   }
+
   reply.send({ message: 'Game results saved', gameId });
 };
 

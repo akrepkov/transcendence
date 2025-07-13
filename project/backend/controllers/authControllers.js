@@ -50,7 +50,7 @@ const registerHandler = async (request, reply) => {
     return handleError(reply, new Error('Username or email is already in use'), 500);
   }
   try {
-    const registerUser = authServices.registerInDatabase(email, password, username);
+    const registerUser = authServices.registerUser(email, password, username);
     if (!registerUser) {
       return handleError(reply, new Error('Registration failed'), 500);
     }

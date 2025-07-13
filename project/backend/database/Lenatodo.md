@@ -3,7 +3,8 @@
 3. authorization - talk to Anna, after I finish database
 4. ADD FRIENDS - AND VIEW THEIR STATUS
 5. Each user has a Match History including 1v1 games, dates, and relevant details, accessible to logged-in users
-6. check if i need prisma and @prisma/client in packages
+~~6. check if i need prisma and @prisma/client in packages~~
 7. check how to open db in browser
-8. check if Makefile needs prisma generate commands etc.  
+~~8. check if Makefile needs prisma generate commands etc.  ~~
 9. make project work with new db
+
