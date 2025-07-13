@@ -35,6 +35,7 @@ eslint-config-prettier
 eslint-plugin-prettier
 husky
 pino-pretty
+jest
 
 3. frontend_dependencies
 
