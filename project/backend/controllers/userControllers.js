@@ -20,20 +20,17 @@ const getAllUsersHandler = (request, reply) => {
   reply.send(users); // Send the list of users as the response
 };
 
-//automatically adds the game to the counter, records winner and looser
+//automatically adds the game results to the counter of the users
 const saveWinnerHandler = (request, reply) => {
   const { winnerName, loserName } = request.body;
   if (!winnerName || !loserName) {
     return reply.status(400).send({ error: 'Player names are required' });
   }
 
-  const gameId = gameServices.saveGame(winnerName, loserName);
-
-  if (!userServices.saveGameResults(winnerName, loserName) || !gameId) {
-    return reply.status(500).send({ error: 'Failed to save game results' });
+  if (!userServices.saveGameResults(winnerName, loserName)) {
+    return reply.status(500).send({ error: 'Failed to save player scores' });
   }
-
-  reply.send({ message: 'Game results saved', gameId });
+  reply.send({ message: 'Player scores saved', gameId });
 };
 
 const uploadAvatarHandler = async (request, reply) => {
@@ -86,9 +83,7 @@ const getAvatarHandler = async (request, reply) => {
 };
 
 export default {
-  addUserHandler,
   getAllUsersHandler,
-  deleteUserHandler,
   saveWinnerHandler,
   uploadAvatarHandler,
   getAvatarHandler,
