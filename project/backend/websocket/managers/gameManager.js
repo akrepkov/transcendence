@@ -13,16 +13,6 @@ function generateGameId() {
   return `game_${gameIdCounter++}`;
 }
 
-function sendGameError(socket, code, message) {
-  messageManager
-    .createBroadcast({
-      type: 'gameError',
-      code: code,
-      message: message,
-    })
-    .to.single(socket);
-}
-
 function addPlayerToWaitingList(connection) {
   if (playingUsers.has(connection.userId)) {
     console.log('Player already in game:', connection.userId);

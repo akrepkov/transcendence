@@ -7,14 +7,7 @@ import { gameManager } from './managers/gameManager.js';
 
 export const USER_LOGOUT = 3000;
 
-function handleMessage(connection, message) {
-  let data;
-  try {
-    data = JSON.parse(message);
-  } catch (err) {
-    console.error('Invalid JSON from client:', message);
-    return;
-  }
+function handleMessage(connection, data) {
   switch (data.type) {
     case 'joinWaitingRoom':
       gameManager.addPlayerToWaitingList(connection);
@@ -40,8 +33,31 @@ function handleMessage(connection, message) {
   }
 }
 
+function handleError(connection, error) {
+  try {
+    messageManager.sendErrorToClient(connection.socket, error);
+  } catch (err) {
+    console.error('Critical error during error handling: ', err.message);
+    closeConnection(connection);
+  }
+}
+
+function messageHandler(connection, message) {
+  console.log('Message.');
+  try {
+    const data = JSON.parse(message);
+    handleMessage(connection, data);
+  } catch (err) {
+    console.error('Error processing Websocket message:', err.message);
+    handleError(connection, err);
+  }
+}
+
 function closeConnection(connection, code) {
   // TODO possibly add stuff for removing from game
+  if (connection.socket.readyState === connection.socket.OPEN) {
+    connection.socket.close(code);
+  }
   connectionManager.removeConnection(connection);
 
   // checks if the user logged out and if so, send logout request to all other sockets opened by that user
@@ -63,9 +79,7 @@ function closeConnection(connection, code) {
 
 function setupSocketEvents(socket, connection) {
   socket.on('message', (message) => {
-    console.log('Message.');
-    console.log(message.toString());
-    handleMessage(connection, message);
+    messageHandler(connection, message);
   });
 
   socket.on('close', (code, reason) => {
