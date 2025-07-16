@@ -4,11 +4,12 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "build": "tailwindcss -i ./src/index.css -o ./dist/output.css --minify",
+    "build:css": "tailwindcss -i ./src/index.css -o ./dist/output.css --watch",
     "test:e2e": "playwright test",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "build:css": "tailwindcss -i ./src/index.css -o ./dist/output.css --watch"
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [],
   "author": "",
