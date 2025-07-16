@@ -1,6 +1,7 @@
 import { Player } from './Player.js';
 import { Ball } from './Ball.js';
 import { messageManager } from '../managers/messageManager.js';
+import { gameManager } from '../managers/gameManager.js';
 
 export const GAME_CONSTS = {
   WIDTH: 800,
@@ -32,7 +33,7 @@ export class Game {
   }
 
   handleInput(playerId, direction) {
-    const player = this.players.find((player) => player.connection.userId === playerId);
+    const player = this.players.find((player) => player.playerName === playerId);
     if (direction === 'up' && player.paddleY > 0) {
       player.paddleY -= GAME_CONSTS.PADDLE_SPEED;
     } else if (
@@ -83,6 +84,7 @@ export class Game {
               : this.players[1].playerName,
         })
         .to.sockets(this.playerSockets);
+      gameManager.removeGame(this.gameId);
     }
   }
 
@@ -119,7 +121,9 @@ export class Game {
     this.gameLoop = setInterval(() => {
       this.ball.updateBall();
       this.handleBallEvents();
-      this.broadcastState();
+      if (this.running) {
+        this.broadcastState();
+      }
     }, 1000 / 60); // 60 FPS
   }
 

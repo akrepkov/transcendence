@@ -132,5 +132,9 @@ When a user logs out on a tab we need to disconnect all websockets
 
 add cleanup on server shutdown, involves websocket cleanup
 
-npx wscat -c "wss://localhost:3000/ws/connect" -H "Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IjEiLCJzZXNzaW9uSWQiOiIzY2YxZmEyYzJkNzlmZDVmZDU3NjYyMGFkM2QxMjI1MGQ0ZWU2MjUyYzg3ZGU4NzRhMmRhNDYwZTg1YzNkMTNjIiwiaWF0IjoxNzUyNDI3NDMzLCJleHAiOjE3NTI0MzEwMzN9.gKC0oLDwQkmr2V8zpp7n0BkjXvtLnzAJ8E2G4puPH10" -n
+npx wscat -c "wss://localhost:3000/ws/connect" -H "Cookie: token=" -n
+
+{"type":"joinWaitingRoom"}
+{"type":"leaveWaitingRoom"}
+
 

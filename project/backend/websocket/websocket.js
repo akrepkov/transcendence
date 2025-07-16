@@ -38,7 +38,9 @@ function handleError(connection, error) {
     messageManager.sendErrorToClient(connection.socket, error);
   } catch (err) {
     console.error('Critical error during error handling: ', err.message);
-    closeConnection(connection);
+    if (connection.socket.readyState === connection.socket.OPEN) {
+      connection.socket.close(1011, 'Critical error during error handling.');
+    }
   }
 }
 
@@ -55,10 +57,16 @@ function messageHandler(connection, message) {
 
 function closeConnection(connection, code) {
   // TODO possibly add stuff for removing from game
+  if (connection.closing === true) {
+    return;
+  }
+  connection.closing = true;
+  gameManager.handleDisconnect(connection, 'opponent closed his connection');
   if (connection.socket.readyState === connection.socket.OPEN) {
     connection.socket.close(code);
   }
   connectionManager.removeConnection(connection);
+  gameManager.printGameSystemStatus();
 
   // checks if the user logged out and if so, send logout request to all other sockets opened by that user
   let userConnections = connectionManager.getUserConnectionsBySession(
@@ -89,6 +97,7 @@ function setupSocketEvents(socket, connection) {
 
   socket.on('error', (error) => {
     console.error('Websocket error:', error);
+    handleError(connection, error);
   });
 
   socket.on('pong', () => {

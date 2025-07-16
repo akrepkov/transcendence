@@ -5,18 +5,20 @@ export const REJECT = {
   PLAYER_IN_GAME: 4002,
   PLAYER_IN_WAITING_ROOM: 4003,
   NOT_IN_WAITING_ROOM: 4004,
+  NOT_IN_GAME: 4005,
 };
 
 const SOCKET_REJECTS = {
   [REJECT.NOT_AUTHENTICATED]: 'You must be logged in to perform this action.',
   [REJECT.PLAYER_IN_GAME]: 'You are already in a game.',
   [REJECT.PLAYER_IN_WAITING_ROOM]: 'You are already in the waiting list.',
-  [REJECT.NOT_IN_WAITING_ROOM]: 'You are not in the waiting list.',
+  [REJECT.NOT_IN_WAITING_ROOM]: 'Your connection is not in the waiting list.',
+  [REJECT.NOT_IN_GAME]: 'Your connection is not in a game.',
 };
 
 function sendSocketRejection(socket, code) {
   if (!Object.values(REJECT).includes(code)) {
-    // throw new Error(`Invalid socket rejection code: ${code}`);
+    console.warn(`Invalid socket rejection code: ${code}`);
     return;
   }
 
@@ -31,12 +33,11 @@ function sendSocketRejection(socket, code) {
 
 function sendErrorToClient(socket, error) {
   if (socket.readyState !== socket.OPEN) {
-    console.error('Cannot send error to client: socket is not open');
-    return;
+    throw new Error('Cannot send error to client: socket is not open');
   }
   const errorCode = parseInt(error.message);
-  if (!Number.isNaN(errorCode)) {
-    sendSocketRejection(socket, parseInt(error.message));
+  if (Number.isInteger(errorCode)) {
+    sendSocketRejection(socket, errorCode);
   } else {
     messageManager
       .createBroadcast({

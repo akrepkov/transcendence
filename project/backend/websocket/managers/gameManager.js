@@ -16,13 +16,11 @@ function generateGameId() {
 function addPlayerToWaitingList(connection) {
   if (playingUsers.has(connection.userId)) {
     console.log('Player already in game:', connection.userId);
-    messageManager.sendSocketRejection(connection.socket, REJECT.PLAYER_IN_GAME);
-    return;
+    throw new Error(`${REJECT.PLAYER_IN_GAME}`);
   }
   if (waitingPlayers.some((player) => player.userId === connection.userId)) {
     console.log('Player already in waiting list:', connection.userId);
-    messageManager.sendSocketRejection(connection.socket, REJECT.PLAYER_IN_WAITING_ROOM);
-    return;
+    throw new Error(`${REJECT.PLAYER_IN_WAITING_ROOM}`);
   }
   connection.updateState('waitingRoom');
   waitingPlayers.push(connection);
@@ -50,13 +48,16 @@ function matchPlayers() {
 function removeFromWaitingList(connection) {
   if (connection.state !== 'waitingRoom') {
     console.warn('Player is not in waiting list:', connection.userId);
-
-    return;
+    throw new Error(`${REJECT.NOT_IN_WAITING_ROOM}`);
   }
-  const index = waitingPlayers.findIndex((player) => player.userId === userId);
+  const index = waitingPlayers.findIndex((player) => player.userId === connection.userId);
   if (index !== -1) {
     waitingPlayers.splice(index, 1);
-    console.log('Removed player from waiting list:', userId);
+    connection.updateState('idle');
+    console.log('Removed player from waiting list:', connection.userId);
+  } else {
+    console.warn('Player not found in waiting list:', connection.userId);
+    connection.updateState('idle');
   }
 }
 
@@ -95,30 +96,45 @@ function removeGame(gameId) {
   }
 }
 
-function handleInput(userId, direction) {
-  const game = activeGames.get(playingUsers.get(userId)) || null;
+function handleInput(connection, direction) {
+  if (connection.state !== 'inGame') {
+    console.warn('Connection is not in game:', connection.userId);
+    throw new Error(`${REJECT.NOT_IN_GAME}`);
+  }
+  const game = activeGames.get(playingUsers.get(connection.userId)) || null;
   if (game) {
-    game.handleInput(userId, direction);
+    game.handleInput(connection.userId, direction);
   } else {
-    console.warn('No game found for player:', userId);
+    console.warn('No game found for player:', connection.userId);
+    connection.updateState('idle');
   }
 }
 
-function handleDisconnect(userId, reason = 'disconnected') {
-  removeFromWaitingList(userId);
-
-  const game = activeGames.get(playingUsers.get(userId)) || null;
-  if (game) {
-    const otherPlayer = game.playerConnections.find((connection) => connection.userId !== userId);
-    if (otherPlayer) {
-      messageManager
-        .createBroadcast({
-          type: 'opponentDisconnected',
-          reason: reason,
-        })
-        .to.single(otherPlayer.socket);
+function handleDisconnect(connection, reason = 'disconnected') {
+  if (connection.state === 'waitingRoom') {
+    removeFromWaitingList(connection);
+  } else if (connection.state === 'inGame') {
+    const game = activeGames.get(playingUsers.get(connection.userId)) || null;
+    if (game) {
+      const otherPlayer = game.playerConnections.find(
+        (player) => player.userId !== connection.userId,
+      );
+      if (otherPlayer) {
+        messageManager
+          .createBroadcast({
+            type: 'opponentDisconnected',
+            reason: reason,
+          })
+          .to.single(otherPlayer.socket);
+      }
+      removeGame(game.gameId);
+    } else {
+      console.warn('No game found for player:', connection.userId);
+      connection.updateState('idle');
     }
-    removeGame(game.gameId);
+  } else if (connection.closing === false) {
+    console.warn('Connection is not in game or waiting room:', connection.userId);
+    throw new Error(`${REJECT.NOT_IN_GAME}`);
   }
 }
 
@@ -131,7 +147,7 @@ function getWaitingPlayersCount() {
 }
 
 function printGameSystemStatus() {
-  let statusReport = '=== Game System Status ===\n';
+  let statusReport = '\n=== START Game System Status ===\n';
 
   let amountOfGames = getActiveGamesCount();
   let amountOfWaitingPlayers = getWaitingPlayersCount();
@@ -149,8 +165,8 @@ function printGameSystemStatus() {
   statusReport += `\nActive Games (${amountOfGames}):\n`;
   if (amountOfGames > 0) {
     activeGames.forEach((game, gameId) => {
-      const player1 = game.players[0].userId;
-      const player2 = game.players[1].userId;
+      const player1 = game.players[0].playerName;
+      const player2 = game.players[1].playerName;
       statusReport += `- Game ${gameId}: ${player1} vs ${player2}\n`;
     });
   } else {
@@ -159,6 +175,7 @@ function printGameSystemStatus() {
 
   // Connected users info
   statusReport += `\nTotal Connected Users: ${playingUsers.size}\n`;
+  statusReport += `\n=== END Game System Status ===\n`;
 
   console.log(statusReport);
   return statusReport;
