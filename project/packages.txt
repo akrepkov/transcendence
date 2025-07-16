@@ -50,6 +50,7 @@ typescript-eslint
 globals
 playwright
 @playwright/test
+vite
 
 
 
