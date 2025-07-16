@@ -38,8 +38,8 @@ const loginHandler = async (request, reply) => {
 };
 
 const registerHandler = async (request, reply) => {
-  // console.log('Incoming data:', { email, username , password});
   const { email, password, username } = request.body;
+  console.log('Incoming data:', { email, username, password });
 
   if (!email || !password || !username) {
     return handleError(reply, new Error('Email, username and password are required'), 400);
@@ -50,7 +50,7 @@ const registerHandler = async (request, reply) => {
     return handleError(reply, new Error('Username or email is already in use'), 500);
   }
   try {
-    const registerUser = authServices.registerUser(email, password, username);
+    const registerUser = authServices.registerUser({ email, password, username });
     if (!registerUser) {
       return handleError(reply, new Error('Registration failed'), 500);
     }

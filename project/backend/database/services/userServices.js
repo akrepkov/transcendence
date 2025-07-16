@@ -5,7 +5,7 @@ export async function getUsers() {
   try {
     return prisma.user.findMany({
       select: {
-        id: true,
+        userId: true,
         username: true,
         email: true,
         avatar: true,
@@ -16,7 +16,7 @@ export async function getUsers() {
     });
   } catch (error) {
     console.error('Error retrieving all users from db:', error);
-    return false;
+    return [];
   }
 }
 
@@ -74,6 +74,29 @@ export async function getAvatarFromDatabase(username) {
     return user?.avatar;
   } catch (error) {
     console.error('Error retrieving avatar from database:', error);
+    return false;
+  }
+}
+
+// find user by email
+export async function getUserByEmail(email) {
+  try {
+    const user = await prisma.user.findUnique({ email });
+    return user;
+  } catch (error) {
+    console.error('Error retrieving user from database:', error);
+    return false;
+  }
+}
+
+// upload avatar path to the db
+export async function uploadAvatarinDatabase(avatarUrl, username) {
+  try {
+    const user = await prisma.user.findUnique({ username });
+    user.avatar = avatarUrl;
+    return true;
+  } catch (error) {
+    console.error('Error saving avatar:', error);
     return false;
   }
 }

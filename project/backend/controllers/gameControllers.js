@@ -19,4 +19,20 @@ const saveGameHandler = (request, reply) => {
   reply.send({ message: 'Game results saved', gameId });
 };
 
-export { saveGameHandler };
+const getGameHandler = (request, reply) => {
+  const { gameId } = request.body;
+  if (!gameId) {
+    return reply.status(400).send({ error: 'Game ID is required' });
+  }
+
+  const { game } = gameServices.getGame(gameId);
+  if (!game) {
+    return reply.status(500).send({ error: 'Unable to retrieve game' });
+  }
+  reply.send({ message: 'Game retrieved', game });
+};
+
+export default {
+  saveGameHandler,
+  getGameHandler,
+};
