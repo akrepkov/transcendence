@@ -48,5 +48,5 @@ jobs:
         run: npx wait-on https://localhost:3000 --insecure
 
       - name: Run Playwright Unit Tests
-        run: npx playwright test tests/unit
+        run: npx playwright test
         working-directory: ./project/frontend
