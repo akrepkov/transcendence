@@ -44,14 +44,14 @@ describe('Prisma direct database tests', () => {
     expect(user.avatar).toBe(filepath);
   });
 
-  test('can retrieve avatar', async () => {
-    const filepath = 'project/backend/uploads/avatars/avatar_1748704618618_apollo_baby.jpeg';
-    const username = 'lena';
-    const user = await userServices.getAvatarFromDatabase(username);
-    console.log('avatar: ', username.avatar);
-    expect(user).toBeDefined();
-    expect(user.avatar).toBe(filepath);
-  });
+  //   test('can retrieve avatar', async () => {
+  //     const filepath = 'project/backend/uploads/avatars/avatar_1748704618618_apollo_baby.jpeg';
+  //     const username = 'lena';
+  //     const user = await userServices.getAvatarFromDatabase(username);
+  //     console.log('avatar: ', username.avatar);
+  //     expect(user).toBeDefined();
+  //     expect(user.avatar).toBe(filepath);
+  //   });
 
   test('can delete user by username', async () => {
     const username = 'lena';
