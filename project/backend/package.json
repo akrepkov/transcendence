@@ -8,7 +8,7 @@
     "start": "concurrently \"nodemon index.js\" \"python3 liveDatabase.py\"",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "jest",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest",
     "prepare": "cd ../.. && husky"
   },
   "keywords": [],
@@ -50,5 +50,9 @@
     "prettier": "^3.5.3",
     "typedoc": "^0.28.3",
     "typescript-eslint": "^8.31.1"
-  }
+  }, 
+  "jest": {
+	"testEnvironment": "node",
+	"transform": {}
+	}
 }

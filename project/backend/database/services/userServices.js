@@ -81,7 +81,18 @@ export async function getAvatarFromDatabase(username) {
 // find user by email
 export async function getUserByEmail(email) {
   try {
-    const user = await prisma.user.findUnique({ email });
+    const user = await prisma.user.findUnique({ where: { email } });
+    return user;
+  } catch (error) {
+    console.error('Error retrieving user from database:', error);
+    return false;
+  }
+}
+
+// find user by username
+export async function getUserByUsername(username) {
+  try {
+    const user = await prisma.user.findUnique({ where: { username } });
     return user;
   } catch (error) {
     console.error('Error retrieving user from database:', error);
@@ -98,5 +109,16 @@ export async function uploadAvatarinDatabase(avatarUrl, username) {
   } catch (error) {
     console.error('Error saving avatar:', error);
     return false;
+  }
+}
+
+// can delete user by providing the username
+export async function deleteUser(username) {
+  try {
+    await prisma.user.delete({ where: { username } });
+    return true;
+  } catch (error) {
+    console.error('Error in deleting User:', error);
+    return null;
   }
 }

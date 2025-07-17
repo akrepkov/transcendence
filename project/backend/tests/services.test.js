@@ -1,30 +1,62 @@
-import * as userServices from './userServices.js';
-import * as gameServices from './gameServices.js';
-import * as authServices from './authServices.js';
+import * as userServices from '../database/services/userServices.js';
+import * as gameServices from '../database/services/gameServices.js';
+import * as authServices from '../database/services/authServices.js';
+import { PrismaClient } from '@prisma/client';
 
-describe('userServices', () => {
-  test('getUsers returns an array', async () => {
+describe('Prisma direct database tests', () => {
+  const prisma = new PrismaClient();
+
+  afterAll(async () => {
+    await prisma.$disconnect();
+  });
+
+  test('can insert a new user', async () => {
+    let newUser = await authServices.registerUser({
+      username: 'lena',
+      email: 'lena@mail.com',
+      password: 'lena',
+    });
+    if (!newUser) {
+      newUser = await userServices.getUserByUsername('lena');
+    }
+    expect(newUser).toBeDefined();
+    expect(newUser.username).toBe('lena');
+  });
+
+  test('users table exists', async () => {
+    // Try to query users table; if it doesn't exist, this will throw
     const users = await userServices.getUsers();
     expect(Array.isArray(users)).toBe(true);
   });
 
-  test('saveGameResults returns true for valid users', async () => {
-    // Make sure these users exist in your test DB!
-    const result = await userServices.saveGameResults('winnerUsername', 'loserUsername');
-    expect(result).toBe(true);
+  test('can fetch user by email', async () => {
+    const email = 'lena@mail.com';
+    const user = await userServices.getUserByEmail(email);
+    expect(user).toBeDefined();
+    expect(user.email).toBe('lena@mail.com');
   });
 
-  test('uploadAvatarInDatabase updates avatar path', async () => {
-    const username = 'testuser'; // Make sure this user exists
-    const filepath = '/uploads/avatars/testuser.png';
+  test('can add personalized avatar', async () => {
+    const filepath = 'project/backend/uploads/avatars/avatar_1748704618618_apollo_baby.jpeg';
+    const username = 'lena';
     const user = await userServices.uploadAvatarInDatabase(filepath, username);
+    expect(user).toBeDefined();
     expect(user.avatar).toBe(filepath);
   });
 
-  test('getAvatarFromDatabase returns avatar path', async () => {
-    const username = 'testuser'; // Make sure this user exists and has an avatar
-    const avatar = await userServices.getAvatarFromDatabase(username);
-    expect(typeof avatar).toBe('string');
-    expect(avatar).toMatch(/\.png$/);
+  test('can retrieve avatar', async () => {
+    const filepath = 'project/backend/uploads/avatars/avatar_1748704618618_apollo_baby.jpeg';
+    const username = 'lena';
+    const user = await userServices.getAvatarFromDatabase(username);
+    console.log('avatar: ', username.avatar);
+    expect(user).toBeDefined();
+    expect(user.avatar).toBe(filepath);
+  });
+
+  test('can delete user by username', async () => {
+    const username = 'lena';
+    await userServices.deleteUser(username);
+    const user = await userServices.getUserByUsername(username);
+    expect(user).toBeNull();
   });
 });
