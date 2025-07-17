@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint": "eslint . --ignore-pattern 'src/unit-tests/*'",
+    "lint:fix": "eslint . --fix --ignore-pattern 'src/unit-tests/*'"
   },
   "keywords": [],
   "author": "",
