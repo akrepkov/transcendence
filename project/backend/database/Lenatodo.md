@@ -6,3 +6,4 @@
 7. check how to open db in browser
 8. check if Makefile needs prisma generate commands etc.  
 9. make project work with new db
+10. Create a .yml file for the db testing
