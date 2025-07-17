@@ -50,6 +50,7 @@ typescript-eslint
 globals
 @tailwindcss/cli
 tailwindcss
+playwright
 
 
 
