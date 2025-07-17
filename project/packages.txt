@@ -51,6 +51,8 @@ eslint-plugin-prettier
 prettier
 typescript-eslint
 globals
+@tailwindcss/cli
+tailwindcss
 
 
 

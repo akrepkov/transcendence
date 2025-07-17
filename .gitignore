@@ -1,6 +1,4 @@
 .idea/
 node_modules/
 .vscode/
-
-
-# /generated/prisma
+output.css
