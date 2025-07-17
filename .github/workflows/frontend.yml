@@ -29,7 +29,7 @@ jobs:
         working-directory: ./project/backend
 
       - name: Run TailwindCSS CLI
-        run: npx tailwindcss -i ./src/input.css -o ./dist/output.css --minify
+        run: npx tailwindcss -i ./src/input.css -o ./src/output.css --minify
         working-directory: ./project/frontend
 
       - name: Install Playwright Browsers
@@ -37,15 +37,12 @@ jobs:
         working-directory: ./project/frontend
 
       - name: Start Backend
-        run: npm run start &
+        run: npm run start
         working-directory: ./project/backend
 
-      - name: Start Frontend
-        run: npm run start &
-        working-directory: ./project/frontend
-
-      - name: Wait for Frontend to be Ready
+      - name: Wait for server to be ready
         run: npx wait-on https://localhost:3000 --insecure
+        timeout-minutes: 2
 
       - name: Run Playwright Unit Tests
         run: npx playwright test
