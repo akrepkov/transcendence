@@ -14,16 +14,16 @@ This section documents all message types handled by the WebSocket backend, inclu
 
 ### Outgoing Message Types (Server → Client)
 
-| Type                   | Description                                                      | Payload Example                                                         |
-|------------------------|------------------------------------------------------------------|-------------------------------------------------------------------------|
-| `waitingForOpponent`   | Notifies player they are in the waiting room, waiting for match. | `{ type: 'waitingForOpponent' }`                                        |
-| `gameStarting`         | Notifies both players that a game is starting.                   | `{ type: 'gameStarting', opponent1: 'userId1', opponent2: 'userId2' }`  |
-| `updateGameState`      | Sends the current game state (positions, scores, etc).           | `{ type: 'updateGameState', players: [player1, player2], ball: 'Ball' }` |
-| `opponentDisconnected` | Notifies player that their opponent has disconnected.            | `{ type: 'opponentDisconnected', reason: 'reason' }`                    |
-| `logoutRequest`        | Instructs all sockets of a user to log out.                      | `{ type: 'logoutRequest' }`                                             |
-| `error`                | Sends error details to the client.                               | `{ type: 'error', message: 'message' }`                                 |
-| `onlineUsers`          | Sends updated list of online users.                              | `{ type: 'onlineUsers', users: [...] }`                                 |
-| `gameOver`             | Notifies both players that the game has ended.                   | `{ type: 'gameOver', players: [player1, player2], winner: 'userId' }`   |
+| Type                   | Description                                                               | Payload Example                                                                  |
+|------------------------|---------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| `waitingForOpponent`   | Notifies player they are in the waiting room, waiting for match.          | `{ type: 'waitingForOpponent' }`                                                 |
+| `gameStarting`         | Notifies both players that a game is starting.                            | `{ type: 'gameStarting', opponent1: 'userId1', opponent2: 'userId2' }`           |
+| `updateGameState`      | Sends the current game state (positions, scores, etc).                    | `{ type: 'updateGameState', players: [player1, player2], ball: 'Ball' }`         |
+| `opponentDisconnected` | Notifies player that their opponent has disconnected.                     | `{ type: 'opponentDisconnected', reason: 'reason' }`                             |
+| `logoutRequest`        | Instructs all sockets of a user to log out.                               | `{ type: 'logoutRequest' }`                                                      |
+| `error`                | Sends error details to the client.                                        | `{ type: 'error', message: 'message' }`                                          |
+| `onlineUsers`          | Sends updated list of online users.                                       | `{ type: 'onlineUsers', users: [...] }`                                          |
+| `gameOver`             | Notifies both players that the game has ended.                            | `{ type: 'gameOver', players: [player1, player2], winner: 'userId' }`            |
 | `socketRejection`      | Notifies the client that an action was rejected, with a code and message. | `{ type: 'socketRejection', code: 4002, message: 'You are already in a game.' }` |
 
 ---
