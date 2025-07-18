@@ -23,4 +23,4 @@ if [ "$CURRENT_NODE_VERSION" != "$NODE_VERSION" ]; then
 fi
 (cd ${FRONTEND} && npm install)
 (cd ${FRONTEND} && npm run tailwind) &
-cd ${BACKEND} && npm install npx prisma generate --schema=database/prisma/schema.prisma  && npm start
+cd ${BACKEND} && npm install && npx prisma generate --schema=database/prisma/schema.prisma  && npm start

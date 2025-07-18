@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "concurrently \"nodemon index.js\" \"python3 liveDatabase.py\"",
+    "start": "concurrently \"nodemon index.js\"",
     "lint": "eslint . --ignore-pattern 'tests/*'",
     "lint:fix": "eslint . --fix --ignore-pattern 'tests/*'",
     "test": "node --experimental-vm-modules node_modules/.bin/jest",
