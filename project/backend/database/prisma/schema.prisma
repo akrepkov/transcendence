@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,33 +8,34 @@ datasource db {
 }
 
 model User {
-	userId      		Int      	@id @default(autoincrement())
-	username    		String   	@unique
-	email       		String   	@unique
-	avatar   			String?
-	games       		Game[]
-	wins        		Int      	@default(0)
-	losses      		Int      	@default(0)
-	rank        		Int      	@default(0)
-	createdAt   		DateTime 	@default(now())
-	password			String	 
-	friends				User[]		@relation("UserFriends", references: [userId])
-	friendsOf			User[]		@relation("UserFriends", references: [userId])
+  userId    Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
+  avatar    String?
+  games     Game[]
+  wins      Int      @default(0)
+  losses    Int      @default(0)
+  rank      Int      @default(0)
+  createdAt DateTime @default(now())
+  password  String
+  friends   User[]   @relation("UserFriends")
+  friendsOf User[]   @relation("UserFriends")
 }
 
-
 model Game {
-	gameId				Int			@id @default(autoincrement())
-	player1Id			Int
-	player2Id			Int
-	winnerId			Int
-	player1Score		Int
-	player2Score		Int
-	createdAt			DateTime	@default(now())
+  gameId       Int      @id @default(autoincrement())
+  player1Id    Int
+  player2Id    Int
+  winnerId     Int
+  player1Score Int
+  player2Score Int
+  createdAt    DateTime @default(now())
 
+  User       User? @relation(fields: [userUserId], references: [userId])
+  userUserId Int?
 }
 
 model Leaderboard {
-  userId    			Int   		@id		
-  wins					Int
+  userId Int @id
+  wins   Int
 }
