@@ -2,6 +2,7 @@ import { Player } from './Player.js';
 import { Ball } from './Ball.js';
 import { messageManager } from '../managers/messageManager.js';
 import { gameManager } from '../managers/gameManager.js';
+import { REJECT } from '../managers/messageManager.js';
 
 export const GAME_CONSTS = {
   WIDTH: 800,
@@ -41,6 +42,9 @@ export class Game {
       player.paddleY + GAME_CONSTS.PADDLE_HEIGHT / 2 < GAME_CONSTS.HEIGHT
     ) {
       player.paddleY += GAME_CONSTS.PADDLE_SPEED;
+    } else {
+      console.warn(`Invalid direction: ${direction} for player: ${playerId}`);
+      throw new Error(`${REJECT.WRONG_DIRECTION}`);
     }
   }
 
@@ -48,8 +52,8 @@ export class Game {
     messageManager
       .createBroadcast({
         type: 'updateGameState',
-        players: this.state.players,
-        ball: this.state.ball,
+        players: [this.players[0].getPlayerState(), this.players[1].getPlayerState()],
+        ball: this.ball.getBallState(),
       })
       .to.sockets(this.playerSockets);
   }
@@ -77,7 +81,7 @@ export class Game {
       messageManager
         .createBroadcast({
           type: 'gameOver',
-          players: this.state.players,
+          players: [this.players[0].getPlayerState(), this.players[1].getPlayerState()],
           winner:
             this.players[0].score > this.players[1].score
               ? this.players[0].playerName

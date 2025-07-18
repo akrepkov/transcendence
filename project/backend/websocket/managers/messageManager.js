@@ -6,6 +6,7 @@ export const REJECT = {
   PLAYER_IN_WAITING_ROOM: 4003,
   NOT_IN_WAITING_ROOM: 4004,
   NOT_IN_GAME: 4005,
+  WRONG_DIRECTION: 4006,
 };
 
 const SOCKET_REJECTS = {
@@ -14,6 +15,7 @@ const SOCKET_REJECTS = {
   [REJECT.PLAYER_IN_WAITING_ROOM]: 'You are already in the waiting list.',
   [REJECT.NOT_IN_WAITING_ROOM]: 'Your connection is not in the waiting list.',
   [REJECT.NOT_IN_GAME]: 'Your connection is not in a game.',
+  [REJECT.WRONG_DIRECTION]: 'Invalid direction specified. Use "up" or "down".',
 };
 
 function sendSocketRejection(socket, code) {

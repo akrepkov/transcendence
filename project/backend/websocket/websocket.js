@@ -46,6 +46,7 @@ function handleError(connection, error) {
 
 function messageHandler(connection, message) {
   console.log('Message.');
+  console.log(message.toString());
   try {
     const data = JSON.parse(message);
     handleMessage(connection, data);
@@ -56,7 +57,6 @@ function messageHandler(connection, message) {
 }
 
 function closeConnection(connection, code) {
-  // TODO possibly add stuff for removing from game
   if (connection.closing === true) {
     return;
   }
