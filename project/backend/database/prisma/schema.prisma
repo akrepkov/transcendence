@@ -19,7 +19,8 @@ model User {
 	rank        		Int      	@default(0)
 	createdAt   		DateTime 	@default(now())
 	password			String	 
-	friends				User[]
+	friends				User[]		@relation("UserFriends", references: [userId])
+	friendsOf			User[]		@relation("UserFriends", references: [userId])
 }
 
 
