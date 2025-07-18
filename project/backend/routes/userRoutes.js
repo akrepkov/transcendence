@@ -1,7 +1,7 @@
 import userControllers from '../controllers/userControllers.js';
 import authControllers from '../controllers/authControllers.js';
-import websocket from '../../../Theory/AnnaStuff/old/websocketChat.js';
-import pong from '../../../Theory/AnnaStuff/old/remotePong/websocketRemote.js';
+import websocket from '../websocket/websocketChat.js';
+import pong from '../websocket/remotePong/websocketRemote.js';
 import { websocketHandler } from '../websocket/websocket.js';
 // import snake from '../plugins/websocketSnake.js';
 
