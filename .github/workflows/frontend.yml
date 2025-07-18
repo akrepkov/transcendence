@@ -39,8 +39,10 @@ jobs:
       - name: Start Backend
         run: npm run start &
         working-directory: ./project/backend
-        timeout-minutes: 2
 
+      - name: Start Frontend
+        run: npm run start &
+        working-directory: ./project/frontend
       - name: Wait for server to be ready
         run: npx wait-on https://localhost:3000 --insecure
         timeout-minutes: 2

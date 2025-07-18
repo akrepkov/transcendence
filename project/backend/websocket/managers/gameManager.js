@@ -72,6 +72,7 @@ function createGame(connection1, connection2) {
   playingUsers.set(connection2.userId, gameId);
   game.startGame();
   console.log('Created new game:', gameId);
+  //call_lena_fnct(game)
 }
 
 function removeGame(gameId) {

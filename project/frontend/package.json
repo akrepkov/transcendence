@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "tailwind": "npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch=always",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint": "eslint . --ignore-pattern 'src/unit-tests/*'",
+    "lint:fix": "eslint . --fix --ignore-pattern 'src/unit-tests/*'"
   },
   "keywords": [],
   "author": "",

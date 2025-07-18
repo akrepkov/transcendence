@@ -21,6 +21,7 @@ export class Game {
       new Player(connection1.userId, 0),
       new Player(connection2.userId, GAME_CONSTS.WIDTH),
     ];
+    //TODO for JAN - add date of created at (for Lena)
     this.playerSockets = [connection1.socket, connection2.socket];
     this.playerConnections = [connection1, connection2];
     this.state = {

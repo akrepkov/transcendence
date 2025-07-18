@@ -1,34 +1,57 @@
-import db from '../index.js';
-import bcrypt from 'bcrypt';
-// import {handleError} from '../utils/utils.js';
+import prisma from '../prisma/prismaClient.js';
 
-//get(email) in sqlite3 is asynchronous,it returns promise, need await
-export async function checkCredentials(email) {
-  const user = await db.prepare('SELECT * FROM users WHERE email = ?').get(email);
-  if (!user) {
-    return null; // Return null if no user is found
+// Register a new user
+export async function registerUser({ username, email, password }) {
+  try {
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [{ username }, { email }],
+      },
+    });
+    if (existingUser) {
+      return null;
+    }
+    return await prisma.user.create({
+      data: { username, email, password },
+    });
+  } catch (error) {
+    console.error('Error in registerUser:', error);
+    return null;
   }
-  // console.log("Type of function: ",typeof user.then); // Will be 'function' if it's a Promise and needs await
-  return user;
 }
 
+// Find user by email
+export async function checkCredentials({ email }) {
+  try {
+    const user = await prisma.user.findFirst({ where: { email } });
+    if (!user) {
+      return null;
+    }
+    return user;
+  } catch (error) {
+    console.error('Error in checkCredentials:', error);
+    return null;
+  }
+}
+
+// Find user by username
 export async function checkUniqueUsername(username) {
-  const user = await db.prepare('SELECT * FROM users WHERE username = ?').get(username);
-  if (!user) {
-    return null; // Return null if no user is found
+  try {
+    const user = await prisma.user.findFirst({ where: { username } });
+    if (!user) return null;
+    return user;
+  } catch (error) {
+    console.error('Error in checkUniqueUsername:', error);
+    return null;
   }
-  // console.log("Type of function: ",typeof user.then); // Will be 'function' if it's a Promise and needs await
-  return user;
-}
-//bcrypt is asynchronous, I have to use await
-export async function registerInDatabase(email, password, username) {
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const stmt = db.prepare('INSERT INTO users (email, password, username) VALUES (?, ?, ?)');
-  const info = stmt.run(email, hashedPassword, username);
-  return info;
 }
 
-// Export the database instance for direct use if needed
-export default db;
-
-//if use better-sqlite - everything should be async
+// Get user by ID (optional helper)
+export async function getUserById(userId) {
+  try {
+    return await prisma.user.findUnique({ where: { userId } });
+  } catch (error) {
+    console.error('Error in getUserById:', error);
+    return null;
+  }
+}
