@@ -12,4 +12,13 @@ export class Player {
     this.paddleWidth = GAME_CONSTS.PADDLE_WIDTH;
     this.paddleSpeed = GAME_CONSTS.PADDLE_SPEED;
   }
+
+  getPlayerState() {
+    return {
+      playerName: this.playerName,
+      paddleY: this.paddleY,
+      paddleX: this.paddleX,
+      score: this.score,
+    };
+  }
 }

@@ -30,10 +30,12 @@ function removeConnection(connection) {
 }
 
 function printUsers() {
+  console.log('\n=== START Connection System Status ===\n');
   console.log('We currently have', connectedUsers.size, 'unique users connected:\n');
   connectedUsers.forEach((connections, userId) => {
     console.log('user', userId, 'has', connections.size, 'connections');
   });
+  console.log('\n=== END Connection System Status ===\n');
 }
 
 function getUserConnectionsBySession(userId, sessionId) {
