@@ -8,6 +8,8 @@ MAGENTA='\033[1;35m'
 CYAN='\033[1;36m'
 END='\033[0m'
 
+trap 'kill $(jobs -p) 2>/dev/null' EXIT
+
 CURRENT_NODE_VERSION=$(node -v | cut -d'.' -f1-2)
 if [ "$CURRENT_NODE_VERSION" != "$NODE_VERSION" ]; then
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
