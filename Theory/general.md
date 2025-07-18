@@ -81,34 +81,34 @@ Exports:
 🔹 Named Export
 You're saying: “I’m exporting a function/variable/class with a name, and it must be imported with that exact name (or aliased).”
 
-Example: utils.js
+Example: old-utils.js
 // Named export
 export function handleError() {
   console.log("Handling error...");
 }
 
 Usage:
-import { handleError } from './utils.js'; // ✅ Works
+import { handleError } from './old-utils.js'; // ✅ Works
 ✔️ You must use {} and the exact name (handleError in this case).
 
 You can also rename it:
-import { handleError as customErrorHandler } from './utils.js';
+import { handleError as customErrorHandler } from './old-utils.js';
 
 
 
 🔹 Default Export
 You're saying: “I’m exporting one main thing — import it without needing curly braces.”
 
-Example: utils.js
+Example: old-utils.js
 // Default export
 export default function handleError() {
   console.log("Handling error...");
 }
 Usage:
-import handleError from './utils.js'; // ✅ Works — no curly braces!
+import handleError from './old-utils.js'; // ✅ Works — no curly braces!
 ✔️ You can name the import whatever you want, since it's the default.
 
-import myCoolErrorHandler from './utils.js'; // also valid
+import myCoolErrorHandler from './old-utils.js'; // also valid
 
 
 ✅ When to Use Each?

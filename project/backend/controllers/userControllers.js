@@ -2,7 +2,7 @@ import * as userServices from '../database/services/userServices.js';
 import path from 'path';
 import fs from 'fs';
 import pump from 'pump';
-// import {handleError} from '../utils/utils.js';
+// import {handleError} from '../utils/old-utils.js';
 // import jwt from 'jsonwebtoken';
 // const JWT_SECRET = "" + process.env.JWT_SECRET; //using environmental variable for JWT secret
 import { fileURLToPath } from 'url';
