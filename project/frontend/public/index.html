@@ -1,106 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pong Game</title>
-<!--  <link rel="stylesheet" href="./styles.css">-->
-  <link href="./src/output.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong Game</title>
+    <link href="./src/output.css" rel="stylesheet"/>
 </head>
-
-<body onhashchange="showAlert()">
-  <div class="header">
-    <div class="name bg-pink-200 text-black">Pong Game</div>
-  </div>
-  <nav>
-    <a href="#profile" class="tab-link" data-tab="profile" style="display:none">Profile</a>
-    <a href="#chat" class="tab-link" data-tab="chat" style="display:none">Chat</a>
-    <a href="#practice" class="tab-link" data-tab="practice" style="display:none">Practice</a>
-    <a href="#remote" class="tab-link" data-tab="remote" data-requires-auth="true" style="display:none">Remote</a>
-  </nav>
-
-<!-- Added html - profile_login -->
-  <div id="view-profile" class="tab-view" style="display:none"></div>
-
-<!-- Not done yet -->
-  <div id="view-chat" class="tab-view" style="display:none">I am CHAT
-    <input type="text" id="messageInput" placeholder="Type a message" />
-    <button id="sendBtn">Send Message</button>
-    <div id="messages"></div>
-
-
-  </div>
-
-
-  <!-- Frontend Game: -->
-  <div id="view-practice" class="tab-view" style="display:none">
-    <div class="game-options" id="options">
-      <label for="ballCount">Balls:</label>
-      <select id="ballCount">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="10">Go crazy</option>
-      </select>
-      <button id="startGame">Start Game</button>
-    </div>
-    <div class="stopBlock" id="stop" style="display: none;  flex-direction: column;">
-      <button id="stopGame">Stop Game</button>
-      <div id="players"></div>
-      <div id="gameStatusFrontend">0 - 0</div>
-    </div>
-    <div id="winnerBanner" class="hidden">
-      <span id="winnerName"></span> wins the game!
-    </div>
-    <canvas id="pong" width="800" height="600" style="border:1px solid #ffffff; margin-top: 20px;"></canvas>
-  </div>
-
-
-  <!-- Remote Game: -->
-  <div id="view-remote" class="tab-view" style="display:none">
-
-    <!-- Waiting room -->
-    <div id="waitingRoom" class="hidden">
-      <div id="playerList">
-        <h2>Players:</h2>
-        <ul id="playersList"></ul>
-      </div>
-    </div>
-
-    <!-- Invitation -->
-    <div id="invitation" class="hidden">
-      <div class="invitation-content">
-        <p>You have a new game invitation!</p>
-        <button id="acceptInvite">Accept</button>
-        <button id="declineInvite">Decline</button>
-      </div>
-    </div>
-
-
-    <!-- Rejection not used yet -->
-    <div id="rejection" src="../../backend/uploads/snake_failed.png" class="hidden">
-      REJECTION!!!!!!!!!!!!!!!!
-    </div>
-
-    <!-- THE GAME: -->
-    <div id="gameContainer" class="hidden">
-      <!-- Score -->
-      <div id="gameStatus">0 - 0</div>
-
-      <!-- Canvas -->
-      <div id="canvas-container">
-        <canvas id="gameRemote" width="800" height="600" style="border:1px solid #ffffff; margin-top: 20px;"></canvas>
-      </div>
-
-    </div>
-    <!-- THE GAME XXXXXXXXX -->
-  </div>
-
-
-
-  <!-- JS  -->
-  <script type="module" src="../src/main.js"></script>
+<body class="bg-pink-200 text-black flex items-center justify-center h-screen">
+<h1 class="text-4xl font-bold">Pong Game</h1>
+<script src="./dist/main.js" type="module"></script>
 </body>
-
 </html>

@@ -360,9 +360,9 @@
 
     // Load the chat script if not already loaded
     function loadChatScript() {
-      if (!document.querySelector('script[src="../src/chat.js"]')) {
+      if (!document.querySelector('script[src="../src/old-chat.js"]')) {
         const scriptChat = document.createElement("script");
-        scriptChat.src = "../src/chat.js";
+        scriptChat.src = "../src/old-chat.js";
         scriptChat.onload = function () {
           startChat("Player 1", "Player 2"); // Start the chat
         };

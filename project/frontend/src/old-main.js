@@ -1,10 +1,10 @@
-import { openProfileTab } from './auth/profile.js';
-import { openPracticeTab } from './practice/practice.js';
-import { openRemoteTab } from './remote/remote.js';
-import { verifyLogin } from './auth/authRequests.js';
-import AuthManager from './managers/authManager.js';
-import { changeHashfromRemote, changeHashToRemote } from './remote/socket.js';
-import { openConnection, sendMessage } from './websocket/websocket.js';
+import { openProfileTab } from './old/auth/profile.js';
+import { openPracticeTab } from './old/practice/practice.js';
+import { openRemoteTab } from './old/remote/remote.js';
+import { verifyLogin } from './old/auth/authRequests.js';
+import AuthManager from './old/managers/authManager.js';
+import { changeHashfromRemote, changeHashToRemote } from './old/remote/socket.js';
+import { openConnection, sendMessage } from './old/websocket/websocket.js';
 
 let oldHash = '';
 
@@ -115,7 +115,7 @@ async function updateAuthLinks() {
   }
 }
 
-// import { openChatTab } from './chat.js';
+// import { openChatTab } from './old-chat.js';
 // // import { openTournamentTab } from './tournament.js';
 // // import { setupAuth } from './auth.js';
 // import { openProfileTab } from './profile.js'; //change

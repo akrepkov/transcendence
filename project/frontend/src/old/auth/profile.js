@@ -1,4 +1,4 @@
-// import { setupTabs } from "./main.js";
+// import { setupTabs } from "./old-main.js";
 import { avatarHandler } from './avatar.js';
 import AuthManager from '../managers/authManager.js';
 import { logIntoDatabase, signupInDatabase, logout } from './authRequests.js';

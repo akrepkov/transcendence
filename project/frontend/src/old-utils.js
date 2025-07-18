@@ -37,9 +37,9 @@ function mainScript(event, tabName) {
 
   // Load chat logic
   if (tabName === 'Chat') {
-    if (!document.querySelector('script[src="./chat.js"]')) {
+    if (!document.querySelector('script[src="./old-chat.js"]')) {
       const scriptChat = document.createElement('script');
-      scriptChat.src = './chat.js';
+      scriptChat.src = './old-chat.js';
       scriptChat.onload = function () {
         startChat('Player 1', 'Player 2');
       };
