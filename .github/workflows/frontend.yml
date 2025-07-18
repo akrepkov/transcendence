@@ -37,7 +37,7 @@ jobs:
         working-directory: ./project/frontend
 
       - name: Start Backend
-        run: npm run start &
+        run: npx prisma generate --schema=database/prisma/schema.prisma && npm run start &
         working-directory: ./project/backend
 
       - name: Start Frontend
