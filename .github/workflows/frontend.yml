@@ -1,0 +1,49 @@
+name: Frontend Unit-Tests
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '23'
+
+      - name: Clear npm cache
+        run: npm cache clean --force
+
+      - name: Install Frontend Dependencies
+        run: npm ci
+        working-directory: ./project/frontend
+
+      - name: Install Backend Dependencies
+        run: npm ci
+        working-directory: ./project/backend
+
+      - name: Run TailwindCSS CLI
+        run: npx tailwindcss -i ./src/input.css -o ./src/output.css --minify
+        working-directory: ./project/frontend
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+        working-directory: ./project/frontend
+
+      - name: Start Backend
+        run: npx prisma generate --schema=database/prisma/schema.prisma && npm run start &
+        working-directory: ./project/backend
+
+      - name: Wait for server to be ready
+        run: npx wait-on https://localhost:3000 --insecure
+        timeout-minutes: 2
+
+      - name: Run Playwright Unit Tests
+        run: npx playwright test
+        working-directory: ./project/frontend

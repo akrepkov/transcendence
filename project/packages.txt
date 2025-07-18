@@ -22,6 +22,8 @@ fastify-websocket
 typescript
 ws
 prisma
+@prisma/client
+@fastify/multipart
 
 2. backend_dev_dependencies
 nodemon
@@ -35,6 +37,7 @@ eslint-config-prettier
 eslint-plugin-prettier
 husky
 pino-pretty
+jest
 
 3. frontend_dependencies
 
@@ -48,6 +51,9 @@ eslint-plugin-prettier
 prettier
 typescript-eslint
 globals
+@tailwindcss/cli
+tailwindcss
+playwright
 
 
 
@@ -58,4 +64,3 @@ fastify-websocket
 typescript
 typescript-eslint
 ws
-

@@ -59,7 +59,7 @@ window.addEventListener('beforeunload', function (event) {
 // 			headers: {
 // 				'Content-Type': 'application/json'
 // 			},
-// 			body: JSON.stringify({ winner_name: winner, loser_name: loser }),
+// 			body: JSON.stringify({ winnerName: winner, loserName: loser }),
 // 		});
 // 		if (!data.ok) {
 // 			throw new Error('Network response was not ok');

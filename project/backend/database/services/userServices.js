@@ -1,79 +1,124 @@
-import db from '../index.js';
-// import {handleError} from '../utils/utils.js';
+import prisma from '../prisma/prismaClient.js';
 
-// Function to insert a user
-export function addUser(username) {
-  const checkUser = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
-  if (checkUser) {
-    console.log('User already exists:', checkUser);
-    return;
+// Get all users (except passwords field)
+export async function getUsers() {
+  try {
+    return prisma.user.findMany({
+      select: {
+        userId: true,
+        username: true,
+        email: true,
+        avatar: true,
+        wins: true,
+        losses: true,
+        games: true,
+      },
+    });
+  } catch (error) {
+    console.error('Error retrieving all users from db:', error);
+    return [];
   }
-  const stmt = db.prepare('INSERT INTO users (username) VALUES (?)');
-  const info = stmt.run(username);
-  return info.lastInsertRowid;
 }
 
-// Function to get all users
-export function getUsers() {
-  return db.prepare('SELECT * FROM users').all();
-}
-
-// NOT USING RIGHT NOW, MIGHT BE NEEDED FOR COMMUNICATION BETWEEN TABLES??????
-// Function to get a user by ID
-// export function getUserById(id) {
-//     return db.prepare('SELECT * FROM users WHERE id = ?').get(id);
-// }
-
-export function getUserByEmail(email) {
-  return db.prepare('SELECT * FROM users WHERE email = ?').get(email);
-}
-
-export function deleteUser(username) {
-  const stmt = db.prepare('DELETE FROM users WHERE username = ?');
-  const info = stmt.run(username);
-  console.log('Delete result:', info);
-  return info.changes > 0;
-}
-
-//Not working yet
-export function saveGameResults(winner_name, loser_name) {
-  const winner = db.prepare('SELECT * FROM users WHERE username = ?').get(winner_name);
-  const loser = db.prepare('SELECT * FROM users WHERE username = ?').get(loser_name);
-  if (!winner || !loser) {
-    console.log('Player not found in the database');
-    return;
+// Save game results (increment wins/losses/games)
+export async function saveGameResults(winnerName, loserName) {
+  try {
+    const winner = await prisma.user.findUnique({ where: { username: winnerName } });
+    const loser = await prisma.user.findUnique({ where: { username: loserName } });
+    if (!winner || !loser) {
+      console.log('Player not found in the database');
+      return;
+    }
+    await prisma.user.update({
+      where: { username: winnerName },
+      data: {
+        wins: { increment: 1 },
+        games: { increment: 1 },
+      },
+    });
+    await prisma.user.update({
+      where: { username: loserName },
+      data: {
+        losses: { increment: 1 },
+        games: { increment: 1 },
+      },
+    });
+    return true;
+  } catch (error) {
+    console.error('Error saving player scores:', error);
+    return false;
   }
-  const stmt = db.prepare('UPDATE users SET wuins = wins + 1 where username = ?').run(winner_name);
-  const stmt2 = db
-    .prepare('UPDATE users SET losses = losses + 1 where username = ?')
-    .run(loser_name);
-  const stmt3 = db
-    .prepare('UPDATE users SET games = games + 1 where username = (?, ?)')
-    .run(winner_name, loser_name);
-  if (!stmt || !stmt2 || !stmt3) {
-    console.log('Failed to update game results');
-    return;
-  }
-  return info.lastInsertRowid;
 }
 
-export function uploadAvatarinDatabase(filepath, username) {
-  const checkUser = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
-  if (!checkUser) {
-    console.log("User doesn't exist:", username);
-    return;
+// Update avatar for a user
+export async function uploadAvatarInDatabase(filepath, username) {
+  try {
+    const user = await prisma.user.update({
+      where: { username },
+      data: { avatar: filepath },
+    });
+    return user;
+  } catch (error) {
+    console.error('Error updating avatar in database:', error);
+    return false;
   }
-  const stmt = db.prepare('UPDATE users SET avatar = ? WHERE username = ?');
-  stmt.run(filepath, username);
 }
 
-export function getAvatarFromDatabase(username) {
-  const checkUser = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
-  if (!checkUser) {
-    console.log("User doesn't exist:", username);
-    return;
+// Get avatar for a user
+export async function getAvatarFromDatabase(username) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { username },
+      select: { avatar: true },
+    });
+    return user?.avatar;
+  } catch (error) {
+    console.error('Error retrieving avatar from database:', error);
+    return false;
   }
-  const stmt = db.prepare('SELECT avatar FROM users WHERE username = ?');
-  const info = stmt.get(username);
-  return info.avatar;
+}
+
+// find user by email
+export async function getUserByEmail(email) {
+  try {
+    const user = await prisma.user.findUnique({ where: { email } });
+    return user;
+  } catch (error) {
+    console.error('Error retrieving user from database:', error);
+    return false;
+  }
+}
+
+// find user by username
+export async function getUserByUsername(username) {
+  try {
+    const user = await prisma.user.findUnique({ where: { username } });
+    return user;
+  } catch (error) {
+    console.error('Error retrieving user from database:', error);
+    return false;
+  }
+}
+
+// upload avatar path to the db
+export async function uploadAvatarinDatabase(avatarUrl, username) {
+  try {
+    const user = await prisma.user.findUnique({ username });
+    user.avatar = avatarUrl;
+    return true;
+  } catch (error) {
+    console.error('Error saving avatar:', error);
+    return false;
+  }
+}
+
+// can delete user by providing the username
+export async function deleteUser(username) {
+  try {
+    await prisma.user.delete({ where: { username } });
+    return true;
+  } catch (error) {
+    console.error('Error in deleting User:', error);
+    return null;
+  }
 }

@@ -8,6 +8,8 @@ MAGENTA='\033[1;35m'
 CYAN='\033[1;36m'
 END='\033[0m'
 
+trap 'kill $(jobs -p) 2>/dev/null' EXIT
+
 CURRENT_NODE_VERSION=$(node -v | cut -d'.' -f1-2)
 if [ "$CURRENT_NODE_VERSION" != "$NODE_VERSION" ]; then
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -22,4 +24,5 @@ if [ "$CURRENT_NODE_VERSION" != "$NODE_VERSION" ]; then
     echo -e $BLUE"Pretty please and have a purrfect day ₍^. .^₎⟆"$END
 fi
 (cd ${FRONTEND} && npm install)
-cd ${BACKEND} && npm install && npm start
+(cd ${FRONTEND} && npm run tailwind) &
+cd ${BACKEND} && npm install && npx prisma generate --schema=database/prisma/schema.prisma  && npm start

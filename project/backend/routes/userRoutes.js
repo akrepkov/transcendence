@@ -1,5 +1,6 @@
 import userControllers from '../controllers/userControllers.js';
 import authControllers from '../controllers/authControllers.js';
+import gameControllers from '../controllers/gameControllers.js';
 import websocket from '../websocket/websocketChat.js';
 import pong from '../websocket/remotePong/websocketRemote.js';
 import { websocketHandler } from '../websocket/websocket.js';
@@ -7,9 +8,8 @@ import { websocketHandler } from '../websocket/websocket.js';
 
 export default async function userRoutes(fastify) {
   //user manipulation
-  fastify.post('/api/users', userControllers.addUserHandler);
   fastify.get('/api/users', userControllers.getAllUsersHandler);
-  fastify.delete('/api/users', userControllers.deleteUserHandler);
+  fastify.get('/api/game', gameControllers.getGameHandler);
   fastify.post('/api/winner', userControllers.saveWinnerHandler);
 
   //Avatar
