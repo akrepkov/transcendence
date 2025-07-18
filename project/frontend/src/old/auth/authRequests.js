@@ -6,7 +6,7 @@ let password = {};
 let username = {};
 
 export const verifyLogin = async () => {
-  // console.log('Verifying login status...');
+  // console.log('Verifying register status...');
   try {
     const response = await fetch('/api/auth/me', {
       method: 'GET',

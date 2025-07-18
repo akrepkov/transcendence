@@ -142,7 +142,7 @@
       verifyLogin();
       document.querySelector('.tablinks').click(); // Click the default tab
     };
-    document.getElementById('login').addEventListener('click', function (event) {
+    document.getElementById('register').addEventListener('click', function (event) {
       openTab(event, 'Login'); // Call your tab-opening function
     });
     document.getElementById('register').addEventListener('click', function (event) {
@@ -150,7 +150,7 @@
     });
     
         if (isLoggedIn){
-          document.getElementById('login').style.display = 'none';
+          document.getElementById('register').style.display = 'none';
           document.getElementById('register').style.display = 'none';
       }
 
@@ -197,7 +197,7 @@
           // loginError.classList.add('hidden');
           // loginError.style.display = "none";
           try {
-            const response = await fetch('/api/auth/login', {
+            const response = await fetch('/api/auth/register', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
@@ -213,11 +213,11 @@
             document.querySelector("button.tablinks[onclick*='Profile']").style.display = "inline-block";
             openTab({ currentTarget: document.querySelector("button.tablinks[onclick*='Profile']") }, "Profile");
 
-            //hide login button
-            document.getElementById('login').style.display = 'none';
+            //hide register button
+            document.getElementById('register').style.display = 'none';
             document.getElementById('register').style.display = 'none';
             const data = await response.json();
-            // Redirect or update UI after successful login
+            // Redirect or update UI after successful register
             // Example: Show user profile or navigate to another page
             //window.location.href = '/dashboard';  // Redirect to a dashboard page or another protected route
             console.log("Show profile");
@@ -310,7 +310,7 @@
               if (response.ok) {
                 document.querySelector("button.tablinks[onclick*='Profile']").style.display = "none";
                 openTab({ currentTarget: document.querySelector("button.tablinks[onclick*='Game']") }, "Game");
-                document.getElementById('login').style.display = 'inline-block';
+                document.getElementById('register').style.display = 'inline-block';
                 document.getElementById('register').style.display = 'inline-block';
               } else {
                 console.error('Logout failed');

@@ -29,7 +29,7 @@ const loginHandler = async (request, reply) => {
     path: '/', // Cookie is available on all routes
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
   });
-  // console.log("its ok in login handler, send 201. Token in loginHandler:", token); // Debugging
+  // console.log("its ok in register handler, send 201. Token in loginHandler:", token); // Debugging
   // console.log("BAckend user: ", user.username);
   return reply.status(200).send({
     message: 'Registration successful',

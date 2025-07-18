@@ -1,11 +1,27 @@
+//{
+//  "compilerOptions": {
+//    "target": "ES6",             // JavaScript version to compile to
+//    "module": "ES6",             // Module system used in the compiled code
+//    "outFile": "main.js",        // Output file for compiled JavaScript
+//    "strict": true,              // Enable strict type-checking options
+//    "esModuleInterop": true      // Enable compatibility with CommonJS modules
+//  },
+//  "include": ["src/**/*.ts"],    // Only include your main.ts file
+//  "exclude": ["node_modules"]    // Exclude node_modules
+//}
+
 {
   "compilerOptions": {
-    "target": "ES6",             // JavaScript version to compile to
-    "module": "ES6",             // Module system used in the compiled code
-    "outFile": "main.js",        // Output file for compiled JavaScript
-    "strict": true,              // Enable strict type-checking options
-    "esModuleInterop": true      // Enable compatibility with CommonJS modules
+    "target": "ES6",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "outDir": "./dist",         // Output folder for compiled JS
+    "rootDir": "./src",         // Source folder
+    "forceConsistentCasingInFileNames": true,
+    "allowImportingTsExtensions": true,
   },
-  "include": ["src/**/*.ts"],    // Only include your main.ts file
-  "exclude": ["node_modules"]    // Exclude node_modules
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
 }

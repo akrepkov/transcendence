@@ -212,7 +212,7 @@ paths:
     post:
       summary: Login
       description: Log in to the application.
-      operationId: login
+      operationId: register
       requestBody:
         content:
           application/json:
