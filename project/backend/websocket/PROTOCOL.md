@@ -2,6 +2,19 @@
 
 This section documents all message types handled by the WebSocket backend, including both incoming (client → server) and outgoing (server → client) messages.
 
+## Connecting to the WebSocket Server
+
+To connect to the WebSocket server, use the following code snippet in your client-side JavaScript:
+This might need to be changed if you're using a different library or framework for WebSockets, but the basic idea is to create a new WebSocket instance pointing to the server's WebSocket endpoint.
+The servers websocket endpoint is `wss://<hostname>:3000/ws/connect`, where `<hostname>` is the server's hostname or IP address. The port `3000` is used for WebSocket connections.
+${window.location.hostname}, currently, is used to get the hostname of the current page, so it will work in both development and production environments.
+
+The websocket also requires you to be a logged in user, so you need to have a valid session cookie set in your browser. If you don't have a valid session cookie, the server will reject the connection with a `NOT_AUTHENTICATED` error.
+
+```javascript
+socket = new WebSocket(`wss://${window.location.hostname}:3000/ws/connect`);
+```
+
 ### Incoming Message Types (Client → Server)
 
 | Type                 | Description                                           | Payload Example                     |
