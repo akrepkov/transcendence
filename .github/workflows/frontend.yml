@@ -40,9 +40,6 @@ jobs:
         run: npx prisma generate --schema=database/prisma/schema.prisma && npm run start &
         working-directory: ./project/backend
 
-      - name: Start Frontend
-        run: npm run start &
-        working-directory: ./project/frontend
       - name: Wait for server to be ready
         run: npx wait-on https://localhost:3000 --insecure
         timeout-minutes: 2
