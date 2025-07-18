@@ -122,3 +122,42 @@ export async function deleteUser(username) {
     return null;
   }
 }
+
+//can add a friend to the user's friends field (by userId)
+export async function addFriend(userName, friendName) {
+  try {
+    const friend = await getUserByUsername(friendName);
+    const user = await getUserByUsername(userName);
+    if (!friend || !user) {
+      console.log('Data not found in the database');
+      return false;
+    }
+    prisma.user.update({
+      where: { username: userName },
+      data: {
+        friends: {
+          connect: { username: friendName },
+        },
+      },
+    });
+    return true;
+  } catch (error) {
+    console.error('Error adding friend:', error);
+    return false;
+  }
+}
+
+//can return list of friends for a user
+export async function getFriends(username) {
+  try {
+    const user = getUserByUsername(username);
+    if (!user) {
+      console.log('User not found in the database');
+      return null;
+    }
+    return user.friends;
+  } catch (error) {
+    console.error('Error retrieving friends', error);
+    return null;
+  }
+}
