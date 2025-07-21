@@ -29,7 +29,7 @@ let isLoggerEnabled = true;
 const getLoggerConfig = () =>
   isLoggerEnabled
     ? {
-        level: 'warn', // can change to info for more info
+        level: 'info', // can change to info for more info
         transport: {
           target: 'pino-pretty',
           options: {

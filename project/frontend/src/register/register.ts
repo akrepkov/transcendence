@@ -28,7 +28,7 @@ export function handleRegister(): void {
         message.classList.remove('text-red-500');
         message.classList.add('text-green-500');
       } else {
-        message.textContent = data.error || 'Something went wrong';
+        message.textContent = data.error + ' ' + data.details; // need to check if data.error exists
       }
     } catch (err) {
       message.textContent = 'Server error: ';

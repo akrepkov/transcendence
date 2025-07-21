@@ -1,48 +1,111 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Pong Game</title>-->
+<!--    <link href="../src/output.css" rel="stylesheet"/>-->
+<!--</head>-->
+<!--<body class="bg-pink-200 text-black flex items-center justify-center h-screen">-->
+<!--<div class="bg-white p-8 rounded-xl shadow-md w-full max-w-sm text-center">-->
+<!--    <h1 class="text-4xl font-bold mb-4">Pong Game</h1>-->
+<!--    <h2 class="text-2xl font-semibold mb-6">Register</h2>-->
+
+<!--    <form id="register-form" class="flex flex-col space-y-4 text-left">-->
+<!--        <label for="username"></label><input-->
+<!--                id="username"-->
+<!--                type="text"-->
+<!--                placeholder="Username"-->
+<!--                class="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-pink-400"-->
+<!--                required-->
+<!--        />-->
+<!--        <label for="email"></label><input-->
+<!--                id="email"-->
+<!--                type="email"-->
+<!--                placeholder="Email"-->
+<!--                class="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-pink-400"-->
+<!--                required-->
+<!--        />-->
+<!--        <label for="password"></label><input-->
+<!--                id="password"-->
+<!--                type="password"-->
+<!--                placeholder="Password"-->
+<!--                class="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-pink-400"-->
+<!--                required-->
+<!--        />-->
+<!--        <button-->
+<!--                type="submit"-->
+<!--                class="bg-pink-500 text-white py-2 rounded hover:bg-pink-600 transition"-->
+<!--        >-->
+<!--            Register-->
+<!--        </button>-->
+<!--    </form>-->
+
+<!--    <p id="register-message" class="text-center text-red-500 mt-4"></p>-->
+<!--</div>-->
+
+<!--<script src="../dist/main.js" type="module"></script>-->
+<!--</body>-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Pong Game</title>
-    <link href="../src/output.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'VT323', monospace;
+            background-color: #FFFF00;
+            color: #000000;
+        }
+        .pixelated-border {
+            border: 4px solid #000;
+            image-rendering: pixelated;
+        }
+    </style>
 </head>
-<body class="bg-pink-200 text-black flex items-center justify-center h-screen">
-<div class="bg-white p-8 rounded-xl shadow-md w-full max-w-sm text-center">
-    <h1 class="text-4xl font-bold mb-4">Pong Game</h1>
-    <h2 class="text-2xl font-semibold mb-6">Register</h2>
+<body class="p-8 flex items-center justify-center min-h-screen">
+<div class="bg-white text-black pixelated-border p-10 rounded-xl shadow-xl w-full max-w-md text-center">
+    <h1 class="text-5xl font-bold mb-6">Pong</h1>
+    <h2 class="text-3xl font-bold mb-8">Register</h2>
 
-    <form id="register-form" class="flex flex-col space-y-4 text-left">
+    <form id="register-form" class="flex flex-col space-y-6 text-left">
         <label for="username"></label><input
                 id="username"
                 type="text"
                 placeholder="Username"
-                class="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-pink-400"
+                class="p-3 border border-black rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 text-xl"
                 required
         />
         <label for="email"></label><input
                 id="email"
                 type="email"
                 placeholder="Email"
-                class="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-pink-400"
+                class="p-3 border border-black rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 text-xl"
                 required
         />
         <label for="password"></label><input
                 id="password"
                 type="password"
                 placeholder="Password"
-                class="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-pink-400"
+                class="p-3 border border-black rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 text-xl"
                 required
         />
         <button
                 type="submit"
-                class="bg-pink-500 text-white py-2 rounded hover:bg-pink-600 transition"
+                class="bg-transparent pixelated-border text-black font-bold py-3 px-6 text-xl hover:bg-yellow-300 transition"
         >
             Register
         </button>
     </form>
 
-    <p id="register-message" class="text-center text-red-500 mt-4"></p>
+    <p id="register-message" class="text-red-600 mt-6 text-xl text-center"></p>
 </div>
 
 <script src="../dist/main.js" type="module"></script>
 </body>
+</html>
