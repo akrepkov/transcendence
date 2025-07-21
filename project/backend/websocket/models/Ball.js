@@ -56,4 +56,12 @@ export class Ball {
       return true;
     }
   }
+
+  getBallState() {
+    return {
+      x: this.x,
+      y: this.y,
+      size: this.size,
+    };
+  }
 }

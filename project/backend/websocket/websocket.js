@@ -7,26 +7,25 @@ import { gameManager } from './managers/gameManager.js';
 
 export const USER_LOGOUT = 3000;
 
-function handleMessage(connection, message) {
-  const data = JSON.parse(message);
+function handleMessage(connection, data) {
   switch (data.type) {
     case 'joinWaitingRoom':
       gameManager.addPlayerToWaitingList(connection);
       gameManager.printGameSystemStatus();
       break;
     case 'leaveWaitingRoom':
-      gameManager.removeFromWaitingList(connection.userId);
+      gameManager.removeFromWaitingList(connection);
       gameManager.printGameSystemStatus();
       break;
     case 'move':
-      gameManager.handleInput(connection.userId, data.direction);
+      gameManager.handleInput(connection, data.direction);
       break;
     case 'stopGame':
-      gameManager.handleDisconnect(connection.userId, 'opponent requested to stop the game');
+      gameManager.handleDisconnect(connection, 'opponent requested to stop the game');
       gameManager.printGameSystemStatus();
       break;
     case 'disconnectFromGame':
-      gameManager.handleDisconnect(connection.userId, 'opponent disconnected');
+      gameManager.handleDisconnect(connection, 'opponent disconnected');
       gameManager.printGameSystemStatus();
       break;
     default:
@@ -34,9 +33,40 @@ function handleMessage(connection, message) {
   }
 }
 
+function handleError(connection, error) {
+  try {
+    messageManager.sendErrorToClient(connection.socket, error);
+  } catch (err) {
+    console.error('Critical error during error handling: ', err.message);
+    if (connection.socket.readyState === connection.socket.OPEN) {
+      connection.socket.close(1011, 'Critical error during error handling.');
+    }
+  }
+}
+
+function messageHandler(connection, message) {
+  console.log('Message.');
+  console.log(message.toString());
+  try {
+    const data = JSON.parse(message);
+    handleMessage(connection, data);
+  } catch (err) {
+    console.error('Error processing Websocket message:', err.message);
+    handleError(connection, err);
+  }
+}
+
 function closeConnection(connection, code) {
-  // TODO possibly add stuff for removing from game
+  if (connection.closing === true) {
+    return;
+  }
+  connection.closing = true;
+  gameManager.handleDisconnect(connection, 'opponent closed his connection');
+  if (connection.socket.readyState === connection.socket.OPEN) {
+    connection.socket.close(code);
+  }
   connectionManager.removeConnection(connection);
+  gameManager.printGameSystemStatus();
 
   // checks if the user logged out and if so, send logout request to all other sockets opened by that user
   let userConnections = connectionManager.getUserConnectionsBySession(
@@ -57,9 +87,7 @@ function closeConnection(connection, code) {
 
 function setupSocketEvents(socket, connection) {
   socket.on('message', (message) => {
-    console.log('Message.');
-    console.log(message.toString());
-    handleMessage(connection, message);
+    messageHandler(connection, message);
   });
 
   socket.on('close', (code, reason) => {
@@ -69,6 +97,7 @@ function setupSocketEvents(socket, connection) {
 
   socket.on('error', (error) => {
     console.error('Websocket error:', error);
+    handleError(connection, error);
   });
 
   socket.on('pong', () => {
