@@ -1,4 +1,4 @@
 import { handleRegister } from './register/register.js';
 
-console.log('hello typescript!');
+console.log('jeetje hmm!');
 handleRegister();

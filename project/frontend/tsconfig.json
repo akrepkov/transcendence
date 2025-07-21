@@ -20,7 +20,6 @@
     "outDir": "./dist",         // Output folder for compiled JS
     "rootDir": "./src",         // Source folder
     "forceConsistentCasingInFileNames": true,
-    "allowImportingTsExtensions": true,
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]

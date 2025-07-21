@@ -2,6 +2,7 @@ import Fastify from 'fastify';
 import path from 'path';
 import fastifyStatic from '@fastify/static';
 import userRoutes from './routes/userRoutes.js';
+import authRoute from './routes/authRoute.js';
 import fastifyWebSocket from '@fastify/websocket';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -69,6 +70,13 @@ fastify.register(fastifyStatic, {
   prefix: '/', // Serve static files from the root URL (e.g., /index.html, /style.css)
 });
 
+// Register the dist directory to serve JS files (make sure you use a different prefix)
+fastify.register(fastifyStatic, {
+  root: path.join(__dirname, '../frontend/dist'),
+  prefix: '/dist/', // Serve JS files under the /dist/ path (e.g., /dist/pong.js, /dist/players.js)
+  decorateReply: false,
+});
+
 // Register the src directory to serve JS files (make sure you use a different prefix)
 fastify.register(fastifyStatic, {
   root: path.join(__dirname, '../frontend/src'),
@@ -78,7 +86,7 @@ fastify.register(fastifyStatic, {
 
 fastify.register(fastifyStatic, {
   root: path.join(__dirname, 'uploads'),
-  prefix: '/uploads/', // Serve JS files under the /src/ path (e.g., /src/pong.js, /src/players.js)
+  prefix: '/uploads/', // Serve JS files under the /uploads/ path (e.g., /uploads/pong.js, /uploads/players.js)
   decorateReply: false,
 });
 
@@ -91,6 +99,9 @@ fastify.register(cookie, {});
 
 // Register all routes
 fastify.register(userRoutes);
+
+// Register auth routes
+fastify.register(authRoute);
 
 //DEBUGGING!
 // fastify.ready(() => {

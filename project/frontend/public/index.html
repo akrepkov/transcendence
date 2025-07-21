@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pong Game</title>
-    <link href="./src/output.css" rel="stylesheet"/>
+    <link href="../src/output.css" rel="stylesheet"/>
 </head>
 <body class="bg-pink-200 text-black flex items-center justify-center h-screen">
 <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-sm text-center">
@@ -12,21 +12,21 @@
     <h2 class="text-2xl font-semibold mb-6">Register</h2>
 
     <form id="register-form" class="flex flex-col space-y-4 text-left">
-        <input
+        <label for="username"></label><input
                 id="username"
                 type="text"
                 placeholder="Username"
                 class="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-pink-400"
                 required
         />
-        <input
+        <label for="email"></label><input
                 id="email"
                 type="email"
                 placeholder="Email"
                 class="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-pink-400"
                 required
         />
-        <input
+        <label for="password"></label><input
                 id="password"
                 type="password"
                 placeholder="Password"
@@ -44,6 +44,5 @@
     <p id="register-message" class="text-center text-red-500 mt-4"></p>
 </div>
 
-<script src="./dist/main.js" type="module"></script>
+<script src="../dist/main.js" type="module"></script>
 </body>
-

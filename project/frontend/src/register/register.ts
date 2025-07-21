@@ -23,7 +23,6 @@ export function handleRegister(): void {
       });
 
       const data = await res.json();
-
       if (res.ok) {
         message.textContent = 'User created successfully';
         message.classList.remove('text-red-500');
