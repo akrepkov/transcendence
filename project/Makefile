@@ -49,10 +49,13 @@ frontend:
 	@echo "${YELLOW}Checking and initialising the frontend...${END}"
 	@${FRONTEND_INIT}
 
-# cleanup node_modules
+# cleanup node_modules, dist, test-results and playwright-report
 clean:
 	@${RM} ${BACKEND}/node_modules
 	@${RM} ${FRONTEND}/node_modules
+	@${RM} ${FRONTEND}/dist
+	@${RM} ${FRONTEND}/test-results
+	@${RM} ${FRONTEND}/playwright-report
 
 lint:
 	@echo "${YELLOW}Linting the backend...${END}"
