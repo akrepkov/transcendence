@@ -131,3 +131,10 @@ Add handling of reconnection for websockets in frontend
 When a user logs out on a tab we need to disconnect all websockets
 
 add cleanup on server shutdown, involves websocket cleanup
+
+npx wscat -c "wss://localhost:3000/ws/connect" -H "Cookie: token=" -n
+
+{"type":"joinWaitingRoom"}
+{"type":"leaveWaitingRoom"}
+
+

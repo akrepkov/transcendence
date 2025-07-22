@@ -12,6 +12,7 @@ export class Connection {
     this.socket.isAlive = true;
     this.state = 'idle';
     this.gameId = null;
+    this.closing = false;
   }
 
   updateState(newState) {
