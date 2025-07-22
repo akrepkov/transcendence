@@ -6,7 +6,8 @@
   "scripts": {
     "tailwind": "npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch=always",
     "lint": "eslint . --ignore-pattern 'src/unit-tests/*'",
-    "lint:fix": "eslint . --fix --ignore-pattern 'src/unit-tests/*'"
+    "lint:fix": "eslint . --fix --ignore-pattern 'src/unit-tests/*'",
+    "start": "concurrently \"tsc --watch\" \"live-server\""
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,7 @@
     "@eslint/js": "^9.26.0",
     "@playwright/test": "^1.54.1",
     "@types/node": "^24.0.14",
+    "concurrently": "^9.2.0",
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.4.0",

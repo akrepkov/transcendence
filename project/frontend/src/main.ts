@@ -1,4 +1,7 @@
 import { handleRegister } from './register/register.js';
+import { handleLogin } from './login/login.js';
+import { toggleForms } from './toggle/toggleForms.js';
 
-console.log('jeetje hmm!');
 handleRegister();
+handleLogin();
+toggleForms();
