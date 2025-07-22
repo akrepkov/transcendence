@@ -23,8 +23,15 @@ if [ "$CURRENT_NODE_VERSION" != "$NODE_VERSION" ]; then
     echo -e "You can make it better either by restarting your shell or running the command: $END'[ -s \"\$HOME/.nvm/nvm.sh\" ] && \. \"\$HOME/.nvm/nvm.sh\"'"
     echo -e $BLUE"Pretty please and have a purrfect day ₍^. .^₎⟆"$END
 fi
+
+# initialises frontend packages
 (cd ${FRONTEND} && npm install)
+
+# initialises backend packages and prisma
 (cd ${BACKEND} && npm install && npx prisma generate --schema=database/prisma/schema.prisma)
+
+# Starts the frontend and backend concurrently watching for changes to files
+# Also sets up pretty colours :)
 npx concurrently --no-prefix "npm start --prefix ${FRONTEND}" "npm start --prefix ${BACKEND}" \
     --names "FRONTEND,BACKEND" \
     --prefix-colors "blue,green" \
