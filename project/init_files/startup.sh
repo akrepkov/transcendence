@@ -24,5 +24,9 @@ if [ "$CURRENT_NODE_VERSION" != "$NODE_VERSION" ]; then
     echo -e $BLUE"Pretty please and have a purrfect day ₍^. .^₎⟆"$END
 fi
 (cd ${FRONTEND} && npm install)
-(cd ${FRONTEND} && npm run tailwind) &
-cd ${BACKEND} && npm install && npx prisma generate --schema=database/prisma/schema.prisma  && npm start
+(cd ${BACKEND} && npm install && npx prisma generate --schema=database/prisma/schema.prisma)
+npx concurrently --no-prefix "npm start --prefix ${FRONTEND}" "npm start --prefix ${BACKEND}" \
+    --names "FRONTEND,BACKEND" \
+    --prefix-colors "blue,green" \
+    --kill-others-on-fail \
+    --success first

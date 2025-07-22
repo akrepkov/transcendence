@@ -4,10 +4,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "tailwind": "npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch=always",
     "lint": "eslint . --ignore-pattern 'src/unit-tests/*'",
     "lint:fix": "eslint . --fix --ignore-pattern 'src/unit-tests/*'",
-    "start": "concurrently \"tsc --watch\" \"live-server\""
+    "start": "concurrently \"tsc --watch\" \"live-server\" \"npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch\""
   },
   "keywords": [],
   "author": "",
