@@ -11,10 +11,6 @@ const loginHandler = async (request, reply) => {
   if (!username || !password) {
     return handleError(reply, new Error('Username and password are required'), 400);
   }
-  const user = await authServices.checkUniqueUsername(email);
-  if (!user) {
-    return handleError(reply, new Error('Invalid credentials'), 401);
-  }
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     return handleError(reply, new Error('Invalid credentials'), 401);
