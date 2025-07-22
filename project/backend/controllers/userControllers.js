@@ -20,19 +20,6 @@ const getAllUsersHandler = async (request, reply) => {
   reply.send(users); // Send the list of users as the response
 };
 
-//automatically adds the game results to the counter of the users
-const saveWinnerHandler = (request, reply) => {
-  const { winnerName, loserName } = request.body;
-  if (!winnerName || !loserName) {
-    return reply.send({ error: 'Player names are required', success: false });
-  }
-
-  if (!userServices.saveGameResults(winnerName, loserName)) {
-    return reply.status(500).send({ error: 'Failed to save player scores' });
-  }
-  reply.send({ message: 'Player scores saved', success: true });
-};
-
 const uploadAvatarHandler = async (request, reply) => {
   try {
     let username = request.user.username;
@@ -91,7 +78,6 @@ const addFriendHandler = async (request, reply) => {
 
 export default {
   getAllUsersHandler,
-  saveWinnerHandler,
   uploadAvatarHandler,
   getAvatarHandler,
 };

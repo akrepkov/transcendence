@@ -7,11 +7,11 @@ import crypto from 'crypto';
 import { JWT_SECRET } from '../config.js';
 
 const loginHandler = async (request, reply) => {
-  const { email, password } = request.body;
-  if (!email || !password) {
-    return handleError(reply, new Error('Email and password are required'), 400);
+  const { username, password } = request.body;
+  if (!username || !password) {
+    return handleError(reply, new Error('Username and password are required'), 400);
   }
-  const user = await authServices.checkCredentials(email);
+  const user = await authServices.checkUniqueUsername(email);
   if (!user) {
     return handleError(reply, new Error('Invalid credentials'), 401);
   }
@@ -20,7 +20,6 @@ const loginHandler = async (request, reply) => {
     return handleError(reply, new Error('Invalid credentials'), 401);
   }
   let userId = user.userId;
-  let username = user.username;
   const sessionId = crypto.randomBytes(32).toString('hex');
   const token = jwt.sign({ userId, username, sessionId }, JWT_SECRET, { expiresIn: '1h' });
   // Set the JWT in an HTTP-only cookie
@@ -49,13 +48,19 @@ const registerHandler = async (request, reply) => {
   if (user || existUsername) {
     return handleError(reply, new Error('Username or email is already in use'), 500);
   }
+  // Hash the password before saving
+  const hashedPassword = await bcrypt.hash(password, 10);
+  console.log(hashedPassword);
   try {
-    const registerUser = authServices.registerUser({ email, password, username });
+    const registerUser = await authServices.registerUser({
+      email,
+      password: hashedPassword,
+      username,
+    });
     if (!registerUser) {
       return handleError(reply, new Error('Registration failed'), 500);
     }
     let userId = registerUser.userId;
-    let username = registerUser.username;
     const sessionId = crypto.randomBytes(32).toString('hex');
     const token = jwt.sign({ userId, username, sessionId }, JWT_SECRET, { expiresIn: '1h' });
     // Set the JWT in an HTTP-only cookie

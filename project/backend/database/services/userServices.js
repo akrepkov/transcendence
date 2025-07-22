@@ -3,7 +3,7 @@ import prisma from '../prisma/prismaClient.js';
 // Get all users (except passwords field)
 export async function getUsers() {
   try {
-    return prisma.user.findMany({
+    return await prisma.user.findMany({
       select: {
         userId: true,
         username: true,
@@ -11,7 +11,7 @@ export async function getUsers() {
         avatar: true,
         wins: true,
         losses: true,
-        games: true,
+        // games: true,
       },
     });
   } catch (error) {
@@ -21,7 +21,11 @@ export async function getUsers() {
 }
 
 // Save game results (increment wins/losses/games)
-export async function saveGameResults(winnerName, loserName) {
+export async function saveGameResults(winnerName, loserName, game) {
+  if (!winnerName || !loserName || !game) {
+    console.log('Player and game information needed');
+    return false;
+  }
   try {
     const winner = await prisma.user.findUnique({ where: { username: winnerName } });
     const loser = await prisma.user.findUnique({ where: { username: loserName } });
@@ -33,14 +37,14 @@ export async function saveGameResults(winnerName, loserName) {
       where: { username: winnerName },
       data: {
         wins: { increment: 1 },
-        games: { increment: 1 },
+        games: { connect: { gameId: game.gameId } },
       },
     });
     await prisma.user.update({
       where: { username: loserName },
       data: {
         losses: { increment: 1 },
-        games: { increment: 1 },
+        games: { connect: { gameId: game.gameId } },
       },
     });
     return true;
@@ -100,18 +104,6 @@ export async function getUserByUsername(username) {
   }
 }
 
-// upload avatar path to the db
-export async function uploadAvatarinDatabase(avatarUrl, username) {
-  try {
-    const user = await prisma.user.findUnique({ username });
-    user.avatar = avatarUrl;
-    return true;
-  } catch (error) {
-    console.error('Error saving avatar:', error);
-    return false;
-  }
-}
-
 // can delete user by providing the username
 export async function deleteUser(username) {
   try {
@@ -158,6 +150,20 @@ export async function getFriends(username) {
     return user.friends;
   } catch (error) {
     console.error('Error retrieving friends', error);
+    return null;
+  }
+}
+
+export async function getMatchHistory(username) {
+  try {
+    const user = getUserByUsername(username);
+    if (!user) {
+      console.log('User not found in the database');
+      return null;
+    }
+    return user.games;
+  } catch (error) {
+    console.error('Error retrieving match history', error);
     return null;
   }
 }
