@@ -19,8 +19,10 @@ const loginHandler = async (request, reply) => {
   if (!isMatch) {
     return handleError(reply, new Error('Invalid credentials'), 401);
   }
+  let userId = user.userId;
+  let username = user.username;
   const sessionId = crypto.randomBytes(32).toString('hex');
-  const token = jwt.sign({ email, sessionId }, JWT_SECRET, { expiresIn: '1h' });
+  const token = jwt.sign({ userId, username, sessionId }, JWT_SECRET, { expiresIn: '1h' });
   // Set the JWT in an HTTP-only cookie
   reply.setCookie('token', token, {
     httpOnly: true, // Ensures it's not accessible via JavaScript
@@ -29,8 +31,6 @@ const loginHandler = async (request, reply) => {
     path: '/', // Cookie is available on all routes
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
   });
-  // console.log("its ok in register handler, send 201. Token in loginHandler:", token); // Debugging
-  // console.log("BAckend user: ", user.username);
   return reply.status(200).send({
     message: 'Registration successful',
     username: user.username,
@@ -54,7 +54,10 @@ const registerHandler = async (request, reply) => {
     if (!registerUser) {
       return handleError(reply, new Error('Registration failed'), 500);
     }
-    const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: '1h' });
+    let userId = registerUser.userId;
+    let username = registerUser.username;
+    const sessionId = crypto.randomBytes(32).toString('hex');
+    const token = jwt.sign({ userId, username, sessionId }, JWT_SECRET, { expiresIn: '1h' });
     // Set the JWT in an HTTP-only cookie
     reply.setCookie('token', token, {
       httpOnly: true, // Ensures it's not accessible via JavaScript
@@ -70,16 +73,7 @@ const registerHandler = async (request, reply) => {
   }
 };
 
-// const googleHandler = async(request, reply) => {
-//     //https://github.com/googleapis/google-api-nodejs-client
-//     //https://developers.google.com/identity/protocols/oauth2
-//     // GOOGLE auth implementation:
-//     // https://dev.to/fozooni/google-oauth2-with-fastify-typescript-from-scratch-1a57
-//     //Theory?
-// };
-
 const logoutHandler = async (request, reply) => {
-  //API response:
   console.log('Logout request received');
   reply.clearCookie('token', { path: '/' });
   reply.send({ message: 'Logged out successfully' });
@@ -93,7 +87,6 @@ const authenticate = async (request, reply) => {
   try {
     const payload = jwt.verify(token, JWT_SECRET);
     request.user = payload; //attach info to request, so when i continue with routes i can access user email : request.user.email (I had this info passed when created the token)
-    next(); //Continue to the route
   } catch (err) {
     return handleError(reply, err, 401);
   }

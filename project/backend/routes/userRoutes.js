@@ -27,11 +27,11 @@ export default async function userRoutes(fastify) {
   //Snake
   // fastify.get('/ws/snake', { websocket: true }, snake.snakeWebsocketHandler);
 
-  //Auth:
+  //Authorization:
   fastify.get('/api/auth/me', authControllers.verificationHandler);
   fastify.post('/api/auth/login', authControllers.loginHandler);
   fastify.post('/api/auth/register', authControllers.registerHandler);
-  fastify.post('/api/auth/logout', authControllers.logoutHandler); // ??
+  fastify.post('/api/auth/logout', authControllers.logoutHandler);
 
   //DEBUGGING dont delete please
   // fastify.ready().then(() => {
