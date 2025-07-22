@@ -54,8 +54,9 @@ const registerHandler = async (request, reply) => {
     if (!registerUser) {
       return handleError(reply, new Error('Registration failed'), 500);
     }
-    let userId = user.userId;
-    let username = user.username;
+    let userId = registerUser.userId;
+    let username = registerUser.username;
+    const sessionId = crypto.randomBytes(32).toString('hex');
     const token = jwt.sign({ userId, username, sessionId }, JWT_SECRET, { expiresIn: '1h' });
     // Set the JWT in an HTTP-only cookie
     reply.setCookie('token', token, {
