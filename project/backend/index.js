@@ -84,6 +84,13 @@ fastify.register(fastifyStatic, {
   decorateReply: false,
 });
 
+// Register the dist directory to serve JS files (make sure you use a different prefix)
+fastify.register(fastifyStatic, {
+  root: path.join(__dirname, '../frontend/dist'),
+  prefix: '/dist/', // Serve JS files under the /dist/ path (e.g., /dist/pong.js, /dist/players.js)
+  decorateReply: false,
+});
+
 fastify.register(fastifyStatic, {
   root: path.join(__dirname, 'uploads'),
   prefix: '/uploads/', // Serve JS files under the /uploads/ path (e.g., /uploads/pong.js, /uploads/players.js)
