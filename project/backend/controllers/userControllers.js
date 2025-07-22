@@ -20,19 +20,6 @@ const getAllUsersHandler = async (request, reply) => {
   reply.send(users); // Send the list of users as the response
 };
 
-//automatically adds the game results to the counter of the users
-const saveWinnerHandler = (request, reply) => {
-  const { winnerName, loserName } = request.body;
-  if (!winnerName || !loserName) {
-    return reply.send({ error: 'Player names are required', success: false });
-  }
-
-  if (!userServices.saveGameResults(winnerName, loserName)) {
-    return reply.status(500).send({ error: 'Failed to save player scores' });
-  }
-  reply.send({ message: 'Player scores saved', success: true });
-};
-
 const uploadAvatarHandler = async (request, reply) => {
   try {
     let username = request.user.username;
@@ -58,12 +45,10 @@ const uploadAvatarHandler = async (request, reply) => {
 const getAvatarHandler = async (request, reply) => {
   try {
     let username = request.user.username;
-    // console.log("Username in getAvatarHandler:", username); // Debugging
     let avatarFilepath = userServices.getAvatarFromDatabase(username);
-    // console.log("Avatar URL:", avatarFilepath); // Debugging
     const fileExistsResult = await fileExists(avatarFilepath);
     if (!fileExistsResult) {
-      console.log('Avatar not found, using default avatar'); // Debugging
+      console.log('Avatar not found, using default avatar');
       avatarFilepath = '../uploads/default_avatar.jpg';
     }
     if (!avatarFilepath) {
@@ -75,16 +60,24 @@ const getAvatarHandler = async (request, reply) => {
     });
   } catch (error) {
     console.error('Get avatar error:', error);
-    return reply.code(500).send({
-      success: false,
-      error: 'Failed to retrieve avatar',
-    });
+    return reply.code(500).send({ success: false, error: 'Failed to retrieve avatar' });
+  }
+};
+
+const addFriendHandler = async (request, reply) => {
+  try {
+    const { userUsername, friendUsername } = request.body;
+    if (!userName || !friendUsername) {
+      return reply.send({ error: 'User and Friend names are required', success: false });
+    }
+  } catch (error) {
+    console.error('Adding friend error:', error);
+    return reply.code(500).send({ success: false, error: 'Failed to add friend' });
   }
 };
 
 export default {
   getAllUsersHandler,
-  saveWinnerHandler,
   uploadAvatarHandler,
   getAvatarHandler,
 };
