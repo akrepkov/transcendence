@@ -30,11 +30,11 @@ export function handleRegister(): void {
       if (res.ok) {
         message.textContent = 'User created successfully';
       } else {
-        message.textContent = data.error + ' ' + data.details; // need to check if data.error exists
+        message.textContent = data.error;
       }
       form.reset();
     } catch (err) {
-      message.textContent = 'Server error: ';
+      message.textContent = 'Server error';
       console.error(err);
     }
   });

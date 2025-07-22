@@ -40,7 +40,7 @@ test('does not register a user with an existing username', async ({ page }) => {
   await page.click('#registerForm button[type="submit"]');
 
   const message = page.locator('#registerMessage');
-  await expect(message).toHaveText('Username or email is already in use undefined');
+  await expect(message).toHaveText('Username or email is already in use');
 
   // Clean up once
   await deleteUser(testUsername);

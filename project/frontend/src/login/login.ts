@@ -11,25 +11,26 @@ export function handleLogin(): void {
     const loginEmail = emailInput.value;
     const loginPassword = passwordInput.value;
 
+    console.log('loginEmail: ', loginEmail);
+    console.log('loginPassword: ', loginPassword);
+
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ loginEmail, loginPassword }),
+        body: JSON.stringify({
+          email: loginEmail,
+          password: loginPassword,
+        }),
       });
 
       const data = await res.json();
-
       if (res.ok) {
         message.textContent = 'Logged in successfully';
-        message.classList.remove('text-red-500');
-        message.classList.add('text-green-500');
       } else {
-        message.textContent = data.error || 'Invalid credentials';
-        message.classList.remove('text-green-500');
-        message.classList.add('text-red-500');
+        message.textContent = data.error;
       }
     } catch (err) {
       message.textContent = 'Server error';
