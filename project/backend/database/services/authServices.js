@@ -21,7 +21,7 @@ export async function registerUser({ username, email, password }) {
 }
 
 // Find user by email
-export async function checkCredentials({ email }) {
+export async function checkCredentials(email) {
   try {
     const user = await prisma.user.findFirst({ where: { email } });
     if (!user) {
@@ -38,7 +38,9 @@ export async function checkCredentials({ email }) {
 export async function checkUniqueUsername(username) {
   try {
     const user = await prisma.user.findFirst({ where: { username } });
-    if (!user) return null;
+    if (!user) {
+      return null;
+    }
     return user;
   } catch (error) {
     console.error('Error in checkUniqueUsername:', error);

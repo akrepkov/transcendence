@@ -8,7 +8,6 @@ export default async function userRoutes(fastify) {
   //user manipulation
   fastify.get('/api/users', userControllers.getAllUsersHandler);
   fastify.get('/api/game', gameControllers.getGameHandler);
-  fastify.post('/api/winner', userControllers.saveWinnerHandler);
 
   //Avatar
   fastify.post(

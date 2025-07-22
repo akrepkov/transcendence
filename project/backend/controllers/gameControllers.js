@@ -12,8 +12,7 @@ const saveGameHandler = (request, reply) => {
   if (!gameId) {
     return reply.status(500).send({ error: 'Failed to save game results' });
   }
-
-  if (!userServices.saveWinnerHandler(request, reply)) {
+  if (!userServices.saveGameResults(winnerName, loserName, gameId)) {
     return reply.status(500).send({ error: 'Failed to save player scores' });
   }
   reply.send({ message: 'Game results saved', gameId });
