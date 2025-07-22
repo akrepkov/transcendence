@@ -12,7 +12,7 @@ export function handleLogin(): void {
     const loginPassword = passwordInput.value;
 
     try {
-      const res = await fetch('/login', {
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

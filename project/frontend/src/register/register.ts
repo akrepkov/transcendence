@@ -14,22 +14,25 @@ export function handleRegister(): void {
     const registerUsername: string = usernameInput.value;
 
     try {
-      const res = await fetch('/register', {
+      const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ registerUsername, registerEmail, registerPassword }),
+        body: JSON.stringify({
+          username: registerUsername,
+          email: registerEmail,
+          password: registerPassword,
+        }),
       });
 
       const data = await res.json();
       if (res.ok) {
         message.textContent = 'User created successfully';
-        message.classList.remove('text-red-500');
-        message.classList.add('text-green-500');
       } else {
         message.textContent = data.error + ' ' + data.details; // need to check if data.error exists
       }
+      form.reset();
     } catch (err) {
       message.textContent = 'Server error: ';
       console.error(err);
