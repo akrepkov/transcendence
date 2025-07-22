@@ -87,7 +87,6 @@ const authenticate = async (request, reply) => {
   try {
     const payload = jwt.verify(token, JWT_SECRET);
     request.user = payload; //attach info to request, so when i continue with routes i can access user email : request.user.email (I had this info passed when created the token)
-    next(); //Continue to the route
   } catch (err) {
     return handleError(reply, err, 401);
   }
