@@ -21,6 +21,10 @@ test('registers a new user successfully', async ({ page }) => {
   await deleteUser(testUsername);
 });
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 test('does not register a user with an existing username', async ({ page }) => {
   // Create user first
   await page.goto('https://localhost:3000');
@@ -32,6 +36,7 @@ test('does not register a user with an existing username', async ({ page }) => {
 
   // Reload to reset form state
   await page.reload();
+  await sleep(1000);
 
   // Attempt to register again with same credentials
   await page.fill('#registerUsername', testUsername);
