@@ -3,4 +3,8 @@ node_modules/
 .vscode/
 output.css
 dist/
-project/frontend/*screenshot.png
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+.DS_Store

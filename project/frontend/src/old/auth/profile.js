@@ -1,4 +1,4 @@
-// import { setupTabs } from "./main.js";
+// import { setupTabs } from "./old-main.js";
 import { avatarHandler } from './avatar.js';
 import AuthManager from '../managers/authManager.js';
 import { logIntoDatabase, signupInDatabase, logout } from './authRequests.js';
@@ -39,7 +39,7 @@ export async function openProfileTab() {
     flipCard.classList.remove('flipped'); //add here block???????????????????
   }
 
-  //This is for choosing between login and signup
+  //This is for choosing between register and signup
   if (showLoginBtn) {
     showLoginBtn.addEventListener('click', () => {
       login.style.display = 'flex';

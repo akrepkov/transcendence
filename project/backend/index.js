@@ -28,7 +28,7 @@ let isLoggerEnabled = true;
 const getLoggerConfig = () =>
   isLoggerEnabled
     ? {
-        level: 'warn', // can change to info for more info
+        level: 'info', // can change to info for more info
         transport: {
           target: 'pino-pretty',
           options: {
@@ -85,7 +85,7 @@ fastify.register(fastifyStatic, {
 
 fastify.register(fastifyStatic, {
   root: path.join(__dirname, 'uploads'),
-  prefix: '/uploads/', // Serve JS files under the /src/ path (e.g., /src/pong.js, /src/players.js)
+  prefix: '/uploads/', // Serve JS files under the /uploads/ path (e.g., /uploads/pong.js, /uploads/players.js)
   decorateReply: false,
 });
 
