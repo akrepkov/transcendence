@@ -6,7 +6,7 @@ test('should log in existing user', async ({ page }) => {
   // Switch to login form
   await page.click('#toggleForm');
 
-  await page.fill('#loginEmail', 'djoyke@djoyke.com');
+  await page.fill('#loginUsername', 'djoyke');
   await page.fill('#loginPassword', 'djoyke');
 
   await page.click('#loginForm button[type="submit"]');
@@ -21,7 +21,7 @@ test('should not log in non-existing user', async ({ page }) => {
   // Switch to login form
   await page.click('#toggleForm');
 
-  await page.fill('#loginEmail', 'djoyke@djoy.com');
+  await page.fill('#loginUsername', 'djoy');
   await page.fill('#loginPassword', 'djoy');
 
   await page.click('#loginForm button[type="submit"]');
