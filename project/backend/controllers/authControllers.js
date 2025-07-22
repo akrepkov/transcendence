@@ -11,6 +11,10 @@ const loginHandler = async (request, reply) => {
   if (!username || !password) {
     return handleError(reply, new Error('Username and password are required'), 400);
   }
+  const user = await authServices.checkUniqueUsername(username);
+  if (!user) {
+    return handleError(reply, new Error('Invalid credentials'), 401);
+  }
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     return handleError(reply, new Error('Invalid credentials'), 401);
@@ -39,9 +43,8 @@ const registerHandler = async (request, reply) => {
   if (!email || !password || !username) {
     return handleError(reply, new Error('Email, username and password are required'), 400);
   }
-  const user = await authServices.checkCredentials(email);
   const existUsername = await authServices.checkUniqueUsername(username);
-  if (user || existUsername) {
+  if (existUsername) {
     return handleError(reply, new Error('Username or email is already in use'), 500);
   }
   // Hash the password before saving
