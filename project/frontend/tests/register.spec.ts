@@ -8,29 +8,28 @@ const testUsername = `testUser-${timestamp}`;
 const testEmail = `testEmail-${timestamp}@example.com`;
 const testPassword = `testPassword-${timestamp}`;
 
+// Utility: wait until element is visible (no .hidden class)
+async function waitUntilVisible(page: Page, selector: string) {
+  await page.waitForSelector(`${selector}:not(.hidden)`, { timeout: 5000 });
+}
+
 async function registerUser(page: Page, username: string, email: string, password: string) {
   await page.goto('https://localhost:3000?e2e=register');
-
-  // Force show the register form to bypass hidden class
-  await page.evaluate(() => {
-    document.getElementById('registerForm')?.classList.remove('hidden');
-    document.getElementById('loginForm')?.classList.add('hidden');
-  });
+  await waitUntilVisible(page, '#registerForm');
 
   await page.fill('#registerUsername', username);
   await page.fill('#registerEmail', email);
   await page.fill('#registerPassword', password);
   await page.click('#registerForm button[type="submit"]');
+
+  await waitUntilVisible(page, '#registerMessage');
 }
 
 test.describe('User Registration', () => {
   test('registers a new user successfully', async ({ page }) => {
     try {
       await registerUser(page, testUsername, testEmail, testPassword);
-
-      await expect(page.locator('#registerMessage')).toHaveText('User created successfully', {
-        timeout: 10000,
-      });
+      await expect(page.locator('#registerMessage')).toHaveText('User created successfully');
     } finally {
       await deleteUser(testUsername);
     }
@@ -39,16 +38,12 @@ test.describe('User Registration', () => {
   test('does not register a user with an existing username', async ({ page }) => {
     try {
       await registerUser(page, testUsername, testEmail, testPassword);
+      await expect(page.locator('#registerMessage')).toHaveText('User created successfully');
 
-      await expect(page.locator('#registerMessage')).toHaveText('User created successfully', {
-        timeout: 10000,
-      });
-
-      // Try duplicate registration
+      await page.reload({ waitUntil: 'load' });
       await registerUser(page, testUsername, testEmail, testPassword);
       await expect(page.locator('#registerMessage')).toHaveText(
         'Username or email is already in use',
-        { timeout: 10000 },
       );
     } finally {
       await deleteUser(testUsername);
