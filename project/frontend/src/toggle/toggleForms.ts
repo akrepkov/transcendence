@@ -11,29 +11,43 @@ export function toggleForms() {
     return;
   }
 
+  const showRegister = () => {
+    loginForm.classList.add('hidden');
+    registerForm.classList.remove('hidden');
+    formTitle.textContent = 'Register';
+    toggle.textContent = 'Already have an account? Login';
+
+    loginMessage.textContent = '';
+    loginMessage.classList.add('hidden');
+    registerMessage.classList.remove('hidden');
+  };
+
+  const showLogin = () => {
+    registerForm.classList.add('hidden');
+    loginForm.classList.remove('hidden');
+    formTitle.textContent = 'Login';
+    toggle.textContent = 'No account? Register';
+
+    registerMessage.textContent = '';
+    registerMessage.classList.add('hidden');
+    loginMessage.classList.remove('hidden');
+  };
+
+  // 🔄 On click toggle
   toggle.addEventListener('click', () => {
     const isRegistering = !registerForm.classList.contains('hidden');
-
     if (isRegistering) {
-      // Switch to login
-      registerForm.classList.add('hidden');
-      loginForm.classList.remove('hidden');
-      formTitle.textContent = 'Login';
-      toggle.textContent = 'No account? Register';
-
-      registerMessage.textContent = '';
-      registerMessage.classList.add('hidden');
-      loginMessage.classList.remove('hidden');
+      showLogin();
     } else {
-      // Switch to register
-      loginForm.classList.add('hidden');
-      registerForm.classList.remove('hidden');
-      formTitle.textContent = 'Register';
-      toggle.textContent = 'Already have an account? Login';
-
-      loginMessage.textContent = '';
-      loginMessage.classList.add('hidden');
-      registerMessage.classList.remove('hidden');
+      showRegister();
     }
   });
+
+  // 🆕 Check URL query param on load
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('form') === 'register') {
+    showRegister();
+  } else {
+    showLogin(); // fallback
+  }
 }
