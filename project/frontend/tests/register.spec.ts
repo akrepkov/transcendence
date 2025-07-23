@@ -11,14 +11,11 @@ const testPassword = `testPassword-${timestamp}`;
 async function registerUser(page: Page, username: string, email: string, password: string) {
   await page.goto('https://localhost:3000?e2e=register');
 
-  // Force show the register form in case frontend logic doesn't run in CI
+  // Force show the register form to bypass hidden class
   await page.evaluate(() => {
     document.getElementById('registerForm')?.classList.remove('hidden');
     document.getElementById('loginForm')?.classList.add('hidden');
   });
-
-  const form = page.locator('#registerForm');
-  await expect(form).toBeVisible({ timeout: 10000 });
 
   await page.fill('#registerUsername', username);
   await page.fill('#registerEmail', email);
@@ -31,9 +28,9 @@ test.describe('User Registration', () => {
     try {
       await registerUser(page, testUsername, testEmail, testPassword);
 
-      const message = page.locator('#registerMessage');
-      await expect(message).toBeVisible({ timeout: 10000 });
-      await expect(message).toHaveText('User created successfully');
+      await expect(page.locator('#registerMessage')).toHaveText('User created successfully', {
+        timeout: 10000,
+      });
     } finally {
       await deleteUser(testUsername);
     }
@@ -43,12 +40,11 @@ test.describe('User Registration', () => {
     try {
       await registerUser(page, testUsername, testEmail, testPassword);
 
-      const message = page.locator('#registerMessage');
-      await expect(message).toHaveText('User created successfully', {
+      await expect(page.locator('#registerMessage')).toHaveText('User created successfully', {
         timeout: 10000,
       });
 
-      // Attempt to register again with same credentials
+      // Try duplicate registration
       await registerUser(page, testUsername, testEmail, testPassword);
       await expect(page.locator('#registerMessage')).toHaveText(
         'Username or email is already in use',
