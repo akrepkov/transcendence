@@ -26,8 +26,10 @@ export function handleLogin(): void {
       const data = await res.json();
       if (res.ok) {
         message.textContent = 'Logged in successfully';
+        message.classList.remove('hidden'); // ensure it's visible
       } else {
         message.textContent = data.error;
+        message.classList.remove('hidden'); // ensure it's visible
       }
     } catch (err) {
       message.textContent = 'Server error';

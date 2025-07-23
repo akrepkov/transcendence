@@ -29,8 +29,10 @@ export function handleRegister(): void {
       const data = await res.json();
       if (res.ok) {
         message.textContent = 'User created successfully';
+        message.classList.remove('hidden'); // ensure it's visible
       } else {
         message.textContent = data.error;
+        message.classList.remove('hidden'); // ensure it's visible
       }
       form.reset();
     } catch (err) {
