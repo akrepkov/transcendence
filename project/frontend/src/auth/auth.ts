@@ -65,3 +65,22 @@ export function handleRegister(): void {
     }
   });
 }
+
+// logic for testing
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const e2eMode = params.get('e2e');
+
+  const loginForm = document.getElementById('loginForm');
+  const registerForm = document.getElementById('registerForm');
+
+  if (!loginForm || !registerForm) return;
+
+  if (e2eMode === 'register') {
+    loginForm.classList.add('hidden');
+    registerForm.classList.remove('hidden');
+  } else if (e2eMode === 'login') {
+    registerForm.classList.add('hidden');
+    loginForm.classList.remove('hidden');
+  }
+});
