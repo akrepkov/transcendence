@@ -16,6 +16,10 @@ const NON_EXISTING_USER = {
 
 async function performLogin(page: Page, username: string, password: string) {
   await page.goto('https://localhost:3000?e2e=login');
+  await page.evaluate(() => {
+    document.getElementById('registerForm')?.classList.add('hidden');
+    document.getElementById('loginForm')?.classList.remove('hidden');
+  });
   const form = page.locator('#loginForm');
 
   await expect(form).toBeVisible({ timeout: 10000 });
