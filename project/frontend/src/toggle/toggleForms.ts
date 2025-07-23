@@ -15,19 +15,25 @@ export function toggleForms() {
     const isRegistering = !registerForm.classList.contains('hidden');
 
     if (isRegistering) {
-      // switch to login
+      // Switch to login
       registerForm.classList.add('hidden');
       loginForm.classList.remove('hidden');
       formTitle.textContent = 'Login';
       toggle.textContent = 'No account? Register';
+
       registerMessage.textContent = '';
+      registerMessage.classList.add('hidden');
+      loginMessage.classList.remove('hidden');
     } else {
-      // switch to register
+      // Switch to register
       loginForm.classList.add('hidden');
       registerForm.classList.remove('hidden');
       formTitle.textContent = 'Register';
       toggle.textContent = 'Already have an account? Login';
+
       loginMessage.textContent = '';
+      loginMessage.classList.add('hidden');
+      registerMessage.classList.remove('hidden');
     }
   });
 }

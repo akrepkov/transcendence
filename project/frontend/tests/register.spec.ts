@@ -9,7 +9,14 @@ const testPassword = `testPassword-${timestamp}`;
 test('registers a new user successfully', async ({ page }) => {
   await page.goto('https://localhost:3000');
 
-  await page.fill('#registerUsername', testUsername);
+  // Switch to register form
+  await page.click('#toggleForm');
+
+  // Wait for register form fields to be visible
+  const registerUsername = page.locator('#registerUsername');
+  await expect(registerUsername).toBeVisible();
+
+  await registerUsername.fill(testUsername);
   await page.fill('#registerEmail', testEmail);
   await page.fill('#registerPassword', testPassword);
 
@@ -21,25 +28,27 @@ test('registers a new user successfully', async ({ page }) => {
   await deleteUser(testUsername);
 });
 
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 test('does not register a user with an existing username', async ({ page }) => {
-  // Create user first
   await page.goto('https://localhost:3000');
 
-  await page.fill('#registerUsername', testUsername);
+  // Switch to register form
+  await page.click('#toggleForm');
+  const registerUsername = page.locator('#registerUsername');
+  await expect(registerUsername).toBeVisible();
+
+  // First registration
+  await registerUsername.fill(testUsername);
   await page.fill('#registerEmail', testEmail);
   await page.fill('#registerPassword', testPassword);
   await page.click('#registerForm button[type="submit"]');
 
-  // Reload to reset form state
+  // Reload page to reset state
   await page.reload();
-  await sleep(1000);
+  await page.click('#toggleForm');
+  await expect(registerUsername).toBeVisible();
 
-  // Attempt to register again with same credentials
-  await page.fill('#registerUsername', testUsername);
+  // Attempt second registration
+  await registerUsername.fill(testUsername);
   await page.fill('#registerEmail', testEmail);
   await page.fill('#registerPassword', testPassword);
   await page.click('#registerForm button[type="submit"]');
@@ -47,6 +56,5 @@ test('does not register a user with an existing username', async ({ page }) => {
   const message = page.locator('#registerMessage');
   await expect(message).toHaveText('Username or email is already in use');
 
-  // Clean up once
   await deleteUser(testUsername);
 });

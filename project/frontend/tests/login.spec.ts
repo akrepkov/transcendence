@@ -3,8 +3,9 @@ import { test, expect } from '@playwright/test';
 test('should log in existing user', async ({ page }) => {
   await page.goto('https://localhost:3000');
 
-  // Switch to login form
-  await page.click('#toggleForm');
+  // Wait for login form to be ready
+  await page.waitForSelector('#loginForm:not(.hidden)', { state: 'attached' });
+  await page.waitForSelector('#loginUsername', { state: 'visible' });
 
   await page.fill('#loginUsername', 'djoyke');
   await page.fill('#loginPassword', 'djoyke');
@@ -18,8 +19,9 @@ test('should log in existing user', async ({ page }) => {
 test('should not log in non-existing user', async ({ page }) => {
   await page.goto('https://localhost:3000');
 
-  // Switch to login form
-  await page.click('#toggleForm');
+  // Wait for login form to be ready
+  await page.waitForSelector('#loginForm:not(.hidden)', { state: 'attached' });
+  await page.waitForSelector('#loginUsername', { state: 'visible' });
 
   await page.fill('#loginUsername', 'djoy');
   await page.fill('#loginPassword', 'djoy');
