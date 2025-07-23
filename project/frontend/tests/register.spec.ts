@@ -12,6 +12,9 @@ test('registers a new user successfully', async ({ page }) => {
   // Switch to register form
   await page.click('#toggleForm');
 
+  // Wait for register form to be active
+  await page.waitForSelector('#registerForm:not(.hidden)', { state: 'attached' });
+
   // Wait for register form fields to be visible
   const registerUsername = page.locator('#registerUsername');
   await expect(registerUsername).toBeVisible();

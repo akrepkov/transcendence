@@ -45,5 +45,5 @@ jobs:
         timeout-minutes: 2
 
       - name: Run Playwright Unit Tests
-        run: npx playwright test
+        run: npx playwright test --workers-4
         working-directory: ./project/frontend
