@@ -31,7 +31,7 @@ const loginHandler = async (request, reply) => {
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
   });
   return reply.status(200).send({
-    message: 'Registration successful',
+    message: 'Login successful',
     username: user.username,
   });
 };

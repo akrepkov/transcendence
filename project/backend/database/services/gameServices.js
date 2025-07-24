@@ -19,7 +19,8 @@ export async function saveGame(winnerName, loserName, scoreWinner, scoreLoser) {
         player2Score: scoreLoser,
       },
     });
-    return true;
+    console.log('Created game:', game); // Add this line
+    return game;
   } catch (error) {
     console.error('Error saving game:', error);
     return false;
