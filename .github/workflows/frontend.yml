@@ -42,8 +42,8 @@ jobs:
 
       - name: Wait for server to be ready
         run: npx wait-on https://localhost:3000 --insecure
-        timeout-minutes: 2
+        timeout-minutes: 1
 
       - name: Run Playwright Unit Tests
-        run: npx playwright test
+        run: npx playwright test --trace on
         working-directory: ./project/frontend
