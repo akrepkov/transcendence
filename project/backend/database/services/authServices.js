@@ -2,11 +2,13 @@ import prisma from '../prisma/prismaClient.js';
 
 // Register a new user
 export async function registerUser({ username, email, password }) {
+  if (!username || !email || !password) {
+    console.error('Some data is missing:');
+    return null;
+  }
   try {
     const existingUser = await prisma.user.findFirst({
-      where: {
-        OR: [{ username }, { email }],
-      },
+      where: { username },
     });
     if (existingUser) {
       return null;
