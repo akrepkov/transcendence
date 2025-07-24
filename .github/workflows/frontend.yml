@@ -40,10 +40,15 @@ jobs:
         run: npx prisma generate --schema=database/prisma/schema.prisma && npm run start &
         working-directory: ./project/backend
 
+      - name: Wait for API to respond
+        run: |
+          npx wait-on https://localhost:3000/api/auth/login --insecure || curl -k --retry 10 --retry-connrefused --retry-delay 2 https://localhost:3000/api/auth/login
+        working-directory: ./project/frontend
+
       - name: Wait for server to be ready
         run: npx wait-on https://localhost:3000 --insecure
         timeout-minutes: 2
 
       - name: Run Playwright Unit Tests
-        run: npx playwright test
+        run: npx playwright test --trace on
         working-directory: ./project/frontend

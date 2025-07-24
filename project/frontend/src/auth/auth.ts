@@ -38,6 +38,7 @@ export async function handleLogin(): Promise<void> {
         }),
       });
 
+      console.log('Login response:', res.status); //temp check
       const data = await res.json();
       showMessage(loginMessage, res.ok ? 'Logged in successfully' : data.error);
     } catch (err) {

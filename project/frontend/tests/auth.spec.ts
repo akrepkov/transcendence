@@ -14,6 +14,10 @@ test.describe.serial('Auth Flow', () => {
     await page.fill('#loginPassword', 'djoyke');
     await page.click('#loginForm button[type="submit"]');
 
+    await page.waitForTimeout(1000); //temp check
+    console.log(await page.locator('#loginMessage').innerText()); //temp check
+
+
     await expect(page.locator('#loginMessage')).toBeVisible();
     await expect(page.locator('#loginMessage')).toHaveText('Logged in successfully');
   });
