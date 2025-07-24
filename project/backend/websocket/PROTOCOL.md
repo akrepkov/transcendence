@@ -30,13 +30,13 @@ socket = new WebSocket(`wss://${window.location.hostname}:3000/ws/connect`);
 | Type                   | Description                                                               | Payload Example                                                                  |
 |------------------------|---------------------------------------------------------------------------|----------------------------------------------------------------------------------|
 | `waitingForOpponent`   | Notifies player they are in the waiting room, waiting for match.          | `{ type: 'waitingForOpponent' }`                                                 |
-| `gameStarting`         | Notifies both players that a game is starting.                            | `{ type: 'gameStarting', opponent1: 'userId1', opponent2: 'userId2' }`           |
+| `gameStarting`         | Notifies both players that a game is starting.                            | `{ type: 'gameStarting', opponent1: 'username1', opponent2: 'username2' }`       |
 | `updateGameState`      | Sends the current game state (positions, scores, etc).                    | `{ type: 'updateGameState', players: [player1, player2], ball: 'Ball' }`         |
 | `opponentDisconnected` | Notifies player that their opponent has disconnected.                     | `{ type: 'opponentDisconnected', reason: 'reason' }`                             |
 | `logoutRequest`        | Instructs all sockets of a user to log out.                               | `{ type: 'logoutRequest' }`                                                      |
 | `error`                | Sends error details to the client.                                        | `{ type: 'error', message: 'message' }`                                          |
 | `onlineUsers`          | Sends updated list of online users.                                       | `{ type: 'onlineUsers', users: [...] }`                                          |
-| `gameOver`             | Notifies both players that the game has ended.                            | `{ type: 'gameOver', players: [player1, player2], winner: 'userId' }`            |
+| `gameOver`             | Notifies both players that the game has ended.                            | `{ type: 'gameOver', players: [player1, player2], winner: 'username' }`          |
 | `socketRejection`      | Notifies the client that an action was rejected, with a code and message. | `{ type: 'socketRejection', code: 4002, message: 'You are already in a game.' }` |
 
 ---
@@ -83,8 +83,8 @@ The stopGame and disconnectFromGame messages are pretty much the same, they just
 
 **gameStarting**
 - Sent to both players when a match is found and a game is starting.
-- Payload: `{ type: 'gameStarting', opponent1: 'userId1', opponent2: 'userId2' }`
-    - `userId1`, `userId2`: User IDs of the matched players.
+- Payload: `{ type: 'gameStarting', opponent1: 'username1', opponent2: 'username2' }`
+    - `username1`, `username2`: Usernames of the matched players.
 
 **updateGameState**
 - Sent to both players to update them on the current game state (positions, scores, etc.).
@@ -114,7 +114,7 @@ The stopGame and disconnectFromGame messages are pretty much the same, they just
   }
   ```
 - The `players` array contains objects for each player, with:
-    - `playerName`: The user's ID or name.
+    - `playerName`: The users name.
     - `paddleY`: The vertical position of the paddle.
     - `paddleX`: The horizontal position of the paddle (0 for left, 800 for right).
     - `score`: The player's current score.
@@ -140,7 +140,7 @@ The stopGame and disconnectFromGame messages are pretty much the same, they just
 **onlineUsers**
 - Sent to clients to update them on the list of currently online users.
 - Payload: `{ type: 'onlineUsers', users: [...] }`
-    - `users`: An array of user IDs.
+    - `users`: An array of usernames.
 - This message gets send everytime a user opens it's first connection or closes it's last connection. This means that f.e. a user opening a new tab will not trigger this message.
 
 **gameOver**
@@ -167,11 +167,11 @@ The stopGame and disconnectFromGame messages are pretty much the same, they just
   }
   ```
 - The `players` array contains objects for each player, with:
-    - `playerName`: The user's ID or name.
+    - `playerName`: The user's name.
     - `paddleY`: The vertical position of the paddle.
     - `paddleX`: The horizontal position of the paddle (0 for left, 800 for right).
     - `score`: The player's final score.
-- The `winner` field contains the user ID of the winning player.
+- The `winner` field contains the user name of the winning player.
 - Both players should handle this message by displaying the result and cleaning up the game state.
 
 **socketRejection**

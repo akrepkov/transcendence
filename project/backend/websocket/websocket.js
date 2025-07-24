@@ -33,7 +33,7 @@ function handleMessage(connection, data) {
   }
 }
 
-function handleError(connection, error) {
+function handleWebsocketError(connection, error) {
   try {
     messageManager.sendErrorToClient(connection.socket, error);
   } catch (err) {
@@ -52,7 +52,7 @@ function messageHandler(connection, message) {
     handleMessage(connection, data);
   } catch (err) {
     console.error('Error processing Websocket message:', err.message);
-    handleError(connection, err);
+    handleWebsocketError(connection, err);
   }
 }
 
@@ -97,7 +97,7 @@ function setupSocketEvents(socket, connection) {
 
   socket.on('error', (error) => {
     console.error('Websocket error:', error);
-    handleError(connection, error);
+    handleWebsocketError(connection, error);
   });
 
   socket.on('pong', () => {

@@ -33,7 +33,7 @@ function printUsers() {
   console.log('\n=== START Connection System Status ===\n');
   console.log('We currently have', connectedUsers.size, 'unique users connected:\n');
   connectedUsers.forEach((connections, userId) => {
-    console.log('user', userId, 'has', connections.size, 'connections');
+    console.log('user', getUserNameById(userId), 'has', connections.size, 'connections');
   });
   console.log('\n=== END Connection System Status ===\n');
 }
@@ -54,11 +54,32 @@ function getConnectedUsers() {
   return connectedUsers;
 }
 
+function getUserNameById(userId) {
+  const userConnections = getUserConnections(userId);
+  if (!userConnections || userConnections.size === 0) {
+    return null;
+  }
+  return userConnections.values().next().value.username;
+}
+
+function getNamesOfConnectedUsers() {
+  const userNames = [];
+  connectedUsers.forEach((connections, userId) => {
+    const userName = getUserNameById(userId);
+    if (userName) {
+      userNames.push(userName);
+    }
+  });
+  return userNames;
+}
+
 export const connectionManager = {
   addConnection,
   removeConnection,
   getUserConnections,
   getUserConnectionsBySession,
   getConnectedUsers,
+  getUserNameById,
+  getNamesOfConnectedUsers,
   printUsers,
 };

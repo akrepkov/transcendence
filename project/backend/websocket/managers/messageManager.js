@@ -79,7 +79,7 @@ function createBroadcast(message) {
 function sendOnlineUsers(target, sockets = null) {
   createBroadcast({
     type: 'onlineUsers',
-    users: Array.from(connectionManager.getConnectedUsers().keys()),
+    users: connectionManager.getNamesOfConnectedUsers(),
   }).to[target](sockets);
 }
 
