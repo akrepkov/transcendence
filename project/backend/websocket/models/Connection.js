@@ -6,7 +6,8 @@ export const wsState = Object.freeze({
 
 export class Connection {
   constructor(socket, decodedToken) {
-    this.userId = decodedToken.email;
+    this.userId = decodedToken.userId;
+    this.username = decodedToken.username;
     this.sessionId = decodedToken.sessionId;
     this.socket = socket;
     this.socket.isAlive = true;

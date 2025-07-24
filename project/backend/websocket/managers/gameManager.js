@@ -15,11 +15,11 @@ function generateGameId() {
 
 function addPlayerToWaitingList(connection) {
   if (playingUsers.has(connection.userId)) {
-    console.log('Player already in game:', connection.userId);
+    console.log('Player already in game:', connection.username);
     throw new Error(`${REJECT.PLAYER_IN_GAME}`);
   }
   if (waitingPlayers.some((player) => player.userId === connection.userId)) {
-    console.log('Player already in waiting list:', connection.userId);
+    console.log('Player already in waiting list:', connection.username);
     throw new Error(`${REJECT.PLAYER_IN_WAITING_ROOM}`);
   }
   connection.updateState('waitingRoom');
@@ -30,11 +30,11 @@ function addPlayerToWaitingList(connection) {
     })
     .to.single(connection.socket);
 
-  console.log('Added player to waiting list:', connection.userId);
-  matchPlayers();
+  console.log('Added player to waiting list:', connection.username);
 }
 
 function matchPlayers() {
+  console.log('Matching players...');
   while (waitingPlayers.length >= 2) {
     const player1 = waitingPlayers.shift();
     const player2 = waitingPlayers.shift();
@@ -47,16 +47,16 @@ function matchPlayers() {
 
 function removeFromWaitingList(connection) {
   if (connection.state !== 'waitingRoom') {
-    console.warn('Player is not in waiting list:', connection.userId);
+    console.warn('Connection is not in waiting list:', connection.username);
     throw new Error(`${REJECT.NOT_IN_WAITING_ROOM}`);
   }
   const index = waitingPlayers.findIndex((player) => player.userId === connection.userId);
   if (index !== -1) {
     waitingPlayers.splice(index, 1);
     connection.updateState('idle');
-    console.log('Removed player from waiting list:', connection.userId);
+    console.log('Removed player from waiting list:', connection.username);
   } else {
-    console.warn('Player not found in waiting list:', connection.userId);
+    console.warn('Player not found in waiting list:', connection.username);
     connection.updateState('idle');
   }
 }
@@ -72,8 +72,8 @@ function createGame(connection1, connection2) {
   messageManager
     .createBroadcast({
       type: 'gameStarting',
-      opponent1: connection1.userId,
-      opponent2: connection2.userId,
+      opponent1: connection1.username,
+      opponent2: connection2.username,
     })
     .to.sockets([connection1.socket, connection2.socket]);
 
@@ -81,7 +81,6 @@ function createGame(connection1, connection2) {
   playingUsers.set(connection2.userId, gameId);
   game.startGame();
   console.log('Created new game:', gameId);
-  //call_lena_fnct(game)
 }
 
 function removeGame(gameId) {
@@ -99,14 +98,14 @@ function removeGame(gameId) {
 
 function handleInput(connection, direction) {
   if (connection.state !== 'inGame') {
-    console.warn('Connection is not in game:', connection.userId);
+    console.warn('Connection is not in game:', connection.username);
     throw new Error(`${REJECT.NOT_IN_GAME}`);
   }
   const game = activeGames.get(playingUsers.get(connection.userId)) || null;
   if (game) {
     game.handleInput(connection.userId, direction);
   } else {
-    console.warn('No game found for player:', connection.userId);
+    console.warn('No game found for player:', connection.username);
     connection.updateState('idle');
   }
 }
@@ -130,11 +129,11 @@ function handleDisconnect(connection, reason = 'disconnected') {
       }
       removeGame(game.gameId);
     } else {
-      console.warn('No game found for player:', connection.userId);
+      console.warn('No game found for player:', connection.username);
       connection.updateState('idle');
     }
   } else if (connection.closing === false) {
-    console.warn('Connection is not in game or waiting room:', connection.userId);
+    console.warn('Connection is not in game or waiting room:', connection.username);
     throw new Error(`${REJECT.NOT_IN_GAME}`);
   }
 }
@@ -156,7 +155,7 @@ function printGameSystemStatus() {
   statusReport += `\nWaiting Players (${amountOfWaitingPlayers}):\n`;
   if (amountOfWaitingPlayers > 0) {
     waitingPlayers.forEach((player) => {
-      statusReport += `- Player ${player.userId}\n`;
+      statusReport += `- Player ${player.username}\n`;
     });
   } else {
     statusReport += '- No players waiting\n';
@@ -181,6 +180,8 @@ function printGameSystemStatus() {
   console.log(statusReport);
   return statusReport;
 }
+
+const matchmakingInterval = setInterval(matchPlayers, 5000);
 
 export const gameManager = {
   addPlayerToWaitingList,
