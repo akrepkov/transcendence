@@ -20,10 +20,9 @@ export class Game {
     this.gameId = gameId;
     this.ball = new Ball();
     this.players = [
-      new Player(connection1.userId, 0),
-      new Player(connection2.userId, GAME_CONSTS.WIDTH),
+      new Player(connection1.username, connection1.userId, 0),
+      new Player(connection2.username, connection2.userId, GAME_CONSTS.WIDTH),
     ];
-    //TODO for JAN - add date of created at (for Lena)
     this.playerSockets = [connection1.socket, connection2.socket];
     this.playerConnections = [connection1, connection2];
     this.state = {
@@ -35,7 +34,7 @@ export class Game {
   }
 
   handleInput(playerId, direction) {
-    const player = this.players.find((player) => player.playerName === playerId);
+    const player = this.players.find((player) => player.playerId === playerId);
     if (direction === 'up' && player.paddleY > 0) {
       player.paddleY -= GAME_CONSTS.PADDLE_SPEED;
     } else if (
@@ -44,7 +43,7 @@ export class Game {
     ) {
       player.paddleY += GAME_CONSTS.PADDLE_SPEED;
     } else {
-      console.warn(`Invalid direction: ${direction} for player: ${playerId}`);
+      console.warn(`Invalid direction: ${direction} for player: ${player.playerName}`);
       throw new Error(`${REJECT.WRONG_DIRECTION}`);
     }
   }
