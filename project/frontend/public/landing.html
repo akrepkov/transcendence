@@ -8,6 +8,12 @@
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
     <style>
+        .bg-gif {
+            background-image: url('your-background.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
         body {
             font-family: 'VT323', monospace;
             background-color: #FFFF00;
@@ -39,7 +45,7 @@
         <a class="hover:underline" href="#">Logout</a>
     </nav>
     <div class="flex flex-col items-start">
-        <span class="text-xl">Welcome, <span id="welcomeUsername">Doyke</span></span>
+        <span class="text-xl">Welcome, <span id="welcomeUsername"></span></span>
         <img src="https://via.placeholder.com/64" alt="Profile Picture"
              class="w-20 h-20 mt-5 square-thin pixelated-border" />
     </div>
@@ -62,6 +68,8 @@
                 <button class="bg-transparent pixelated-border text-black font-bold py-3 px-6 text-xl"> Snake</button>
                 <button class="bg-transparent pixelated-border text-black font-bold py-3 px-6 text-xl"> Practice</button>
             </div>
+        </div>
+    </div>
 </main>
 
 <!-- Footer -->
