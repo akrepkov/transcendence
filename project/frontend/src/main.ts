@@ -1,7 +1,6 @@
-import { handleRegister } from './register/register.js';
-import { handleLogin } from './login/login.js';
+import { handleRegister, handleLogin } from './auth/auth.js';
 import { toggleForms } from './toggle/toggleForms.js';
 
-handleRegister();
 handleLogin();
+handleRegister();
 toggleForms();

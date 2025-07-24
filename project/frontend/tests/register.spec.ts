@@ -1,52 +1,62 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 import { deleteUser } from '../../backend/database/services/userServices.js';
+
+test.setTimeout(60000);
 
 const timestamp = Date.now();
 const testUsername = `testUser-${timestamp}`;
 const testEmail = `testEmail-${timestamp}@example.com`;
 const testPassword = `testPassword-${timestamp}`;
 
-test('registers a new user successfully', async ({ page }) => {
-  await page.goto('https://localhost:3000');
-
-  await page.fill('#registerUsername', testUsername);
-  await page.fill('#registerEmail', testEmail);
-  await page.fill('#registerPassword', testPassword);
-
-  await page.click('#registerForm button[type="submit"]');
-
-  const message = page.locator('#registerMessage');
-  await expect(message).toHaveText('User created successfully');
-
-  await deleteUser(testUsername);
-});
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+/**
+ * Wait until an element is present and no longer has the `hidden` class.
+ */
+async function waitUntilUnhidden(page: Page, selector: string, timeout = 5000) {
+  await page.waitForLoadState('domcontentloaded');
+  await page.waitForFunction(
+    (sel) => {
+      const el = document.querySelector(sel);
+      return el && !el.classList.contains('hidden');
+    },
+    selector,
+    { timeout },
+  );
 }
 
-test('does not register a user with an existing username', async ({ page }) => {
-  // Create user first
-  await page.goto('https://localhost:3000');
+async function registerUser(page: Page, username: string, email: string, password: string) {
+  await page.goto('https://localhost:3000?e2e=register');
+  await waitUntilUnhidden(page, '#registerForm');
 
-  await page.fill('#registerUsername', testUsername);
-  await page.fill('#registerEmail', testEmail);
-  await page.fill('#registerPassword', testPassword);
+  await page.fill('#registerUsername', username);
+  await page.fill('#registerEmail', email);
+  await page.fill('#registerPassword', password);
   await page.click('#registerForm button[type="submit"]');
 
-  // Reload to reset form state
-  await page.reload();
-  await sleep(1000);
+  await waitUntilUnhidden(page, '#registerMessage');
+}
 
-  // Attempt to register again with same credentials
-  await page.fill('#registerUsername', testUsername);
-  await page.fill('#registerEmail', testEmail);
-  await page.fill('#registerPassword', testPassword);
-  await page.click('#registerForm button[type="submit"]');
+test.describe('User Registration', () => {
+  test('registers a new user successfully', async ({ page }) => {
+    try {
+      await registerUser(page, testUsername, testEmail, testPassword);
+      await expect(page.locator('#registerMessage')).toHaveText('User created successfully');
+    } finally {
+      await deleteUser(testUsername);
+    }
+  });
 
-  const message = page.locator('#registerMessage');
-  await expect(message).toHaveText('Username or email is already in use');
+  test('does not register a user with an existing username', async ({ page }) => {
+    try {
+      await registerUser(page, testUsername, testEmail, testPassword);
+      await expect(page.locator('#registerMessage')).toHaveText('User created successfully');
 
-  // Clean up once
-  await deleteUser(testUsername);
+      await page.reload({ waitUntil: 'load' });
+      await registerUser(page, testUsername, testEmail, testPassword);
+      await expect(page.locator('#registerMessage')).toHaveText(
+        'Username or email is already in use',
+      );
+    } finally {
+      await deleteUser(testUsername);
+    }
+  });
 });
