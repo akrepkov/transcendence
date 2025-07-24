@@ -42,12 +42,4 @@ export function toggleForms() {
       showRegister();
     }
   });
-
-  // Check URL query param on load
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('form') === 'register') {
-    showRegister();
-  } else {
-    showLogin(); // fallback
-  }
 }
