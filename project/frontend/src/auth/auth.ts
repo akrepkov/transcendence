@@ -3,46 +3,74 @@ function showMessage(el: HTMLElement, text: string): void {
   el.textContent = text;
 }
 
-export function handleLogin(): void {
-  const form = document.getElementById('loginForm') as HTMLFormElement;
-  const usernameInput = document.getElementById('loginUsername') as HTMLInputElement;
-  const passwordInput = document.getElementById('loginPassword') as HTMLInputElement;
-  const message = document.getElementById('loginMessage') as HTMLElement;
+  /**
+ * Handle login form submission
+ * Verifies user credentials and displays a success or error message
+ */
+export async function handleLogin(): Promise<void> {
+    const loginForm = document.getElementById('loginForm') as HTMLFormElement;
+    const loginMessage = document.getElementById('loginMessage') as HTMLElement;
 
-  if (!form || !usernameInput || !passwordInput || !message) return;
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: usernameInput.value,
-          password: passwordInput.value,
-        }),
-      });
-
-      const data = await res.json();
-      showMessage(message, res.ok ? 'Logged in successfully' : data.error);
-    } catch (err) {
-      console.error(err);
-      showMessage(message, 'Server error');
+    if (!loginForm || !loginMessage) {
+      console.warn('Login form or message element not found in the DOM.');
+      return;
     }
-  });
-}
 
-export function handleRegister(): void {
-  const form = document.getElementById('registerForm') as HTMLFormElement;
+    // Get input values from login form
+    const usernameInput = document.getElementById('loginUsername') as HTMLInputElement;
+    const passwordInput = document.getElementById('loginPassword') as HTMLInputElement;
+
+    if (!usernameInput || !passwordInput) {
+      console.error('Login input fields are missing.');
+      return;
+    }
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: usernameInput.value,
+            password: passwordInput.value,
+          }),
+        });
+
+        const data = await res.json();
+        showMessage(loginMessage, res.ok ? 'Logged in successfully' : data.error);
+      } catch (err) {
+        console.error(err);
+        showMessage(loginMessage, 'Server error');
+      }
+    });
+  }
+
+/**
+ * Handle registration form submission
+ * Validates input fields and displays a success or error message
+ */
+export async function handleRegister(): Promise<void> {// Prevent form from reloading the page
+  const registerForm = document.getElementById('registerForm') as HTMLFormElement;
+  const registerMessage = document.getElementById('registerMessage') as HTMLElement;
+
+  if (!registerForm || !registerMessage) {
+    console.warn('Register form or message element not found in the DOM.');
+    return;
+  }
+
+  // Get input values from register form
   const emailInput = document.getElementById('registerEmail') as HTMLInputElement;
   const passwordInput = document.getElementById('registerPassword') as HTMLInputElement;
   const usernameInput = document.getElementById('registerUsername') as HTMLInputElement;
-  const message = document.getElementById('registerMessage') as HTMLElement;
 
-  if (!form || !emailInput || !passwordInput || !usernameInput || !message) return;
+  if (!usernameInput || !emailInput || !passwordInput) {
+    console.error('Register input fields are missing.');
+    return;
+  }
 
-  form.addEventListener('submit', async (e) => {
+  registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     try {
@@ -57,30 +85,11 @@ export function handleRegister(): void {
       });
 
       const data = await res.json();
-      showMessage(message, res.ok ? 'User created successfully' : data.error);
-      form.reset();
+      showMessage(registerMessage, res.ok ? 'User registered successfully' : data.error);
+      registerForm.reset();
     } catch (err) {
       console.error(err);
-      showMessage(message, 'Server error');
+      showMessage(registerMessage, 'Server error');
     }
   });
 }
-
-// logic for testing
-window.addEventListener('DOMContentLoaded', () => {
-  const params = new URLSearchParams(window.location.search);
-  const e2eMode = params.get('e2e');
-
-  const loginForm = document.getElementById('loginForm');
-  const registerForm = document.getElementById('registerForm');
-
-  if (!loginForm || !registerForm) return;
-
-  if (e2eMode === 'register') {
-    loginForm.classList.add('hidden');
-    registerForm.classList.remove('hidden');
-  } else if (e2eMode === 'login') {
-    registerForm.classList.add('hidden');
-    loginForm.classList.remove('hidden');
-  }
-});
