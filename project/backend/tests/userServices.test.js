@@ -34,9 +34,9 @@ describe('Prisma direct database tests', () => {
   });
 
   test('registerting user with the same username', async () => {
-    await authServices.registerUser('lena', 'lena', 'lena');
-    const user = await userServices.getUserByEmail('lena');
-    expect(user).toBe(null);
+    await authServices.registerUser({ username: 'lena', email: 'lena', password: 'lena' });
+    const user = await userServices.getUserByUsername('lena');
+    expect(user.email).toBe('lena@mail.com');
   });
 
   test('users table exists', async () => {
@@ -45,27 +45,32 @@ describe('Prisma direct database tests', () => {
     expect(Array.isArray(users)).toBe(true);
   });
 
-  //   test('save user game results', async () => {
-  //     const winner = await userServices.getUserByUsername('lena');
-  //     const loser = await userServices.getUserByUsername('jan');
-  // 	const game = await gameServices.saveGame(winner.username, loser.username, 10, 2);
-  // 	expect(game).toBeDefined();
-  // 	console.log(game);
-  //     await userServices.saveGameResults(winner.username, loser.username, game);
+  test('save user game results', async () => {
+    const winner = await userServices.getUserByUsername('lena');
+    const loser = await userServices.getUserByUsername('jan');
+    const game = await gameServices.saveGame(winner.username, loser.username, 10, 2);
+    expect(game).toBeDefined();
+    await userServices.saveGameResults(winner.username, loser.username, game);
+    const updatedWinner = await prisma.user.findUnique({
+      where: { username: 'lena' },
+      include: { games: true },
+    });
+    const updatedLoser = await prisma.user.findUnique({
+      where: { username: 'jan' },
+      include: { games: true },
+    });
 
-  //     expect(winner.wins).toBe(1);
-  //     expect(winner.losses).toBe(0);
-  //     expect(loser.losses).toBe(1);
-  //     expect(loser.losses).toBe(1);
-  //     expect(loser.games).toBe(1);
-  //     expect(winner.games).toBe(1);
-  //   });
+    expect(updatedWinner.wins).toBe(1);
+    expect(updatedWinner.losses).toBe(0);
+    expect(updatedLoser.losses).toBe(1);
+    expect(updatedLoser.losses).toBe(1);
+    // Check that each user has exactly one game
+    expect(updatedWinner.games.length).toBe(1);
+    expect(updatedLoser.games.length).toBe(1);
 
-  test('can fetch user by email', async () => {
-    const email = 'lena@mail.com';
-    const user = await userServices.getUserByEmail(email);
-    expect(user).toBeDefined();
-    expect(user.email).toBe('lena@mail.com');
+    // Check that the saved game is the one you created
+    expect(updatedWinner.games[0].gameId).toBe(game.gameId);
+    expect(updatedLoser.games[0].gameId).toBe(game.gameId);
   });
 
   test('can add personalized avatar', async () => {

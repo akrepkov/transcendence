@@ -30,9 +30,7 @@ model Game {
   player1Score Int
   player2Score Int
   createdAt    DateTime @default(now())
-
-  User       User? @relation(fields: [userUserId], references: [userId])
-  userUserId Int?
+  users 		   User[]
 }
 
 model Leaderboard {

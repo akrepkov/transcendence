@@ -23,15 +23,15 @@ export async function getUsers() {
 // Save game results (increment wins/losses/games)
 export async function saveGameResults(winnerName, loserName, game) {
   if (!winnerName || !loserName || !game) {
-    console.log('Player and game information needed');
+    console.error('Player and game information needed');
     return false;
   }
   try {
     const winner = await prisma.user.findUnique({ where: { username: winnerName } });
     const loser = await prisma.user.findUnique({ where: { username: loserName } });
     if (!winner || !loser) {
-      console.log('Player not found in the database');
-      return;
+      console.error('Player not found in the database');
+      return false;
     }
     await prisma.user.update({
       where: { username: winnerName },
@@ -84,6 +84,10 @@ export async function getAvatarFromDatabase(username) {
 
 // find user by email
 export async function getUserByEmail(email) {
+  if (!email) {
+    console.error('Please input email');
+    return null;
+  }
   try {
     const user = await prisma.user.findUnique({ where: { email } });
     return user;
@@ -106,8 +110,12 @@ export async function getUserByUsername(username) {
 
 // can delete user by providing the username
 export async function deleteUser(username) {
+  if (!username) {
+    console.error('No username input');
+    return false;
+  }
   try {
-    await prisma.user.delete({ where: { username } });
+    await prisma.user.delete({ where: { username: username } });
     return true;
   } catch (error) {
     console.error('Error in deleting User:', error);

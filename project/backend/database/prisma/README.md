@@ -12,3 +12,7 @@ Then edit your schema.prisma and run npx prisma generate again.
 
 Run index.js file using Node.js in database directory. In your project, this file starts your Fastify backend server, sets up your API routes, and begins listening for HTTP requests (on port 3000). This allows your backend application to accept and respond to API calls:
     node index.js
+
+To push schema changes to the database:
+	npx prisma migrate dev --name fix-game-relations
+	npx prisma generate
