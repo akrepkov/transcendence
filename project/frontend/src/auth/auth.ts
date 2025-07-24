@@ -3,49 +3,49 @@ function showMessage(el: HTMLElement, text: string): void {
   el.textContent = text;
 }
 
-  /**
+/**
  * Handle login form submission
  * Verifies user credentials and displays a success or error message
  */
 export async function handleLogin(): Promise<void> {
-    const loginForm = document.getElementById('loginForm') as HTMLFormElement;
-    const loginMessage = document.getElementById('loginMessage') as HTMLElement;
+  const loginForm = document.getElementById('loginForm') as HTMLFormElement;
+  const loginMessage = document.getElementById('loginMessage') as HTMLElement;
 
-    if (!loginForm || !loginMessage) {
-      console.warn('Login form or message element not found in the DOM.');
-      return;
-    }
-
-    // Get input values from login form
-    const usernameInput = document.getElementById('loginUsername') as HTMLInputElement;
-    const passwordInput = document.getElementById('loginPassword') as HTMLInputElement;
-
-    if (!usernameInput || !passwordInput) {
-      console.error('Login input fields are missing.');
-      return;
-    }
-
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      try {
-        const res = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            username: usernameInput.value,
-            password: passwordInput.value,
-          }),
-        });
-
-        const data = await res.json();
-        showMessage(loginMessage, res.ok ? 'Logged in successfully' : data.error);
-      } catch (err) {
-        console.error(err);
-        showMessage(loginMessage, 'Server error');
-      }
-    });
+  if (!loginForm || !loginMessage) {
+    console.warn('Login form or message element not found in the DOM.');
+    return;
   }
+
+  // Get input values from login form
+  const usernameInput = document.getElementById('loginUsername') as HTMLInputElement;
+  const passwordInput = document.getElementById('loginPassword') as HTMLInputElement;
+
+  if (!usernameInput || !passwordInput) {
+    console.error('Login input fields are missing.');
+    return;
+  }
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: usernameInput.value,
+          password: passwordInput.value,
+        }),
+      });
+
+      const data = await res.json();
+      showMessage(loginMessage, res.ok ? 'Logged in successfully' : data.error);
+    } catch (err) {
+      console.error(err);
+      showMessage(loginMessage, 'Server error');
+    }
+  });
+}
 
 /**
  * Handle registration form submission
