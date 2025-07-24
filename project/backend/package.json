@@ -54,5 +54,18 @@
   "jest": {
 	"testEnvironment": "node",
 	"transform": {}
+	},
+	"eslintConfig": {
+  "env": {
+    "node": true
+  },
+  "overrides": [
+		{
+		"files": ["tests/**/*.js"],
+		"env": {
+			"jest": true
+		}
+		}
+  ]
 	}
 }
