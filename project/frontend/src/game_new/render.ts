@@ -10,12 +10,16 @@ export function renderGame(ctx: CanvasRenderingContext2D, socket: WebSocket) {
         console.log('Waiting for the opponent');
         break;
       case 'gameStarting':
-        console.log('gameStarting');
-        createGame(data.payload);
+        console.log('gameStarting', data);
+        createGame(data);
         break;
       case 'updateGameState':
-        console.log('updateGameState');
-        draw(data.payload, ctx);
+        console.log('updateGameState', data);
+        const gameState: GameState = {
+          players: data.players,
+          ball: data.ball,
+        };
+        draw(data, ctx);
         break;
       default:
         console.warn('Unknown message type:', data.type);
