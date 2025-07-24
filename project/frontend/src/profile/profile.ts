@@ -1,0 +1,1 @@
+const uploadInput = document.getElementById('profile')
