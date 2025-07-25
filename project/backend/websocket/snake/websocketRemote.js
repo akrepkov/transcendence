@@ -33,12 +33,12 @@ function broadcastGameState() {
 // using clearInterval(intervalId).
 
 const startGameLoop = () => {
-  console.log('Pong loop started');
+  console.log('Game loop started');
   //can start only once, otherwise will be asynchronized
   if (!gameLoopStarted) {
-    console.log('Pong loop go to update');
+    console.log('Game loop go to update');
     gameLoopStarted = true;
-    // Pong loop (60 FPS)
+    // Game loop (60 FPS)
     setInterval(() => {
       updateBall();
       broadcastGameState();
@@ -57,7 +57,7 @@ const gameWebsocketHandler = (socket) => {
 
   // Check if the game is full (2 players)
   if (players.length > 2) {
-    socket.send(JSON.stringify({ type: 'error', message: 'Pong is full' }));
+    socket.send(JSON.stringify({ type: 'error', message: 'Game is full' }));
     socket.close();
     return;
   }
