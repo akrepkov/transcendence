@@ -134,7 +134,9 @@ add cleanup on server shutdown, involves websocket cleanup
 
 npx wscat -c "wss://localhost:3000/ws/connect" -H "Cookie: token=" -n
 
-{"type":"joinWaitingRoom"}
+{"type":"joinWaitingRoom", "gameType": "pong"}
+{"type":"joinWaitingRoom", "gameType": "snake"}
+{"type":"stopGame", "gameType": "snake"}
 {"type":"leaveWaitingRoom"}
-
+"tsc --watch --preserveWatchOutput"
 
