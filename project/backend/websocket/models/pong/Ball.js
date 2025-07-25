@@ -53,7 +53,6 @@ export class Ball {
       this.y + this.size >= player.paddleY &&
       this.y <= player.paddleY + player.paddleHeight
     ) {
-      g;
       return true;
     }
   }
