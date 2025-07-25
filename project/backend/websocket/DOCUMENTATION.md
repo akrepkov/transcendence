@@ -20,7 +20,7 @@ The WebSocket backend enables real-time multiplayer game functionality and user 
   - Maintains a map of all connected users and their active connections.
   - Supports multiple connections per user (multi-tab/multi-device).
   - Provides utilities to add/remove connections, query by user/session, and print connection status.
-- **Game Manager** (`managers/gameManager.js`):
+- **Pong Manager** (`managers/gameManager.js`):
   - Manages waiting lists, active games, and player states.
   - Handles player matchmaking, game creation, and removal.
   - Processes in-game actions and player disconnections.
@@ -32,7 +32,7 @@ The WebSocket backend enables real-time multiplayer game functionality and user 
 
 ### Models
 - **Connection**: Represents a user's WebSocket connection, including user/session IDs and state (`idle`, `waitingRoom`, `inGame`).
-- **Game**: Encapsulates game logic, player management, and game state.
+- **Pong**: Encapsulates game logic, player management, and game state.
 - **Player**: Represents a player in a game, including paddle position and score.
 - **Ball**: Manages ball position, movement, and collision logic for Pong-like games.
 
@@ -42,10 +42,10 @@ The WebSocket backend enables real-time multiplayer game functionality and user 
 - When a user disconnects, all their connections are cleaned up, and their state is updated.
 - If a user logs out, all their sockets receive a `logoutRequest` message.
 
-## Game Lifecycle
+## Pong Lifecycle
 - Players join the waiting room to be matched for a game.
 - When two players are available, a new game is created, and both are notified.
-- Game state is managed and updated in real time, with updates sent to both players.
+- Pong state is managed and updated in real time, with updates sent to both players.
 - If a player disconnects or leaves, the game is stopped, and the opponent is notified.
 
 ## Error Handling

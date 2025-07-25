@@ -1,19 +1,19 @@
-import { GAME_CONSTS } from './Game.js';
+import { PONG_CONSTS } from './Pong.js';
 
 export class Ball {
   constructor() {
     console.log('Create a ball');
-    this.x = GAME_CONSTS.WIDTH / 2;
-    this.y = GAME_CONSTS.HEIGHT / 2;
-    this.size = GAME_CONSTS.BALL_SIZE;
-    this.speedX = GAME_CONSTS.BALL_SPEED;
-    this.speedY = GAME_CONSTS.BALL_SPEED;
+    this.x = PONG_CONSTS.WIDTH / 2;
+    this.y = PONG_CONSTS.HEIGHT / 2;
+    this.size = PONG_CONSTS.BALL_SIZE;
+    this.speedX = PONG_CONSTS.BALL_SPEED;
+    this.speedY = PONG_CONSTS.BALL_SPEED;
     this.color = 'white';
   }
 
   reset() {
-    this.x = GAME_CONSTS.WIDTH / 2;
-    this.y = GAME_CONSTS.HEIGHT / 2;
+    this.x = PONG_CONSTS.WIDTH / 2;
+    this.y = PONG_CONSTS.HEIGHT / 2;
     this.speedX = -this.speedX;
   }
 
@@ -23,7 +23,7 @@ export class Ball {
   }
 
   topOrBottomCollision() {
-    if (this.y <= 0 || this.y + this.size >= GAME_CONSTS.HEIGHT) {
+    if (this.y <= 0 || this.y + this.size >= PONG_CONSTS.HEIGHT) {
       return true;
     }
   }
@@ -48,8 +48,8 @@ export class Ball {
 
   collidesWithRightPlayer(player) {
     if (
-      this.x + this.size >= GAME_CONSTS.WIDTH - player.paddleWidth &&
-      this.x <= GAME_CONSTS.WIDTH - player.paddleWidth &&
+      this.x + this.size >= PONG_CONSTS.WIDTH - player.paddleWidth &&
+      this.x <= PONG_CONSTS.WIDTH - player.paddleWidth &&
       this.y + this.size >= player.y &&
       this.y <= player.y + player.paddleHeight
     ) {

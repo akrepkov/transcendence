@@ -2,7 +2,7 @@
 const WIDTH = 800;
 const HEIGHT = 600;
 
-// Game state object to keep track of all entities
+// Pong state object to keep track of all entities
 let gameState = {
   leftPlayer: [{ x: 0, y: 0 }],
   rightPlayer: [{ x: WIDTH - 10, y: HEIGHT - 10 }],
@@ -18,7 +18,7 @@ export function resetGame() {
   gameState.apple = { x: 400, y: 300 };
   gameState.directionLeft = { x: 1, y: 0 };
   gameState.directionRight = { x: -1, y: 0 };
-  console.log('Game reset');
+  console.log('Pong reset');
 }
 
 export function getRandomApplePosition() {

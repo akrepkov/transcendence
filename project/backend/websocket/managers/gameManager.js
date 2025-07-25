@@ -1,5 +1,5 @@
 import { messageManager } from './messageManager.js';
-import { Game } from '../models/Game.js';
+import { Pong } from '../models/pong/Pong.js';
 import { REJECT } from './messageManager.js';
 import { matchmakingHandler } from '../handlers/matchmakingHandler.js';
 import { waitingListManager } from './waitingListManager.js';
@@ -18,7 +18,7 @@ function createGame(connection1, connection2, gameType) {
   const gameId = generateGameId();
   let game;
   if (gameType === 'pong') {
-    game = new Game(connection1, connection2, gameId);
+    game = new Pong(connection1, connection2, gameId);
   } else if (gameType === 'snake') {
     console.log('Creating Snake game, sssssssssss');
     return;
@@ -103,7 +103,7 @@ function getActiveGamesCount() {
 }
 
 function printGameSystemStatus() {
-  let statusReport = '\n=== START Game System Status ===\n';
+  let statusReport = '\n=== START Pong System Status ===\n';
 
   let amountOfGames = getActiveGamesCount();
   let amountOfWaitingPlayers = waitingListManager.getWaitingPlayers().length;
