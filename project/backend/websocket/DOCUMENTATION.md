@@ -20,15 +20,19 @@ The WebSocket backend enables real-time multiplayer game functionality and user 
   - Maintains a map of all connected users and their active connections.
   - Supports multiple connections per user (multi-tab/multi-device).
   - Provides utilities to add/remove connections, query by user/session, and print connection status.
-- **Pong Manager** (`managers/gameManager.js`):
-  - Manages waiting lists, active games, and player states.
-  - Handles player matchmaking, game creation, and removal.
+- **Game Manager** (`managers/gameManager.js`):
+  - Manages active games, and player states.
+  - Handles game creation, and removal.
   - Processes in-game actions and player disconnections.
   - Provides system status reporting for debugging and monitoring.
 - **Message Manager** (`managers/messageManager.js`):
   - Centralizes all outgoing communication to clients.
   - Supports broadcasting to all sockets or targeting specific sockets.
   - Handles error reporting to clients.
+- **Waiting Room Manager** (`managers/waitingListManager.js`):
+  - Manages the waiting room for players looking to join games.
+- **Matchmaking Handler** ('handlers/matchmakingHandlers.js'):
+  - Handles matchmaking logic for different game types.
 
 ### Models
 - **Connection**: Represents a user's WebSocket connection, including user/session IDs and state (`idle`, `waitingRoom`, `inGame`).
@@ -42,10 +46,11 @@ The WebSocket backend enables real-time multiplayer game functionality and user 
 - When a user disconnects, all their connections are cleaned up, and their state is updated.
 - If a user logs out, all their sockets receive a `logoutRequest` message.
 
-## Pong Lifecycle
+## Game Lifecycle
 - Players join the waiting room to be matched for a game.
-- When two players are available, a new game is created, and both are notified.
-- Pong state is managed and updated in real time, with updates sent to both players.
+- When two players are available for the same game type and their ranks are close enough, they are matched
+- If a player has waited for more than 10 seconds without being matched, they can now be matched with others regardless of rank.
+- Game state is managed and updated in real time, with updates sent to both players.
 - If a player disconnects or leaves, the game is stopped, and the opponent is notified.
 
 ## Error Handling
