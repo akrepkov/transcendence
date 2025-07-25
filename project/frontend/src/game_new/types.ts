@@ -13,11 +13,12 @@ export interface Ball {
 
 //Do we need it???????????????????
 export interface GameState {
-  //   gameId: number;
+  opponent1?: string;
+  gameId?: number;
   ball: Ball;
   players: Player[];
-  //   state: string;
-  //   running: boolean;
+  state?: string;
+  running?: boolean;
   //gameloop?
   //sockets?
 }
