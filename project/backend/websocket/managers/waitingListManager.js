@@ -1,5 +1,4 @@
 import { messageManager } from './messageManager.js';
-import { Pong } from '../models/pong/Pong.js';
 import { REJECT } from './messageManager.js';
 import { matchmakingHandler } from '../handlers/matchmakingHandler.js';
 import { gameManager } from './gameManager.js';
