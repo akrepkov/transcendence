@@ -39,8 +39,8 @@ export class Ball {
   collidesWithLeftPlayer(player) {
     if (
       this.x <= player.paddleWidth &&
-      this.y + this.size >= player.y &&
-      this.y <= player.y + player.paddleHeight
+      this.y + this.size >= player.paddleY &&
+      this.y <= player.paddleY + player.paddleHeight
     ) {
       return true;
     }
@@ -50,9 +50,10 @@ export class Ball {
     if (
       this.x + this.size >= PONG_CONSTS.WIDTH - player.paddleWidth &&
       this.x <= PONG_CONSTS.WIDTH - player.paddleWidth &&
-      this.y + this.size >= player.y &&
-      this.y <= player.y + player.paddleHeight
+      this.y + this.size >= player.paddleY &&
+      this.y <= player.paddleY + player.paddleHeight
     ) {
+      g;
       return true;
     }
   }
