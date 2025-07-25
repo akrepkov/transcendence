@@ -33,7 +33,7 @@ export function toggleForms() {
     loginMessage.classList.remove('hidden');
   };
 
-  // 🔄 On click toggle
+  // On click toggle
   toggle.addEventListener('click', () => {
     const isRegistering = !registerForm.classList.contains('hidden');
     if (isRegistering) {
@@ -42,12 +42,4 @@ export function toggleForms() {
       showRegister();
     }
   });
-
-  // 🆕 Check URL query param on load
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('form') === 'register') {
-    showRegister();
-  } else {
-    showLogin(); // fallback
-  }
 }
