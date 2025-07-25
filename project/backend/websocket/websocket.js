@@ -127,3 +127,8 @@ export function websocketHandler(socket, req) {
   }
   handleNewConnection(socket, decodedToken);
 }
+
+const loggingInterval = setInterval(() => {
+  gameManager.printGameSystemStatus();
+  connectionManager.printUsers();
+}, 10000);

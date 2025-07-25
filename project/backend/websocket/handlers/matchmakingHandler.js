@@ -41,7 +41,7 @@ function matchPlayersByGameType(gameType, players) {
     }
 
     if (!matched) {
-      player1.waited += 5; // Increment wait time for player1
+      player1.waited += MATCHMAKING_INTERVAL / 1000; // Increment wait time for player1
       i++; // We remove player1 from the list if a match was found, so we only increment if there was no match
     }
   }
@@ -61,19 +61,20 @@ function matchPlayers() {
   waitingListManager.setWaitingPlayers(
     waitingPlayerByGameType.pong.concat(waitingPlayerByGameType.snake),
   );
-  gameManager.printGameSystemStatus();
+  // gameManager.printGameSystemStatus();
 }
 
-let matchmakingInterval;
+let matchmakingInterval = null;
 
 function unsetMatchmakingInterval() {
   if (matchmakingInterval) {
     clearInterval(matchmakingInterval);
+    matchmakingInterval = null;
   }
 }
 
 function setMatchmakingInterval() {
-  if (matchmakingInterval) {
+  if (!matchmakingInterval) {
     matchmakingInterval = setInterval(matchPlayers, MATCHMAKING_INTERVAL);
   }
 }
