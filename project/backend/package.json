@@ -59,6 +59,7 @@
   "env": {
     "node": true
   },
+  "ignorePatterns": ["tests/**/*.js"],
   "overrides": [
 		{
 		"files": ["tests/**/*.js"],
