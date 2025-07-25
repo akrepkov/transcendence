@@ -121,7 +121,7 @@ export async function getUserByEmail(email) {
 // find user by username
 export async function getUserByUsername(username) {
   try {
-    const user = await prisma.user.findUnique({ where: { username } });
+    const user = await prisma.user.findUnique({ where: { username }, include: { friends: true } });
     return user;
   } catch (error) {
     console.error('Error retrieving user from database:', error);
@@ -153,7 +153,7 @@ export async function addFriend(userName, friendName) {
       console.log('Data not found in the database');
       return false;
     }
-    prisma.user.update({
+    await prisma.user.update({
       where: { username: userName },
       data: {
         friends: {

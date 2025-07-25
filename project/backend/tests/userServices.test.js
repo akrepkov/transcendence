@@ -41,7 +41,6 @@ describe('Prisma direct database tests', () => {
 
   test('users table exists', async () => {
     const users = await userServices.getUsers();
-    console.log(users);
     expect(Array.isArray(users)).toBe(true);
   });
 
@@ -60,8 +59,6 @@ describe('Prisma direct database tests', () => {
       include: { pong: true },
     });
 
-    console.log('winner:', updatedWinner);
-    console.log('loser:', updatedLoser);
     expect(updatedWinner.pongWins).toBe(1);
     expect(updatedWinner.pongLosses).toBe(0);
     expect(updatedLoser.pongLosses).toBe(1);
@@ -87,18 +84,18 @@ describe('Prisma direct database tests', () => {
     const filepath = 'project/backend/uploads/avatars/avatar_1748704618618_apollo_baby.jpeg';
     const username = 'lena';
     const avatar = await userServices.getAvatarFromDatabase(username);
-    console.log('avatar: ', avatar);
     expect(avatar).toBe(filepath);
   });
 
-  //   test('can add friend', async () => {
-  //     const username = 'lena';
-  //     const friendName = 'jan';
-  //     await userServices.addFriend(username, friendName);
-  //     const user = await userServices.getUserByUsername(username);
-  //     const friend = await userServices.getFriends(username);
-  //     expect(user.friends).toBeNull(friend);
-  //   });
+  test('can add friend', async () => {
+    const username = 'lena';
+    const friendName = 'jan';
+    await userServices.addFriend(username, friendName);
+    const user = await userServices.getUserByUsername(username);
+    const friend = await userServices.getUserByUsername(friendName);
+    console.log('friend:', user);
+    expect(user.friends[0].userId).toBe(friend.userId);
+  });
 
   test('can delete user by username', async () => {
     await userServices.deleteUser('lena');
