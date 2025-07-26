@@ -1,7 +1,7 @@
 import { handleRegister, handleLogin } from './auth/auth.js';
 import { toggleForms } from './toggle/toggleForms.js';
-import { renderGame } from './game_new/render.js';
-import { setupSocketEvents } from './game_new/websocket.js';
+import { renderGame } from './games/render.js';
+import { setupSocketEvents } from './games/websocket.js';
 
 handleLogin();
 handleRegister();
