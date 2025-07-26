@@ -38,9 +38,15 @@ export async function handleLogin(): Promise<void> {
         }),
       });
 
-      console.log('Login response:', res.status); //temp check
       const data = await res.json();
-      showMessage(loginMessage, res.ok ? 'Logged in successfully' : data.error);
+      if (res.ok) {
+        localStorage.setItem('username', usernameInput.value);
+        showMessage(loginMessage, 'Logged in successfully');
+        window.location.href = './landing.html';
+      }
+      else {
+        showMessage(loginMessage, data.error || 'Login failed');
+      }
     } catch (err) {
       console.error(err);
       showMessage(loginMessage, 'Server error');
