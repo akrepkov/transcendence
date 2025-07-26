@@ -1,10 +1,10 @@
 import { Player } from './Player.js';
 import { Ball } from './Ball.js';
-import { messageManager } from '../managers/messageManager.js';
-import { gameManager } from '../managers/gameManager.js';
-import { REJECT } from '../managers/messageManager.js';
+import { messageManager } from '../../managers/messageManager.js';
+import { gameManager } from '../../managers/gameManager.js';
+import { REJECT } from '../../managers/messageManager.js';
 
-export const GAME_CONSTS = {
+export const PONG_CONSTS = {
   WIDTH: 800,
   HEIGHT: 600,
   PADDLE_HEIGHT: 100,
@@ -15,13 +15,13 @@ export const GAME_CONSTS = {
   PADDLE_SPEED: 10,
 };
 
-export class Game {
+export class Pong {
   constructor(connection1, connection2, gameId) {
     this.gameId = gameId;
     this.ball = new Ball();
     this.players = [
       new Player(connection1.username, connection1.userId, 0),
-      new Player(connection2.username, connection2.userId, GAME_CONSTS.WIDTH),
+      new Player(connection2.username, connection2.userId, PONG_CONSTS.WIDTH),
     ];
     this.playerSockets = [connection1.socket, connection2.socket];
     this.playerConnections = [connection1, connection2];
@@ -36,12 +36,12 @@ export class Game {
   handleInput(playerId, direction) {
     const player = this.players.find((player) => player.playerId === playerId);
     if (direction === 'up' && player.paddleY > 0) {
-      player.paddleY -= GAME_CONSTS.PADDLE_SPEED;
+      player.paddleY -= PONG_CONSTS.PADDLE_SPEED;
     } else if (
       direction === 'down' &&
-      player.paddleY + GAME_CONSTS.PADDLE_HEIGHT / 2 < GAME_CONSTS.HEIGHT
+      player.paddleY + PONG_CONSTS.PADDLE_HEIGHT / 2 < PONG_CONSTS.HEIGHT
     ) {
-      player.paddleY += GAME_CONSTS.PADDLE_SPEED;
+      player.paddleY += PONG_CONSTS.PADDLE_SPEED;
     } else {
       console.warn(`Invalid direction: ${direction} for player: ${player.playerName}`);
       throw new Error(`${REJECT.WRONG_DIRECTION}`);
@@ -74,8 +74,8 @@ export class Game {
 
   checkWinCondition() {
     if (
-      this.players[0].score >= GAME_CONSTS.MAX_SCORE ||
-      this.players[1].score >= GAME_CONSTS.MAX_SCORE
+      this.players[0].score >= PONG_CONSTS.MAX_SCORE ||
+      this.players[1].score >= PONG_CONSTS.MAX_SCORE
     ) {
       this.stopGame();
       messageManager
@@ -97,7 +97,7 @@ export class Game {
       this.players[1].score++;
       this.ball.reset();
       this.checkWinCondition();
-    } else if (this.ball.x >= GAME_CONSTS.WIDTH) {
+    } else if (this.ball.x >= PONG_CONSTS.WIDTH) {
       this.players[0].score++;
       this.ball.reset();
       this.checkWinCondition();

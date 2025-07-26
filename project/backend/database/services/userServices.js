@@ -9,9 +9,10 @@ export async function getUsers() {
         username: true,
         email: true,
         avatar: true,
-        wins: true,
-        losses: true,
-        // games: true,
+        pongWins: true,
+        pongLosses: true,
+        snakeWins: true,
+        snakeLosses: true,
       },
     });
   } catch (error) {
@@ -21,8 +22,8 @@ export async function getUsers() {
 }
 
 // Save game results (increment wins/losses/games)
-export async function saveGameResults(winnerName, loserName, game) {
-  if (!winnerName || !loserName || !game) {
+export async function saveGameResults(pongOrSnake, winnerName, loserName, game) {
+  if (!pongOrSnake || !winnerName || !loserName || !game) {
     console.error('Player and game information needed');
     return false;
   }
@@ -33,20 +34,40 @@ export async function saveGameResults(winnerName, loserName, game) {
       console.error('Player not found in the database');
       return false;
     }
-    await prisma.user.update({
-      where: { username: winnerName },
-      data: {
-        wins: { increment: 1 },
-        games: { connect: { gameId: game.gameId } },
-      },
-    });
-    await prisma.user.update({
-      where: { username: loserName },
-      data: {
-        losses: { increment: 1 },
-        games: { connect: { gameId: game.gameId } },
-      },
-    });
+    switch (pongOrSnake) {
+      case 'pong':
+        await prisma.user.update({
+          where: { username: winnerName },
+          data: {
+            pongWins: { increment: 1 },
+            pong: { connect: { gameId: game.gameId } },
+          },
+        });
+        await prisma.user.update({
+          where: { username: loserName },
+          data: {
+            pongLosses: { increment: 1 },
+            pong: { connect: { gameId: game.gameId } },
+          },
+        });
+        break;
+      case 'snake':
+        await prisma.user.update({
+          where: { username: winnerName },
+          data: {
+            snakeWins: { increment: 1 },
+            snake: { connect: { gameId: game.gameId } },
+          },
+        });
+        await prisma.user.update({
+          where: { username: loserName },
+          data: {
+            snakeLosses: { increment: 1 },
+            snake: { connect: { gameId: game.gameId } },
+          },
+        });
+        break;
+    }
     return true;
   } catch (error) {
     console.error('Error saving player scores:', error);

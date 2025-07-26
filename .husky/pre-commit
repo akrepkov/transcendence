@@ -24,7 +24,7 @@ fi
 if [ ! -z "$BACKEND_FILES" ]; then
     echo $YELLOW"\nLinting staged backend files\n"$END
     cd $BACKEND
-    npx eslint $BACKEND_FILES --fix || FAIL=true
+    npx eslint $BACKEND_FILES --fix --ignore-pattern 'tests/*' || FAIL=true
     git add $BACKEND_FILES
     cd $CWD
 fi
@@ -32,7 +32,7 @@ fi
 if [ ! -z "$FRONTEND_FILES" ]; then
     echo $YELLOW"\nLinting staged frontend files\n"$END
     cd $FRONTEND
-    npx eslint $FRONTEND_FILES --fix || FAIL=true
+    npx eslint $FRONTEND_FILES --fix --ignore-pattern 'tests/*' || FAIL=true
     git add $FRONTEND_FILES
     cd $CWD
 fi

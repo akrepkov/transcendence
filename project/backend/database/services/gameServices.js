@@ -2,7 +2,7 @@ import prisma from '../prisma/prismaClient.js';
 import * as userServices from './userServices.js';
 
 // save the game in the db
-export async function saveGame(winnerName, loserName, scoreWinner, scoreLoser) {
+export async function savePong(winnerName, loserName, scoreWinner, scoreLoser) {
   const winner = await userServices.getUserByUsername(winnerName);
   const loser = await userServices.getUserByUsername(loserName);
   if (!winner || !loser) {
@@ -10,7 +10,7 @@ export async function saveGame(winnerName, loserName, scoreWinner, scoreLoser) {
     return false;
   }
   try {
-    const game = await prisma.game.create({
+    const pong = await prisma.pong.create({
       data: {
         player1Id: winner.userId,
         player2Id: loser.userId,
@@ -19,8 +19,8 @@ export async function saveGame(winnerName, loserName, scoreWinner, scoreLoser) {
         player2Score: scoreLoser,
       },
     });
-    console.log('Created game:', game); // Add this line
-    return game;
+    console.log('Created game:', pong); // Add this line
+    return pong;
   } catch (error) {
     console.error('Error saving game:', error);
     return false;
@@ -28,10 +28,10 @@ export async function saveGame(winnerName, loserName, scoreWinner, scoreLoser) {
 }
 
 // Find game saved in the db by its ID
-export async function getGame(gameId) {
+export async function getPong(gameId) {
   try {
-    const game = await prisma.game.findUnique({ gameId });
-    return game;
+    const pong = await prisma.pong.findUnique({ gameId });
+    return pong;
   } catch (error) {
     console.error('Game ID not found');
     return false;
@@ -39,9 +39,59 @@ export async function getGame(gameId) {
 }
 
 // Delete game saved in the db by its ID
-export async function deleteGame(gameId) {
+export async function deletePong(gameId) {
   try {
-    const game = await prisma.game.delete({
+    const pong = await prisma.pong.delete({
+      where: { gameId },
+    });
+    return true;
+  } catch (error) {
+    console.error('Error deleting game', error);
+    return false;
+  }
+}
+
+// save the game in the db
+export async function saveSnake(winnerName, loserName, scoreWinner, scoreLoser) {
+  const winner = await userServices.getUserByUsername(winnerName);
+  const loser = await userServices.getUserByUsername(loserName);
+  if (!winner || !loser) {
+    console.log('Player not found in the database');
+    return false;
+  }
+  try {
+    const snake = await prisma.snake.create({
+      data: {
+        player1Id: winner.userId,
+        player2Id: loser.userId,
+        winnerId: winner.userId,
+        player1Score: scoreWinner,
+        player2Score: scoreLoser,
+      },
+    });
+    console.log('Created game:', snake); // Add this line
+    return snake;
+  } catch (error) {
+    console.error('Error saving game:', error);
+    return false;
+  }
+}
+
+// Find game saved in the db by its ID
+export async function getSnake(gameId) {
+  try {
+    const snake = await prisma.snake.findUnique({ gameId });
+    return snake;
+  } catch (error) {
+    console.error('Game ID not found');
+    return false;
+  }
+}
+
+// Delete game saved in the db by its ID
+export async function deleteSnake(gameId) {
+  try {
+    const snake = await prisma.snake.delete({
       where: { gameId },
     });
     return true;
