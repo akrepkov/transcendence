@@ -75,14 +75,42 @@ export async function saveGameResults(pongOrSnake, winnerName, loserName, game) 
   }
 }
 
+// Update username
+export async function updateUsername(user, newName) {
+  try {
+    await prisma.user.update({
+      where: { userId: user.userId },
+      data: { username: newName },
+    });
+    return true;
+  } catch (error) {
+    console.error('Error updating username', error);
+    return false;
+  }
+}
+
+// Update email
+export async function updateEmail(user, newEmail) {
+  try {
+    await prisma.user.update({
+      where: { userId: user.userId },
+      data: { email: newEmail },
+    });
+    return true;
+  } catch (error) {
+    console.error('Error updating email', error);
+    return false;
+  }
+}
+
 // Update avatar for a user
 export async function uploadAvatarInDatabase(filepath, username) {
   try {
     const user = await prisma.user.update({
-      where: { username },
+      where: { username: username },
       data: { avatar: filepath },
     });
-    return user;
+    return true;
   } catch (error) {
     console.error('Error updating avatar in database:', error);
     return false;
@@ -93,27 +121,12 @@ export async function uploadAvatarInDatabase(filepath, username) {
 export async function getAvatarFromDatabase(username) {
   try {
     const user = await prisma.user.findUnique({
-      where: { username },
+      where: { username: username },
       select: { avatar: true },
     });
     return user?.avatar;
   } catch (error) {
     console.error('Error retrieving avatar from database:', error);
-    return false;
-  }
-}
-
-// find user by email
-export async function getUserByEmail(email) {
-  if (!email) {
-    console.error('Please input email');
-    return null;
-  }
-  try {
-    const user = await prisma.user.findUnique({ where: { email } });
-    return user;
-  } catch (error) {
-    console.error('Error retrieving user from database:', error);
     return false;
   }
 }
