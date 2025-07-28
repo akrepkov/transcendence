@@ -66,7 +66,7 @@ const getAvatarHandler = async (request, reply) => {
 
 const addFriendHandler = async (request, reply) => {
   try {
-    const { userUsername, friendUsername } = request.body;
+    const { userName, friendUsername } = request.body;
     if (!userName || !friendUsername) {
       return reply.send({ error: 'User and Friend names are required', success: false });
     }
