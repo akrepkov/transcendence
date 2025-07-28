@@ -30,7 +30,7 @@ avatarform.addEventListener('submit', async (e: Event) => {
     });
 
     if (!response.ok) {
-      throw new Error('Upload failed.');
+      alert('Upload failed.');
     }
 
     alert('Avatar uploaded successfully.');
