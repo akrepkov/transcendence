@@ -1,16 +1,23 @@
 import { handleRegister, handleLogin } from './auth/auth.js';
 import { toggleForms } from './toggle/toggleForms.js';
-import { showLoginView, showRegisterView, showLandingView } from './navigation/navigation.js';
+import {
+  showLoginView,
+  showRegisterView,
+  showLandingView,
+  restoreViewOnReload,
+} from './navigation/navigation.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   handleLogin();
   handleRegister();
   toggleForms();
 
-  // Replace initial history state
-  const formTitle = document.getElementById('formTitle')?.textContent || 'Login';
-  const initialState = { view: 'auth', form: formTitle.toLowerCase() };
-  history.replaceState(initialState, '', location.pathname);
+  restoreViewOnReload();
+
+  // // Replace initial history state
+  // const formTitle = document.getElementById('formTitle')?.textContent || 'Login';
+  // const initialState = { view: 'auth', form: formTitle.toLowerCase() };
+  // history.replaceState(initialState, '', location.pathname);
 
   // Listen for browser back/forward
   window.addEventListener('popstate', (event) => {
