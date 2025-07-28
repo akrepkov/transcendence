@@ -1,4 +1,4 @@
-import { showLoginView, showRegisterView } from '../navigation/navigation.js';
+import { showLoginView, showRegisterView, showLandingView } from '../navigation/navigation.js';
 
 export function toggleForms() {
   const toggle = document.getElementById('toggleForm');
