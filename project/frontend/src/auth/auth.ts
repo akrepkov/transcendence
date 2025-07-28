@@ -48,6 +48,9 @@ export async function handleLogin(): Promise<void> {
         // SPA Navigation
         document.getElementById('authPage')?.classList.add('hidden');
         document.getElementById('landingPage')?.classList.remove('hidden');
+
+        // Push new state to history
+        history.pushState({ view: 'landing' }, '', '/landing');
       } else {
         showMessage(loginMessage, data.error || 'Login failed');
       }
@@ -98,6 +101,7 @@ export async function handleRegister(): Promise<void> {
 
       const data = await res.json();
       showMessage(registerMessage, res.ok ? 'User registered successfully' : data.error);
+      history.pushState({ view: 'auth', form: 'register' }, '', '/register');
       registerForm.reset();
     } catch (err) {
       console.error(err);
