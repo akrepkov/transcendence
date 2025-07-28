@@ -1,6 +1,6 @@
 import { handleRegister, handleLogin } from './auth/auth.js';
 import { toggleForms } from './toggle/toggleForms.js';
-import { renderGame } from './games/render.js';
+// import { renderGame } from './games/render.js';
 import { setupSocketEvents } from './games/websocket.js';
 
 handleLogin();
@@ -10,7 +10,7 @@ toggleForms();
 document.addEventListener('DOMContentLoaded', () => {
   const socket = new WebSocket(`wss://${window.location.hostname}/ws/connect`);
   setupSocketEvents(socket);
-  renderGame(socket);
+  // renderGame(socket);
 });
 
 //Anna TODO add port to frontend websocket

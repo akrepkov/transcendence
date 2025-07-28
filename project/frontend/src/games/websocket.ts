@@ -1,3 +1,5 @@
+import { renderGame } from './render.js';
+
 let gameType: string | null = null;
 
 export function getGameType() {
@@ -9,19 +11,21 @@ export function setupSocketEvents(socket: WebSocket) {
     console.log('WebSocket connection opened.');
     const startPong = document.getElementById('start-button-pong');
     if (!startPong) {
-      throw new Error('Start button element not found');
+      throw new Error('Start button Pong element not found');
     }
     const startSnake = document.getElementById('start-button-snake');
     if (!startSnake) {
-      throw new Error('Start button element not found');
+      throw new Error('Start button Snake element not found');
     }
     startPong.addEventListener('click', () => {
       socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'pong' }));
       gameType = 'pong';
+      renderGame(socket);
     });
     startSnake.addEventListener('click', () => {
       socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'snake' }));
       gameType = 'snake';
+      renderGame(socket);
     });
   };
   socket.onerror = function (error) {

@@ -1,10 +1,10 @@
-import { GAME_CONSTS } from './Game.js';
+import { SNAKE_CONSTS } from './Snake.js';
 
 export class Apple {
   constructor() {
     console.log('Create an apple');
-    this.y = GAME_CONSTS.HEIGHT / 2;
-    this.x = GAME_CONSTS.WIDTH / 2;
+    this.y = SNAKE_CONSTS.HEIGHT / 2;
+    this.x = SNAKE_CONSTS.WIDTH / 2;
     this.size = 10;
     this.color = 'white';
   }
@@ -17,8 +17,8 @@ export class Apple {
   }
 
   getRandomApplePosition() {
-    this.y = GAME_CONSTS.HEIGHT / 2;
-    this.x = GAME_CONSTS.WIDTH / 2;
+    this.y = SNAKE_CONSTS.HEIGHT / 2;
+    this.x = SNAKE_CONSTS.WIDTH / 2;
     //   let maxAttempts = WIDTH * HEIGHT - 2; //2 blocks are already occupied with snakes
     //   let x, y;
     //   let applePositionValid = false;

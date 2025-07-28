@@ -1,17 +1,21 @@
-import { SNAKE_CONSTS } from './Game.js';
+import { SNAKE_CONSTS } from './Snake.js';
 
 export class SnakePlayer {
-  constructor(userId, positions) {
+  constructor(username, userId, positions) {
     console.log('Create a player');
     this.positions = positions;
     this.directions = { x: 0, y: -1 };
     this.score = 0;
-    this.playerName = userId;
+    this.playerName = username;
+    this.playerId = userId;
+    this.collision = false;
   }
 
   getPlayerState() {
     return {
       playerName: this.playerName,
+      head: this.positions,
+      score: this.score,
     };
   }
 
@@ -20,7 +24,7 @@ export class SnakePlayer {
     // Check for collision with walls
     if (head.x < 0 || head.x >= SNAKE_CONSTS.WIDTH || head.y < 0 || head.y >= SNAKE_CONSTS.HEIGHT) {
       console.log(`${this.userId} Player hit the wall`);
-      //resetGame();
+      this.collision = true;
     }
     // Check for collision with self
     // for (let i = 1; i < this.positions.length; i++) {
@@ -42,12 +46,12 @@ export class SnakePlayer {
     const head = this.positions[0];
 
     const newHead = {
-      x: head.x + this.directions.x,
-      y: head.y + this.directions.y,
+      x: head.x + this.directions.x * SNAKE_CONSTS.SNAKE_SPEED,
+      y: head.y + this.directions.y * SNAKE_CONSTS.SNAKE_SPEED,
     };
     this.positions.unshift(newHead);
     this.positions.pop();
-    checkCollisions();
+    this.checkCollisions();
     //ADD EATING THE APPLE and appearing the apple
   }
 }

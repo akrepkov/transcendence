@@ -21,8 +21,11 @@ export function renderGame(socket: WebSocket) {
     throw new Error('Could not get 2D rendering context');
   }
   const gameType = getGameType();
+  //ADD after having pages for games
   if (!gameType || !['pong', 'snake'].includes(gameType)) {
-    throw new Error('GameType is null');
+    // throw new Error('GameType is null');
+    // console.log('GameType is null');
+    return;
   }
   const handler = gameHandler[gameType as 'pong' | 'snake'];
   socket.onmessage = (event) => {
@@ -100,6 +103,8 @@ export function movePaddles(game: GameStatePong, socket: WebSocket) {
 export function drawSnake(data: GameStateSnake, ctx: CanvasRenderingContext2D) {
   ctx.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
   ctx.fillStyle = 'black';
+  console.log(`Apple ${data.apple}`);
+  console.log(`Players head ${data.players[0].head}`);
   ctx.fillRect(data.apple.x, data.apple.y, 10, 10);
   for (const segment of data.players[0].head) {
     ctx.fillRect(segment.x, segment.y, 10, 10);
@@ -110,6 +115,7 @@ export function drawSnake(data: GameStateSnake, ctx: CanvasRenderingContext2D) {
 }
 
 export function createSnakeGame(data: GameStateSnake, socket: WebSocket) {
+  console.log('Created snake game');
   const game: GameStateSnake = data;
   document.addEventListener('keydown', (event) => {
     moveSnakes(game, event, socket);
