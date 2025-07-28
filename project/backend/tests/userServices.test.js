@@ -48,29 +48,31 @@ describe('Prisma direct database tests', () => {
   test('save user game results', async () => {
     const winner = await userServices.getUserByUsername('lena');
     const loser = await userServices.getUserByUsername('jan');
-    const game = await gameServices.saveGame(winner.username, loser.username, 10, 2);
-    expect(game).toBeDefined();
-    await userServices.saveGameResults(winner.username, loser.username, game);
+    const pong = await gameServices.savePong(winner.username, loser.username, 10, 2);
+    expect(pong).toBeDefined();
+    await userServices.saveGameResults('pong', winner.username, loser.username, pong);
     const updatedWinner = await prisma.user.findUnique({
       where: { username: 'lena' },
-      include: { games: true },
+      include: { pong: true },
     });
     const updatedLoser = await prisma.user.findUnique({
       where: { username: 'jan' },
-      include: { games: true },
+      include: { pong: true },
     });
 
-    expect(updatedWinner.wins).toBe(1);
-    expect(updatedWinner.losses).toBe(0);
-    expect(updatedLoser.losses).toBe(1);
-    expect(updatedLoser.losses).toBe(1);
+    console.log('winner:', updatedWinner);
+    console.log('loser:', updatedLoser);
+    expect(updatedWinner.pongWins).toBe(1);
+    expect(updatedWinner.pongLosses).toBe(0);
+    expect(updatedLoser.pongLosses).toBe(1);
+    expect(updatedLoser.pongWins).toBe(0);
     // Check that each user has exactly one game
-    expect(updatedWinner.games.length).toBe(1);
-    expect(updatedLoser.games.length).toBe(1);
+    expect(updatedWinner.pong.length).toBe(1);
+    expect(updatedLoser.pong.length).toBe(1);
 
     // Check that the saved game is the one you created
-    expect(updatedWinner.games[0].gameId).toBe(game.gameId);
-    expect(updatedLoser.games[0].gameId).toBe(game.gameId);
+    expect(updatedWinner.pong[0].gameId).toBe(pong.gameId);
+    expect(updatedLoser.pong[0].gameId).toBe(pong.gameId);
   });
 
   test('can add personalized avatar', async () => {
@@ -97,16 +99,6 @@ describe('Prisma direct database tests', () => {
   //     const user = await userServices.getUserByUsername(username);
   //     const friend = await userServices.getFriends(username);
   //     expect(user.friends).toBeNull(friend);
-  //   });
-
-  //   test('can add game stats', async () => {
-  //     await userServices.saveGameResults('lena', 'jan')
-  //     const winner = await userServices.getUserByUsername('lena');
-  //     const loser = await userServices.getFriends('jan');
-  //     expect(winner.wins).toBe(1);
-  //     expect(winner.losses).toBeNull(0);
-  //     expect(loser.losses).toBe(1);
-  //     expect(loser.wins).toBeNull(0);
   //   });
 
   test('can delete user by username', async () => {

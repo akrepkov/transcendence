@@ -17,13 +17,13 @@ socket = new WebSocket(`wss://${window.location.hostname}:3000/ws/connect`);
 
 ### Incoming Message Types (Client → Server)
 
-| Type                 | Description                                           | Payload Example                     |
-|----------------------|-------------------------------------------------------|-------------------------------------|
-| `joinWaitingRoom`    | Request to join the waiting room for matchmaking.     | `{ type: 'joinWaitingRoom' }`       |
-| `leaveWaitingRoom`   | Request to leave the waiting room.                    | `{ type: 'leaveWaitingRoom' }`      |
-| `move`               | Send a move/input command during a game.              | `{ type: 'move', direction: 'up' }` |
-| `stopGame`           | Request to stop the current game.                     | `{ type: 'stopGame' }`              |
-| `disconnectFromGame` | Notify server of voluntary disconnection from a game. | `{ type: 'disconnectFromGame' }`    |
+| Type                 | Description                                                           | Payload Example                                |
+|----------------------|-----------------------------------------------------------------------|------------------------------------------------|
+| `joinWaitingRoom`    | Request to join the waiting room for matchmaking for a specific game. | `{ type: 'joinWaitingRoom', gameType: 'pong'}` |
+| `leaveWaitingRoom`   | Request to leave the waiting room.                                    | `{ type: 'leaveWaitingRoom' }`                 |
+| `move`               | Send a move/input command during a game.                              | `{ type: 'move', direction: 'up' }`            |
+| `stopGame`           | Request to stop the current game.                                     | `{ type: 'stopGame' }`                         |
+| `disconnectFromGame` | Notify server of voluntary disconnection from a game.                 | `{ type: 'disconnectFromGame' }`               |
 
 ### Outgoing Message Types (Server → Client)
 
@@ -47,7 +47,9 @@ socket = new WebSocket(`wss://${window.location.hostname}:3000/ws/connect`);
 
 **joinWaitingRoom**
 - Sent by the client to request entry into the matchmaking queue.
-- No additional fields.
+- The gameType field should contain the type of game the player wants to join. The options are currently:
+    - `pong`: For a Pong-like game.
+    - `snake`: For a Snake-like game.
 - If the user is already in a game or waiting room, the request is rejected.
 
 **leaveWaitingRoom**
@@ -58,7 +60,8 @@ socket = new WebSocket(`wss://${window.location.hostname}:3000/ws/connect`);
 **move**
 - Sent by the client to indicate a paddle movement during a game.
 - Payload: `{ type: 'move', direction: 'up' }`
-    - `direction`: Can be `'up'`, `'down'` (depending on game logic).
+    - `direction`: Can be `'up'`, `'down'` for pong.
+    - `direction`: Can be `'up'`, `'down'` `'left'`, `'right'` for snake. (possibly, this might change in the future)
 - Only valid if the user is currently in a game.
 
 

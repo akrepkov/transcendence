@@ -4,17 +4,18 @@ import { connectionManager } from './managers/connectionManager.js';
 import { Connection } from './models/Connection.js';
 import { messageManager } from './managers/messageManager.js';
 import { gameManager } from './managers/gameManager.js';
+import { waitingListManager } from './managers/waitingListManager.js';
 
 export const USER_LOGOUT = 3000;
 
 function handleMessage(connection, data) {
   switch (data.type) {
     case 'joinWaitingRoom':
-      gameManager.addPlayerToWaitingList(connection);
+      waitingListManager.addPlayerToWaitingList(connection, data.gameType);
       gameManager.printGameSystemStatus();
       break;
     case 'leaveWaitingRoom':
-      gameManager.removeFromWaitingList(connection);
+      waitingListManager.removeFromWaitingList(connection);
       gameManager.printGameSystemStatus();
       break;
     case 'move':
@@ -126,3 +127,8 @@ export function websocketHandler(socket, req) {
   }
   handleNewConnection(socket, decodedToken);
 }
+
+const loggingInterval = setInterval(() => {
+  gameManager.printGameSystemStatus();
+  connectionManager.printUsers();
+}, 10000);
