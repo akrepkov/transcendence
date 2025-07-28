@@ -5,6 +5,8 @@ export function toggleForms() {
   const loginForm = document.getElementById('loginForm');
   const registerMessage = document.getElementById('registerMessage');
   const loginMessage = document.getElementById('loginMessage');
+  const authPage = document.getElementById('authPage');
+  const landingPage = document.getElementById('landingPage');
 
   if (!toggle || !formTitle || !registerForm || !loginForm || !registerMessage || !loginMessage) {
     console.warn('Missing form elements');
@@ -20,6 +22,10 @@ export function toggleForms() {
     loginMessage.textContent = '';
     loginMessage.classList.add('hidden');
     registerMessage.classList.remove('hidden');
+    // registerMessage.classList.add('hidden');
+
+    landingPage?.classList.add('hidden');
+    authPage?.classList.remove('hidden');
   };
 
   const showLogin = () => {
@@ -30,7 +36,11 @@ export function toggleForms() {
 
     registerMessage.textContent = '';
     registerMessage.classList.add('hidden');
+    loginMessage.textContent = '';
     loginMessage.classList.remove('hidden');
+
+    landingPage?.classList.add('hidden');
+    authPage?.classList.remove('hidden');
   };
 
   // On click toggle

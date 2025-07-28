@@ -42,9 +42,10 @@ export async function handleLogin(): Promise<void> {
       if (res.ok) {
         localStorage.setItem('username', usernameInput.value);
         showMessage(loginMessage, 'Logged in successfully');
-        window.location.href = './landing.html';
-      }
-      else {
+        // 👇 SPA Navigation
+        document.getElementById('authPage')?.classList.add('hidden');
+        document.getElementById('landingPage')?.classList.remove('hidden');
+      } else {
         showMessage(loginMessage, data.error || 'Login failed');
       }
     } catch (err) {
@@ -58,7 +59,8 @@ export async function handleLogin(): Promise<void> {
  * Handle registration form submission
  * Validates input fields and displays a success or error message
  */
-export async function handleRegister(): Promise<void> {// Prevent form from reloading the page
+export async function handleRegister(): Promise<void> {
+  // Prevent form from reloading the page
   const registerForm = document.getElementById('registerForm') as HTMLFormElement;
   const registerMessage = document.getElementById('registerMessage') as HTMLElement;
 
