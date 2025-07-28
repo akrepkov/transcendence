@@ -1,4 +1,5 @@
 import * as userServices from '../database/services/userServices.js';
+import { JWT_SECRET } from '../config.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
@@ -49,7 +50,7 @@ const addFriendHandler = async (request, reply) => {
 
 const updateUserHandler = async (request, reply) => {
   try {
-    const { username, email, password, filepath } = request.body;
+    const { username, email, password, avatar } = request.body;
     const user = request.user;
     if (username) {
       await userServices.updateUsername(user, username);

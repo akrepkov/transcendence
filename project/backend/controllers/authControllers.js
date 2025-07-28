@@ -14,7 +14,7 @@ const authenticate = async (request, reply) => {
   try {
     const payload = jwt.verify(token, JWT_SECRET);
     request.user = payload;
-  } catch (err) {
+  } catch (error) {
     return handleError(reply, err, 401);
   }
 };
@@ -37,11 +37,11 @@ const loginHandler = async (request, reply) => {
   const token = jwt.sign({ userId, username, sessionId }, JWT_SECRET, { expiresIn: '1h' });
   // Set the JWT in an HTTP-only cookie
   reply.setCookie('token', token, {
-    httpOnly: true, // Ensures it's not accessible via JavaScript
+    httpOnly: true,
     secure: true,
-    sameSite: 'Strict', // Prevents cross-site request forgery attacks
-    path: '/', // Cookie is available on all routes
-    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+    sameSite: 'Strict',
+    path: '/',
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
   });
   return reply.status(200).send({
     message: 'Login successful',
