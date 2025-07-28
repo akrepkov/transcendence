@@ -190,7 +190,7 @@ export async function getMatchHistory(username) {
       console.log('User not found in the database');
       return null;
     }
-    return user.games;
+    return user.pong, user.snake;
   } catch (error) {
     console.error('Error retrieving match history', error);
     return null;
