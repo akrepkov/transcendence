@@ -42,7 +42,10 @@ export async function handleLogin(): Promise<void> {
       if (res.ok) {
         localStorage.setItem('username', usernameInput.value);
         showMessage(loginMessage, 'Logged in successfully');
-        // 👇 SPA Navigation
+
+        document.getElementById('username')!.textContent = usernameInput.value;
+
+        // SPA Navigation
         document.getElementById('authPage')?.classList.add('hidden');
         document.getElementById('landingPage')?.classList.remove('hidden');
       } else {
