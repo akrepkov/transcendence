@@ -12,12 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
   handleRegister();
   toggleForms();
 
-  restoreViewOnReload();
+  // restoreViewOnReload();
 
-  // // Replace initial history state
-  // const formTitle = document.getElementById('formTitle')?.textContent || 'Login';
-  // const initialState = { view: 'auth', form: formTitle.toLowerCase() };
-  // history.replaceState(initialState, '', location.pathname);
+  // Replace initial history state
+  const formTitle = document.getElementById('formTitle')?.textContent || 'Login';
+  const initialState = { view: 'auth', form: formTitle.toLowerCase() };
+  history.replaceState(initialState, '', location.pathname);
 
   // Listen for browser back/forward
   window.addEventListener('popstate', (event) => {
