@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Pong Game</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <style>
+        .bg-gif {
+            background-color: #2196f3;
+            background-image: url('https://ipfs.pixura.io/ipfs/QmQf88yiTo5fQe9hfonfAaxzqsMVpN3AkUeyc4TD467vVw/SunnyDelights20220828.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+        body {
+            font-family: 'VT323', monospace;
+            /*background-color: #FFFF00;*/
+            color: #000000;
+        }
+        .pixelated-border {
+            border: 4px solid #000;
+            box-shadow: 4px 4px 0px #000;
+        }
+        .pixelated-bracket {
+            font-size: 8rem;
+            line-height: 1;
+        }
+        .pixelated-icon {
+            font-family: 'VT323', monospace;
+            font-size: 8rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-8 bg-gif">
+
+<!-- Header -->
+<header class="flex justify-between items-center mb-16 bg-blue-300 bg-opacity-80 text-black px-6 py-4 rounded-lg">
+    <h1 class="text-5xl font-bold">Pong</h1>
+    <nav class="flex items-center space-x-8 text-xl">
+        <a class="hover:underline" href="#">Leaderboard</a>
+        <a class="hover:underline" href="#">Settings</a>
+        <a class="hover:underline" href="#">Logout</a>
+    </nav>
+    <div class="flex flex-col items-start">
+        <span class="text-xl">Welcome, <span id="welcomeUsername"></span></span>
+        <img src="" alt="Profile Picture"
+             class="w-20 h-20 mt-5 square-thin pixelated-border" />
+    </div>
+</header>
+
+<main>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+
+        <!-- Game Info and Buttons with background panel -->
+        <div class="bg-blue-300 bg-opacity-80 rounded-lg p-8 shadow-lg w-full max-w-xl">
+            <h2 class="text-7xl font-bold leading-tight mb-8">
+                Choose Your <br /> Game Mode
+            </h2>
+            <p class="text-xl mb-8">
+                <span class=>Play solo</span>,
+                <span class=>challenge friends</span>,
+                or
+                <span class=>spectate epic matches</span>.
+                Pick a game to get started.
+            </p>
+            <div class="flex flex-wrap gap-4">
+                <button class="bg-blue-300 pixelated-border text-black font-bold py-3 px-6 text-xl"> Pong</button>
+                <button class="bg-blue-300 pixelated-border text-black font-bold py-3 px-6 text-xl"> Snake</button>
+                <button class="bg-blue-300 pixelated-border text-black font-bold py-3 px-6 text-xl"> Practice</button>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+
+
+<!-- Footer -->
+<footer class="fixed bottom-8 right-8 text-2xl text-white font-bold">
+    Don't click
+</footer>
+
+<!-- Script to populate username -->
+<script type="module" src="../dist/landing/landing.js"></script>
+</body>
+</html>
