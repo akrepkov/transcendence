@@ -17,11 +17,8 @@ export function showLoginView() {
   formTitle.textContent = 'Login';
   toggle.textContent = 'No account? Register';
 
-  registerMessage.textContent = ' ';
-  registerMessage.classList.add('hidden');
   loginMessage.classList.remove('hidden');
 
-  landingPage?.classList.add('hidden');
   authPage?.classList.remove('hidden');
 }
 
@@ -34,11 +31,9 @@ export function showRegisterView() {
   formTitle.textContent = 'Register';
   toggle.textContent = 'Already have an account? Login';
 
-  loginMessage.textContent = '';
   loginMessage.classList.add('hidden');
   registerMessage.classList.remove('hidden');
 
-  landingPage?.classList.add('hidden');
   authPage?.classList.remove('hidden');
 }
 
