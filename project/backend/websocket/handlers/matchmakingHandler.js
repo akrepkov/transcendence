@@ -1,12 +1,26 @@
 import { gameManager } from '../managers/gameManager.js';
 import { waitingListManager } from '../managers/waitingListManager.js';
+import { getUserByUsername } from '../../database/services/userServices.js';
+import { REJECT } from '../managers/messageManager.js';
 
 const MATCHMAKING_INTERVAL = 5000; // 5 seconds
 const MAX_WAIT_TIME = 10; // 10 seconds
 const MAX_RANK_DIFFERENCE = 5; // Players can be matched if their ranks differ by 5 or less
 
-function getPlayerRank() {
-  return Math.floor(Math.random() * 100);
+async function getPlayerRank(username, gameType) {
+  const user = await getUserByUsername(username);
+  if (!user) {
+    console.error(`User ${username} not found in the database.`);
+    throw new Error(`User ${username} not found in database.`);
+  }
+  if (gameType === 'pong') {
+    return user.pongWins - user.pongLosses;
+  } else if (gameType === 'snake') {
+    return user.snakeWins - user.snakeLosses;
+  } else {
+    console.warn(`Invalid game type: ${gameType}.`);
+    throw new Error(`${REJECT.INVALID_GAME_TYPE}`);
+  }
 }
 
 function isMatchable(player1, player2) {
