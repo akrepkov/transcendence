@@ -28,7 +28,7 @@ fi
 (cd ${FRONTEND} && npm install)
 
 # initialises backend packages and prisma
-(cd ${BACKEND} && npm install && npx prisma generate --schema=database/prisma/schema.prisma)
+(cd ${BACKEND} && npm install && npx prisma migrate dev  --schema=database/prisma/schema.prisma fix-game-relations && npx prisma generate --schema=database/prisma/schema.prisma)
 
 # Starts the frontend and backend concurrently watching for changes to files
 # Also sets up pretty colours :)
