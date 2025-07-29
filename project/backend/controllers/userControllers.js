@@ -4,37 +4,48 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import pump from 'pump';
+import fs from 'fs';
+import * as utils from '../../utils/utils.js';
+import path from 'path';
 
-// Returns all users registered in the db
+// Returns all users registered in the db (userId and username only)
 const getAllUsersHandler = async (request, reply) => {
   try {
     const users = await userServices.getUsers();
     if (!users || users.length === 0) {
       return reply.status(404).send({ error: 'No users found' });
     }
-    reply.send(users);
+    const safeUsers = users.map((user) => ({
+      userId: user.userId,
+      username: user.username,
+    }));
+    reply.send(safeUsers);
   } catch (error) {
     console.error('Error fetching users:', error);
     return reply.code(500).send({ error: 'Internal server error' });
   }
 };
 
+// return user information, excluding email and password
 const getUserProfileHandler = async (request, reply) => {
   try {
     const { userName } = request.body;
-    const user = userServices.getUserByUsername(username);
+    const user = userServices.getUserByUsername(userName);
     if (!user) {
       return reply.status(404).send({ error: 'User not found' });
     }
-    reply.send(user);
+    const { password, email, ...safeUser } = user;
+    reply.send(safeUser);
   } catch (error) {
     console.error('Error fetching user:', error);
     return reply.code(500).send({ error: 'Internal server error' });
   }
 };
 
+// add a Friend (full match on name)
 const addFriendHandler = async (request, reply) => {
   try {
+    const { userName, friendUsername } = request.body;
     if (!userName || !friendUsername) {
       return reply.status(404).send({ error: 'User/Friend name not found' });
     }
@@ -52,20 +63,11 @@ const updateUserHandler = async (request, reply) => {
   try {
     const { username, email, password, avatar } = request.body;
     const user = request.user;
+    if (username != user.username) {
+      return reply.status(401).send({ error: 'You can only update your user profile' });
+    }
     if (username) {
       await userServices.updateUsername(user, username);
-      const user = await userServices.getUserByUsername(username);
-      let userId = user.userId;
-      let username = user.username;
-      const sessionId = crypto.randomBytes(32).toString('hex');
-      const token = jwt.sign({ userId, username, sessionId }, JWT_SECRET, { expiresIn: '1h' });
-      reply.setCookie('token', token, {
-        httpOnly: true, //The cookie cannot be accessed via JavaScript
-        secure: true, //The cookie will only be sent over HTTPS connections.
-        sameSite: 'Strict', //The cookie will only be sent for requests originating from the same site.
-        path: '/', // Cookie is available on all routes
-        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), //After this time, the browser will automatically remove the cookie.
-      });
     }
     if (email) {
       await userServices.updateEmail(user, email);
@@ -111,7 +113,7 @@ const getAvatarHandler = async (request, reply) => {
   try {
     let username = request.user.username;
     let avatarFilepath = userServices.getAvatarFromDatabase(username);
-    const fileExistsResult = await fileExists(avatarFilepath);
+    const fileExistsResult = await utils.fileExists(avatarFilepath);
     if (!fileExistsResult) {
       console.log('Avatar not found, using default avatar');
       avatarFilepath = '../uploads/default_avatar.jpg';
