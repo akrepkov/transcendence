@@ -89,11 +89,6 @@ fastify.register(fastifyStatic, {
   decorateReply: false,
 });
 
-// Serve index.html
-fastify.get('/', (request, reply) => {
-  reply.sendFile('index.html');
-});
-
 fastify.register(cookie, {});
 
 // Register all routes
@@ -140,6 +135,13 @@ fastify.listen({ port, host: '0.0.0.0' }, (err, address) => {
     fastify.log.error(err);
     process.exit(1);
   }
+});
+
+fastify.setNotFoundHandler((request, reply) => {
+  if (request.raw.method === 'GET' && !request.raw.url.startsWith('/api')) {
+    return reply.sendFile('index.html');
+  }
+  reply.status(404).send({ error: 'Not found' });
 });
 
 // https://medium.com/@adarshahelvar/navigating-file-paths-in-node-js-with-filename-and-dirname-1dd2656f8d7e
