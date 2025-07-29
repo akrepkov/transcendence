@@ -16,13 +16,13 @@ test.describe.serial('Auth Flow', () => {
 
     // Wait for navigation after clicking login
     await Promise.all([
-      page.waitForNavigation({ url: '**/landing.html' }),
+      page.waitForNavigation({ url: '**/landing' }),
       page.click('#loginForm button[type="submit"]'),
     ]);
 
     // Validate redirected page content
-    await expect(page.locator('#welcomeUsername')).toBeVisible();
-    await expect(page.locator('#welcomeUsername')).toHaveText('djoyke');
+    await expect(page.locator('#username')).toBeVisible();
+    await expect(page.locator('#username')).toHaveText('djoyke');
   });
 
   test('should not log in a non-existing user', async ({ page }) => {
