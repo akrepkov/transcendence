@@ -5,7 +5,7 @@ import { Connection } from './models/Connection.js';
 import { messageManager } from './managers/messageManager.js';
 import { gameManager } from './managers/gameManager.js';
 import { waitingListManager } from './managers/waitingListManager.js';
-import { getUserByUsername } from '../database/services/userServices.js';
+import { getUserById } from '../database/services/userServices.js';
 
 export const USER_LOGOUT = 3000;
 
@@ -23,11 +23,11 @@ async function handleMessage(connection, data) {
       gameManager.handleInput(connection, data.direction);
       break;
     case 'stopGame':
-      gameManager.handleDisconnect(connection, 'opponent requested to stop the game');
+      await gameManager.handleDisconnect(connection, 'opponent requested to stop the game');
       gameManager.printGameSystemStatus();
       break;
     case 'disconnectFromGame':
-      gameManager.handleDisconnect(connection, 'opponent disconnected');
+      await gameManager.handleDisconnect(connection, 'opponent disconnected');
       gameManager.printGameSystemStatus();
       break;
     case 'getLoggedInFriends':
@@ -107,7 +107,13 @@ async function setupSocketEvents(socket, connection) {
 
 async function handleNewConnection(socket, decodedToken) {
   let newConnection = new Connection(socket, decodedToken);
-  // let user = await getUserByUsername()
+  let user = await getUserById(newConnection.userId);
+  if (!user) {
+    console.error('User not found in the database:', newConnection.userId);
+    handleWebsocketError(newConnection, new Error('User not found in the database'));
+    return;
+  }
+  newConnection.username = user.username;
   connectionManager.addConnection(newConnection);
   await setupSocketEvents(socket, newConnection);
 }

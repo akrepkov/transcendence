@@ -52,16 +52,3 @@ export async function checkUniqueUsername(username) {
     return null;
   }
 }
-
-// Get user by ID (optional helper)
-export async function getUserById(userId) {
-  try {
-    return await prisma.user.findUnique({
-      where: { userId },
-      select: { username: true },
-    });
-  } catch (error) {
-    console.error('Error in getUserById:', error);
-    return null;
-  }
-}

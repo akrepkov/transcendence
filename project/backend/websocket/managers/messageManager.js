@@ -79,25 +79,11 @@ function createBroadcast(message) {
   };
 }
 
-async function getFriendsSockets(friendsOfUser) {
-  let friendSockets = [];
-  for (const friend of friendsOfUser) {
-    const friendConnections = connectionManager.getUserConnections(friend.userId);
-    if (friendConnections === undefined) {
-      continue;
-    }
-    friendConnections.forEach((connection) => {
-      friendSockets.push(connection.socket);
-    });
-  }
-  return friendSockets;
-}
-
-async function sendLoggedInFriends(connection) {
-  const friends = await getFriends(connection.username);
+async function getFriendNames(username) {
+  const friends = await getFriends(username);
   if (!friends || friends.length === 0) {
-    console.log(`No friends found for user: ${connection.username}`);
-    return;
+    console.log(`No friends found for user: ${username}`);
+    return [];
   }
   const onlineFriends = [];
   friends.forEach((friend) => {
@@ -105,9 +91,14 @@ async function sendLoggedInFriends(connection) {
       onlineFriends.push(friend.username);
     }
   });
+  return onlineFriends;
+}
+
+async function sendLoggedInFriends(connection) {
+  const friendNames = await getFriendNames(connection.username);
   createBroadcast({
     type: 'onlineFriends',
-    friends: onlineFriends,
+    friends: friendNames,
   }).to.single(connection.socket);
 }
 
