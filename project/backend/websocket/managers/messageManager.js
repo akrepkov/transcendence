@@ -1,4 +1,5 @@
 import { connectionManager } from './connectionManager.js';
+import { getFriendsOf, getFriends } from '../../database/services/userServices.js';
 
 export const REJECT = {
   NOT_AUTHENTICATED: 4001,
@@ -78,17 +79,61 @@ function createBroadcast(message) {
   };
 }
 
-function sendOnlineUsers(target, sockets = null) {
+async function getFriendsSockets(friendsOfUser) {
+  let friendSockets = [];
+  for (const friend of friendsOfUser) {
+    const friendConnections = connectionManager.getUserConnections(friend.userId);
+    if (friendConnections === undefined) {
+      continue;
+    }
+    friendConnections.forEach((connection) => {
+      friendSockets.push(connection.socket);
+    });
+  }
+  return friendSockets;
+}
+
+async function informFriendsOfLogEvent(username, eventType) {
+  const friendsOfUser = await getFriendsOf(username);
+  if (!friendsOfUser || friendsOfUser.length === 0) {
+    console.log(`No friends found for user: ${username}`);
+    return;
+  }
+  let friendSockets = await getFriendsSockets(friendsOfUser);
+  if (friendSockets.length === 0) {
+    console.log(`No friends online for user: ${username}`);
+    return;
+  }
   createBroadcast({
-    type: 'onlineUsers',
-    users: connectionManager.getNamesOfConnectedUsers(),
-  }).to[target](sockets);
+    type: 'friendLogEvent',
+    username: username,
+    eventType: eventType,
+  }).to.sockets(friendSockets);
+}
+
+async function sendLoggedInFriends(username, socket) {
+  const friends = await getFriends(username);
+  if (!friends || friends.length === 0) {
+    console.log(`No friends found for user: ${username}`);
+    return;
+  }
+  const onlineFriends = [];
+  friends.forEach((friend) => {
+    if (connectionManager.getUserConnections(friend.userId) !== undefined) {
+      onlineFriends.push(friend.username);
+    }
+  });
+  createBroadcast({
+    type: 'onlineFriends',
+    friends: onlineFriends,
+  }).to.single(socket);
 }
 
 export const messageManager = {
   broadcastToAll,
   sendErrorToClient,
   createBroadcast,
-  sendOnlineUsers,
+  sendLoggedInFriends,
+  informFriendsOfLogEvent,
   sendSocketRejection,
 };
