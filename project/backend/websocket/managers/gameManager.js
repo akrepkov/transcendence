@@ -71,7 +71,6 @@ async function saveGameInDatabase(gameId, winnerName, loserName, scoreWinner, sc
       scoreWinner,
       scoreLoser,
     );
-    console.log(databaseGame);
     if (databaseGame && (await saveGameResults('pong', winnerName, loserName, databaseGame))) {
       console.log(
         `Game saved: winner: ${winnerName} loser: ${loserName}, score: ${scoreWinner} - ${scoreLoser}`,
