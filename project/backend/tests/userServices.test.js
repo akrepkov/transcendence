@@ -22,7 +22,7 @@ describe('Prisma direct database tests', () => {
     let newUser2 = await authServices.registerUser({
       username: 'jan',
       email: 'jan@mail.com',
-      password: 'jan',
+      password: 'jan',	
     });
     if (!newUser2) {
       newUser2 = await userServices.getUserByUsername('jan');
@@ -84,14 +84,12 @@ describe('Prisma direct database tests', () => {
 //     expect(user.avatar).toBe(filepath);
 //   });
 
-  //   //   test('can retrieve avatar', async () => {
-  //   //     const filepath = 'project/backend/uploads/avatars/avatar_1748704618618_apollo_baby.jpeg';
-  //   //     const username = 'lena';
-  //   //     const user = await userServices.getAvatarFromDatabase(username);
-  //   //     console.log('avatar: ', username.avatar);
-  //   //     expect(user).toBeDefined();
-  //   //     expect(user.avatar).toBe(filepath);
-  //   //   });
+      test('can retrieve avatar', async () => {
+        const username = 'lena';
+        const avatar = await userServices.getAvatarFromDatabase(username);
+        console.log('avatar: ', avatar);
+        expect(avatar).toBeDefined();
+      });
 
     test('can add friend', async () => {
       const username = 'lena';

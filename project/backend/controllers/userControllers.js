@@ -64,18 +64,6 @@ const updateUserHandler = async (request, reply) => {
     }
     if (username) {
       await userServices.updateUsername(user, username);
-      const user = await userServices.getUserByUsername(username);
-      let userId = user.userId;
-      let username = user.username;
-      const sessionId = crypto.randomBytes(32).toString('hex');
-      const token = jwt.sign({ userId, username, sessionId }, JWT_SECRET, { expiresIn: '1h' });
-      reply.setCookie('token', token, {
-        httpOnly: true, //The cookie cannot be accessed via JavaScript
-        secure: true, //The cookie will only be sent over HTTPS connections.
-        sameSite: 'Strict', //The cookie will only be sent for requests originating from the same site.
-        path: '/', // Cookie is available on all routes
-        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), //After this time, the browser will automatically remove the cookie.
-      });
     }
     if (email) {
       await userServices.updateEmail(user, email);

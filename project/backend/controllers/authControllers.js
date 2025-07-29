@@ -34,7 +34,7 @@ const loginHandler = async (request, reply) => {
   }
   let userId = user.userId;
   const sessionId = crypto.randomBytes(32).toString('hex');
-  const token = jwt.sign({ userId, username, sessionId }, JWT_SECRET, { expiresIn: '1h' });
+  const token = jwt.sign({ userId, sessionId }, JWT_SECRET, { expiresIn: '1h' });
   // Set the JWT in an HTTP-only cookie
   reply.setCookie('token', token, {
     httpOnly: true,
@@ -57,7 +57,7 @@ const registerHandler = async (request, reply) => {
   }
   const existUsername = await authServices.checkUniqueUsername(username);
   if (existUsername) {
-    return handleError(reply, new Error('Username or email is already in use'), 500);
+    return handleError(reply, new Error('Username is already in use'), 500);
   }
   // Hash the password before saving
   const hashedPassword = await bcrypt.hash(password, 10);

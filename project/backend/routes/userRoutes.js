@@ -21,7 +21,7 @@ export default async function userRoutes(fastify) {
   fastify.patch(
     '/api/update_user_profile',
     { preHandler: authControllers.authenticate },
-    userControllers.getUserProfileHandler,
+    userControllers.updateUserHandler,
   );
 
   fastify.post(
@@ -49,5 +49,5 @@ export default async function userRoutes(fastify) {
   fastify.get('/api/auth/me', authControllers.verificationHandler);
   fastify.post('/api/auth/login', authControllers.loginHandler);
   fastify.post('/api/auth/register', authControllers.registerHandler);
-  fastify.post('/api/auth/logout', authControllers.logoutHandler);
+  //   fastify.post('/api/auth/logout', authControllers.logoutHandler); NOT WORKING - NEEDS FIXING
 }
