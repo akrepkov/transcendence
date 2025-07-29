@@ -6,34 +6,42 @@ import { websocketHandler } from '../websocket/websocket.js';
 
 export default async function userRoutes(fastify) {
   //user manipulation
-  fastify.get('/api/users', userControllers.getAllUsersHandler);
-  fastify.get('/api/game', gameControllers.getGameHandler);
-
-  //Avatar
-  fastify.post(
-    '/api/upload-avatar',
-    { preHandler: authControllers.getUserFromRequest },
-    userControllers.uploadAvatarHandler,
-  );
   fastify.get(
-    '/api/getAvatar',
-    { preHandler: authControllers.getUserFromRequest },
-    userControllers.getAvatarHandler,
+    '/api/users',
+    { preHandler: authControllers.authenticate },
+    userControllers.getAllUsersHandler,
   );
+
+  fastify.get(
+    '/api/user_profile',
+    { preHandler: authControllers.authenticate },
+    userControllers.getUserProfileHandler,
+  );
+
+  fastify.post(
+    '/api/add_friend',
+    { preHandler: authControllers.authenticate },
+    userControllers.addFriendHandler,
+  );
+
+  fastify.post(
+    '/api/update_user_settings',
+    { preHandler: authControllers.authenticate },
+    userControllers.updateUserHandler,
+  );
+
+  //   fastify.delete(
+  //     '/api/delete_friend',
+  //     { preHandler: authControllers.authenticate },
+  //     userControllers.deteleFriendHandler,
+  //   );
 
   // Websocket
-  fastify.get('/ws/connect', { websocket: true }, websocketHandler);
-  //Snake
-  // fastify.get('/ws/snake', { websocket: true }, snake.snakeWebsocketHandler);
+  fastify.get('/ws/connect', { websocket: true }, websocketHandler); //add prehandler
 
   //Authorization:
-  fastify.get('/api/auth/me', authControllers.verificationHandler);
+  fastify.get('/api/auth/me', authControllers.verificationHandler); //add prehandler
   fastify.post('/api/auth/login', authControllers.loginHandler);
   fastify.post('/api/auth/register', authControllers.registerHandler);
   fastify.post('/api/auth/logout', authControllers.logoutHandler);
-
-  //DEBUGGING dont delete please
-  // fastify.ready().then(() => {
-  //     console.log(fastify.printRoutes());
-  //   });
 }
