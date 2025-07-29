@@ -35,7 +35,8 @@ socket = new WebSocket(`wss://${window.location.hostname}:3000/ws/connect`);
 | `opponentDisconnected` | Notifies player that their opponent has disconnected.                     | `{ type: 'opponentDisconnected', reason: 'reason' }`                             |
 | `logoutRequest`        | Instructs all sockets of a user to log out.                               | `{ type: 'logoutRequest' }`                                                      |
 | `error`                | Sends error details to the client.                                        | `{ type: 'error', message: 'message' }`                                          |
-| `onlineUsers`          | Sends updated list of online users.                                       | `{ type: 'onlineUsers', users: [...] }`                                          |
+| `onlineFriends`        | Sends updated list of online friends.                                     | `{ type: 'onlineFriends', friends: [...] }`                                      |
+| `friendLogEvent`       | Notifies user when a friend logs in or out.                               | `{ type: 'friendLogEvent', username: 'friend', eventType: 'login' }`             |
 | `gameOver`             | Notifies both players that the game has ended.                            | `{ type: 'gameOver', players: [player1, player2], winner: 'username' }`          |
 | `socketRejection`      | Notifies the client that an action was rejected, with a code and message. | `{ type: 'socketRejection', code: 4002, message: 'You are already in a game.' }` |
 
@@ -140,11 +141,18 @@ The stopGame and disconnectFromGame messages are pretty much the same, they just
 - Payload: `{ type: 'error', message: 'message' }`
     - `message`: A string describing the error.
 
-**onlineUsers**
-- Sent to clients to update them on the list of currently online users.
-- Payload: `{ type: 'onlineUsers', users: [...] }`
-    - `users`: An array of usernames.
-- This message gets send everytime a user opens it's first connection or closes it's last connection. This means that f.e. a user opening a new tab will not trigger this message.
+**onlineFriends**
+- Sent to clients to update them on the list of currently online friends.
+- Payload: `{ type: 'onlineFriends', friends: [...] }`
+    - `friends`: An array of usernames.
+- This message gets sent everytime a new socket opens a connection to the given socket, this makes sure you're up to date with who is online.
+
+**friendLogEvent**
+- Sent to a user when a friend logs in or out.
+- Payload: `{ type: 'friendLogEvent', username: 'friend', eventType: 'login' }`
+    - `username`: The username of the friend.
+    - `eventType`: Can be `'login'` or `'logout'`.
+- This message is sent to notify the user about their friends' login/logout events, allowing them to update their UI accordingly.
 
 **gameOver**
 - Sent to both players when the game has ended (e.g., a player reaches the score limit or disconnects).
