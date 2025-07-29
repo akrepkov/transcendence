@@ -93,28 +93,10 @@ async function getFriendsSockets(friendsOfUser) {
   return friendSockets;
 }
 
-async function informFriendsOfLogEvent(username, eventType) {
-  const friendsOfUser = await getFriendsOf(username);
-  if (!friendsOfUser || friendsOfUser.length === 0) {
-    console.log(`No friends found for user: ${username}`);
-    return;
-  }
-  let friendSockets = await getFriendsSockets(friendsOfUser);
-  if (friendSockets.length === 0) {
-    console.log(`No friends online for user: ${username}`);
-    return;
-  }
-  createBroadcast({
-    type: 'friendLogEvent',
-    username: username,
-    eventType: eventType,
-  }).to.sockets(friendSockets);
-}
-
-async function sendLoggedInFriends(username, socket) {
-  const friends = await getFriends(username);
+async function sendLoggedInFriends(connection) {
+  const friends = await getFriends(connection.username);
   if (!friends || friends.length === 0) {
-    console.log(`No friends found for user: ${username}`);
+    console.log(`No friends found for user: ${connection.username}`);
     return;
   }
   const onlineFriends = [];
@@ -126,7 +108,7 @@ async function sendLoggedInFriends(username, socket) {
   createBroadcast({
     type: 'onlineFriends',
     friends: onlineFriends,
-  }).to.single(socket);
+  }).to.single(connection.socket);
 }
 
 export const messageManager = {
@@ -134,6 +116,5 @@ export const messageManager = {
   sendErrorToClient,
   createBroadcast,
   sendLoggedInFriends,
-  informFriendsOfLogEvent,
   sendSocketRejection,
 };

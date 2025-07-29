@@ -104,7 +104,7 @@ function handleInput(connection, direction) {
   }
 }
 
-function handleDisconnect(connection, reason = 'disconnected') {
+async function handleDisconnect(connection, reason = 'disconnected') {
   if (connection.state === 'waitingRoom') {
     waitingListManager.removeFromWaitingList(connection);
   } else if (connection.state === 'inGame') {
@@ -121,7 +121,7 @@ function handleDisconnect(connection, reason = 'disconnected') {
           })
           .to.single(otherPlayer.socket);
       }
-      saveGameInDatabase(
+      await saveGameInDatabase(
         game.gameId,
         otherPlayer.username,
         connection.username,
