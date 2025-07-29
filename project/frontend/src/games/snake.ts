@@ -32,12 +32,7 @@ export function moveSnakes(game: GameStateSnake, event: KeyboardEvent, socket: W
   }
   console.log('Moving snake', direction);
   if (direction && socket.readyState === WebSocket.OPEN) {
-    socket.send(
-      JSON.stringify({
-        type: 'move',
-        direction,
-      }),
-    );
+    socket.send(JSON.stringify({ type: 'move', direction }));
   }
 }
 

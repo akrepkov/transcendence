@@ -31,18 +31,18 @@ export function renderGame(socket: WebSocket, gameType: string) {
         handler.score?.(data);
         handler.draw(data, ctx);
         break;
-      /* What do we do in these situations?*/
-      case 'opponentDisconnected':
-        console.log('opponentDisconnected', data);
+      case 'gameOver':
+        handler.gameOver(data.winner);
         break;
+      case 'opponentDisconnected':
+        handler.gameOver(data.winner);
+        break;
+      /* What do we do in these situations?*/
       case 'logoutRequest':
         console.log('logoutRequest', data);
         break;
       case 'onlineUsers':
         console.log('onlineUsers', data);
-        break;
-      case 'gameOver':
-        handler.gameOver(data.winner);
         break;
       case 'socketRejection':
         console.log('socketRejection', data);

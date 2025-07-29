@@ -33,32 +33,28 @@ export class Snake {
 
   handleInput(playerId, direction) {
     const player = this.players.find((player) => player.playerId === playerId);
-    const oldHead = player.positions[0];
-    let newHead;
     switch (direction) {
       case 'up':
         // newHead = { x: oldHead.x, y: oldHead.y - SNAKE_CONSTS.SNAKE_SPEED };
-        if (player.directions != { x: 0, y: 1 }) player.directions = { x: 0, y: -1 };
+        if (player.directions.y != 1) player.directions = { x: 0, y: -1 };
         break;
       case 'down':
         // newHead = { x: oldHead.x, y: oldHead.y + SNAKE_CONSTS.SNAKE_SPEED };
-        if (player.directions != { x: 0, y: -1 }) player.directions = { x: 0, y: 1 };
+        if (player.directions.y != -1) player.directions = { x: 0, y: 1 };
         break;
       case 'left':
         // newHead = { x: oldHead.x - SNAKE_CONSTS.SNAKE_SPEED, y: oldHead.y };
-        if (player.directions != { x: 1, y: 0 }) player.directions = { x: -1, y: 0 };
+        if (player.directions.x != 1) player.directions = { x: -1, y: 0 };
         break;
       case 'right':
         // newHead = { x: oldHead.x + SNAKE_CONSTS.SNAKE_SPEED, y: oldHead.y };
-        if (player.directions != { x: -1, y: 0 }) player.directions = { x: 1, y: 0 };
+        if (player.directions.x != -1) player.directions = { x: 1, y: 0 };
         break;
       default:
         console.warn(`Invalid direction: ${direction} for player: ${playerId}`);
         throw new Error(`${REJECT.WRONG_DIRECTION}`);
     }
     player.checkCollisions();
-    player.positions.unshift(newHead);
-    player.positions.pop();
   }
 
   broadcastState() {
@@ -71,39 +67,6 @@ export class Snake {
       })
       .to.sockets(this.playerSockets);
   }
-
-  //JAN___JAN___JAN
-  // checkWinCondition() {
-  //   if (
-  //     this.players[0].score >= SNAKE_CONSTS.MAX_SCORE ||
-  //     this.players[1].score >= SNAKE_CONSTS.MAX_SCORE
-  //   ) {
-  //     this.stopGame();
-  //     messageManager
-  //       .createBroadcast({
-  //         type: 'gameOver',
-  //         players: [this.players[0].getPlayerState(), this.players[1].getPlayerState()],
-  //         winner:
-  //           this.players[0].score > this.players[1].score
-  //             ? this.players[0].playerName
-  //             : this.players[1].playerName,
-  //       })
-  //       .to.sockets(this.playerSockets);
-  //     gameManager.removeGame(this.gameId);
-  //   }
-  // }
-
-  // handleScoring() {
-  //   if (this.ball.x <= 0) {
-  //     this.players[1].score++;
-  //     // this.ball.reset();
-  //     this.checkWinCondition();
-  //   } else if (this.ball.x >= SNAKE_CONSTS.WIDTH) {
-  //     this.players[0].score++;
-  //     // this.ball.reset();
-  //     this.checkWinCondition();
-  //   }
-  // }
 
   stopGame() {
     if (this.gameLoop) {
@@ -119,6 +82,7 @@ export class Snake {
     const player2 = this.players[1];
     let winner = null;
     let gameOver = false;
+    console.log(`Player 1 ${player1.collision} Player 2 ${player2.collision}`);
     if (player1.collision || player2.collision) {
       gameOver = true;
       winner = player1.collision ? player2.playerName : player1.playerName;

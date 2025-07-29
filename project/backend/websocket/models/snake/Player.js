@@ -48,14 +48,16 @@ export class SnakePlayer {
     // }
   }
   automatedMove() {
-    const head = this.positions;
+    const head = this.positions[0];
     const newHead = {
       x: head.x + this.directions.x * SNAKE_CONSTS.SNAKE_SPEED,
       y: head.y + this.directions.y * SNAKE_CONSTS.SNAKE_SPEED,
     };
+
     this.positions.unshift(newHead);
+    // TODO: Check for apple collision here
     this.positions.pop();
+
     this.checkCollisions();
-    //ADD EATING THE APPLE and appearing the apple
   }
 }
