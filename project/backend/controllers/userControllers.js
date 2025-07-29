@@ -6,6 +6,7 @@ import crypto from 'crypto';
 import pump from 'pump';
 import fs from 'fs';
 import * as utils from '../../utils/utils.js';
+import path from 'path';
 
 // Returns all users registered in the db (userId and username only)
 const getAllUsersHandler = async (request, reply) => {
