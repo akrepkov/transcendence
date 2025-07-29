@@ -5,7 +5,7 @@ import { gameManager } from './gameManager.js';
 
 let waitingPlayers = [];
 
-function addPlayerToWaitingList(connection, gameType) {
+async function addPlayerToWaitingList(connection, gameType) {
   if (gameManager.getPlayingUsers().has(connection.userId)) {
     console.log('Player already in game:', connection.username);
     throw new Error(`${REJECT.PLAYER_IN_GAME}`);
@@ -18,13 +18,14 @@ function addPlayerToWaitingList(connection, gameType) {
     console.warn(`User ${connection.username} specified invalid game type:`, gameType);
     throw new Error(`${REJECT.INVALID_GAME_TYPE}`);
   }
+  const userRank = await matchmakingHandler.getPlayerRank(connection.username, gameType);
   connection.updateState('waitingRoom');
   waitingPlayers.push({
     connection,
     gameType,
     userId: connection.userId,
     waited: 0,
-    rank: matchmakingHandler.getPlayerRank(),
+    rank: userRank,
   });
   messageManager
     .createBroadcast({

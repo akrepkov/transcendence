@@ -131,4 +131,4 @@ export function websocketHandler(socket, req) {
 const loggingInterval = setInterval(() => {
   gameManager.printGameSystemStatus();
   connectionManager.printUsers();
-}, 10000);
+}, 15000);
