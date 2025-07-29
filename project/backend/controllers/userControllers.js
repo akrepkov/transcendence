@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import pump from 'pump';
+import fs from 'fs';
+import * as utils from '../../utils/utils.js';
 
 // Returns all users registered in the db (userId and username only)
 const getAllUsersHandler = async (request, reply) => {
@@ -27,7 +29,7 @@ const getAllUsersHandler = async (request, reply) => {
 const getUserProfileHandler = async (request, reply) => {
   try {
     const { userName } = request.body;
-    const user = userServices.getUserByUsername(username);
+    const user = userServices.getUserByUsername(userName);
     if (!user) {
       return reply.status(404).send({ error: 'User not found' });
     }
@@ -42,6 +44,7 @@ const getUserProfileHandler = async (request, reply) => {
 // add a Friend (full match on name)
 const addFriendHandler = async (request, reply) => {
   try {
+    const { userName, friendUsername } = request.body;
     if (!userName || !friendUsername) {
       return reply.status(404).send({ error: 'User/Friend name not found' });
     }
@@ -109,7 +112,7 @@ const getAvatarHandler = async (request, reply) => {
   try {
     let username = request.user.username;
     let avatarFilepath = userServices.getAvatarFromDatabase(username);
-    const fileExistsResult = await fileExists(avatarFilepath);
+    const fileExistsResult = await utils.fileExists(avatarFilepath);
     if (!fileExistsResult) {
       console.log('Avatar not found, using default avatar');
       avatarFilepath = '../uploads/default_avatar.jpg';
