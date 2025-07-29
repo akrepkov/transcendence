@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   handleRegister();
   toggleForms();
 
-  // restoreViewOnReload();
+  restoreViewOnReload();
 
   // Replace initial history state
   const formTitle = document.getElementById('formTitle')?.textContent || 'Login';

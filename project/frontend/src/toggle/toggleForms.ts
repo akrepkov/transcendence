@@ -11,6 +11,7 @@ export function toggleForms() {
 
   toggle.addEventListener('click', () => {
     const isRegistering = !registerForm.classList.contains('hidden');
+
     if (isRegistering) {
       showLoginView();
       history.pushState({ view: 'auth', form: 'login' }, '', '/login');

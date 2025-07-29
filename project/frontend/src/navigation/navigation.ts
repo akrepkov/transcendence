@@ -59,7 +59,7 @@ export function restoreViewOnReload() {
   const path = window.location.pathname;
   const isLoggedIn = !!localStorage.getItem('username');
 
-  if (isLoggedIn && path === '/landing') {
+  if (path === '/landing' && isLoggedIn) {
     showLandingView();
     history.replaceState({ view: 'landing' }, '', '/landing');
   } else if (path === '/register') {
