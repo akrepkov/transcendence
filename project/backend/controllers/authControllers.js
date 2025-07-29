@@ -83,24 +83,24 @@ const logoutHandler = async (request, reply) => {
   reply.send({ message: 'Logged out successfully' });
 };
 
-// const verificationHandler = async (request, reply) => {
-//   const token = await request.cookies.token;
-//   if (!token) {
-//     return handleError(reply, new Error('Unauthorized: No token'), 401);
-//   }
-//   try {
-//     const decoded = jwt.verify(token, JWT_SECRET);
-//     // console.log("Decoded in verificationHandler: ", decoded);
-//     const user = await authServices.checkCredentials(decoded.email);
-//     if (!user) {
-//       return handleError(reply, new Error('Invalid credentials'), 401);
-//     }
-//     let username = user.username;
-//     reply.send({ user: decoded, username });
-//   } catch (error) {
-//     return handleError(reply, err, 401);
-//   }
-// };
+const verificationHandler = async (request, reply) => {
+  const token = await request.cookies.token;
+  if (!token) {
+    return handleError(reply, new Error('Unauthorized: No token'), 401);
+  }
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    // console.log("Decoded in verificationHandler: ", decoded);
+    const user = await authServices.checkCredentials(decoded.email);
+    if (!user) {
+      return handleError(reply, new Error('Invalid credentials'), 401);
+    }
+    let username = user.username;
+    reply.send({ user: decoded, username });
+  } catch (error) {
+    return handleError(reply, err, 401);
+  }
+};
 
 // const getUserFromRequest = async (request, reply) => {
 //   try {
@@ -145,7 +145,7 @@ export default {
   logoutHandler,
   verificationHandler,
   authenticate,
-  getUserFromRequest,
+  //   getUserFromRequest,
   authenticateSocketConnection,
 };
 

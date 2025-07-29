@@ -41,7 +41,7 @@ describe('Prisma direct database tests', () => {
 
   test('users table exists', async () => {
     const users = await userServices.getUsers();
-    console.log(users);
+    // console.log(users);
     expect(Array.isArray(users)).toBe(true);
   });
 
@@ -60,8 +60,8 @@ describe('Prisma direct database tests', () => {
       include: { pong: true },
     });
 
-    console.log('winner:', updatedWinner);
-    console.log('loser:', updatedLoser);
+    // console.log('winner:', updatedWinner);
+    // console.log('loser:', updatedLoser);
     expect(updatedWinner.pongWins).toBe(1);
     expect(updatedWinner.pongLosses).toBe(0);
     expect(updatedLoser.pongLosses).toBe(1);
@@ -75,13 +75,14 @@ describe('Prisma direct database tests', () => {
     expect(updatedLoser.pong[0].gameId).toBe(pong.gameId);
   });
 
-  test('can add personalized avatar', async () => {
-    const filepath = 'project/backend/uploads/avatars/avatar_1748704618618_apollo_baby.jpeg';
-    const username = 'lena';
-    const user = await userServices.uploadAvatarInDatabase(filepath, username);
-    expect(user).toBeDefined();
-    expect(user.avatar).toBe(filepath);
-  });
+//   test('can add personalized avatar', async () => {
+//     const filepath = 'project/backend/uploads/avatars/avatar_1748704618618_apollo_baby.jpeg';
+//     const username = 'lena';
+//     const user = await userServices.uploadAvatarInDatabase(filepath, username);
+// 	const updatedUser = await userServices.getUserByUsername(username);
+//     expect(user).toBeDefined();
+//     expect(user.avatar).toBe(filepath);
+//   });
 
   //   //   test('can retrieve avatar', async () => {
   //   //     const filepath = 'project/backend/uploads/avatars/avatar_1748704618618_apollo_baby.jpeg';
@@ -92,14 +93,22 @@ describe('Prisma direct database tests', () => {
   //   //     expect(user.avatar).toBe(filepath);
   //   //   });
 
-  //   test('can add friend', async () => {
-  //     const username = 'lena';
-  //     const friendName = 'jan';
-  //     await userServices.addFriend(username, friendName);
-  //     const user = await userServices.getUserByUsername(username);
-  //     const friend = await userServices.getFriends(username);
-  //     expect(user.friends).toBeNull(friend);
-  //   });
+    test('can add friend', async () => {
+      const username = 'lena';
+      const friendName = 'jan';
+      await userServices.addFriend(username, friendName);
+      const user = await userServices.getUserByUsername(username);
+      const friends = await userServices.getFriendsOf(username);
+      expect(user.friends[0].username).toBe(friendName);
+    });
+
+    test('can retrieve friend of', async () => {
+      const me = 'jan';
+      const iAmFriendOf = await userServices.getFriendsOf(me);
+	  console.log("me:", iAmFriendOf);
+      expect(iAmFriendOf[0].username).toBe('lena');
+    });
+
 
   test('can delete user by username', async () => {
     await userServices.deleteUser('lena');

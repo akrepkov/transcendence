@@ -30,11 +30,11 @@ export default async function userRoutes(fastify) {
     userControllers.updateUserHandler,
   );
 
-  fastify.delete(
-    '/api/delete_friend',
-    { preHandler: authControllers.authenticate },
-    userControllers.deteleFriendHandler,
-  );
+  //   fastify.delete(
+  //     '/api/delete_friend',
+  //     { preHandler: authControllers.authenticate },
+  //     userControllers.deteleFriendHandler,
+  //   );
 
   // Websocket
   fastify.get('/ws/connect', { websocket: true }, websocketHandler); //add prehandler

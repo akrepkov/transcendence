@@ -13,6 +13,8 @@ export async function getUsers() {
         pongLosses: true,
         snakeWins: true,
         snakeLosses: true,
+        friends: true,
+        friendsOf: true,
       },
     });
   } catch (error) {
@@ -134,7 +136,13 @@ export async function getAvatarFromDatabase(username) {
 // find user by username
 export async function getUserByUsername(username) {
   try {
-    const user = await prisma.user.findUnique({ where: { username } });
+    const user = await prisma.user.findUnique({
+      where: { username },
+      include: {
+        friends: true,
+        friendsOf: true,
+      },
+    });
     return user;
   } catch (error) {
     console.error('Error retrieving user from database:', error);
@@ -166,7 +174,7 @@ export async function addFriend(userName, friendName) {
       console.log('Data not found in the database');
       return false;
     }
-    prisma.user.update({
+    await prisma.user.update({
       where: { username: userName },
       data: {
         friends: {
@@ -192,6 +200,21 @@ export async function getFriends(username) {
     return user.friends;
   } catch (error) {
     console.error('Error retrieving friends', error);
+    return null;
+  }
+}
+
+//can return list of friends for a user
+export async function getFriendsOf(username) {
+  try {
+    const user = await getUserByUsername(username);
+    if (!user) {
+      console.log('User not found in the database');
+      return null;
+    }
+    return user.friendsOf;
+  } catch (error) {
+    console.error('Error retrieving friends of', error);
     return null;
   }
 }

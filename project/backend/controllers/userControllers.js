@@ -136,5 +136,5 @@ export default {
   addFriendHandler,
   uploadAvatarHandler,
   getAvatarHandler,
-  deleteFriendHandler,
+  //   deleteFriendHandler,
 };
