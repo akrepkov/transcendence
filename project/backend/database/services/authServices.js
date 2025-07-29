@@ -1,4 +1,5 @@
 import prisma from '../prisma/prismaClient.js';
+import { getRandomAvatar } from '../../utils/utils.js';
 
 // Register a new user
 export async function registerUser({ username, email, password }) {
@@ -13,8 +14,9 @@ export async function registerUser({ username, email, password }) {
     if (existingUser) {
       return null;
     }
+    const filepath = await getRandomAvatar();
     return await prisma.user.create({
-      data: { username, email, password },
+      data: { username, email, password, avatar: filepath },
     });
   } catch (error) {
     console.error('Error in registerUser:', error);
@@ -29,7 +31,8 @@ export async function checkCredentials(email) {
     if (!user) {
       return null;
     }
-    return user;
+    const { password, ...safeUser } = user;
+    return safeUser;
   } catch (error) {
     console.error('Error in checkCredentials:', error);
     return null;
@@ -53,7 +56,10 @@ export async function checkUniqueUsername(username) {
 // Get user by ID (optional helper)
 export async function getUserById(userId) {
   try {
-    return await prisma.user.findUnique({ where: { userId } });
+    return await prisma.user.findUnique({
+      where: { userId },
+      select: { username: true },
+    });
   } catch (error) {
     console.error('Error in getUserById:', error);
     return null;

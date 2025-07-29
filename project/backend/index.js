@@ -89,7 +89,7 @@ fastify.register(fastifyStatic, {
   decorateReply: false,
 });
 
-fastify.register(cookie, {});
+fastify.register(cookie);
 
 // Register all routes
 fastify.register(userRoutes);

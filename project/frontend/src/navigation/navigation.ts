@@ -38,7 +38,10 @@ export function showRegisterView() {
 }
 
 export function showLandingView() {
-  if (!username) {
+  const storedUsername = localStorage.getItem('username');
+  const storedAvatar = localStorage.getItem('avatar'); // optional: only if you're storing avatar path
+
+  if (!storedUsername) {
     console.warn('User not logged in - redirect to login');
     history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
     showLoginView();
@@ -50,10 +53,45 @@ export function showLandingView() {
     return;
   }
 
-  document.getElementById('username')!.textContent = username.textContent;
+  const usernameEl = document.getElementById('username');
+  if (usernameEl) {
+    usernameEl.textContent = storedUsername;
+  }
+
+  const profilePic = document.getElementById('profilePic') as HTMLImageElement;
+  const avatarProfile = document.getElementById('avatar-profile') as HTMLImageElement;
+
+  if (storedAvatar) {
+    if (profilePic) profilePic.src = storedAvatar;
+    if (avatarProfile) avatarProfile.src = storedAvatar;
+  } else {
+    // fallback avatar
+    const defaultAvatar = '/avatars/default.png';
+    if (profilePic) profilePic.src = defaultAvatar;
+    if (avatarProfile) avatarProfile.src = defaultAvatar;
+  }
+
   authPage.classList.add('hidden');
   landingPage.classList.remove('hidden');
 }
+
+// export function showLandingView() {
+//   if (!username) {
+//     console.warn('User not logged in - redirect to login');
+//     history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
+//     showLoginView();
+//     return;
+//   }
+//
+//   if (!authPage || !landingPage) {
+//     console.warn('Missing authPage or landingPage');
+//     return;
+//   }
+//
+//   document.getElementById('username')!.textContent = username.textContent;
+//   authPage.classList.add('hidden');
+//   landingPage.classList.remove('hidden');
+// }
 
 export function restoreViewOnReload() {
   const path = window.location.pathname;

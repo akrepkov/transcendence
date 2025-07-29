@@ -192,12 +192,16 @@ export async function addFriend(userName, friendName) {
 //can return list of friends for a user
 export async function getFriends(username) {
   try {
-    const user = getUserByUsername(username);
+    const user = await getUserByUsername(username);
     if (!user) {
       console.log('User not found in the database');
       return null;
     }
-    return user.friends;
+    const safeFriends = user.friends.map((friend) => ({
+      userId: friend.userId,
+      username: friend.username,
+    }));
+    return safeFriends;
   } catch (error) {
     console.error('Error retrieving friends', error);
     return null;
@@ -212,6 +216,10 @@ export async function getFriendsOf(username) {
       console.log('User not found in the database');
       return null;
     }
+    const safeFriendsOf = user.friendsOf.map((friend) => ({
+      userId: friend.userId,
+      username: friend.username,
+    }));
     return user.friendsOf;
   } catch (error) {
     console.error('Error retrieving friends of', error);

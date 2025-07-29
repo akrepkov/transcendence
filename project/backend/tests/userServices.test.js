@@ -22,7 +22,7 @@ describe('Prisma direct database tests', () => {
     let newUser2 = await authServices.registerUser({
       username: 'jan',
       email: 'jan@mail.com',
-      password: 'jan',
+      password: 'jan',	
     });
     if (!newUser2) {
       newUser2 = await userServices.getUserByUsername('jan');
@@ -84,22 +84,20 @@ describe('Prisma direct database tests', () => {
 //     expect(user.avatar).toBe(filepath);
 //   });
 
-  //   //   test('can retrieve avatar', async () => {
-  //   //     const filepath = 'project/backend/uploads/avatars/avatar_1748704618618_apollo_baby.jpeg';
-  //   //     const username = 'lena';
-  //   //     const user = await userServices.getAvatarFromDatabase(username);
-  //   //     console.log('avatar: ', username.avatar);
-  //   //     expect(user).toBeDefined();
-  //   //     expect(user.avatar).toBe(filepath);
-  //   //   });
+      test('can retrieve avatar', async () => {
+        const username = 'lena';
+        const avatar = await userServices.getAvatarFromDatabase(username);
+        console.log('avatar: ', avatar);
+        expect(avatar).toBeDefined();
+      });
 
     test('can add friend', async () => {
       const username = 'lena';
       const friendName = 'jan';
       await userServices.addFriend(username, friendName);
-      const user = await userServices.getUserByUsername(username);
-      const friends = await userServices.getFriendsOf(username);
-      expect(user.friends[0].username).toBe(friendName);
+	  const myFriends = await userServices.getFriends(username);
+      console.log("friends: ", myFriends);
+	  expect(myFriends[0].username).toBe(friendName);
     });
 
     test('can retrieve friend of', async () => {
