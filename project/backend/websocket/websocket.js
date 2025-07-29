@@ -82,7 +82,7 @@ function closeConnection(connection, code) {
 
   // if this was the last connection for the user, send updated online users to all other sockets
   if (connectionManager.getConnectedUsers().has(connection.userId) === false) {
-    messageManager.sendOnlineUsers('all');
+    messageManager.informFriendsOfLogEvent(connection.username, 'logout');
   }
 }
 
@@ -114,10 +114,9 @@ function handleNewConnection(socket, decodedToken) {
   // if a new user connected, send updated online users to all connected sockets,
   // otherwise send the online users to the new socket
   if (connectionManager.getUserConnections(newConnection.userId).size === 1) {
-    messageManager.sendOnlineUsers('all');
-  } else {
-    messageManager.sendOnlineUsers('single', socket);
+    messageManager.informFriendsOfLogEvent(newConnection.username, 'login');
   }
+  messageManager.sendLoggedInFriends(newConnection.username, newConnection.socket);
 }
 
 export function websocketHandler(socket, req) {
