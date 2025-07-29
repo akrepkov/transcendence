@@ -5,20 +5,25 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import pump from 'pump';
 
-// Returns all users registered in the db
+// Returns all users registered in the db (userId and username only)
 const getAllUsersHandler = async (request, reply) => {
   try {
     const users = await userServices.getUsers();
     if (!users || users.length === 0) {
       return reply.status(404).send({ error: 'No users found' });
     }
-    reply.send(users);
+    const safeUsers = users.map((user) => ({
+      userId: user.userId,
+      username: user.username,
+    }));
+    reply.send(safeUsers);
   } catch (error) {
     console.error('Error fetching users:', error);
     return reply.code(500).send({ error: 'Internal server error' });
   }
 };
 
+// return user information, excluding email and password
 const getUserProfileHandler = async (request, reply) => {
   try {
     const { userName } = request.body;
@@ -26,13 +31,15 @@ const getUserProfileHandler = async (request, reply) => {
     if (!user) {
       return reply.status(404).send({ error: 'User not found' });
     }
-    reply.send(user);
+    const { password, email, ...safeUser } = user;
+    reply.send(safeUser);
   } catch (error) {
     console.error('Error fetching user:', error);
     return reply.code(500).send({ error: 'Internal server error' });
   }
 };
 
+// add a Friend (full match on name)
 const addFriendHandler = async (request, reply) => {
   try {
     if (!userName || !friendUsername) {
@@ -52,6 +59,9 @@ const updateUserHandler = async (request, reply) => {
   try {
     const { username, email, password, avatar } = request.body;
     const user = request.user;
+    if (username != user.username) {
+      return reply.status(401).send({ error: 'You can only update your user profile' });
+    }
     if (username) {
       await userServices.updateUsername(user, username);
       const user = await userServices.getUserByUsername(username);

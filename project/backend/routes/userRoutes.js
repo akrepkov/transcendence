@@ -13,7 +13,13 @@ export default async function userRoutes(fastify) {
   );
 
   fastify.get(
-    '/api/user_profile',
+    '/api/view_user_profile',
+    { preHandler: authControllers.authenticate },
+    userControllers.getUserProfileHandler,
+  );
+
+  fastify.patch(
+    '/api/update_user_profile',
     { preHandler: authControllers.authenticate },
     userControllers.getUserProfileHandler,
   );
@@ -37,10 +43,10 @@ export default async function userRoutes(fastify) {
   //   );
 
   // Websocket
-  fastify.get('/ws/connect', { websocket: true }, websocketHandler); //add prehandler
+  fastify.get('/ws/connect', { websocket: true }, websocketHandler);
 
   //Authorization:
-  fastify.get('/api/auth/me', authControllers.verificationHandler); //add prehandler
+  fastify.get('/api/auth/me', authControllers.verificationHandler);
   fastify.post('/api/auth/login', authControllers.loginHandler);
   fastify.post('/api/auth/register', authControllers.registerHandler);
   fastify.post('/api/auth/logout', authControllers.logoutHandler);

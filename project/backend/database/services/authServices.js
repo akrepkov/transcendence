@@ -29,7 +29,8 @@ export async function checkCredentials(email) {
     if (!user) {
       return null;
     }
-    return user;
+    const { password, ...safeUser } = user;
+    return safeUser;
   } catch (error) {
     console.error('Error in checkCredentials:', error);
     return null;

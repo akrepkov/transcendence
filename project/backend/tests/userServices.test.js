@@ -97,9 +97,9 @@ describe('Prisma direct database tests', () => {
       const username = 'lena';
       const friendName = 'jan';
       await userServices.addFriend(username, friendName);
-      const user = await userServices.getUserByUsername(username);
-      const friends = await userServices.getFriendsOf(username);
-      expect(user.friends[0].username).toBe(friendName);
+	  const myFriends = await userServices.getFriends(username);
+      console.log("friends: ", myFriends);
+	  expect(myFriends[0].username).toBe(friendName);
     });
 
     test('can retrieve friend of', async () => {

@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { JWT_SECRET } from '../config.js';
 
-// preHandler to verify if user is authorized to perform request
+// preHandler to verify if user is logged in with a valid JWT
 const authenticate = async (request, reply) => {
   const token = await request.cookies.token;
   if (!token) {
@@ -15,7 +15,7 @@ const authenticate = async (request, reply) => {
     const payload = jwt.verify(token, JWT_SECRET);
     request.user = payload;
   } catch (error) {
-    return handleError(reply, err, 401);
+    return handleError(reply, error, 401);
   }
 };
 
@@ -71,7 +71,7 @@ const registerHandler = async (request, reply) => {
       return handleError(reply, new Error('Registration failed'), 500);
     }
     return reply.status(201).send({ message: 'Registration successful' });
-  } catch (err) {
+  } catch (error) {
     console.error('Registration error:', err);
     return handleError(reply, new Error('Registration failed'), 500);
   }
@@ -90,7 +90,6 @@ const verificationHandler = async (request, reply) => {
   }
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    // console.log("Decoded in verificationHandler: ", decoded);
     const user = await authServices.checkCredentials(decoded.email);
     if (!user) {
       return handleError(reply, new Error('Invalid credentials'), 401);
@@ -101,24 +100,6 @@ const verificationHandler = async (request, reply) => {
     return handleError(reply, err, 401);
   }
 };
-
-// const getUserFromRequest = async (request, reply) => {
-//   try {
-//     const token = await request.cookies.token;
-//     if (!token) {
-//       return handleError(reply, new Error('Unauthorized: No token'), 401);
-//     }
-//     const decoded = jwt.verify(token, JWT_SECRET);
-//     let user = userServices.getUserByEmail(decoded.email);
-//     if (!user) {
-//       return handleError(reply, new Error('Invalid credentials'), 401);
-//     }
-//     request.user = user; // Attach user to request object
-//   } catch (error) {
-//     console.error('getUserFromRequest:', error);
-//     return handleError(reply, error, 401);
-//   }
-// };
 
 // Used in websockets (Jan uses this - don't touch)
 const authenticateSocketConnection = (request, socket) => {
@@ -141,12 +122,11 @@ const authenticateSocketConnection = (request, socket) => {
 
 export default {
   loginHandler,
+  authenticateSocketConnection,
   registerHandler,
   logoutHandler,
   verificationHandler,
   authenticate,
-  //   getUserFromRequest,
-  authenticateSocketConnection,
 };
 
 // Plan:
