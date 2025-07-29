@@ -6,11 +6,12 @@
     <title>Pong Game - Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <style>
         body {
             font-family: 'VT323', monospace;
-            background-color: #ffff00;
-            color: #000;
+            background-color: #000000;
+            color: #FFFFFF;
         }
         .bg-gif-landing {
             background-color: #2196f3;
@@ -20,6 +21,10 @@
             background-position: center;
         }
         .pixelated-border {
+            border: 4px solid #FFFFFF;
+            box-shadow: 4px 4px 0px #FFFFFF;
+        }
+        .pixelated-border-landing {
             border: 4px solid #000;
             box-shadow: 4px 4px 0px #000;
         }
@@ -32,6 +37,16 @@
             font-size: 8rem;
         }
         .pixelated-button {
+            border: 2px solid #FFFFFF;
+            padding: 8px 16px;
+            text-align: center;
+            display: inline-block;
+            color: #FFFFFF;
+            cursor: pointer;
+            box-shadow: 2px 2px 0px #FFFFFF;
+            transition: all 0.1s ease-in-out;
+        }
+        .pixelated-button-landing {
             border: 2px solid #000;
             padding: 8px 16px;
             text-align: center;
@@ -42,9 +57,9 @@
             transition: all 0.1s ease-in-out;
         }
         .pixelated-button:hover {
-            background-color: #000;
-            color: #ffff00;
-            box-shadow: -2px -2px 0px #ffff00;
+            background-color: #FFFFFF;
+            color: #000000;
+            box-shadow: -2px -2px 0px #FFFFFF;
         }
         .hidden {display: none;}
     </style>
@@ -67,7 +82,7 @@
                        name="username"
                        type="text"
                        placeholder="Enter your username"
-                       class="block w-full px-4 py-3 bg-transparent border-2 border-black focus:outline-none focus:ring-0" required />
+                       class="block w-full px-4 py-3 bg-transparent border-2 border-white focus:outline-none focus:ring-0" required />
             </div>
 
             <div class="relative">
@@ -75,7 +90,7 @@
                        name="password"
                        type="password"
                        placeholder="Enter your password"
-                       class="block w-full px-4 py-3 bg-transparent border-2 border-black focus:outline-none focus:ring-0" required />
+                       class="block w-full px-4 py-3 bg-transparent border-2 border-white focus:outline-none focus:ring-0" required />
             </div>
 
             <button type="submit" class="pixelated-button w-full text-xl">Log In</button>
@@ -85,24 +100,24 @@
         <form id="registerForm" class="space-y-6 text-left hidden">
             <div class="relative">
                 <input id="registerUsername" type="text" placeholder="Enter username"
-                       class="block w-full px-4 py-3 bg-transparent border-2 border-black focus:outline-none focus:ring-0" required />
+                       class="block w-full px-4 py-3 bg-transparent border-2 border-white focus:outline-none focus:ring-0" required />
             </div>
 
             <div class="relative">
                 <input id="registerEmail" type="email" placeholder="Enter email"
-                       class="block w-full px-4 py-3 bg-transparent border-2 border-black focus:outline-none focus:ring-0" required />
+                       class="block w-full px-4 py-3 bg-transparent border-2 border-white focus:outline-none focus:ring-0" required />
             </div>
 
             <div class="relative">
                 <input id="registerPassword" type="password" placeholder="Enter password"
-                       class="block w-full px-4 py-3 bg-transparent border-2 border-black focus:outline-none focus:ring-0 peer" required />
+                       class="block w-full px-4 py-3 bg-transparent border-2 border-white focus:outline-none focus:ring-0 peer" required />
             </div>
 
             <button type="submit" class="pixelated-button w-full text-xl">Register</button>
         </form>
 
         <!-- Toggle -->
-        <p id="toggleForm" class="mt-4 text-lg underline cursor-pointer hover:text-yellow-600 text-center">
+        <p id="toggleForm" class="mt-4 text-lg underline cursor-pointer hover:text-blue-400 text-center">
             No account? Register
         </p>
 
@@ -114,6 +129,7 @@
         <div class="absolute top-5 right-5">
             <div class="flex items-center space-x-2">
                 <span class="text-xl">Meet the team</span>
+<!--                <a target="_blank" href="https://icons8.com/icon/jlTAQSF9iNfu/maneki">Maneki</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>-->
                 <svg fill="none" height="12" viewBox="0 0 12 12" width="12"
                      xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 0H0V2H2V4H4V6H6V8H8V10H10V12H12V0Z" fill="black" />
@@ -125,20 +141,19 @@
 
 <!-- Landing Page -->
 <div id="landingPage" class="hidden min-h-screen p-8 bg-gif-landing text-black">
-    <!-- Header -->
-    <header class="flex justify-between items-center mb-16 bg-blue-300 bg-opacity-80 px-6 py-4 rounded-lg">
+    <header class="flex justify-between items-center mb-16 px-6 py-4">
         <nav class="flex items-center space-x-8 text-xl">
-            <a class="hover:underline cursor-pointer">Settings</a>
+            <!-- nav content -->
         </nav>
-        <div class="flex flex-col items-start">
+        <div class="flex flex-col items-center text-center bg-blue-300 bg-opacity-70 px-4 py-3 rounded-lg">
             <span class="text-xl">Welcome, <span id="username"></span></span>
-            <img src="" alt="Profile Picture" class="w-20 h-20 mt-5 pixelated-border" />
+            <img src="" alt="Profile Picture" class="w-20 h-20 mt-5 pixelated-border-landing" />
         </div>
     </header>
 
     <main>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            <div class="bg-blue-300 bg-opacity-80 rounded-lg p-8 shadow-lg w-full max-w-xl">
+            <div class="bg-blue-300 bg-opacity-70 rounded-lg p-8 shadow-lg w-full max-w-xl">
                 <h2 class="text-7xl font-bold leading-tight mb-8">Choose Your <br /> Game Mode</h2>
                 <p class="text-xl mb-8">
                     <span>Play solo</span>,
@@ -148,9 +163,9 @@
                     Pick a game to get started.
                 </p>
                 <div class="flex flex-wrap gap-4">
-                    <button class="bg-blue-300 pixelated-border text-black font-bold py-3 px-6 text-xl">Pong</button>
-                    <button class="bg-blue-300 pixelated-border text-black font-bold py-3 px-6 text-xl">Snake</button>
-                    <button class="bg-blue-300 pixelated-border text-black font-bold py-3 px-6 text-xl">Practice</button>
+                    <button class="bg-blue-300 pixelated-border-landing text-black font-bold py-3 px-6 text-xl">Pong</button>
+                    <button class="bg-blue-300 pixelated-border-landing text-black font-bold py-3 px-6 text-xl">Snake</button>
+                    <button class="bg-blue-300 pixelated-border-landing text-black font-bold py-3 px-6 text-xl">Practice</button>
                 </div>
             </div>
         </div>

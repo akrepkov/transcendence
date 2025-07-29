@@ -54,3 +54,20 @@ export function showLandingView() {
   authPage.classList.add('hidden');
   landingPage.classList.remove('hidden');
 }
+
+export function restoreViewOnReload() {
+  const path = window.location.pathname;
+  const isLoggedIn = !!localStorage.getItem('username');
+
+  if (path === '/landing' && isLoggedIn) {
+    showLandingView();
+    history.replaceState({ view: 'landing' }, '', '/landing');
+  } else if (path === '/register') {
+    showRegisterView();
+    history.replaceState({ view: 'auth', form: 'register' }, '', '/register');
+  } else {
+    // Default to login
+    showLoginView();
+    history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
+  }
+}
