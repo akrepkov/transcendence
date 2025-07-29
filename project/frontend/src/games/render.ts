@@ -1,6 +1,6 @@
 import { GameStatePong } from './types.js';
 import { GameStateSnake } from './types.js';
-import { getGameType } from './websocket.js';
+import { getGameType } from './gameToggle.js';
 import { gameHandler } from './gameHandler.js';
 
 export const GAME_CONSTS = {
@@ -11,8 +11,8 @@ export const GAME_CONSTS = {
 
 const keys = new Set<string>(); //class containing unique strings
 
-export function renderGame(socket: WebSocket) {
-  const canvas = document.getElementById('pong') as HTMLCanvasElement;
+export function renderGame(socket: WebSocket, gameType: string) {
+  const canvas = document.getElementById(gameType) as HTMLCanvasElement;
   if (!canvas) {
     throw new Error('Canvas element not found');
   }
@@ -20,7 +20,6 @@ export function renderGame(socket: WebSocket) {
   if (!ctx) {
     throw new Error('Could not get 2D rendering context');
   }
-  const gameType = getGameType();
   //ADD after having pages for games
   if (!gameType || !['pong', 'snake'].includes(gameType)) {
     // throw new Error('GameType is null');
@@ -101,16 +100,16 @@ export function movePaddles(game: GameStatePong, socket: WebSocket) {
 }
 
 export function drawSnake(data: GameStateSnake, ctx: CanvasRenderingContext2D) {
-  ctx.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
+  ctx.clearRect(0, 0, GAME_CONSTS.WIDTH + 10, GAME_CONSTS.HEIGHT + 10);
   ctx.fillStyle = 'black';
   console.log(`Apple ${data.apple}`);
   console.log(`Players head ${data.players[0].head}`);
-  ctx.fillRect(data.apple.x, data.apple.y, 10, 10);
+  ctx.fillRect(data.apple.x, data.apple.y, 20, 20);
   for (const segment of data.players[0].head) {
-    ctx.fillRect(segment.x, segment.y, 10, 10);
+    ctx.fillRect(segment.x, segment.y, 20, 20);
   }
   for (const segment of data.players[1].head) {
-    ctx.fillRect(segment.x, segment.y, 10, 10);
+    ctx.fillRect(segment.x, segment.y, 20, 20);
   }
 }
 

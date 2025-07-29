@@ -43,8 +43,7 @@ export class SnakePlayer {
     // }
   }
   automatedMove() {
-    const head = this.positions[0];
-
+    const head = this.positions;
     const newHead = {
       x: head.x + this.directions.x * SNAKE_CONSTS.SNAKE_SPEED,
       y: head.y + this.directions.y * SNAKE_CONSTS.SNAKE_SPEED,

@@ -1,8 +1,9 @@
 import { handleRegister, handleLogin } from './auth/auth.js';
 import { toggleForms } from './toggle/toggleForms.js';
 import { showLoginView, showRegisterView, showLandingView } from './navigation/navigation.js';
-// import { renderGame } from './games/render.js';
+import { setupGameToggle } from './games/gameToggle.js';
 import { setupSocketEvents } from './games/websocket.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   handleLogin();
   handleRegister();
@@ -41,8 +42,15 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
   const socket = new WebSocket(`wss://${window.location.hostname}/ws/connect`);
   setupSocketEvents(socket);
-  // renderGame(socket);
+  setupGameToggle(socket);
 });
 
 //Anna TODO add port to frontend websocket
 //uncomment cert in index.js
+//Added button ids for games in index.html
+// Change snake size
+// Add scores
+//Add practice game
+//Why matching takes so long???
+//What we do with stop button?
+//What we do if user logs out??
