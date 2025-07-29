@@ -72,22 +72,35 @@ export class Pong {
     }
   }
 
+  getWinnerAndLoser() {
+    if (this.players[0].score > this.players[1].score) {
+      return { winner: this.players[0], loser: this.players[1] };
+    } else {
+      return { winner: this.players[1], loser: this.players[0] };
+    }
+  }
+
   checkWinCondition() {
     if (
       this.players[0].score >= PONG_CONSTS.MAX_SCORE ||
       this.players[1].score >= PONG_CONSTS.MAX_SCORE
     ) {
       this.stopGame();
+      const { winner, loser } = this.getWinnerAndLoser();
       messageManager
         .createBroadcast({
           type: 'gameOver',
           players: [this.players[0].getPlayerState(), this.players[1].getPlayerState()],
-          winner:
-            this.players[0].score > this.players[1].score
-              ? this.players[0].playerName
-              : this.players[1].playerName,
+          winner: winner.playerName,
         })
         .to.sockets(this.playerSockets);
+      gameManager.saveGameInDatabase(
+        this.gameId,
+        winner.playerName,
+        loser.playerName,
+        winner.score,
+        loser.score,
+      );
       gameManager.removeGame(this.gameId);
     }
   }
