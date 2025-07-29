@@ -167,18 +167,27 @@
                 </div>
             </div>
             <!-- Anna START-->
-            <div id="pong-container" class="hidden border-5 border-black mt-5 p-8 bg-blue-300 bg-opacity-80">
-                <canvas id="pong" width="810" height="610"></canvas>
-                <div class="flex justify-between mt-4">
+            <div id="pong-container"
+                class="hidden flex flex-col items-center border-5 border-black mt-5 p-8 bg-blue-300 bg-opacity-80">
+                <div class="flex justify-center mt-4">
+                    <div id="pong-score" class="text-7xl font-bold leading-tight mb-8 text-center">0 : 0</div>
+                </div>
+                <canvas id="pong" class="border-5 border-black mt-5 p-8" width="800" height="600"></canvas>
+                <div class="flex justify-between mt-4 w-full max-w-[800px]">
                     <button id="start-button-pong"
                         class="bg-blue-300 pixelated-border text-black font-bold py-3 px-6 text-xl">Start</button>
                     <button id="stop-button-pong"
                         class="bg-blue-300 pixelated-border text-black font-bold py-3 px-6 text-xl">Stop</button>
                 </div>
+
             </div>
-            <div id="snake-container" class="hidden border-5 border-black mt-5 p-8 bg-blue-300 bg-opacity-80">
-                <canvas id="snake" width="810" height="610"></canvas>
-                <div class="flex justify-between mt-4">
+            <div id="snake-container"
+                class="hidden flex flex-col items-center border-5 border-black mt-5 p-8 bg-blue-300 bg-opacity-80">
+                <div class="flex justify-center mt-4">
+                    <div id="snake-score" class="text-7xl font-bold leading-tight mb-8 text-center">0 : 0</div>
+                </div>
+                <canvas id="snake" class="border-5 border-black mt-5 p-8" width="800" height="600"></canvas>
+                <div class="flex justify-between mt-4 w-full max-w-[800px]">
                     <button id="start-button-snake"
                         class="bg-blue-300 pixelated-border text-black font-bold py-3 px-6 text-xl">Start</button>
                     <button id="stop-button-snake"

@@ -1,3 +1,8 @@
+export const GAME_CONSTS = {
+  WIDTH: 800,
+  HEIGHT: 600,
+};
+
 export interface Player {
   paddleY: number;
   paddleX: number;
@@ -39,6 +44,4 @@ export interface GameStateSnake {
   players: PlayerSnake[];
   state?: string;
   running?: boolean;
-  //gameloop?
-  //sockets?
 }

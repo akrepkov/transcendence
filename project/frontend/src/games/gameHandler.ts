@@ -1,12 +1,17 @@
-import * as game from './render.js';
+import * as pong from './pong.js';
+import * as snake from './snake.js';
 
 export const gameHandler = {
   pong: {
-    create: game.createPongGame,
-    draw: game.drawPong,
+    create: pong.createPongGame,
+    draw: pong.drawPong,
+    score: pong.showPongScore,
+    gameOver: pong.gameOverPong,
   },
   snake: {
-    create: game.createSnakeGame,
-    draw: game.drawSnake,
+    create: snake.createSnakeGame,
+    draw: snake.drawSnake,
+    score: snake.showSnakeScore,
+    gameOver: snake.gameOverSnake,
   },
 };

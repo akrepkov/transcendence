@@ -22,7 +22,12 @@ export class SnakePlayer {
   checkCollisions() {
     const head = this.positions[0];
     // Check for collision with walls
-    if (head.x < 0 || head.x >= SNAKE_CONSTS.WIDTH || head.y < 0 || head.y >= SNAKE_CONSTS.HEIGHT) {
+    if (
+      head.x < 0 ||
+      head.x >= SNAKE_CONSTS.WIDTH - 10 ||
+      head.y < 0 ||
+      head.y >= SNAKE_CONSTS.HEIGHT - 10
+    ) {
       console.log(`${this.userId} Player hit the wall`);
       this.collision = true;
     }

@@ -8,8 +8,8 @@ export const SNAKE_CONSTS = {
   WIDTH: 800,
   HEIGHT: 600,
   SNAKE_SPEED: 10,
-  LEFT_PLAYER: [{ x: 0, y: 100 }],
-  RIGHT_PLAYER: [{ x: 790, y: 100 }], //TODO change to a real position
+  LEFT_PLAYER: [{ x: 0, y: 300 }],
+  RIGHT_PLAYER: [{ x: 780, y: 300 }], //TODO change to a real position
   MAX_SCORE: 5,
 };
 

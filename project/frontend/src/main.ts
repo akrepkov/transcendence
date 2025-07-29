@@ -1,8 +1,7 @@
 import { handleRegister, handleLogin } from './auth/auth.js';
 import { toggleForms } from './toggle/toggleForms.js';
 import { showLoginView, showRegisterView, showLandingView } from './navigation/navigation.js';
-import { setupGameToggle } from './games/gameToggle.js';
-import { setupSocketEvents } from './games/websocket.js';
+import { setupGameToggle, setupSocketEvents } from './games/gameToggle.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   handleLogin();
@@ -39,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+/* ANNA START*/
 document.addEventListener('DOMContentLoaded', () => {
   const socket = new WebSocket(`wss://${window.location.hostname}/ws/connect`);
   setupSocketEvents(socket);
@@ -53,4 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
 //Add practice game
 //Why matching takes so long???
 //What we do with stop button?
-//What we do if user logs out??
+//What we do if user logs out, on err and so on??
+
+/* ANNA END*/
