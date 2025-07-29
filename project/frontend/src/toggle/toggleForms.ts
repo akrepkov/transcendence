@@ -1,45 +1,22 @@
+import { showLoginView, showRegisterView, showLandingView } from '../navigation/navigation.js';
+
 export function toggleForms() {
   const toggle = document.getElementById('toggleForm');
-  const formTitle = document.getElementById('formTitle');
   const registerForm = document.getElementById('registerForm');
-  const loginForm = document.getElementById('loginForm');
-  const registerMessage = document.getElementById('registerMessage');
-  const loginMessage = document.getElementById('loginMessage');
 
-  if (!toggle || !formTitle || !registerForm || !loginForm || !registerMessage || !loginMessage) {
-    console.warn('Missing form elements');
+  if (!toggle || !registerForm) {
+    console.warn('Missing toggle or registerForm');
     return;
   }
 
-  const showRegister = () => {
-    loginForm.classList.add('hidden');
-    registerForm.classList.remove('hidden');
-    formTitle.textContent = 'Register';
-    toggle.textContent = 'Already have an account? Login';
-
-    loginMessage.textContent = '';
-    loginMessage.classList.add('hidden');
-    registerMessage.classList.remove('hidden');
-  };
-
-  const showLogin = () => {
-    registerForm.classList.add('hidden');
-    loginForm.classList.remove('hidden');
-    formTitle.textContent = 'Login';
-    toggle.textContent = 'No account? Register';
-
-    registerMessage.textContent = '';
-    registerMessage.classList.add('hidden');
-    loginMessage.classList.remove('hidden');
-  };
-
-  // On click toggle
   toggle.addEventListener('click', () => {
     const isRegistering = !registerForm.classList.contains('hidden');
     if (isRegistering) {
-      showLogin();
+      showLoginView();
+      history.pushState({ view: 'auth', form: 'login' }, '', '/login');
     } else {
-      showRegister();
+      showRegisterView();
+      history.pushState({ view: 'auth', form: 'register' }, '', '/register');
     }
   });
 }

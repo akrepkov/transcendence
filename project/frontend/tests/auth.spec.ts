@@ -14,12 +14,15 @@ test.describe.serial('Auth Flow', () => {
     await page.fill('#loginPassword', 'djoyke');
     await page.click('#loginForm button[type="submit"]');
 
-    await page.waitForTimeout(1000); //temp check
-    console.log(await page.locator('#loginMessage').innerText()); //temp check
+    // Wait for navigation after clicking login
+    await Promise.all([
+      page.waitForNavigation({ url: '**/landing' }),
+      page.click('#loginForm button[type="submit"]'),
+    ]);
 
-
-    await expect(page.locator('#loginMessage')).toBeVisible();
-    await expect(page.locator('#loginMessage')).toHaveText('Logged in successfully');
+    // Validate redirected page content
+    await expect(page.locator('#username')).toBeVisible();
+    await expect(page.locator('#username')).toHaveText('djoyke');
   });
 
   test('should not log in a non-existing user', async ({ page }) => {

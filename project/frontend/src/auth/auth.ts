@@ -38,9 +38,22 @@ export async function handleLogin(): Promise<void> {
         }),
       });
 
-      console.log('Login response:', res.status); //temp check
       const data = await res.json();
-      showMessage(loginMessage, res.ok ? 'Logged in successfully' : data.error);
+      if (res.ok) {
+        localStorage.setItem('username', usernameInput.value);
+        showMessage(loginMessage, 'Logged in successfully');
+
+        document.getElementById('username')!.textContent = usernameInput.value;
+
+        // SPA Navigation
+        document.getElementById('authPage')?.classList.add('hidden');
+        document.getElementById('landingPage')?.classList.remove('hidden');
+
+        // Push new state to history
+        history.pushState({ view: 'landing' }, '', '/landing');
+      } else {
+        showMessage(loginMessage, data.error || 'Login failed');
+      }
     } catch (err) {
       console.error(err);
       showMessage(loginMessage, 'Server error');
@@ -52,7 +65,8 @@ export async function handleLogin(): Promise<void> {
  * Handle registration form submission
  * Validates input fields and displays a success or error message
  */
-export async function handleRegister(): Promise<void> {// Prevent form from reloading the page
+export async function handleRegister(): Promise<void> {
+  // Prevent form from reloading the page
   const registerForm = document.getElementById('registerForm') as HTMLFormElement;
   const registerMessage = document.getElementById('registerMessage') as HTMLElement;
 
@@ -87,6 +101,7 @@ export async function handleRegister(): Promise<void> {// Prevent form from relo
 
       const data = await res.json();
       showMessage(registerMessage, res.ok ? 'User registered successfully' : data.error);
+      history.pushState({ view: 'auth', form: 'register' }, '', '/register');
       registerForm.reset();
     } catch (err) {
       console.error(err);
