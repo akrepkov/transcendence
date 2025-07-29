@@ -43,7 +43,7 @@ export async function handleLogin(): Promise<void> {
       const data = await res.json();
       if (res.ok) {
         localStorage.setItem('username', usernameInput.value);
-        localStorage.setItem('avatar', data.avatar || '/profile-avatars/wow-cat.jpeg'); // assuming backend sends `avatar` URL
+        localStorage.setItem('avatar', data.avatar || '/avatars/wow-cat.jpeg'); // assuming backend sends `avatar` URL
 
         // update UI
         showMessage(loginMessage, 'Logged in successfully');
@@ -51,10 +51,10 @@ export async function handleLogin(): Promise<void> {
 
         document
           .getElementById('profilePic')!
-          .setAttribute('src', data.avatar || '/profile-avatars/wow-cat.jpeg');
+          .setAttribute('src', data.avatar || '/avatars/wow-cat.jpeg');
         document
           .getElementById('avatar-profile')!
-          .setAttribute('src', data.avatar || '/profile-avatars/wow-cat.jpeg');
+          .setAttribute('src', data.avatar || '/avatars/wow-cat.jpeg');
 
         // SPA Navigation
         document.getElementById('authPage')?.classList.add('hidden');
