@@ -135,7 +135,6 @@
         <div class="absolute top-5 right-5">
             <div class="flex items-center space-x-2">
                 <span class="text-xl">Meet the team</span>
-<!--                <a target="_blank" href="https://icons8.com/icon/jlTAQSF9iNfu/maneki">Maneki</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>-->
                 <svg fill="none" height="12" viewBox="0 0 12 12" width="12"
                      xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 0H0V2H2V4H4V6H6V8H8V10H10V12H12V0Z" fill="black" />
@@ -153,7 +152,7 @@
         </nav>
         <div class="flex flex-col items-center text-center bg-blue-300 bg-opacity-70 px-4 py-3 rounded-lg">
             <span class="text-xl">Welcome, <span id="username"></span></span>
-            <img src="" alt="Profile Picture" class="w-20 h-20 mt-5 pixelated-border-landing" />
+            <img src="" alt="Profile Picture" id="profilePic" class="w-20 h-20 mt-5 pixelated-border-landing cursor-pointer" />
         </div>
     </header>
 
@@ -181,6 +180,39 @@
     <footer class="fixed bottom-8 right-8 text-2xl text-white font-bold">
         LOG OUT
     </footer>
+</div>
+
+<!-- Profile Page -->
+<div id="profilePage" class="hidden min-h-screen p-8 bg-gif-landing text-black">
+    <header class="flex justify-between items-center mb-16 px-6 py-4">
+        <h1 class="text-5xl font-bold">Your Profile</h1>
+        <div class="relative">
+            <img id="avatar-profile" src="" alt="Avatar" class="w-24 h-24 rounded-full pixelated-border-landing cursor-pointer" />
+            <!-- Flyout -->
+            <div id="settingsFlyout" class="hidden absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg text-black z-50">
+                <button class="block w-full text-left px-4 py-2 hover:bg-blue-200">Change Avatar</button>
+                <button class="block w-full text-left px-4 py-2 hover:bg-blue-200">Edit Username</button>
+                <button id="logoutBtn" class="block w-full text-left px-4 py-2 hover:bg-blue-200">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Add Friends -->
+        <section class="bg-blue-300 bg-opacity-70 rounded-lg p-6">
+            <h2 class="text-4xl font-bold mb-4">Add Friends</h2>
+            <input type="text" placeholder="Enter username" class="w-full p-2 mb-4 border border-black" />
+            <button class="pixelated-button-landing text-xl w-full">Send Friend Request</button>
+        </section>
+
+        <!-- Game History -->
+        <section class="bg-blue-300 bg-opacity-70 rounded-lg p-6">
+            <h2 class="text-4xl font-bold mb-4">Game History</h2>
+            <ul class="space-y-2">
+                <li class="bg-white bg-opacity-90 p-2 rounded text-black"> Pong vs @friend — Won</li>
+            </ul>
+        </section>
+    </main>
 </div>
 
 <!-- SPA Controller Script -->
