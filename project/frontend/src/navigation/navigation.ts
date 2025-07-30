@@ -96,3 +96,11 @@ export function restoreViewOnReload() {
     history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
   }
 }
+
+export function showProfileView() {
+  document.getElementById('authPage')?.classList.add('hidden');
+  document.getElementById('landingPage')?.classList.add('hidden');
+  document.getElementById('profilePage')?.classList.remove('hidden');
+
+  history.pushState({ view: 'profile' }, '', '/profile');
+}
