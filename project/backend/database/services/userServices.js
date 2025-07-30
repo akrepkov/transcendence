@@ -105,6 +105,20 @@ export async function updateEmail(user, newEmail) {
   }
 }
 
+// update password
+export async function updatePassword(user, newPassword) {
+  try {
+    await prisma.user.update({
+      where: { userId: user.userId },
+      data: { password: newPassword },
+    });
+    return true;
+  } catch (error) {
+    console.error('Error updating password', error);
+    return false;
+  }
+}
+
 // Update avatar for a user
 export async function uploadAvatarInDatabase(filepath, username) {
   try {
@@ -155,7 +169,6 @@ export async function getUserById(userId) {
   try {
     return await prisma.user.findUnique({
       where: { userId },
-      select: { username: true },
     });
   } catch (error) {
     console.error('Error in getUserById:', error);

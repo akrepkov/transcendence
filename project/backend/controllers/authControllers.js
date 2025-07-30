@@ -45,6 +45,7 @@ const loginHandler = async (request, reply) => {
   });
   return reply.status(200).send({
     message: 'Login successful',
+    token,
   });
 };
 
@@ -72,7 +73,7 @@ const registerHandler = async (request, reply) => {
     }
     return reply.status(201).send({ message: 'Registration successful' });
   } catch (error) {
-    console.error('Registration error:', err);
+    console.error('Registration error:', error);
     return handleError(reply, new Error('Registration failed'), 500);
   }
 };
@@ -97,7 +98,7 @@ const verificationHandler = async (request, reply) => {
     let username = user.username;
     reply.send({ user: decoded, username });
   } catch (error) {
-    return handleError(reply, err, 401);
+    return handleError(reply, error, 401);
   }
 };
 

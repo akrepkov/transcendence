@@ -28,13 +28,7 @@ export default async function userRoutes(fastify) {
     '/api/add_friend',
     { preHandler: authControllers.authenticate },
     userControllers.addFriendHandler,
-  );
-
-  fastify.post(
-    '/api/update_user_settings',
-    { preHandler: authControllers.authenticate },
-    userControllers.updateUserHandler,
-  );
+  ); //needs to be tested
 
   //   fastify.delete(
   //     '/api/delete_friend',
@@ -49,5 +43,5 @@ export default async function userRoutes(fastify) {
   fastify.get('/api/auth/me', authControllers.verificationHandler);
   fastify.post('/api/auth/login', authControllers.loginHandler);
   fastify.post('/api/auth/register', authControllers.registerHandler);
-  //   fastify.post('/api/auth/logout', authControllers.logoutHandler); NOT WORKING - NEEDS FIXING
+  fastify.post('/api/auth/logout', authControllers.logoutHandler);
 }

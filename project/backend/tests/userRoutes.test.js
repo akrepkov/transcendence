@@ -2,14 +2,18 @@ import { PrismaClient } from '@prisma/client';
 import Fastify from 'fastify';
 import userRoutes from '../routes/userRoutes.js';
 import * as userServices from '../database/services/userServices.js';
+import cookie from '@fastify/cookie';
 
 await userServices.deleteUser('lena');
+await userServices.deleteUser('lenacik');
 
 describe('User Routes', () => {
   let fastify;
+  let authCookie;
   const prisma = new PrismaClient();
   beforeAll(async () => {
     fastify = Fastify();
+	fastify.register(cookie);
     await userRoutes(fastify); // register your routes
     await fastify.ready();
   });
@@ -31,25 +35,9 @@ describe('User Routes', () => {
       }
     });
 	const body = await JSON.parse(response.body);
-	if(response.statusCode == 500)
-		expect(body.message).toBe('Username is already in use');
-	else {
-		expect(response.statusCode).toBe(201);
-		expect(body.message).toBe('Registration successful');
-	}
+	expect(response.statusCode).toBe(201);
+	expect(body.message).toBe('Registration successful');
   });
-
-  	test('POST /api/auth/logout', async() => {
-		const response = await fastify.inject({
-			method: 'POST',
-			url: '/api/auth/logout',
-			payload: {
-				username: 'lena',
-			}
-		});
-		const body = await JSON.parse(response.body);
-		expect(body.message).toBe('Logged out successfully');
-	})
 
     test('POST /api/auth/login', async () => {
     const response = await fastify.inject({
@@ -62,32 +50,45 @@ describe('User Routes', () => {
     });
     expect(response.statusCode).toBe(200);
     const body = await JSON.parse(response.body);
-	const cookie = body.token;
-	console.log("cookie: ", cookie);
+	authCookie = body.token;
+	console.log("cookie after login: ", authCookie);
 	console.log("body: ", body.message);
     expect(body.message).toBe('Login successful');
   });
 
     test('PATCH update_user_profile', async () => {
-
+	console.log("cookie in test PATCH: ", authCookie);
 	const oldUser = await userServices.getUserByUsername('lena');
     const response = await fastify.inject({
       method: 'PATCH',
       url: '/api/update_user_profile',
       payload: {
         username: 'lenacik',
-        password: 'lenacik'
+        password: 'lenacik',
       },
 	  cookies: {
-		token: cookie
+		token: authCookie
 	  }
     });
-
     const body = await JSON.parse(response.body);
+	console.log("body: ", body);
 	const updatedUser = await userServices.getUserByUsername('lenacik');
+	const findOldUser = await userServices.getUserByUsername('lena');
 	console.log("updatedUser: ", updatedUser);
     expect(updatedUser).toBeDefined();
-    expect(oldUser).toBeNull();
+    expect(findOldUser).toBeNull();
   });
+
+	test('POST /api/auth/logout', async() => {
+		const response = await fastify.inject({
+			method: 'POST',
+			url: '/api/auth/logout',
+			payload: {
+				username: 'lena',
+			}
+		});
+		const body = await JSON.parse(response.body);
+		expect(body.message).toBe('Logged out successfully');
+	})
 
 });
