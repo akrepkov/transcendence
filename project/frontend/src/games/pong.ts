@@ -31,6 +31,7 @@ function setupPaddleInput(socket: WebSocket) {
 
 function movePaddles(socket: WebSocket) {
   function loop() {
+    console.log('movePaddle loop is running');
     let direction: 'up' | 'down' | undefined;
     if (keys.w || keys.ArrowUp) direction = 'up';
     else if (keys.s || keys.ArrowDown) direction = 'down';
@@ -38,13 +39,13 @@ function movePaddles(socket: WebSocket) {
     if (direction && socket.readyState === WebSocket.OPEN) {
       socket.send(JSON.stringify({ type: 'move', direction }));
     }
-
     animationFrame = requestAnimationFrame(loop);
   }
   loop();
 }
 
 export function drawPong(data: GameStatePong, ctx: CanvasRenderingContext2D) {
+  console.log('drawPong is running');
   ctx.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
   ctx.fillStyle = 'black';
   ctx.fillRect(data.ball.x, data.ball.y, 10, 10);

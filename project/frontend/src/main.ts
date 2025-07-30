@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ANNA START*/
 document.addEventListener('DOMContentLoaded', () => {
-  const socket = new WebSocket(`wss://${window.location.hostname}/ws/connect`);
+  const socket = new WebSocket(`wss://${window.location.hostname}:3000/ws/connect`);
   setupSocketEvents(socket);
   setupGameToggle(socket);
 });
