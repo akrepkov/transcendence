@@ -5,6 +5,7 @@ import {
   showRegisterView,
   showLandingView,
   restoreViewOnReload,
+  showProfileView,
 } from './navigation/navigation.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -19,6 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const initialState = { view: 'auth', form: formTitle.toLowerCase() };
   history.replaceState(initialState, '', location.pathname);
 
+  initProfileEvents();
+
   // Listen for browser back/forward
   window.addEventListener('popstate', (event) => {
     const state = event.state;
@@ -27,16 +30,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const isLoggedIn = !!localStorage.getItem('username');
 
     if (state.view === 'auth') {
-      if (state.form === 'login') {
-        showLoginView();
-      } else if (state.form === 'register') {
-        showRegisterView();
-      }
+      if (state.form === 'login') showLoginView();
+      else if (state.form === 'register') showRegisterView();
     } else if (state.view === 'landing') {
-      if (isLoggedIn) {
-        showLandingView();
-      } else {
+      if (isLoggedIn) showLandingView();
+      else {
         // User not logged in, redirect to login
+        history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
+        showLoginView();
+      }
+    } else if (state.view === 'profile') {
+      if (isLoggedIn) {
+        showProfileView();
+      } else {
         history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
         showLoginView();
       }

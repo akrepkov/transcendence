@@ -1,9 +1,9 @@
-import { showLoginView } from '../navigation/navigation.js';
-
-function showMessage(el: HTMLElement, text: string): void {
-  el.classList.remove('hidden');
-  el.textContent = text;
-}
+import {
+  showLoginView,
+  showLandingView,
+  showMessage,
+  showRegisterView,
+} from '../navigation/navigation.js';
 
 /**
  * Handle login form submission
@@ -43,24 +43,10 @@ export async function handleLogin(): Promise<void> {
       const data = await res.json();
       if (res.ok) {
         localStorage.setItem('username', usernameInput.value);
-        localStorage.setItem('avatar', data.avatar || '/avatars/wow-cat.jpeg'); // assuming backend sends `avatar` URL
+        localStorage.setItem('avatar', data.avatar || '/avatars/wow-cat.jpeg');
 
-        // update UI
         showMessage(loginMessage, 'Logged in successfully');
-        document.getElementById('username')!.textContent = usernameInput.value;
-
-        document
-          .getElementById('profilePic')!
-          .setAttribute('src', data.avatar || '/avatars/wow-cat.jpeg');
-        document
-          .getElementById('avatar-profile')!
-          .setAttribute('src', data.avatar || '/avatars/wow-cat.jpeg');
-
-        // SPA Navigation
-        document.getElementById('authPage')?.classList.add('hidden');
-        document.getElementById('landingPage')?.classList.remove('hidden');
-
-        // Push new state to history
+        showLandingView();
         history.pushState({ view: 'landing' }, '', '/landing');
       } else {
         showMessage(loginMessage, data.error || 'Login failed');
@@ -111,11 +97,11 @@ export async function handleRegister(): Promise<void> {
       });
 
       if (res.ok) {
-        showMessage(registerMessage, 'User registered successfully');
+        localStorage.setItem('username', usernameInput.value);
+        localStorage.setItem('avatar', '/avatars/wow-cat.jpeg');
 
-        // Redirect to login view
-        showLoginView();
-        history.pushState({ view: 'auth', form: 'login' }, '', '/login');
+        showLandingView();
+        history.pushState({ view: 'auth', form: 'landing' }, '', '/landing');
 
         registerForm.reset();
       } else {
