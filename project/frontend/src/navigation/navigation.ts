@@ -8,6 +8,11 @@ const authPage = document.getElementById('authPage');
 const landingPage = document.getElementById('landingPage');
 const username = document.getElementById('username');
 
+export function showMessage(el: HTMLElement, text: string): void {
+  el.classList.remove('hidden');
+  el.textContent = text;
+}
+
 export function showLoginView() {
   if (!loginForm || !registerForm || !formTitle || !toggle || !loginMessage || !registerMessage)
     return;
@@ -74,24 +79,6 @@ export function showLandingView() {
   authPage.classList.add('hidden');
   landingPage.classList.remove('hidden');
 }
-
-// export function showLandingView() {
-//   if (!username) {
-//     console.warn('User not logged in - redirect to login');
-//     history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
-//     showLoginView();
-//     return;
-//   }
-//
-//   if (!authPage || !landingPage) {
-//     console.warn('Missing authPage or landingPage');
-//     return;
-//   }
-//
-//   document.getElementById('username')!.textContent = username.textContent;
-//   authPage.classList.add('hidden');
-//   landingPage.classList.remove('hidden');
-// }
 
 export function restoreViewOnReload() {
   const path = window.location.pathname;
