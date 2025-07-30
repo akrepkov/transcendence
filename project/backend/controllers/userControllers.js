@@ -66,11 +66,10 @@ const updateUserHandler = async (request, reply) => {
     const { username, email, password, avatar } = request.body;
     const requestUserId = request.user.userId;
     const user = await userServices.getUserById(requestUserId);
-    console.log('userID: ', user);
     if (username) {
       const existUsername = await authServices.checkUniqueUsername(username);
       if (existUsername) {
-        return handleError(reply, new Error('Username is already in use'), 500);
+        return reply.code(500).send({ error: 'Username already in use' });
       }
       await userServices.updateUsername(user, username);
       await connectionManager.updateUsernameInConnections(user.userId, username);
