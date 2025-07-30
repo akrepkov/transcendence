@@ -7,7 +7,7 @@ import pump from 'pump';
 import fs from 'fs';
 import * as utils from '../utils/utils.js';
 import path from 'path';
-import { connectionManager, connnectionManager } from '../websocket/managers/connectionManager.js';
+import { connectionManager } from '../websocket/managers/connectionManager.js';
 
 // Returns all users registered in the db (userId and username only)
 const getAllUsersHandler = async (request, reply) => {
