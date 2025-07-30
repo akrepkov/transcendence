@@ -11,8 +11,11 @@ export function setupSocketEvents(socket: WebSocket) {
   socket.onerror = function (error) {
     console.error('WebSocket error:', error);
   };
-  socket.onclose = function () {
+  socket.onclose = function (event) {
     console.log('WebSocket connection closed.');
+    console.log('Code:', event.code); // Close code
+    console.log('Reason:', event.reason); // Optional reason
+    console.log('Was clean:', event.wasClean); // true if closed cleanly
   };
 }
 
@@ -47,11 +50,15 @@ export function setupGameToggle(socket: WebSocket) {
   startPong.addEventListener('click', () => {
     socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'pong' }));
     gameType = 'pong';
+    const scorePong = document.getElementById('pong-score');
+    if (scorePong) scorePong.textContent = '0 : 0';
     renderGame(socket, gameType);
   });
   startSnake.addEventListener('click', () => {
     socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'snake' }));
     gameType = 'snake';
+    const scoreSnake = document.getElementById('snake-score');
+    if (scoreSnake) scoreSnake.textContent = '';
     renderGame(socket, gameType);
   });
 
@@ -74,8 +81,6 @@ export function resetPongGame(socket: WebSocket) {
     socket.send(JSON.stringify({ type: 'disconnectFromGame' }));
   }
   cleanPongField();
-  const scorePong = document.getElementById('pong-score');
-  if (scorePong) scorePong.textContent = '0 : 0';
 }
 
 export function resetSnakeGame(socket: WebSocket) {
@@ -83,6 +88,4 @@ export function resetSnakeGame(socket: WebSocket) {
     socket.send(JSON.stringify({ type: 'disconnectFromGame' }));
   }
   cleanSnakeField();
-  const scoreSnake = document.getElementById('snake-score');
-  if (scoreSnake) scoreSnake.textContent = '';
 }

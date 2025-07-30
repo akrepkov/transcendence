@@ -28,6 +28,7 @@ export function renderGame(socket: WebSocket, gameType: string) {
         handler.create(data, socket);
         break;
       case 'updateGameState':
+        console.log('Sent updataGameState');
         handler.score?.(data);
         handler.draw(data, ctx);
         break;
@@ -35,6 +36,7 @@ export function renderGame(socket: WebSocket, gameType: string) {
         handler.gameOver(data.winner);
         break;
       case 'opponentDisconnected':
+        console.log(`Opponent disconnected, winner: ${data.winner}`);
         handler.gameOver(data.winner);
         break;
       /* What do we do in these situations?*/

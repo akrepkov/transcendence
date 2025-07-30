@@ -3,6 +3,7 @@ import { GAME_CONSTS } from './types.js';
 import { getCanvasContext } from './render.js';
 
 export let animationFrame: number | null = null;
+let running = false;
 
 const keys: Record<'w' | 's' | 'ArrowUp' | 'ArrowDown', boolean> = {
   w: false,
@@ -12,6 +13,7 @@ const keys: Record<'w' | 's' | 'ArrowUp' | 'ArrowDown', boolean> = {
 };
 
 export function createPongGame(data: GameStatePong, socket: WebSocket) {
+  running = true;
   setupPaddleInput(socket);
   movePaddles(socket);
 }
@@ -31,7 +33,7 @@ function setupPaddleInput(socket: WebSocket) {
 
 function movePaddles(socket: WebSocket) {
   function loop() {
-    console.log('movePaddle loop is running');
+    // console.log('movePaddle loop is running');
     let direction: 'up' | 'down' | undefined;
     if (keys.w || keys.ArrowUp) direction = 'up';
     else if (keys.s || keys.ArrowDown) direction = 'down';
@@ -45,12 +47,14 @@ function movePaddles(socket: WebSocket) {
 }
 
 export function drawPong(data: GameStatePong, ctx: CanvasRenderingContext2D) {
-  console.log('drawPong is running');
-  ctx.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
-  ctx.fillStyle = 'black';
-  ctx.fillRect(data.ball.x, data.ball.y, 10, 10);
-  ctx.fillRect(0, data.players[0].paddleY, 10, 100);
-  ctx.fillRect(GAME_CONSTS.WIDTH - 10, data.players[1].paddleY, 10, 100);
+  //   console.log('drawPong is running');
+  if (running === true) {
+    ctx.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
+    ctx.fillStyle = 'black';
+    ctx.fillRect(data.ball.x, data.ball.y, 10, 10);
+    ctx.fillRect(0, data.players[0].paddleY, 10, 100);
+    ctx.fillRect(GAME_CONSTS.WIDTH - 10, data.players[1].paddleY, 10, 100);
+  }
 }
 
 export function showPongScore(data: GameStatePong) {
@@ -62,8 +66,10 @@ export function cleanPongField() {
   if (animationFrame) {
     cancelAnimationFrame(animationFrame);
     animationFrame = null;
+    running = false;
   }
   try {
+    console.log('cleaning canvas');
     const ctx = getCanvasContext('pong');
     ctx.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
   } catch (e) {
@@ -72,11 +78,8 @@ export function cleanPongField() {
 }
 
 export function gameOverPong(winner: string) {
+  cleanPongField();
   const pongScore = document.getElementById('pong-score');
-  if (animationFrame) {
-    cancelAnimationFrame(animationFrame);
-    animationFrame = null;
-  }
   const scoreText = `The winner is ${winner}`;
   if (pongScore && pongScore.offsetParent !== null) {
     pongScore.textContent = scoreText;

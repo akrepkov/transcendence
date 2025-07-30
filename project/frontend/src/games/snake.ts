@@ -2,19 +2,24 @@ import { GameStateSnake } from './types.js';
 import { GAME_CONSTS } from './types.js';
 import { getCanvasContext } from './render.js';
 
+let running = false;
+
 export function createSnakeGame(data: GameStateSnake, socket: WebSocket) {
+  running = true;
   document.addEventListener('keydown', (event) => moveSnakes(data, event, socket));
 }
 
 export function drawSnake(data: GameStateSnake, ctx: CanvasRenderingContext2D) {
-  ctx.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
-  ctx.fillStyle = 'black';
+  if (running === true) {
+    ctx.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
+    ctx.fillStyle = 'black';
 
-  ctx.fillRect(data.apple.x, data.apple.y, 20, 20);
+    ctx.fillRect(data.apple.x, data.apple.y, 20, 20);
 
-  for (const player of data.players) {
-    for (const segment of player.head) {
-      ctx.fillRect(segment.x, segment.y, 20, 20);
+    for (const player of data.players) {
+      for (const segment of player.head) {
+        ctx.fillRect(segment.x, segment.y, 20, 20);
+      }
     }
   }
 }
@@ -37,19 +42,21 @@ export function moveSnakes(game: GameStateSnake, event: KeyboardEvent, socket: W
 }
 
 export function showSnakeScore(data: GameStateSnake) {
-  /*Jan, are we going to have here something? */
+  /*Amount of eaten apples? */
 }
 
 export function cleanSnakeField() {
   try {
     const ctx = getCanvasContext('snake');
     ctx.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
+    running = false;
   } catch (e) {
     console.warn('Canvas could not be reset:', e);
   }
 }
 
 export function gameOverSnake(winner: string) {
+  cleanSnakeField();
   const snakeScore = document.getElementById('snake-score');
   const scoreText = `The winner is ${winner}`;
   if (snakeScore && snakeScore.offsetParent !== null) {

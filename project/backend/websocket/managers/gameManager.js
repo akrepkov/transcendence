@@ -119,6 +119,7 @@ async function handleDisconnect(connection, reason = 'disconnected') {
           .createBroadcast({
             type: 'opponentDisconnected',
             reason: reason,
+            winner: otherPlayer.username,
           })
           .to.single(otherPlayer.socket);
       }
