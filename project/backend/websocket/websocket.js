@@ -5,13 +5,14 @@ import { Connection } from './models/Connection.js';
 import { messageManager } from './managers/messageManager.js';
 import { gameManager } from './managers/gameManager.js';
 import { waitingListManager } from './managers/waitingListManager.js';
+import { getUserById } from '../database/services/userServices.js';
 
 export const USER_LOGOUT = 3000;
 
-function handleMessage(connection, data) {
+async function handleMessage(connection, data) {
   switch (data.type) {
     case 'joinWaitingRoom':
-      waitingListManager.addPlayerToWaitingList(connection, data.gameType);
+      await waitingListManager.addPlayerToWaitingList(connection, data.gameType);
       gameManager.printGameSystemStatus();
       break;
     case 'leaveWaitingRoom':
@@ -22,12 +23,15 @@ function handleMessage(connection, data) {
       gameManager.handleInput(connection, data.direction);
       break;
     case 'stopGame':
-      gameManager.handleDisconnect(connection, 'opponent requested to stop the game');
+      await gameManager.handleDisconnect(connection, 'opponent requested to stop the game');
       gameManager.printGameSystemStatus();
       break;
     case 'disconnectFromGame':
-      gameManager.handleDisconnect(connection, 'opponent disconnected');
+      await gameManager.handleDisconnect(connection, 'opponent disconnected');
       gameManager.printGameSystemStatus();
+      break;
+    case 'getLoggedInFriends':
+      await messageManager.sendLoggedInFriends(connection);
       break;
     default:
       console.warn('Unknown message type:', data.type);
@@ -45,24 +49,24 @@ function handleWebsocketError(connection, error) {
   }
 }
 
-function messageHandler(connection, message) {
+async function messageHandler(connection, message) {
   console.log('Message.');
   console.log(message.toString());
   try {
     const data = JSON.parse(message);
-    handleMessage(connection, data);
+    await handleMessage(connection, data);
   } catch (err) {
     console.error('Error processing Websocket message:', err.message);
     handleWebsocketError(connection, err);
   }
 }
 
-function closeConnection(connection, code) {
+async function closeConnection(connection, code) {
   if (connection.closing === true) {
     return;
   }
   connection.closing = true;
-  gameManager.handleDisconnect(connection, 'opponent closed his connection');
+  await gameManager.handleDisconnect(connection, 'opponent closed his connection');
   if (connection.socket.readyState === connection.socket.OPEN) {
     connection.socket.close(code);
   }
@@ -79,14 +83,9 @@ function closeConnection(connection, code) {
       .createBroadcast({ type: 'logoutRequest' })
       .to.sockets(userConnections.map((connection) => connection.socket));
   }
-
-  // if this was the last connection for the user, send updated online users to all other sockets
-  if (connectionManager.getConnectedUsers().has(connection.userId) === false) {
-    messageManager.informFriendsOfLogEvent(connection.username, 'logout');
-  }
 }
 
-function setupSocketEvents(socket, connection) {
+async function setupSocketEvents(socket, connection) {
   socket.on('message', (message) => {
     messageHandler(connection, message);
   });
@@ -106,25 +105,25 @@ function setupSocketEvents(socket, connection) {
   });
 }
 
-function handleNewConnection(socket, decodedToken) {
+async function handleNewConnection(socket, decodedToken) {
   let newConnection = new Connection(socket, decodedToken);
-  connectionManager.addConnection(newConnection);
-  setupSocketEvents(socket, newConnection);
-
-  // if a new user connected, send updated online users to all connected sockets,
-  // otherwise send the online users to the new socket
-  if (connectionManager.getUserConnections(newConnection.userId).size === 1) {
-    messageManager.informFriendsOfLogEvent(newConnection.username, 'login');
+  let user = await getUserById(newConnection.userId);
+  if (!user) {
+    console.error('User not found in the database:', newConnection.userId);
+    handleWebsocketError(newConnection, new Error('User not found in the database'));
+    return;
   }
-  messageManager.sendLoggedInFriends(newConnection.username, newConnection.socket);
+  newConnection.username = user.username;
+  connectionManager.addConnection(newConnection);
+  await setupSocketEvents(socket, newConnection);
 }
 
-export function websocketHandler(socket, req) {
+export async function websocketHandler(socket, req) {
   const decodedToken = authenticateSocketConnection(req, socket);
   if (!decodedToken) {
     return;
   }
-  handleNewConnection(socket, decodedToken);
+  await handleNewConnection(socket, decodedToken);
 }
 
 const loggingInterval = setInterval(() => {
