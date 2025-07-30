@@ -1,7 +1,6 @@
 import { renderGame } from './render.js';
-import { animationFrame } from './pong.js';
-import { GAME_CONSTS } from './types.js';
-import { getCanvasContext } from './render.js';
+import { cleanPongField } from './pong.js';
+import { cleanSnakeField } from './snake.js';
 
 let gameType: string | null = null;
 
@@ -58,39 +57,32 @@ export function setupGameToggle(socket: WebSocket) {
 
   pongStop?.addEventListener('click', () => {
     //STOP THE Pong
-    resetPongGame();
+    resetPongGame(socket);
     pongContainer?.classList.add('hidden');
     mainMenu?.classList.remove('hidden');
   });
   snakeStop?.addEventListener('click', () => {
     //STOP THE Snake
-    resetSnakeGame();
+    resetSnakeGame(socket);
     snakeContainer?.classList.add('hidden');
     mainMenu?.classList.remove('hidden');
   });
 }
 
-export function resetPongGame() {
+export function resetPongGame(socket: WebSocket) {
+  if (socket.readyState === WebSocket.OPEN) {
+    socket.send(JSON.stringify({ type: 'disconnectFromGame' }));
+  }
+  cleanPongField();
   const scorePong = document.getElementById('pong-score');
   if (scorePong) scorePong.textContent = '0 : 0';
-  if (animationFrame) {
-    cancelAnimationFrame(animationFrame);
-  }
-  try {
-    const ctx = getCanvasContext('pong');
-    ctx.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
-  } catch (e) {
-    console.warn('Canvas could not be reset:', e);
-  }
 }
 
-export function resetSnakeGame() {
-  const scorePong = document.getElementById('snake-score');
-  if (scorePong) scorePong.textContent = ''; //What do we have here
-  try {
-    const ctx = getCanvasContext('snake');
-    ctx.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
-  } catch (e) {
-    console.warn('Canvas could not be reset:', e);
+export function resetSnakeGame(socket: WebSocket) {
+  if (socket.readyState === WebSocket.OPEN) {
+    socket.send(JSON.stringify({ type: 'disconnectFromGame' }));
   }
+  cleanSnakeField();
+  const scoreSnake = document.getElementById('snake-score');
+  if (scoreSnake) scoreSnake.textContent = '';
 }

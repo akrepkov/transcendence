@@ -1,6 +1,6 @@
-import { gameHandler } from './gameHandler.js';
 import { GameStateSnake } from './types.js';
 import { GAME_CONSTS } from './types.js';
+import { getCanvasContext } from './render.js';
 
 export function createSnakeGame(data: GameStateSnake, socket: WebSocket) {
   document.addEventListener('keydown', (event) => moveSnakes(data, event, socket));
@@ -38,6 +38,15 @@ export function moveSnakes(game: GameStateSnake, event: KeyboardEvent, socket: W
 
 export function showSnakeScore(data: GameStateSnake) {
   /*Jan, are we going to have here something? */
+}
+
+export function cleanSnakeField() {
+  try {
+    const ctx = getCanvasContext('snake');
+    ctx.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
+  } catch (e) {
+    console.warn('Canvas could not be reset:', e);
+  }
 }
 
 export function gameOverSnake(winner: string) {

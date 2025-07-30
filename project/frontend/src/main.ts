@@ -52,14 +52,4 @@ document.addEventListener('DOMContentLoaded', () => {
   setupGameToggle(socket);
 });
 
-//Anna TODO add port to frontend websocket
-//uncomment cert in index.js
-//Added button ids for games in index.html
-// Change snake size
-// Add scores
-//Add practice game
-//Why matching takes so long???
-//What we do with stop button?
-//What we do if user logs out, on err and so on??
-
 /* ANNA END*/

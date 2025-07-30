@@ -1,6 +1,6 @@
-import { gameHandler } from './gameHandler.js';
 import { GameStatePong } from './types.js';
 import { GAME_CONSTS } from './types.js';
+import { getCanvasContext } from './render.js';
 
 export let animationFrame: number | null = null;
 
@@ -56,6 +56,19 @@ export function drawPong(data: GameStatePong, ctx: CanvasRenderingContext2D) {
 export function showPongScore(data: GameStatePong) {
   const scorePong = document.getElementById('pong-score');
   if (scorePong) scorePong.textContent = `${data.players[0].score} : ${data.players[1].score}`;
+}
+
+export function cleanPongField() {
+  if (animationFrame) {
+    cancelAnimationFrame(animationFrame);
+    animationFrame = null;
+  }
+  try {
+    const ctx = getCanvasContext('pong');
+    ctx.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
+  } catch (e) {
+    console.warn('Canvas could not be reset:', e);
+  }
 }
 
 export function gameOverPong(winner: string) {
