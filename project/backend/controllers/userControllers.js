@@ -123,7 +123,7 @@ const getAvatarHandler = async (request, reply) => {
     const fileExistsResult = await utils.fileExists(avatarFilepath);
     if (!fileExistsResult) {
       console.log('Avatar not found, using default avatar');
-      avatarFilepath = '../uploads/default_avatar.jpg';
+      avatarFilepath = '../uploads/avatars/bunny.jpg';
     }
     if (!avatarFilepath) {
       return reply.code(404).send({ error: 'Avatar not found' });

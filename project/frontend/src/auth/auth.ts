@@ -4,6 +4,8 @@ import {
   showMessage,
   showRegisterView,
 } from '../navigation/navigation.js';
+import { getAvatarFromDatabase } from '../../../backend/database/services/userServices.js';
+import { getAvatarHandler } from '../../../backend/controllers/userControllers.js';
 
 /**
  * Handle login form submission
@@ -34,19 +36,20 @@ export async function handleLogin(): Promise<void> {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           username: usernameInput.value,
           password: passwordInput.value,
         }),
       });
 
-      const data = await res.json();
       if (res.ok) {
-        localStorage.setItem('username', usernameInput.value);
-        localStorage.setItem('avatar', data.avatar || '/avatars/wow-cat.jpeg');
+        const data = await res.json();
+        const username = data.username;
+        // get default avatar
 
         showMessage(loginMessage, 'Logged in successfully');
-        showLandingView();
+        showLandingView(username, avatar);
         history.pushState({ view: 'landing' }, '', '/landing');
       } else {
         showMessage(loginMessage, data.error || 'Login failed');
@@ -84,11 +87,12 @@ export async function handleRegister(): Promise<void> {
 
   registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-
+    console.log('asdasdsad');
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           username: usernameInput.value,
           email: emailInput.value,
@@ -96,11 +100,16 @@ export async function handleRegister(): Promise<void> {
         }),
       });
 
+      console.log(res);
       if (res.ok) {
-        localStorage.setItem('username', usernameInput.value);
-        localStorage.setItem('avatar', '/avatars/wow-cat.jpeg');
+        const data = await res.json();
+        console.log('register response data:', data);
+        const username = data.username;
+        // localStorage.setItem('username', usernameInput.value);
+        // localStorage.setItem('avatar', '/avatars/wow-cat.jpeg');
 
-        showLandingView();
+        // showLandingView();
+        showLandingView(username, avatar);
         history.pushState({ view: 'auth', form: 'landing' }, '', '/landing');
 
         registerForm.reset();

@@ -6,7 +6,9 @@ const loginMessage = document.getElementById('loginMessage');
 const registerMessage = document.getElementById('registerMessage');
 const authPage = document.getElementById('authPage');
 const landingPage = document.getElementById('landingPage');
-const username = document.getElementById('username');
+const storedUsernameEl = document.getElementById('username'); // ✅ lowercase, clear name
+
+let storedAvatar: string | null = null; // ✅ define this somewhere accessible
 
 export function showMessage(el: HTMLElement, text: string): void {
   el.classList.remove('hidden');
@@ -23,7 +25,6 @@ export function showLoginView() {
   toggle.textContent = 'No account? Register';
 
   loginMessage.classList.remove('hidden');
-
   authPage?.classList.remove('hidden');
 }
 
@@ -38,39 +39,29 @@ export function showRegisterView() {
 
   loginMessage.classList.add('hidden');
   registerMessage.classList.remove('hidden');
-
   authPage?.classList.remove('hidden');
 }
 
-export function showLandingView() {
-  const storedUsername = localStorage.getItem('username');
-  const storedAvatar = localStorage.getItem('avatar'); // optional: only if you're storing avatar path
-
-  if (!storedUsername) {
-    console.warn('User not logged in - redirect to login');
-    history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
-    showLoginView();
-    return;
-  }
-
+export function showLandingView(username: string, avatar?: string) {
   if (!authPage || !landingPage) {
     console.warn('Missing authPage or landingPage');
     return;
   }
 
   const usernameEl = document.getElementById('username');
+  console.log('Rendering landing view for username:', username);
   if (usernameEl) {
-    usernameEl.textContent = storedUsername;
+    usernameEl.textContent = username;
   }
 
   const profilePic = document.getElementById('profilePic') as HTMLImageElement;
   const avatarProfile = document.getElementById('avatar-profile') as HTMLImageElement;
 
-  if (storedAvatar) {
-    if (profilePic) profilePic.src = storedAvatar;
-    if (avatarProfile) avatarProfile.src = storedAvatar;
+  if (avatar) {
+    storedAvatar = avatar; // store avatar for future use
+    if (profilePic) profilePic.src = avatar;
+    if (avatarProfile) avatarProfile.src = avatar;
   } else {
-    // fallback avatar
     const defaultAvatar = '/avatars/default.png';
     if (profilePic) profilePic.src = defaultAvatar;
     if (avatarProfile) avatarProfile.src = defaultAvatar;
@@ -80,18 +71,17 @@ export function showLandingView() {
   landingPage.classList.remove('hidden');
 }
 
-export function restoreViewOnReload() {
+export async function restoreViewOnReload() {
   const path = window.location.pathname;
-  const isLoggedIn = !!localStorage.getItem('username');
+  const user = await checkLoginStatus(); // ✅ check server session
 
-  if (path === '/landing' && isLoggedIn) {
-    showLandingView();
+  if (path === '/landing' && user) {
+    showLandingView(user); // only if logged in
     history.replaceState({ view: 'landing' }, '', '/landing');
   } else if (path === '/register') {
     showRegisterView();
     history.replaceState({ view: 'auth', form: 'register' }, '', '/register');
   } else {
-    // Default to login
     showLoginView();
     history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
   }
@@ -103,4 +93,25 @@ export function showProfileView() {
   document.getElementById('profilePage')?.classList.remove('hidden');
 
   history.pushState({ view: 'profile' }, '', '/profile');
+}
+
+// ✅ fixed async function
+export async function checkLoginStatus(): Promise<string | null> {
+  try {
+    const res = await fetch('/api/auth/me', {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      storedAvatar = data.avatar || null;
+      return data.username; // logged in
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.error('Error checking login status:', err);
+    return null;
+  }
 }
