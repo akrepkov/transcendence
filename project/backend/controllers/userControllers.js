@@ -7,6 +7,7 @@ import pump from 'pump';
 import fs from 'fs';
 import * as utils from '../utils/utils.js';
 import path from 'path';
+import { connectionManager, connnectionManager } from '../websocket/managers/connectionManager.js';
 
 // Returns all users registered in the db (userId and username only)
 const getAllUsersHandler = async (request, reply) => {
@@ -68,6 +69,7 @@ const updateUserHandler = async (request, reply) => {
     }
     if (username) {
       await userServices.updateUsername(user, username);
+      connectionManager.updateUsernameInConnections(user.userId, username);
     }
     if (email) {
       await userServices.updateEmail(user, email);
