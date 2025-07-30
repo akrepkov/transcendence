@@ -1,12 +1,19 @@
 import { handleRegister, handleLogin } from './auth/auth.js';
 import { toggleForms } from './toggle/toggleForms.js';
-import { showLoginView, showRegisterView, showLandingView } from './navigation/navigation.js';
+import {
+  showLoginView,
+  showRegisterView,
+  showLandingView,
+  restoreViewOnReload,
+} from './navigation/navigation.js';
 import { setupGameToggle, setupSocketEvents } from './games/gameToggle.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   handleLogin();
   handleRegister();
   toggleForms();
+
+  restoreViewOnReload();
 
   // Replace initial history state
   const formTitle = document.getElementById('formTitle')?.textContent || 'Login';

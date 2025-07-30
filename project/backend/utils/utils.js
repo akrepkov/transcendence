@@ -1,6 +1,8 @@
 import * as fsPromises from 'fs/promises';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -21,4 +23,12 @@ export async function fileExists(filePath) {
     console.error('Error checking file:', err); // Debugging
     return false; // Return false if the file doesn't exist or another error occurs
   }
+}
+
+export async function getRandomAvatar() {
+  const avatarDir = path.join(__dirname, '..', 'uploads', 'avatars');
+  const files = fs.readdirSync(avatarDir);
+  if (files.length === 0) return null;
+  const randomIndex = Math.floor(Math.random() * files.length);
+  return path.join('uploads', 'profile-avatars', files[randomIndex]);
 }

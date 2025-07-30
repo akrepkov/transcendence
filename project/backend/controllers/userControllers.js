@@ -1,23 +1,90 @@
 import * as userServices from '../database/services/userServices.js';
-import path from 'path';
-import fs from 'fs';
+import { JWT_SECRET } from '../config.js';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 import pump from 'pump';
-// import {handleError} from '../utils/old-utils.js';
-// import jwt from 'jsonwebtoken';
-// const JWT_SECRET = "" + process.env.JWT_SECRET; //using environmental variable for JWT secret
-import { fileURLToPath } from 'url';
-import { fileExists } from '../utils/utils.js';
+import fs from 'fs';
+import * as utils from '../../utils/utils.js';
+import path from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Returns all users registered in the db
+// Returns all users registered in the db (userId and username only)
 const getAllUsersHandler = async (request, reply) => {
-  const users = await userServices.getUsers(); // Retrieve all users from the database
-  if (!users || users.length === 0) {
-    return reply.status(404).send({ error: 'No users found' });
+  try {
+    const users = await userServices.getUsers();
+    if (!users || users.length === 0) {
+      return reply.status(404).send({ error: 'No users found' });
+    }
+    const safeUsers = users.map((user) => ({
+      userId: user.userId,
+      username: user.username,
+    }));
+    reply.send(safeUsers);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    return reply.code(500).send({ error: 'Internal server error' });
   }
-  reply.send(users); // Send the list of users as the response
+};
+
+// return user information, excluding email and password
+const getUserProfileHandler = async (request, reply) => {
+  try {
+    const { userName } = request.body;
+    const user = userServices.getUserByUsername(userName);
+    if (!user) {
+      return reply.status(404).send({ error: 'User not found' });
+    }
+    const { password, email, ...safeUser } = user;
+    reply.send(safeUser);
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    return reply.code(500).send({ error: 'Internal server error' });
+  }
+};
+
+// add a Friend (full match on name)
+const addFriendHandler = async (request, reply) => {
+  try {
+    const { userName, friendUsername } = request.body;
+    if (!userName || !friendUsername) {
+      return reply.status(404).send({ error: 'User/Friend name not found' });
+    }
+    if (!(await userServices.addFriend(userName, friendUsername))) {
+      return reply.status(404).send({ error: 'Error adding friend' });
+    }
+    return reply.code(200).send({ success: true });
+  } catch (error) {
+    console.error('Adding friend error:', error);
+    return reply.code(500).send({ error: 'Internal server error' });
+  }
+};
+
+const updateUserHandler = async (request, reply) => {
+  try {
+    const { username, email, password, avatar } = request.body;
+    const user = request.user;
+    if (username != user.username) {
+      return reply.status(401).send({ error: 'You can only update your user profile' });
+    }
+    if (username) {
+      await userServices.updateUsername(user, username);
+    }
+    if (email) {
+      await userServices.updateEmail(user, email);
+    }
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await userServices.updatePassword(user, hashedPassword);
+    }
+    if (avatar) {
+      await uploadAvatarHandler(request, reply);
+    }
+    const updatedUser = await userServices.getUserByUsername(username);
+    return reply.code(200).send({ success: true, user: updatedUser });
+  } catch (error) {
+    console.error('Error updating user', error);
+    return reply.code(500).send({ error: 'Internal server error' });
+  }
 };
 
 const uploadAvatarHandler = async (request, reply) => {
@@ -46,7 +113,7 @@ const getAvatarHandler = async (request, reply) => {
   try {
     let username = request.user.username;
     let avatarFilepath = userServices.getAvatarFromDatabase(username);
-    const fileExistsResult = await fileExists(avatarFilepath);
+    const fileExistsResult = await utils.fileExists(avatarFilepath);
     if (!fileExistsResult) {
       console.log('Avatar not found, using default avatar');
       avatarFilepath = '../uploads/default_avatar.jpg';
@@ -64,20 +131,12 @@ const getAvatarHandler = async (request, reply) => {
   }
 };
 
-const addFriendHandler = async (request, reply) => {
-  try {
-    const { userName, friendUsername } = request.body;
-    if (!userName || !friendUsername) {
-      return reply.send({ error: 'User and Friend names are required', success: false });
-    }
-  } catch (error) {
-    console.error('Adding friend error:', error);
-    return reply.code(500).send({ success: false, error: 'Failed to add friend' });
-  }
-};
-
 export default {
   getAllUsersHandler,
+  getUserProfileHandler,
+  updateUserHandler,
+  addFriendHandler,
   uploadAvatarHandler,
   getAvatarHandler,
+  //   deleteFriendHandler,
 };

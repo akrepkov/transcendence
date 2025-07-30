@@ -1,3 +1,5 @@
+import { showLoginView } from '../navigation/navigation.js';
+
 function showMessage(el: HTMLElement, text: string): void {
   el.classList.remove('hidden');
   el.textContent = text;
@@ -41,9 +43,18 @@ export async function handleLogin(): Promise<void> {
       const data = await res.json();
       if (res.ok) {
         localStorage.setItem('username', usernameInput.value);
-        showMessage(loginMessage, 'Logged in successfully');
+        localStorage.setItem('avatar', data.avatar || '/avatars/wow-cat.jpeg'); // assuming backend sends `avatar` URL
 
+        // update UI
+        showMessage(loginMessage, 'Logged in successfully');
         document.getElementById('username')!.textContent = usernameInput.value;
+
+        document
+          .getElementById('profilePic')!
+          .setAttribute('src', data.avatar || '/avatars/wow-cat.jpeg');
+        document
+          .getElementById('avatar-profile')!
+          .setAttribute('src', data.avatar || '/avatars/wow-cat.jpeg');
 
         // SPA Navigation
         document.getElementById('authPage')?.classList.add('hidden');
@@ -99,10 +110,17 @@ export async function handleRegister(): Promise<void> {
         }),
       });
 
-      const data = await res.json();
-      showMessage(registerMessage, res.ok ? 'User registered successfully' : data.error);
-      history.pushState({ view: 'auth', form: 'register' }, '', '/register');
-      registerForm.reset();
+      if (res.ok) {
+        showMessage(registerMessage, 'User registered successfully');
+
+        // Redirect to login view
+        showLoginView();
+        history.pushState({ view: 'auth', form: 'login' }, '', '/login');
+
+        registerForm.reset();
+      } else {
+        showMessage(registerMessage, 'Username or email is already in use');
+      }
     } catch (err) {
       console.error(err);
       showMessage(registerMessage, 'Server error');

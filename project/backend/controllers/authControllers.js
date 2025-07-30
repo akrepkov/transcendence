@@ -1,10 +1,23 @@
 import * as authServices from '../database/services/authServices.js';
-import * as userServices from '../database/services/userServices.js';
 import { handleError } from '../utils/utils.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { JWT_SECRET } from '../config.js';
+
+// preHandler to verify if user is logged in with a valid JWT
+const authenticate = async (request, reply) => {
+  const token = await request.cookies.token;
+  if (!token) {
+    return handleError(reply, new Error('Unauthorized: No token'), 401);
+  }
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    request.user = payload;
+  } catch (error) {
+    return handleError(reply, error, 401);
+  }
+};
 
 const loginHandler = async (request, reply) => {
   const { username, password } = request.body;
@@ -21,18 +34,17 @@ const loginHandler = async (request, reply) => {
   }
   let userId = user.userId;
   const sessionId = crypto.randomBytes(32).toString('hex');
-  const token = jwt.sign({ userId, username, sessionId }, JWT_SECRET, { expiresIn: '1h' });
+  const token = jwt.sign({ userId, sessionId }, JWT_SECRET, { expiresIn: '1h' });
   // Set the JWT in an HTTP-only cookie
   reply.setCookie('token', token, {
-    httpOnly: true, // Ensures it's not accessible via JavaScript
+    httpOnly: true,
     secure: true,
-    sameSite: 'Strict', // Prevents cross-site request forgery attacks
-    path: '/', // Cookie is available on all routes
-    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+    sameSite: 'Strict',
+    path: '/',
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
   });
   return reply.status(200).send({
     message: 'Login successful',
-    username: user.username,
   });
 };
 
@@ -45,11 +57,10 @@ const registerHandler = async (request, reply) => {
   }
   const existUsername = await authServices.checkUniqueUsername(username);
   if (existUsername) {
-    return handleError(reply, new Error('Username or email is already in use'), 500);
+    return handleError(reply, new Error('Username is already in use'), 500);
   }
   // Hash the password before saving
   const hashedPassword = await bcrypt.hash(password, 10);
-  console.log(hashedPassword);
   try {
     const registerUser = await authServices.registerUser({
       email,
@@ -59,19 +70,8 @@ const registerHandler = async (request, reply) => {
     if (!registerUser) {
       return handleError(reply, new Error('Registration failed'), 500);
     }
-    let userId = registerUser.userId;
-    const sessionId = crypto.randomBytes(32).toString('hex');
-    const token = jwt.sign({ userId, username, sessionId }, JWT_SECRET, { expiresIn: '1h' });
-    // Set the JWT in an HTTP-only cookie
-    reply.setCookie('token', token, {
-      httpOnly: true, // Ensures it's not accessible via JavaScript
-      secure: true,
-      sameSite: 'Strict', // Prevents cross-site request forgery attacks
-      path: '/', // Cookie is available on all routes
-      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-    });
     return reply.status(201).send({ message: 'Registration successful' });
-  } catch (err) {
+  } catch (error) {
     console.error('Registration error:', err);
     return handleError(reply, new Error('Registration failed'), 500);
   }
@@ -83,58 +83,25 @@ const logoutHandler = async (request, reply) => {
   reply.send({ message: 'Logged out successfully' });
 };
 
-const authenticate = async (request, reply) => {
-  const token = await request.cookies.token;
-  if (!token) {
-    return handleError(reply, new Error('Unauthorized: No token'), 401);
-  }
-  try {
-    const payload = jwt.verify(token, JWT_SECRET);
-    request.user = payload; //attach info to request, so when i continue with routes i can access user email : request.user.email (I had this info passed when created the token)
-  } catch (err) {
-    return handleError(reply, err, 401);
-  }
-};
-
 const verificationHandler = async (request, reply) => {
   const token = await request.cookies.token;
   if (!token) {
-    // console.log("No token in verificationHandler");
     return handleError(reply, new Error('Unauthorized: No token'), 401);
   }
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    // console.log("Decoded in verificationHandler: ", decoded);
     const user = await authServices.checkCredentials(decoded.email);
     if (!user) {
       return handleError(reply, new Error('Invalid credentials'), 401);
     }
     let username = user.username;
     reply.send({ user: decoded, username });
-  } catch (err) {
+  } catch (error) {
     return handleError(reply, err, 401);
   }
 };
 
-const getUserFromRequest = async (request, reply) => {
-  try {
-    const token = await request.cookies.token;
-    if (!token) {
-      return handleError(reply, new Error('Unauthorized: No token'), 401);
-    }
-    const decoded = jwt.verify(token, JWT_SECRET);
-    // console.log("EMAIL in getUserFromRequest: ", decoded.email);
-    let user = userServices.getUserByEmail(decoded.email);
-    if (!user) {
-      return handleError(reply, new Error('Invalid credentials'), 401);
-    }
-    request.user = user; // Attach user to request object
-  } catch (error) {
-    console.error('getUserFromRequest:', error);
-    return handleError(reply, error, 401);
-  }
-};
-
+// Used in websockets (Jan uses this - don't touch)
 const authenticateSocketConnection = (request, socket) => {
   const token = request.cookies.token;
   if (!token) {
@@ -155,12 +122,11 @@ const authenticateSocketConnection = (request, socket) => {
 
 export default {
   loginHandler,
+  authenticateSocketConnection,
   registerHandler,
   logoutHandler,
   verificationHandler,
   authenticate,
-  getUserFromRequest,
-  authenticateSocketConnection,
 };
 
 // Plan:

@@ -12,15 +12,10 @@ test.describe.serial('Auth Flow', () => {
   test('should log in an existing user', async ({ page }) => {
     await page.fill('#loginUsername', 'djoyke');
     await page.fill('#loginPassword', 'djoyke');
+
     await page.click('#loginForm button[type="submit"]');
+    await page.waitForSelector('#landingPage', { state: 'visible' });
 
-    // Wait for navigation after clicking login
-    await Promise.all([
-      page.waitForNavigation({ url: '**/landing' }),
-      page.click('#loginForm button[type="submit"]'),
-    ]);
-
-    // Validate redirected page content
     await expect(page.locator('#username')).toBeVisible();
     await expect(page.locator('#username')).toHaveText('djoyke');
   });
@@ -55,7 +50,9 @@ test.describe.serial('Auth Flow', () => {
     await page.click('#registerForm button[type="submit"]');
 
     await expect(page.locator('#registerMessage')).toBeVisible();
-    await expect(page.locator('#registerMessage')).toHaveText('Username or email is already in use');
+    await expect(page.locator('#registerMessage')).toHaveText(
+      'Username or email is already in use',
+    );
 
     // Safe cleanup
     try {
