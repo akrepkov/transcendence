@@ -97,8 +97,9 @@ export async function handleRegister(): Promise<void> {
       });
 
       if (res.ok) {
-        showMessage(registerMessage, 'User registered successfully');
-        // Redirect to login view
+        localStorage.setItem('username', usernameInput.value);
+        localStorage.setItem('avatar', '/avatars/wow-cat.jpeg');
+
         showLandingView();
         history.pushState({ view: 'auth', form: 'landing' }, '', '/landing');
 
