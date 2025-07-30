@@ -24,6 +24,7 @@ socket = new WebSocket(`wss://${window.location.hostname}:3000/ws/connect`);
 | `move`               | Send a move/input command during a game.                              | `{ type: 'move', direction: 'up' }`            |
 | `stopGame`           | Request to stop the current game.                                     | `{ type: 'stopGame' }`                         |
 | `disconnectFromGame` | Notify server of voluntary disconnection from a game.                 | `{ type: 'disconnectFromGame' }`               |
+| `getLoggedInFriends` | Request a list of logged in friends from the websocket.               | `{ type: 'getLoggedInFriends' }`               |
 
 ### Outgoing Message Types (Server → Client)
 
@@ -35,8 +36,7 @@ socket = new WebSocket(`wss://${window.location.hostname}:3000/ws/connect`);
 | `opponentDisconnected` | Notifies player that their opponent has disconnected.                     | `{ type: 'opponentDisconnected', reason: 'reason' }`                             |
 | `logoutRequest`        | Instructs all sockets of a user to log out.                               | `{ type: 'logoutRequest' }`                                                      |
 | `error`                | Sends error details to the client.                                        | `{ type: 'error', message: 'message' }`                                          |
-| `onlineFriends`        | Sends updated list of online friends.                                     | `{ type: 'onlineFriends', friends: [...] }`                                      |
-| `friendLogEvent`       | Notifies user when a friend logs in or out.                               | `{ type: 'friendLogEvent', username: 'friend', eventType: 'login' }`             |
+| `onlineFriends`        | Sends updated list of friends that are currently online.                  | `{ type: 'onlineFriends', friends: [...] }`                                      |
 | `gameOver`             | Notifies both players that the game has ended.                            | `{ type: 'gameOver', players: [player1, player2], winner: 'username' }`          |
 | `socketRejection`      | Notifies the client that an action was rejected, with a code and message. | `{ type: 'socketRejection', code: 4002, message: 'You are already in a game.' }` |
 
@@ -78,6 +78,10 @@ The stopGame and disconnectFromGame messages are pretty much the same, they just
 - No additional fields.
 - The opponent is notified and the game is ended.
 - Will also remove the player from the waiting list if applicable.
+
+**getLoggedInFriends**
+- Sent by the client to request the list of currently logged in friends.
+- The websocket will respond with the `onlineFriends` message type, containing the list of friends that are currently online.
 
 ### Outgoing Messages (Server → Client)
 
@@ -142,17 +146,10 @@ The stopGame and disconnectFromGame messages are pretty much the same, they just
     - `message`: A string describing the error.
 
 **onlineFriends**
-- Sent to clients to update them on the list of currently online friends.
+- Sent to clients to give them a list of currently online friends.
 - Payload: `{ type: 'onlineFriends', friends: [...] }`
     - `friends`: An array of usernames.
-- This message gets sent everytime a new socket opens a connection to the given socket, this makes sure you're up to date with who is online.
-
-**friendLogEvent**
-- Sent to a user when a friend logs in or out.
-- Payload: `{ type: 'friendLogEvent', username: 'friend', eventType: 'login' }`
-    - `username`: The username of the friend.
-    - `eventType`: Can be `'login'` or `'logout'`.
-- This message is sent to notify the user about their friends' login/logout events, allowing them to update their UI accordingly.
+- This message gets sent whenever the client sends a getLoggedInFriends message to the server through the websocket.
 
 **gameOver**
 - Sent to both players when the game has ended (e.g., a player reaches the score limit or disconnects).
