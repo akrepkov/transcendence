@@ -73,12 +73,23 @@ function getNamesOfConnectedUsers() {
   return userNames;
 }
 
+function updateUsernameInConnections(userId, newUsername) {
+  const userConnections = getUserConnections(userId);
+  if (!userConnections) {
+    return;
+  }
+  userConnections.forEach((connection) => {
+    connection.username = newUsername;
+  });
+}
+
 export const connectionManager = {
   addConnection,
   removeConnection,
   getUserConnections,
   getUserConnectionsBySession,
   getConnectedUsers,
+  updateUsernameInConnections,
   getUserNameById,
   getNamesOfConnectedUsers,
   printUsers,

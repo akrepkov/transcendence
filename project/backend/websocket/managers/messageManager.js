@@ -79,43 +79,11 @@ function createBroadcast(message) {
   };
 }
 
-async function getFriendsSockets(friendsOfUser) {
-  let friendSockets = [];
-  for (const friend of friendsOfUser) {
-    const friendConnections = connectionManager.getUserConnections(friend.userId);
-    if (friendConnections === undefined) {
-      continue;
-    }
-    friendConnections.forEach((connection) => {
-      friendSockets.push(connection.socket);
-    });
-  }
-  return friendSockets;
-}
-
-async function informFriendsOfLogEvent(username, eventType) {
-  const friendsOfUser = await getFriendsOf(username);
-  if (!friendsOfUser || friendsOfUser.length === 0) {
-    console.log(`No friends found for user: ${username}`);
-    return;
-  }
-  let friendSockets = await getFriendsSockets(friendsOfUser);
-  if (friendSockets.length === 0) {
-    console.log(`No friends online for user: ${username}`);
-    return;
-  }
-  createBroadcast({
-    type: 'friendLogEvent',
-    username: username,
-    eventType: eventType,
-  }).to.sockets(friendSockets);
-}
-
-async function sendLoggedInFriends(username, socket) {
+async function getFriendNames(username) {
   const friends = await getFriends(username);
   if (!friends || friends.length === 0) {
     console.log(`No friends found for user: ${username}`);
-    return;
+    return [];
   }
   const onlineFriends = [];
   friends.forEach((friend) => {
@@ -123,10 +91,15 @@ async function sendLoggedInFriends(username, socket) {
       onlineFriends.push(friend.username);
     }
   });
+  return onlineFriends;
+}
+
+async function sendLoggedInFriends(connection) {
+  const friendNames = await getFriendNames(connection.username);
   createBroadcast({
     type: 'onlineFriends',
-    friends: onlineFriends,
-  }).to.single(socket);
+    friends: friendNames,
+  }).to.single(connection.socket);
 }
 
 export const messageManager = {
@@ -134,6 +107,5 @@ export const messageManager = {
   sendErrorToClient,
   createBroadcast,
   sendLoggedInFriends,
-  informFriendsOfLogEvent,
   sendSocketRejection,
 };

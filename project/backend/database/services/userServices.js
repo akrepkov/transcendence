@@ -150,6 +150,19 @@ export async function getUserByUsername(username) {
   }
 }
 
+// Get user by ID (optional helper)
+export async function getUserById(userId) {
+  try {
+    return await prisma.user.findUnique({
+      where: { userId },
+      select: { username: true },
+    });
+  } catch (error) {
+    console.error('Error in getUserById:', error);
+    return null;
+  }
+}
+
 // can delete user by providing the username
 export async function deleteUser(username) {
   if (!username) {
