@@ -1,4 +1,5 @@
 import * as userServices from '../database/services/userServices.js';
+import * as authServices from '../database/services/authServices.js';
 import { JWT_SECRET } from '../config.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -63,13 +64,16 @@ const addFriendHandler = async (request, reply) => {
 const updateUserHandler = async (request, reply) => {
   try {
     const { username, email, password, avatar } = request.body;
-    const user = request.user;
-    if (username != user.username) {
-      return reply.status(401).send({ error: 'You can only update your user profile' });
-    }
+    const requestUserId = request.user.userId;
+    const user = await userServices.getUserById(requestUserId);
+    console.log('userID: ', user);
     if (username) {
+      const existUsername = await authServices.checkUniqueUsername(username);
+      if (existUsername) {
+        return handleError(reply, new Error('Username is already in use'), 500);
+      }
       await userServices.updateUsername(user, username);
-      connectionManager.updateUsernameInConnections(user.userId, username);
+      await connectionManager.updateUsernameInConnections(user.userId, username);
     }
     if (email) {
       await userServices.updateEmail(user, email);
@@ -81,8 +85,10 @@ const updateUserHandler = async (request, reply) => {
     if (avatar) {
       await uploadAvatarHandler(request, reply);
     }
-    const updatedUser = await userServices.getUserByUsername(username);
-    return reply.code(200).send({ success: true, user: updatedUser });
+    const updatedUser = await userServices.getUserById(user.userId);
+    const { password: pwd, email: mail, ...safeUser } = updatedUser;
+    console.log('updatedUser in code', safeUser);
+    return reply.code(200).send({ success: true, user: safeUser });
   } catch (error) {
     console.error('Error updating user', error);
     return reply.code(500).send({ error: 'Internal server error' });

@@ -45,6 +45,7 @@ const loginHandler = async (request, reply) => {
   });
   return reply.status(200).send({
     message: 'Login successful',
+    token,
   });
 };
 
