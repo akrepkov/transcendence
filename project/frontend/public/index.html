@@ -152,7 +152,7 @@
         </nav>
         <div class="flex flex-col items-center text-center bg-blue-300 bg-opacity-70 px-4 py-3 rounded-lg">
             <span class="text-xl">Welcome, <span id="username"></span></span>
-            <img src="" alt="Profile Picture" id="profilePic" class="w-20 h-20 mt-5 pixelated-border-landing cursor-pointer" />
+            <img src="" alt="Avatar" id="avatar" class="w-20 h-20 mt-5 pixelated-border-landing cursor-pointer" />
         </div>
     </header>
 
@@ -177,7 +177,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="fixed bottom-8 right-8 text-2xl text-white font-bold">
+    <footer id="logoutLanding" class="fixed bottom-8 right-8 text-2xl text-white font-bold cursor-pointer">
         LOG OUT
     </footer>
 </div>
@@ -192,7 +192,7 @@
             <div id="settingsFlyout" class="hidden absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg text-black z-50">
                 <button class="block w-full text-left px-4 py-2 hover:bg-blue-200">Change Avatar</button>
                 <button class="block w-full text-left px-4 py-2 hover:bg-blue-200">Edit Username</button>
-                <button id="logoutBtn" class="block w-full text-left px-4 py-2 hover:bg-blue-200">Logout</button>
+                <button id="logoutProfile" class="block w-full text-left px-4 py-2 hover:bg-blue-200">Logout</button>
             </div>
         </div>
     </header>

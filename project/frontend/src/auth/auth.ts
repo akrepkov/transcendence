@@ -4,8 +4,9 @@ import {
   showMessage,
   showRegisterView,
 } from '../navigation/navigation.js';
-import { getAvatarFromDatabase } from '../../../backend/database/services/userServices.js';
-import { getAvatarHandler } from '../../../backend/controllers/userControllers.js';
+import { Session } from '../session/session.js';
+
+export const globalSession = new Session();
 
 /**
  * Handle login form submission
@@ -43,13 +44,11 @@ export async function handleLogin(): Promise<void> {
         }),
       });
 
+      const data = await res.json();
       if (res.ok) {
-        const data = await res.json();
-        const username = data.username;
-        // get default avatar
-
+        globalSession.login(data.username, data.email, data.avatar);
         showMessage(loginMessage, 'Logged in successfully');
-        showLandingView(username, avatar);
+        showLandingView();
         history.pushState({ view: 'landing' }, '', '/landing');
       } else {
         showMessage(loginMessage, data.error || 'Login failed');
@@ -66,7 +65,6 @@ export async function handleLogin(): Promise<void> {
  * Validates input fields and displays a success or error message
  */
 export async function handleRegister(): Promise<void> {
-  // Prevent form from reloading the page
   const registerForm = document.getElementById('registerForm') as HTMLFormElement;
   const registerMessage = document.getElementById('registerMessage') as HTMLElement;
 
@@ -87,7 +85,6 @@ export async function handleRegister(): Promise<void> {
 
   registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    console.log('asdasdsad');
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
@@ -101,17 +98,11 @@ export async function handleRegister(): Promise<void> {
       });
 
       console.log(res);
+      const data = await res.json();
       if (res.ok) {
-        const data = await res.json();
-        console.log('register response data:', data);
-        const username = data.username;
-        // localStorage.setItem('username', usernameInput.value);
-        // localStorage.setItem('avatar', '/avatars/wow-cat.jpeg');
-
-        // showLandingView();
-        showLandingView(username, avatar);
+        globalSession.login(data.username, data.email, data.avatar);
+        showLandingView();
         history.pushState({ view: 'auth', form: 'landing' }, '', '/landing');
-
         registerForm.reset();
       } else {
         showMessage(registerMessage, 'Username or email is already in use');
@@ -121,4 +112,24 @@ export async function handleRegister(): Promise<void> {
       showMessage(registerMessage, 'Server error');
     }
   });
+}
+
+export async function handleLogout() {
+  try {
+    const res = await fetch('/api/auth/logout', {
+      method: 'POST',
+      credentials: 'include',
+    });
+
+    if (res.ok) {
+      globalSession.logout();
+      showLoginView();
+      history.pushState({ view: 'auth', form: 'login' }, '', '/login');
+    } else {
+      alert('Failed to log out.');
+    }
+  } catch (error) {
+    console.error('Logout error:', error);
+    alert('Error logging out.');
+  }
 }

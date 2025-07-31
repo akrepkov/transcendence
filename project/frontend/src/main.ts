@@ -1,4 +1,4 @@
-import { handleRegister, handleLogin } from './auth/auth.js';
+import { handleRegister, handleLogin, handleLogout } from './auth/auth.js';
 import { toggleForms } from './toggle/toggleForms.js';
 import {
   showLoginView,
@@ -6,14 +6,20 @@ import {
   showLandingView,
   restoreViewOnReload,
   showProfileView,
-  checkLoginStatus,
 } from './navigation/navigation.js';
+import { globalSession } from './auth/auth.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-  handleLogin();
-  handleRegister();
+document.addEventListener('DOMContentLoaded', async () => {
+  await handleLogin();
+  await handleRegister();
   toggleForms();
-  restoreViewOnReload();
+  await restoreViewOnReload();
+
+  // Logout button event
+  const logoutButton = document.getElementById('logoutLanding');
+  if (logoutButton) {
+    logoutButton.addEventListener('click', handleLogout);
+  }
 
   const formTitle = document.getElementById('formTitle')?.textContent || 'Login';
   const initialState = { view: 'auth', form: formTitle.toLowerCase() };
@@ -24,20 +30,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const state = event.state;
     if (!state) return;
 
-    const username = await checkLoginStatus();
-
     if (state.view === 'auth') {
       if (state.form === 'login') showLoginView();
       else if (state.form === 'register') showRegisterView();
     } else if (state.view === 'landing') {
-      if (username) {
-        showLandingView(username);
+      if (globalSession.getLogstatus()) {
+        showLandingView();
       } else {
         history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
         showLoginView();
       }
     } else if (state.view === 'profile') {
-      if (username) {
+      if (globalSession.getLogstatus()) {
         showProfileView();
       } else {
         history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
