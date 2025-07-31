@@ -31,8 +31,8 @@ const getAllUsersHandler = async (request, reply) => {
 // return user information, excluding email and password
 const getUserProfileHandler = async (request, reply) => {
   try {
-    const { userName } = request.body;
-    const user = userServices.getUserByUsername(userName);
+    const { userName } = request.query;
+    const user = await userServices.getUserByUsername(userName);
     if (!user) {
       return reply.status(404).send({ error: 'User not found' });
     }
