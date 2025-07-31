@@ -301,7 +301,16 @@
         <button class="text-xl underline hover:text-black" id="backFromPong">Back</button>
     </header>
     <main>
-            <!-- Game Lobby Section -->
+        <!-- Game Lobby Section -->
+        <!-- Centered ENTER Button -->
+        <div class="absolute inset-0 flex items-center justify-center z-10" id="pongEnterOverlay">
+            <button
+                    id="pongEnterGameButton"
+                    class="text-white text-7xl bg-black/60 px-16 py-8 rounded-lg pixelated-button hover:bg-white hover:text-black transition"
+            >
+                ENTER
+            </button>
+        </div>
             <!-- upon clicking enter button which will be placed soon start the game -->
             <!-- Actual Game Screen -->
             <section
@@ -326,6 +335,14 @@
     <main>
         <p class="text-2xl">Ready to play Snake?</p>
     </main>
+    <div class="absolute inset-0 flex items-center justify-center z-10" id="snakeEnterOverlay">
+        <button
+                id="snakeEnterGameButton"
+                class="text-white text-7xl bg-black/60 px-16 py-8 rounded-lg pixelated-button hover:bg-white hover:text-black transition"
+        >
+            ENTER
+        </button>
+    </div>
 </div>
 
 <!-- Practice Page -->
@@ -337,6 +354,14 @@
     <main>
         <p class="text-2xl">Train your skills here!</p>
     </main>
+    <div class="absolute inset-0 flex items-center justify-center z-10" id="practiceEnterOverlay">
+        <button
+                id="practiceEnterGameButton"
+                class="text-white text-7xl bg-black/60 px-16 py-8 rounded-lg pixelated-button hover:bg-white hover:text-black transition"
+        >
+            ENTER
+        </button>
+    </div>
 </div>
 
 <!-- SPA Controller Script -->
