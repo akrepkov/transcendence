@@ -7,6 +7,7 @@ import {
   restoreViewOnReload,
 } from './navigation/navigation.js';
 import { setupGameToggle, setupSocketEvents } from './games/gameToggle.js';
+import { setupAiToggle } from './ai/aiToggle.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   handleLogin();
@@ -47,10 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ANNA START*/
 document.addEventListener('DOMContentLoaded', () => {
-  const socket = new WebSocket(`wss://${window.location.hostname}/ws/connect`);
-  console.log('Am I logged IN : ', localStorage.getItem('username'));
-  setupSocketEvents(socket);
-  setupGameToggle(socket);
+  // const socket = new WebSocket(`wss://${window.location.hostname}/ws/connect`);
+  // console.log('Am I logged IN : ', localStorage.getItem('username'));
+  // setupSocketEvents(socket);
+  // setupGameToggle(socket);
+  setupAiToggle();
 });
 
 /* ANNA END*/

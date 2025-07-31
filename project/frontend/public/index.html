@@ -184,8 +184,8 @@
 							class="bg-blue-300 pixelated-border text-black font-bold py-3 px-6 text-xl">Pong</button>
 						<button id="snake-btn"
 							class="bg-blue-300 pixelated-border text-black font-bold py-3 px-6 text-xl">Snake</button>
-						<button id="practice-btn"
-							class="bg-blue-300 pixelated-border text-black font-bold py-3 px-6 text-xl">Practice</button>
+						<button id="ai-btn"
+							class="bg-blue-300 pixelated-border text-black font-bold py-3 px-6 text-xl">AI</button>
 					</div>
 				</div>
 			</div>
@@ -202,8 +202,8 @@
 					<button id="stop-button-pong"
 						class="bg-blue-300 pixelated-border text-black font-bold py-3 px-6 text-xl">Stop</button>
 				</div>
-
 			</div>
+
 			<div id="snake-container"
 				class="hidden flex flex-col items-center border-5 border-black mt-5 p-8 bg-blue-300 bg-opacity-80 min-w-[800px]">
 				<div class="flex justify-center mt-4">
@@ -214,6 +214,20 @@
 					<button id="start-button-snake"
 						class="bg-blue-300 pixelated-border text-black font-bold py-3 px-6 text-xl">Start</button>
 					<button id="stop-button-snake"
+						class="bg-blue-300 pixelated-border text-black font-bold py-3 px-6 text-xl">Stop</button>
+				</div>
+			</div>
+
+			<div id="ai-container"
+				class="hidden flex flex-col items-center border-5 border-black mt-5 p-8 bg-blue-300 bg-opacity-80 min-w-[800px]">
+				<div class="flex justify-center mt-4">
+					<div id="ai-score" class="text-7xl font-bold leading-tight mb-8 text-center">0 : 0</div>
+				</div>
+				<canvas id="ai" class="border-4 border-white mt-5" width="800" height="600"></canvas>
+				<div class="flex justify-between mt-4 w-full max-w-[800px]">
+					<button id="start-button-ai"
+						class="bg-blue-300 pixelated-border text-black font-bold py-3 px-6 text-xl">Start</button>
+					<button id="stop-button-ai"
 						class="bg-blue-300 pixelated-border text-black font-bold py-3 px-6 text-xl">Stop</button>
 				</div>
 			</div>
