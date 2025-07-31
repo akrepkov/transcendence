@@ -1,15 +1,25 @@
-import { showProfileView } from '../navigation/navigation.js';
-
-// /api/view_user_profile
-// getUserProfileHandler check for what to pass in the body
+import { navigateTo, showProfileView, showSettingsView } from '../navigation/navigation.js';
 
 export function initProfileEvents() {
-  const profilePic = document.getElementById('avatar');
+  const avatar = document.getElementById('avatar');
+  const settingsButon = document.getElementById('settingsToggle');
+  const backButton = document.getElementById('backToProfile');
 
-  if (profilePic) {
-    profilePic.addEventListener('click', () => {
-      showProfileView();
-      history.pushState({ view: 'profile' }, '', '/profile');
+  if (avatar) {
+    avatar.addEventListener('click', () => {
+      navigateTo('profile', '/profile', showProfileView);
+    });
+  }
+
+  if (settingsButon) {
+    settingsButon.addEventListener('click', () => {
+      navigateTo('settings', '/settings', showSettingsView);
+    });
+  }
+
+  if (backButton) {
+    backButton.addEventListener('click', () => {
+      navigateTo('profile', '/profile', showProfileView);
     });
   }
 }

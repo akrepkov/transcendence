@@ -230,14 +230,6 @@
         </div>
         <div class="relative">
             <img id="avatar-profile" src="" alt="Avatar" class="w-20 h-32 object-cover rounded-full pixelated-border-landing cursor-pointer" />
-
-            <!-- Flyout -->
-            <div id="settingsFlyout"
-                 class="hidden absolute left-1/2 -translate-x-1/2 mt-2 w-48 bg-white shadow-lg rounded-lg text-black z-50">
-                <button class="block w-full text-left px-4 py-2 hover:bg-blue-200">Change Avatar</button>
-                <button class="block w-full text-left px-4 py-2 hover:bg-blue-200">Edit Username</button>
-                <button id="logoutProfile" class="block w-full text-left px-4 py-2 hover:bg-blue-200">Logout</button>
-            </div>
         </div>
     </header>
 
@@ -262,6 +254,70 @@
     <footer id="return-to-landing" class="fixed bottom-8 right-8 text-2xl text-white font-bold cursor-pointer">
         RETURN
     </footer>
+</div>
+
+<!-- Settings Page -->
+<div id="settingsPage" class="hidden min-h-screen p-8 bg-gif-settings text-white">
+    <header class="flex justify-between items-center mb-12">
+        <h1 class="text-5xl font-bold">Settings</h1>
+        <button id="backToProfile" class="text-xl underline hover:text-pink-400">Back to Profile</button>
+    </header>
+
+    <main class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Change Username -->
+        <section class="bg-black/70 p-6 rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold mb-4">Change Username</h2>
+            <input type="text" id="newUsername" class="w-full p-2 mb-4 text-black" placeholder="New username" />
+            <button id="saveUsername" class="pixelated-button w-full">Save</button>
+        </section>
+
+        <!-- Change Password -->
+        <section class="bg-black/70 p-6 rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold mb-4">Change Password</h2>
+            <input type="password" id="newPassword" class="w-full p-2 mb-4 text-black" placeholder="New password" />
+            <button id="savePassword" class="pixelated-button w-full">Save</button>
+        </section>
+
+        <!-- Change Avatar -->
+        <section class="bg-black/70 p-6 rounded-lg shadow-lg col-span-full">
+            <h2 class="text-3xl font-bold mb-4">Change Avatar</h2>
+            <input type="text" id="newAvatarUrl" class="w-full p-2 mb-4 text-black" placeholder="Avatar image URL" />
+            <button id="saveAvatar" class="pixelated-button w-full">Save</button>
+        </section>
+    </main>
+</div>
+
+<!-- Pong Page -->
+<div id="pongPage" class="hidden min-h-screen p-8 bg-gif-pong text-white">
+    <header class="flex justify-between items-center mb-12">
+        <h1 class="text-5xl font-bold">Pong</h1>
+        <button class="text-xl underline hover:text-black" id="backFromPong">Back</button>
+    </header>
+    <main>
+        <p class="text-2xl">Here you can start a Pong game...</p>
+    </main>
+</div>
+
+<!-- Snake Page -->
+<div id="snakePage" class="hidden min-h-screen p-8 bg-gif-snake text-white">
+    <header class="flex justify-between items-center mb-12">
+        <h1 class="text-5xl font-bold">Snake</h1>
+        <button class="text-xl underline hover:text-black" id="backFromSnake">Back</button>
+    </header>
+    <main>
+        <p class="text-2xl">Ready to play Snake?</p>
+    </main>
+</div>
+
+<!-- Practice Page -->
+<div id="practicePage" class="hidden min-h-screen p-8 bg-gif-tournament text-white">
+    <header class="flex justify-between items-center mb-12">
+        <h1 class="text-5xl font-bold">Practice Mode</h1>
+        <button class="text-xl underline hover:text-black" id="backFromPractice">Back</button>
+    </header>
+    <main>
+        <p class="text-2xl">Train your skills here!</p>
+    </main>
 </div>
 
 <!-- SPA Controller Script -->
