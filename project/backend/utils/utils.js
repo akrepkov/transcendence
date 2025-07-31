@@ -30,5 +30,5 @@ export async function getRandomAvatar() {
   const files = fs.readdirSync(avatarDir);
   if (files.length === 0) return null;
   const randomIndex = Math.floor(Math.random() * files.length);
-  return path.join('uploads', 'profile-avatars', files[randomIndex]);
+  return path.join('/uploads', 'avatars', files[randomIndex]);
 }

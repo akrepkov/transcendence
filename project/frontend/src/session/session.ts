@@ -23,7 +23,7 @@ export class Session {
     this.username = username;
     this.email = email;
     if (!avatar) {
-      this.avatar = '../../../backend/uploads/avatars/wow_cat.jpg';
+      this.avatar = '/uploads/avatars/wow_cat.jpg';
     } else {
       this.avatar = avatar;
     }
