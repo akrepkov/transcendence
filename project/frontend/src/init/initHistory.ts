@@ -4,6 +4,9 @@ import {
   showLandingView,
   showProfileView,
   showSettingsView,
+  showSnakeView,
+  showPongView,
+  showPracticeView,
 } from '../navigation/navigation.js';
 import { globalSession } from '../auth/auth.js';
 
@@ -48,6 +51,33 @@ export function initHistoryHandling(): void {
     } else if (state.view === 'settings') {
       if (isLoggedIn) {
         showSettingsView();
+      } else {
+        showLoginView();
+        setTimeout(() => {
+          history.pushState({ view: 'auth', form: 'login' }, '', '/login');
+        }, 0);
+      }
+    } else if (state.view === 'pong') {
+      if (isLoggedIn) {
+        showPongView();
+      } else {
+        showLoginView();
+        setTimeout(() => {
+          history.pushState({ view: 'auth', form: 'login' }, '', '/login');
+        }, 0);
+      }
+    } else if (state.view === 'snake') {
+      if (isLoggedIn) {
+        showSnakeView();
+      } else {
+        showLoginView();
+        setTimeout(() => {
+          history.pushState({ view: 'auth', form: 'login' }, '', '/login');
+        }, 0);
+      }
+    } else if (state.view === 'practice') {
+      if (isLoggedIn) {
+        showPracticeView();
       } else {
         showLoginView();
         setTimeout(() => {

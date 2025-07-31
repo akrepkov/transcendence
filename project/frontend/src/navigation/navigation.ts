@@ -90,6 +90,9 @@ export async function restoreViewOnReload() {
     '/landing': showLandingView,
     '/profile': showProfileView,
     '/settings': showSettingsView,
+    './pong': showPongView, // is this the path?
+    './snake': showSnakeView, // is this the path?
+    './practice': showPracticeView, // is this the path?
   };
 
   const viewFunc = views[path];

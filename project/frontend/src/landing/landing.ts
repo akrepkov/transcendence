@@ -6,9 +6,9 @@ import {
 } from '../navigation/navigation.js';
 
 export function initLandingEvents(): void {
-  const pongButton = document.getElementById('pongBtn');
-  const snakeButton = document.getElementById('snakeBtn');
-  const practiceButton = document.getElementById('practiceBtn');
+  const pongButton = document.getElementById('pongButton');
+  const snakeButton = document.getElementById('snakeButton');
+  const practiceButton = document.getElementById('practiceButton');
 
   if (pongButton) {
     pongButton.addEventListener('click', () => {
