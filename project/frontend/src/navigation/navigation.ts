@@ -88,6 +88,12 @@ export function showProfileView() {
   document.getElementById('landingPage')?.classList.add('hidden');
   document.getElementById('profilePage')?.classList.remove('hidden');
 
+  const heading = document.getElementById('profileHeading');
+  if (heading) {
+    const username = globalSession.getUsername();
+    heading.textContent = `${username}'s Profile`;
+  }
+
   history.pushState({ view: 'profile' }, '', '/profile');
 }
 
