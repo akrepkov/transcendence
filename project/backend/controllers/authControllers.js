@@ -1,4 +1,5 @@
 import * as authServices from '../database/services/authServices.js';
+import * as userServices from '../database/services/userServices.js';
 import { handleError } from '../utils/utils.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -46,6 +47,9 @@ const loginHandler = async (request, reply) => {
   return reply.status(200).send({
     message: 'Login successful',
     token,
+    username: user.username,
+    email: user.email,
+    avatar: user.avatar,
   });
 };
 
@@ -71,7 +75,12 @@ const registerHandler = async (request, reply) => {
     if (!registerUser) {
       return handleError(reply, new Error('Registration failed'), 500);
     }
-    return reply.status(201).send({ message: 'Registration successful' });
+    return reply.status(201).send({
+      message: 'Registration successful',
+      username: registerUser.username,
+      email: registerUser.email,
+      avatar: registerUser.avatar,
+    });
   } catch (error) {
     console.error('Registration error:', error);
     return handleError(reply, new Error('Registration failed'), 500);
@@ -91,12 +100,11 @@ const verificationHandler = async (request, reply) => {
   }
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = await authServices.checkCredentials(decoded.email);
+    const user = await userServices.getUserById(decoded.userId);
     if (!user) {
       return handleError(reply, new Error('Invalid credentials'), 401);
     }
-    let username = user.username;
-    reply.send({ user: decoded, username });
+    reply.send({ username: user.username, email: user.email, avatar: user.avatar });
   } catch (error) {
     return handleError(reply, error, 401);
   }
