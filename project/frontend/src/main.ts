@@ -23,6 +23,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     logoutButton.addEventListener('click', handleLogout);
   }
 
+  // Return button event
+  const returnButton = document.getElementById('return-to-landing');
+  if (returnButton) {
+    returnButton.addEventListener('click', () => {
+      showLandingView();
+      history.pushState({ view: 'landing' }, '', '/landing');
+    });
+  }
+
   const formTitle = document.getElementById('formTitle')?.textContent || 'Login';
   const initialState = { view: 'auth', form: formTitle.toLowerCase() };
   history.replaceState(initialState, '', location.pathname);
@@ -44,6 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     } else if (state.view === 'profile') {
       if (globalSession.getLogstatus()) {
+        history.replaceState({ view: 'auth', form: 'profile' }, '', '/profile');
         showProfileView();
       } else {
         history.replaceState({ view: 'auth', form: 'login' }, '', '/login');

@@ -71,9 +71,12 @@ export async function restoreViewOnReload() {
   const path = window.location.pathname;
   await checkLoginStatus();
 
-  if (globalSession.getLogstatus()) {
+  if (path === '/login' && globalSession.getLogstatus()) {
     showLandingView();
     history.replaceState({ view: 'landing' }, '', '/landing');
+  } else if (path === '/profile' && globalSession.getLogstatus()) {
+    showProfileView();
+    history.replaceState({ view: 'profile' }, '', '/profile');
   } else if (path === '/register') {
     showRegisterView();
     history.replaceState({ view: 'auth', form: 'register' }, '', '/register');
@@ -92,6 +95,11 @@ export function showProfileView() {
   if (heading) {
     const username = globalSession.getUsername();
     heading.textContent = `${username}'s Profile`;
+  }
+
+  const avatarProfile = document.getElementById('avatar-profile') as HTMLImageElement;
+  if (avatarProfile) {
+    avatarProfile.src = globalSession.getAvatar();
   }
 
   history.pushState({ view: 'profile' }, '', '/profile');

@@ -23,7 +23,8 @@
         }
         .bg-gif-landing {
             background-color: #2196f3;
-            background-image: url('https://ipfs.pixura.io/ipfs/QmQf88yiTo5fQe9hfonfAaxzqsMVpN3AkUeyc4TD467vVw/SunnyDelights20220828.gif');
+            background-image: url('/assets/store-front.gif');
+            /*background-image: url('https://ipfs.pixura.io/ipfs/QmQf88yiTo5fQe9hfonfAaxzqsMVpN3AkUeyc4TD467vVw/SunnyDelights20220828.gif');*/
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
@@ -52,6 +53,13 @@
         .bg-gif-tournament {
             background-color: #a5d6ff;
             background-image: url('/assets/train_rain.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+        .bg-gif-settings {
+            background-color: #000000;
+            background-image: url('/assets/sushi-belt.gif');
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
@@ -182,7 +190,7 @@
         </nav>
         <div class="flex flex-col items-center text-center bg-blue-300 bg-opacity-70 px-4 py-3 rounded-lg">
             <span class="text-xl">Welcome, <span id="username"></span></span>
-            <img src="" alt="Avatar" id="avatar" class="w-20 h-20 mt-5 pixelated-border-landing cursor-pointer" />
+            <img src="" alt="Avatar" id="avatar" class="w-32 h-32 mt-5 pixelated-border-landing cursor-pointer" />
         </div>
     </header>
 
@@ -214,17 +222,21 @@
 
 <!-- Profile Page -->
 <div id="profilePage" class="hidden min-h-screen p-8 bg-gif-profile text-black">
-    <header class="flex justify-between items-center mb-16 px-6 py-4">
-        <h1 id="profileHeading" class="text-5xl font-bold"></h1>
+<!--    <header class="flex justify-between items-center mb-16 px-6 py-4">-->
+    <header class="flex justify-end items-center gap-6 mb-16 px-6 py-4">
+        <div class="text-right">
+            <h1 id="profileHeading" class="text-5xl text-white font-bold leading-tight"></h1>
+            <p id="settingsToggle" class="text-lg text-white cursor-pointer hover:text-pink-300 mt-1">
+                Settings
+            </p>
+        </div>
         <div class="relative">
-            <img id="avatar-profile"
-                 src=""
-                 alt="Avatar"
-                 class="w-20 h-32 object-cover rounded-full pixelated-border-landing cursor-pointer" />
-
+            <img id="avatar-profile" src="" alt="Avatar" class="w-20 h-32 object-cover rounded-full pixelated-border-landing cursor-pointer" />
 
             <!-- Flyout -->
-            <div id="settingsFlyout" class="hidden absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg text-black z-50">
+
+            <div id="settingsFlyout"
+                 class="hidden absolute left-1/2 -translate-x-1/2 mt-2 w-48 bg-white shadow-lg rounded-lg text-black z-50">
                 <button class="block w-full text-left px-4 py-2 hover:bg-blue-200">Change Avatar</button>
                 <button class="block w-full text-left px-4 py-2 hover:bg-blue-200">Edit Username</button>
                 <button id="logoutProfile" class="block w-full text-left px-4 py-2 hover:bg-blue-200">Logout</button>
@@ -248,6 +260,11 @@
 <!--            </ul>-->
 <!--        </section>-->
     </main>
+
+    <!-- Footer -->
+    <footer id="return-to-landing" class="fixed bottom-8 right-8 text-2xl text-white font-bold cursor-pointer">
+        RETURN
+    </footer>
 </div>
 
 <!-- SPA Controller Script -->
