@@ -1,4 +1,3 @@
-import { GameStatePong, GameStateSnake } from './types.js';
 import { gameHandler } from './gameHandler.js';
 
 export function getCanvasContext(gameType: string): CanvasRenderingContext2D {

@@ -50,16 +50,21 @@ export function drawPong(data: GameStatePong, ctx: CanvasRenderingContext2D) {
   //   console.log('drawPong is running');
   if (running === true) {
     ctx.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = 'white';
     ctx.fillRect(data.ball.x, data.ball.y, 10, 10);
+    ctx.fillStyle = 'red';
     ctx.fillRect(0, data.players[0].paddleY, 10, 100);
+    ctx.fillStyle = 'blue';
     ctx.fillRect(GAME_CONSTS.WIDTH - 10, data.players[1].paddleY, 10, 100);
   }
 }
 
 export function showPongScore(data: GameStatePong) {
   const scorePong = document.getElementById('pong-score');
-  if (scorePong) scorePong.textContent = `${data.players[0].score} : ${data.players[1].score}`;
+  if (scorePong)
+    scorePong.innerHTML = `
+  <span style="color: red;">${data.players[0].playerName}</span> ${data.players[0].score} : 
+  ${data.players[1].score} <span style="color: blue;">${data.players[1].playerName}</span>`;
 }
 
 export function cleanPongField() {

@@ -28,37 +28,43 @@ export function setupGameToggle(socket: WebSocket) {
   const snakeStop = document.getElementById('stop-button-snake');
   const pongContainer = document.getElementById('pong-container');
   const snakeContainer = document.getElementById('snake-container');
-
-  pongBtn?.addEventListener('click', () => {
-    pongContainer?.classList.remove('hidden');
-    snakeContainer?.classList.add('hidden');
-    mainMenu?.classList.add('hidden');
-  });
-
-  snakeBtn?.addEventListener('click', () => {
-    snakeContainer?.classList.remove('hidden');
-    pongContainer?.classList.add('hidden');
-    mainMenu?.classList.add('hidden');
-  });
-
   const startPong = document.getElementById('start-button-pong');
   const startSnake = document.getElementById('start-button-snake');
 
   if (!startPong) throw new Error('Start button Pong element not found');
   if (!startSnake) throw new Error('Start button Snake element not found');
 
+  pongBtn?.addEventListener('click', () => {
+    pongContainer?.classList.remove('hidden');
+    startPong?.classList.remove('hidden');
+    snakeContainer?.classList.add('hidden');
+    mainMenu?.classList.add('hidden');
+    const scorePong = document.getElementById('pong-score');
+    if (scorePong) scorePong.textContent = '0 : 0';
+    cleanPongField();
+  });
+
+  snakeBtn?.addEventListener('click', () => {
+    console.log('Snake button clicked');
+    snakeContainer?.classList.remove('hidden');
+    startSnake?.classList.remove('hidden');
+    pongContainer?.classList.add('hidden');
+    mainMenu?.classList.add('hidden');
+    const scoreSnake = document.getElementById('snake-score');
+    if (scoreSnake) scoreSnake.textContent = '0 : 0';
+    cleanSnakeField();
+  });
+
   startPong.addEventListener('click', () => {
     socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'pong' }));
     gameType = 'pong';
-    const scorePong = document.getElementById('pong-score');
-    if (scorePong) scorePong.textContent = '0 : 0';
+    startPong?.classList.add('hidden');
     renderGame(socket, gameType);
   });
   startSnake.addEventListener('click', () => {
     socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'snake' }));
     gameType = 'snake';
-    const scoreSnake = document.getElementById('snake-score');
-    if (scoreSnake) scoreSnake.textContent = '';
+    startSnake?.classList.add('hidden');
     renderGame(socket, gameType);
   });
 
@@ -84,6 +90,7 @@ export function resetPongGame(socket: WebSocket) {
 }
 
 export function resetSnakeGame(socket: WebSocket) {
+  console.log('resetSnakeGame');
   if (socket.readyState === WebSocket.OPEN) {
     socket.send(JSON.stringify({ type: 'disconnectFromGame' }));
   }

@@ -10,7 +10,7 @@ export const SNAKE_CONSTS = {
   SNAKE_SPEED: 20,
   LEFT_PLAYER: [{ x: 0, y: 300 }],
   RIGHT_PLAYER: [{ x: 780, y: 300 }],
-  MAX_SCORE: 5,
+  MAX_SCORE: 1,
 };
 
 export class Snake {
@@ -94,6 +94,7 @@ export class Snake {
       (player1.score >= SNAKE_CONSTS.MAX_SCORE || player2.score >= SNAKE_CONSTS.MAX_SCORE)
     ) {
       gameOver = true;
+      console.log('Game over by score', player1.score, ' ', player2.score);
       if (player1.score > player2.score) {
         winner = player1.playerName;
         loser = player2.playerName;
@@ -122,14 +123,28 @@ export class Snake {
     player2.checkCollisions(player1);
     player1.automatedMove(this.apple, player2);
     player2.automatedMove(this.apple, player1);
-
-    if (player1.collision || player2.collision) {
-      this.checkWinCondition();
-    }
+    this.checkWinCondition();
+  }
+  resetGame() {
+    this.apple.getRandomApplePosition(this.players[0], this.players[1]);
+    this.players.forEach((player) => {
+      player.positions =
+        player.playerId === this.players[0].playerId
+          ? SNAKE_CONSTS.LEFT_PLAYER
+          : SNAKE_CONSTS.RIGHT_PLAYER;
+      player.directions = { x: 0, y: -1 };
+      player.score = 0;
+      player.collision = false;
+    });
+    console.log('Game reset');
   }
 
   startGame() {
-    if (this.running) return;
+    if (this.running) {
+      console.log('This gamer is running, but shouldnt');
+      return;
+    }
+    // this.resetGame();
     this.running = true;
     console.log('Game starts');
     this.gameLoop = setInterval(() => {

@@ -2,8 +2,8 @@ import { SNAKE_CONSTS } from './Snake.js';
 
 export class SnakePlayer {
   constructor(username, userId, positions) {
-    console.log('Create a player');
-    this.positions = positions;
+    console.log('Create a player ', positions);
+    this.positions = positions.map((pos) => ({ ...pos }));
     this.directions = { x: 0, y: -1 };
     this.score = 0;
     this.playerName = username;
@@ -22,10 +22,11 @@ export class SnakePlayer {
   checkCollisions(opponent) {
     const head = this.positions[0];
     if (
+      (console.log('Check collisions for player: ', this.playerName, head.x, ' ', head.y),
       head.x < 0 ||
-      head.x > SNAKE_CONSTS.WIDTH - 10 ||
-      head.y < 0 ||
-      head.y > SNAKE_CONSTS.HEIGHT - 10
+        head.x > SNAKE_CONSTS.WIDTH - 20 ||
+        head.y < 0 ||
+        head.y > SNAKE_CONSTS.HEIGHT - 20)
     ) {
       console.log(`${this.playerName} Player hit the wall`);
       this.collision = true;
@@ -56,6 +57,7 @@ export class SnakePlayer {
     this.positions.unshift(newHead);
     if (apple.position.x === head.x && apple.position.y === head.y) {
       apple.getRandomApplePosition(this, opponent);
+      this.score++;
     } else this.positions.pop();
   }
 }
