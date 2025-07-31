@@ -29,14 +29,14 @@
             background-position: center;
         }
         .bg-gif-pong {
-            background-color: #ffbedd;
-            background-image: url('/assets/balcony.gif');
+            background-color: #a5d6ff;
+            background-image: url('/assets/supermarket.gif');
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
         }
         .bg-gif-snake {
-            background-color: #4e94ce;
+            background-color: #0f5323;
             background-image: url('/assets/fairytale.gif');
             background-repeat: no-repeat;
             background-size: cover;
@@ -45,6 +45,13 @@
         .bg-gif-profile {
             background-color: #ffbedd;
             background-image: url('/assets/school_window.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+        .bg-gif-practice {
+            background-color: #a5d6ff;
+            background-image: url('/assets/train_rain.gif');
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
@@ -294,7 +301,19 @@
         <button class="text-xl underline hover:text-black" id="backFromPong">Back</button>
     </header>
     <main>
-        <p class="text-2xl">Here you can start a Pong game...</p>
+            <!-- Game Lobby Section -->
+            <!-- upon clicking enter button which will be placed soon start the game -->
+            <!-- Actual Game Screen -->
+            <section
+                    id="pongGameScreen"
+                    class="absolute inset-0 hidden bg-black/80 text-white p-6 z-10 rounded-lg"
+            >
+                <h2 class="text-4xl font-bold mb-4">Pong Game Screen</h2>
+                <p class="text-xl">Game is starting...</p>
+                <!-- You can add <canvas> or game content here -->
+            </section>
+        </main>
+
     </main>
 </div>
 
@@ -310,7 +329,7 @@
 </div>
 
 <!-- Practice Page -->
-<div id="practicePage" class="hidden min-h-screen p-8 bg-gif-tournament text-white">
+<div id="practicePage" class="hidden min-h-screen p-8 bg-gif-practice text-white">
     <header class="flex justify-between items-center mb-12">
         <h1 class="text-5xl font-bold">Practice Mode</h1>
         <button class="text-xl underline hover:text-black" id="backFromPractice">Back</button>
