@@ -1,3 +1,5 @@
+import { globalSession } from '../auth/auth.js';
+
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
 const formTitle = document.getElementById('formTitle');
@@ -6,7 +8,7 @@ const loginMessage = document.getElementById('loginMessage');
 const registerMessage = document.getElementById('registerMessage');
 const authPage = document.getElementById('authPage');
 const landingPage = document.getElementById('landingPage');
-const username = document.getElementById('username');
+const profilePage = document.getElementById('profilePage');
 
 export function showMessage(el: HTMLElement, text: string): void {
   el.classList.remove('hidden');
@@ -23,8 +25,9 @@ export function showLoginView() {
   toggle.textContent = 'No account? Register';
 
   loginMessage.classList.remove('hidden');
-
   authPage?.classList.remove('hidden');
+  landingPage?.classList.add('hidden');
+  profilePage?.classList.add('hidden');
 }
 
 export function showRegisterView() {
@@ -38,60 +41,43 @@ export function showRegisterView() {
 
   loginMessage.classList.add('hidden');
   registerMessage.classList.remove('hidden');
-
   authPage?.classList.remove('hidden');
+  landingPage?.classList.add('hidden');
+  profilePage?.classList.add('hidden');
 }
 
 export function showLandingView() {
-  const storedUsername = localStorage.getItem('username');
-  const storedAvatar = localStorage.getItem('avatar'); // optional: only if you're storing avatar path
-
-  if (!storedUsername) {
-    console.warn('User not logged in - redirect to login');
-    history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
-    showLoginView();
-    return;
-  }
-
   if (!authPage || !landingPage) {
     console.warn('Missing authPage or landingPage');
     return;
   }
 
-  const usernameEl = document.getElementById('username');
-  if (usernameEl) {
-    usernameEl.textContent = storedUsername;
+  const usernameElement = document.getElementById('username');
+  if (usernameElement) {
+    usernameElement.textContent = globalSession.getUsername();
   }
 
-  const profilePic = document.getElementById('profilePic') as HTMLImageElement;
-  const avatarProfile = document.getElementById('avatar-profile') as HTMLImageElement;
-
-  if (storedAvatar) {
-    if (profilePic) profilePic.src = storedAvatar;
-    if (avatarProfile) avatarProfile.src = storedAvatar;
-  } else {
-    // fallback avatar
-    const defaultAvatar = '/avatars/default.png';
-    if (profilePic) profilePic.src = defaultAvatar;
-    if (avatarProfile) avatarProfile.src = defaultAvatar;
+  const avatarProfile = document.getElementById('avatar') as HTMLImageElement;
+  if (avatarProfile) {
+    avatarProfile.src = globalSession.getAvatar();
   }
 
   authPage.classList.add('hidden');
   landingPage.classList.remove('hidden');
+  profilePage?.classList.add('hidden');
 }
 
-export function restoreViewOnReload() {
+export async function restoreViewOnReload() {
   const path = window.location.pathname;
-  const isLoggedIn = !!localStorage.getItem('username');
+  await checkLoginStatus();
 
-  if (path === '/landing' && isLoggedIn) {
+  if (globalSession.getLogstatus()) {
     showLandingView();
     history.replaceState({ view: 'landing' }, '', '/landing');
   } else if (path === '/register') {
     showRegisterView();
     history.replaceState({ view: 'auth', form: 'register' }, '', '/register');
   } else {
-    // Default to login
     showLoginView();
     history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
   }
@@ -102,5 +88,29 @@ export function showProfileView() {
   document.getElementById('landingPage')?.classList.add('hidden');
   document.getElementById('profilePage')?.classList.remove('hidden');
 
+  const heading = document.getElementById('profileHeading');
+  if (heading) {
+    const username = globalSession.getUsername();
+    heading.textContent = `${username}'s Profile`;
+  }
+
   history.pushState({ view: 'profile' }, '', '/profile');
+}
+
+export async function checkLoginStatus() {
+  try {
+    const res = await fetch('/api/auth/me', {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      console.log('User data:', data);
+      globalSession.login(data.username, data.email, data.avatar);
+    }
+  } catch (err) {
+    console.error('Error checking login status:', err);
+    return null;
+  }
 }

@@ -23,9 +23,11 @@ avatarform.addEventListener('submit', async (e: Event) => {
   const formData = new FormData();
   formData.append('avatar', file);
 
+  // '/api/update_user_profile' use this instead
+  //  check updateUserHandler what to pass in the body
   try {
-    const response = await fetch('api/upload-avatar', {
-      method: 'POST',
+    const response = await fetch('api/update_user_profile', {
+      method: 'PATCH',
       body: formData,
     });
 
