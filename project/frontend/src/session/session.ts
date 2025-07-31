@@ -22,7 +22,11 @@ export class Session {
   public login(username: string, email: string, avatar: string) {
     this.username = username;
     this.email = email;
-    this.avatar = avatar;
+    if (!avatar) {
+      this.avatar = '../../../backend/uploads/avatars/wow_cat.jpg';
+    } else {
+      this.avatar = avatar;
+    }
     this.loggedIn = true;
   }
 
