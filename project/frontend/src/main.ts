@@ -7,6 +7,7 @@ import {
   restoreViewOnReload,
   showProfileView,
 } from './navigation/navigation.js';
+import { initProfileEvents } from './profile/profile.js';
 import { globalSession } from './auth/auth.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -14,6 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await handleRegister();
   toggleForms();
   await restoreViewOnReload();
+  initProfileEvents();
 
   // Logout button event
   const logoutButton = document.getElementById('logoutLanding');

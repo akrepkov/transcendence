@@ -69,5 +69,5 @@ export class Session {
     return this.pongStats;
   }
 
-  // need a set pong/snakeStats?
+  // need a set/update pong/snakeStats?
 }

@@ -4,7 +4,7 @@ import { showProfileView } from '../navigation/navigation.js';
 // getUserProfileHandler check for what to pass in the body
 
 export function initProfileEvents() {
-  const profilePic = document.getElementById('profilePic');
+  const profilePic = document.getElementById('avatar');
 
   if (profilePic) {
     profilePic.addEventListener('click', () => {

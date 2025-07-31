@@ -8,6 +8,7 @@ const loginMessage = document.getElementById('loginMessage');
 const registerMessage = document.getElementById('registerMessage');
 const authPage = document.getElementById('authPage');
 const landingPage = document.getElementById('landingPage');
+const profilePage = document.getElementById('profilePage');
 
 export function showMessage(el: HTMLElement, text: string): void {
   el.classList.remove('hidden');
@@ -26,6 +27,7 @@ export function showLoginView() {
   loginMessage.classList.remove('hidden');
   authPage?.classList.remove('hidden');
   landingPage?.classList.add('hidden');
+  profilePage?.classList.add('hidden');
 }
 
 export function showRegisterView() {
@@ -41,6 +43,7 @@ export function showRegisterView() {
   registerMessage.classList.remove('hidden');
   authPage?.classList.remove('hidden');
   landingPage?.classList.add('hidden');
+  profilePage?.classList.add('hidden');
 }
 
 export function showLandingView() {
@@ -61,6 +64,7 @@ export function showLandingView() {
 
   authPage.classList.add('hidden');
   landingPage.classList.remove('hidden');
+  profilePage?.classList.add('hidden');
 }
 
 export async function restoreViewOnReload() {

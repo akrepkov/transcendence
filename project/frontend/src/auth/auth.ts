@@ -1,9 +1,4 @@
-import {
-  showLoginView,
-  showLandingView,
-  showMessage,
-  showRegisterView,
-} from '../navigation/navigation.js';
+import { showLoginView, showLandingView, showMessage } from '../navigation/navigation.js';
 import { Session } from '../session/session.js';
 
 export const globalSession = new Session();
