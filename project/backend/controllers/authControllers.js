@@ -20,6 +20,21 @@ const authenticate = async (request, reply) => {
   }
 };
 
+const setCookie = (reply, user) => {
+  let userId = user.userId;
+  const sessionId = crypto.randomBytes(32).toString('hex');
+  const token = jwt.sign({ userId, sessionId }, JWT_SECRET, { expiresIn: '1h' });
+  // Set the JWT in an HTTP-only cookie
+  reply.setCookie('token', token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'Strict',
+    path: '/',
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  });
+  return token;
+};
+
 const loginHandler = async (request, reply) => {
   const { username, password } = request.body;
   if (!username || !password) {
@@ -33,17 +48,7 @@ const loginHandler = async (request, reply) => {
   if (!isMatch) {
     return handleError(reply, new Error('Invalid credentials'), 401);
   }
-  let userId = user.userId;
-  const sessionId = crypto.randomBytes(32).toString('hex');
-  const token = jwt.sign({ userId, sessionId }, JWT_SECRET, { expiresIn: '1h' });
-  // Set the JWT in an HTTP-only cookie
-  reply.setCookie('token', token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'Strict',
-    path: '/',
-    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-  });
+  const token = setCookie(reply, user);
   return reply.status(200).send({
     message: 'Login successful',
     token,
@@ -75,6 +80,7 @@ const registerHandler = async (request, reply) => {
     if (!registerUser) {
       return handleError(reply, new Error('Registration failed'), 500);
     }
+    const token = setCookie(reply, registerUser);
     return reply.status(201).send({
       message: 'Registration successful',
       username: registerUser.username,
