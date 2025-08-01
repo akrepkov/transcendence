@@ -23,20 +23,20 @@
         }
         .bg-gif-landing {
             background-color: #2196f3;
-            background-image: url('https://ipfs.pixura.io/ipfs/QmQf88yiTo5fQe9hfonfAaxzqsMVpN3AkUeyc4TD467vVw/SunnyDelights20220828.gif');
+            background-image: url('/assets/store-front.gif');
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
         }
         .bg-gif-pong {
-            background-color: #ffbedd;
-            background-image: url('/assets/balcony.gif');
+            background-color: #a5d6ff;
+            background-image: url('/assets/supermarket.gif');
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
         }
         .bg-gif-snake {
-            background-color: #4e94ce;
+            background-color: #0f5323;
             background-image: url('/assets/fairytale.gif');
             background-repeat: no-repeat;
             background-size: cover;
@@ -49,9 +49,23 @@
             background-size: cover;
             background-position: center;
         }
+        .bg-gif-practice {
+            background-color: #a5d6ff;
+            background-image: url('/assets/train_rain.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
         .bg-gif-tournament {
             background-color: #a5d6ff;
             background-image: url('/assets/train_rain.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+        .bg-gif-settings {
+            background-color: #000000;
+            background-image: url('/assets/sushi-belt.gif');
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
@@ -182,7 +196,7 @@
         </nav>
         <div class="flex flex-col items-center text-center bg-blue-300 bg-opacity-70 px-4 py-3 rounded-lg">
             <span class="text-xl">Welcome, <span id="username"></span></span>
-            <img src="" alt="Avatar" id="avatar" class="w-20 h-20 mt-5 pixelated-border-landing cursor-pointer" />
+            <img src="" alt="Avatar" id="avatar" class="w-32 h-32 mt-5 pixelated-border-landing cursor-pointer" />
         </div>
     </header>
 
@@ -198,9 +212,9 @@
                     Pick a game to get started.
                 </p>
                 <div class="flex flex-wrap gap-4">
-                    <button class="bg-blue-300 pixelated-border-landing text-black font-bold py-3 px-6 text-xl">Pong</button>
-                    <button class="bg-blue-300 pixelated-border-landing text-black font-bold py-3 px-6 text-xl">Snake</button>
-                    <button class="bg-blue-300 pixelated-border-landing text-black font-bold py-3 px-6 text-xl">Practice</button>
+                    <button id="pongButton" class="bg-blue-300 pixelated-border-landing text-black font-bold py-3 px-6 text-xl">Pong</button>
+                    <button id="snakeButton" class="bg-blue-300 pixelated-border-landing text-black font-bold py-3 px-6 text-xl">Snake</button>
+                    <button id="practiceButton" class="bg-blue-300 pixelated-border-landing text-black font-bold py-3 px-6 text-xl">Practice</button>
                 </div>
             </div>
         </div>
@@ -214,21 +228,15 @@
 
 <!-- Profile Page -->
 <div id="profilePage" class="hidden min-h-screen p-8 bg-gif-profile text-black">
-    <header class="flex justify-between items-center mb-16 px-6 py-4">
-        <h1 id="profileHeading" class="text-5xl font-bold"></h1>
+    <header class="flex justify-end items-center gap-6 mb-16 px-6 py-4">
+        <div class="text-right">
+            <h1 id="profileHeading" class="text-5xl text-white font-bold leading-tight"></h1>
+            <p id="settingsToggle" class="text-lg text-white cursor-pointer hover:text-pink-300 mt-1">
+                Settings
+            </p>
+        </div>
         <div class="relative">
-            <img id="avatar-profile"
-                 src=""
-                 alt="Avatar"
-                 class="w-20 h-32 object-cover rounded-full pixelated-border-landing cursor-pointer" />
-
-
-            <!-- Flyout -->
-            <div id="settingsFlyout" class="hidden absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg text-black z-50">
-                <button class="block w-full text-left px-4 py-2 hover:bg-blue-200">Change Avatar</button>
-                <button class="block w-full text-left px-4 py-2 hover:bg-blue-200">Edit Username</button>
-                <button id="logoutProfile" class="block w-full text-left px-4 py-2 hover:bg-blue-200">Logout</button>
-            </div>
+            <img id="avatar-profile" src="" alt="Avatar" class="w-20 h-32 object-cover rounded-full pixelated-border-landing cursor-pointer" />
         </div>
     </header>
 
@@ -248,6 +256,112 @@
 <!--            </ul>-->
 <!--        </section>-->
     </main>
+
+    <!-- Footer -->
+    <footer id="return-to-landing" class="fixed bottom-8 right-8 text-2xl text-white font-bold cursor-pointer">
+        RETURN
+    </footer>
+</div>
+
+<!-- Settings Page -->
+<div id="settingsPage" class="hidden min-h-screen p-8 bg-gif-settings text-white">
+    <header class="flex justify-between items-center mb-12">
+        <h1 class="text-5xl font-bold">Settings</h1>
+        <button id="backToProfile" class="text-xl underline hover:text-pink-400">Back to Profile</button>
+    </header>
+
+    <main class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Change Username -->
+        <section class="bg-black/70 p-6 rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold mb-4">Change Username</h2>
+            <input type="text" id="newUsername" class="w-full p-2 mb-4 text-black" placeholder="New username" />
+            <button id="saveUsername" class="pixelated-button w-full">Save</button>
+        </section>
+
+        <!-- Change Password -->
+        <section class="bg-black/70 p-6 rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold mb-4">Change Password</h2>
+            <input type="password" id="newPassword" class="w-full p-2 mb-4 text-black" placeholder="New password" />
+            <button id="savePassword" class="pixelated-button w-full">Save</button>
+        </section>
+
+        <!-- Change Avatar -->
+        <section class="bg-black/70 p-6 rounded-lg shadow-lg col-span-full">
+            <h2 class="text-3xl font-bold mb-4">Change Avatar</h2>
+            <input type="text" id="newAvatarUrl" class="w-full p-2 mb-4 text-black" placeholder="Avatar image URL" />
+            <button id="saveAvatar" class="pixelated-button w-full">Save</button>
+        </section>
+    </main>
+</div>
+
+<!-- Pong Page -->
+<div id="pongPage" class="hidden min-h-screen p-8 bg-gif-pong text-white">
+    <header class="flex justify-between items-center mb-12">
+        <h1 class="text-5xl font-bold">Pong</h1>
+        <button class="text-xl underline hover:text-black" id="backFromPong">Back</button>
+    </header>
+    <main>
+        <!-- Game Lobby Section -->
+        <!-- Centered ENTER Button -->
+        <div class="absolute inset-0 flex items-center justify-center z-10" id="pongEnterOverlay">
+            <button
+                    id="pongEnterGameButton"
+                    class="text-white text-7xl bg-black/60 px-16 py-8 rounded-lg pixelated-button hover:bg-white hover:text-black transition"
+            >
+                ENTER
+            </button>
+        </div>
+            <!-- upon clicking enter button which will be placed soon start the game -->
+            <!-- Actual Game Screen -->
+            <section
+                    id="pongGameScreen"
+                    class="absolute inset-0 hidden bg-black/80 text-white p-6 z-10 rounded-lg"
+            >
+                <h2 class="text-4xl font-bold mb-4">Pong Game Screen</h2>
+                <p class="text-xl">Game is starting...</p>
+                <!-- You can add <canvas> or game content here -->
+            </section>
+        </main>
+
+    </main>
+</div>
+
+<!-- Snake Page -->
+<div id="snakePage" class="hidden min-h-screen p-8 bg-gif-snake text-white">
+    <header class="flex justify-between items-center mb-12">
+        <h1 class="text-5xl font-bold">Snake</h1>
+        <button class="text-xl underline hover:text-black" id="backFromSnake">Back</button>
+    </header>
+    <main>
+        <p class="text-2xl">Ready to play Snake?</p>
+    </main>
+    <div class="absolute inset-0 flex items-center justify-center z-10" id="snakeEnterOverlay">
+        <button
+                id="snakeEnterGameButton"
+                class="text-white text-7xl bg-black/60 px-16 py-8 rounded-lg pixelated-button hover:bg-white hover:text-black transition"
+        >
+            ENTER
+        </button>
+    </div>
+</div>
+
+<!-- Practice Page -->
+<div id="practicePage" class="hidden min-h-screen p-8 bg-gif-practice text-white">
+    <header class="flex justify-between items-center mb-12">
+        <h1 class="text-5xl font-bold">Practice Mode</h1>
+        <button class="text-xl underline hover:text-black" id="backFromPractice">Back</button>
+    </header>
+    <main>
+        <p class="text-2xl">Train your skills here!</p>
+    </main>
+    <div class="absolute inset-0 flex items-center justify-center z-10" id="practiceEnterOverlay">
+        <button
+                id="practiceEnterGameButton"
+                class="text-white text-7xl bg-black/60 px-16 py-8 rounded-lg pixelated-button hover:bg-white hover:text-black transition"
+        >
+            ENTER
+        </button>
+    </div>
 </div>
 
 <!-- SPA Controller Script -->

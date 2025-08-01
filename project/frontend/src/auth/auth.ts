@@ -1,4 +1,9 @@
-import { showLoginView, showLandingView, showMessage } from '../navigation/navigation.js';
+import {
+  showLoginView,
+  showLandingView,
+  showMessage,
+  navigateTo,
+} from '../navigation/navigation.js';
 import { Session } from '../session/session.js';
 
 export const globalSession = new Session();
@@ -43,8 +48,7 @@ export async function handleLogin(): Promise<void> {
       if (res.ok) {
         globalSession.login(data.username, data.email, data.avatar);
         showMessage(loginMessage, 'Logged in successfully');
-        showLandingView();
-        history.pushState({ view: 'landing' }, '', '/landing');
+        navigateTo('landing', '/landing', showLandingView);
       } else {
         showMessage(loginMessage, data.error || 'Login failed');
       }
@@ -96,8 +100,7 @@ export async function handleRegister(): Promise<void> {
       const data = await res.json();
       if (res.ok) {
         globalSession.login(data.username, data.email, data.avatar);
-        showLandingView();
-        history.pushState({ view: 'auth', form: 'landing' }, '', '/landing');
+        navigateTo('landing', '/landing', showLandingView);
         registerForm.reset();
       } else {
         showMessage(registerMessage, 'Username or email is already in use');
@@ -118,8 +121,7 @@ export async function handleLogout() {
 
     if (res.ok) {
       globalSession.logout();
-      showLoginView();
-      history.pushState({ view: 'auth', form: 'login' }, '', '/login');
+      navigateTo('auth', 'login', showLoginView);
     } else {
       alert('Failed to log out.');
     }
