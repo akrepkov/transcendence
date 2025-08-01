@@ -26,7 +26,7 @@ avatarform.addEventListener('submit', async (e: Event) => {
   // '/api/update_user_profile' use this instead
   //  check updateUserHandler what to pass in the body
   try {
-    const response = await fetch('api/update_user_profile', {
+    const response = await fetch('/api/update_user_profile', {
       method: 'PATCH',
       body: formData,
     });

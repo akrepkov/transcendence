@@ -136,6 +136,34 @@ export async function restoreViewOnReload() {
   }
 }
 
+/***
+function should accept a string which is either your own username or friends name
+export function showProfileView(string username (either globalSession.username (default own profile) else friends name)) {
+  hideAllPages();
+
+  const res = await fetch('/api/view_user_profile?userName=username', {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    }),
+  });
+
+  document.getElementById('profilePage')?.classList.remove('hidden');
+
+  const heading = document.getElementById('profileHeading');
+  if (heading) {
+    const username = globalSession.getUsername();
+    heading.textContent = `${username}'s Profile`;
+  }
+
+  const avatarProfile = document.getElementById('avatar-profile') as HTMLImageElement;
+  if (avatarProfile) {
+    avatarProfile.src = globalSession.getAvatar();
+  }
+  profilePage?.classList.remove('hidden');
+  setView('profile'); //new
+}*/
+
 export function showProfileView() {
   hideAllPages();
   document.getElementById('profilePage')?.classList.remove('hidden');
