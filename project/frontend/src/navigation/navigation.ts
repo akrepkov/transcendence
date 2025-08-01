@@ -90,18 +90,23 @@ export async function restoreViewOnReload() {
     '/landing': showLandingView,
     '/profile': showProfileView,
     '/settings': showSettingsView,
-    '/pong': showPongView, // is this the path?
-    '/snake': showSnakeView, // is this the path?
-    '/practice': showPracticeView, // is this the path?
+    '/pong': showPongView,
+    '/snake': showSnakeView,
+    '/practice': showPracticeView,
   };
 
   const viewFunc = views[path];
 
   if (!viewFunc) {
-    // Unknown path — redirect to login
-    history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
-    showLoginView();
-    return;
+    if (isLoggedIn) {
+      navigateTo('landing', '/landing', showLandingView);
+      return;
+    } else {
+      // Unknown path — redirect to login
+      history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
+      showLoginView();
+      return;
+    }
   }
 
   const isAuthPage = path === '/login' || path === '/register';
