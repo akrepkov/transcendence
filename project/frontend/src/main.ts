@@ -1,49 +1,27 @@
-import { handleRegister, handleLogin } from './auth/auth.js';
+import { handleLogin, handleRegister } from './auth/auth.js';
 import { toggleForms } from './toggle/toggleForms.js';
-import {
-  showLoginView,
-  showRegisterView,
-  showLandingView,
-  restoreViewOnReload,
-} from './navigation/navigation.js';
 import { setupGameToggle, setupSocketEvents } from './games/gameToggle.js';
 import { setupAiToggle } from './ai/aiToggle.js';
+import { restoreViewOnReload } from './navigation/navigation.js';
+import { initProfileEvents } from './profile/profile.js';
+import { initLandingEvents, initBackToLanding } from './landing/landing.js';
+import { initMainEvents } from './init/initMainEvents.js';
+import { initHistoryHandling } from './init/initHistory.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-  handleLogin();
-  handleRegister();
+document.addEventListener('DOMContentLoaded', async () => {
+  await handleLogin();
+  await handleRegister();
   toggleForms();
+  await restoreViewOnReload();
+  initLandingEvents();
+  initProfileEvents();
+  initMainEvents();
+  initHistoryHandling();
 
-  restoreViewOnReload();
-
-  // Replace initial history state
-  const formTitle = document.getElementById('formTitle')?.textContent || 'Login';
-  const initialState = { view: 'auth', form: formTitle.toLowerCase() };
-  history.replaceState(initialState, '', location.pathname);
-
-  // Listen for browser back/forward
-  window.addEventListener('popstate', (event) => {
-    const state = event.state;
-    if (!state) return;
-
-    const isLoggedIn = !!localStorage.getItem('username');
-
-    if (state.view === 'auth') {
-      if (state.form === 'login') {
-        showLoginView();
-      } else if (state.form === 'register') {
-        showRegisterView();
-      }
-    } else if (state.view === 'landing') {
-      if (isLoggedIn) {
-        showLandingView();
-      } else {
-        // User not logged in, redirect to login
-        history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
-        showLoginView();
-      }
-    }
-  });
+  //back buttons
+  initBackToLanding('backFromPong');
+  initBackToLanding('backFromSnake');
+  initBackToLanding('backFromPractice');
 });
 
 /* ANNA START*/

@@ -37,8 +37,9 @@ test.describe.serial('Auth Flow', () => {
     await page.fill('#registerPassword', 'password123');
     await page.click('#registerForm button[type="submit"]');
 
-    await expect(page.locator('#registerMessage')).toBeVisible();
-    await expect(page.locator('#registerMessage')).toHaveText('User registered successfully');
+    await page.waitForSelector('#landingPage', { state: 'visible' });
+    await expect(page.locator('#username')).toBeVisible();
+    await expect(page.locator('#username')).toHaveText(username);
   });
 
   test('should not register an existing user', async ({ page }) => {

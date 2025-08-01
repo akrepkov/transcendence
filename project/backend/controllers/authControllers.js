@@ -1,4 +1,5 @@
 import * as authServices from '../database/services/authServices.js';
+import * as userServices from '../database/services/userServices.js';
 import { handleError } from '../utils/utils.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -19,6 +20,21 @@ const authenticate = async (request, reply) => {
   }
 };
 
+const setCookie = (reply, user) => {
+  let userId = user.userId;
+  const sessionId = crypto.randomBytes(32).toString('hex');
+  const token = jwt.sign({ userId, sessionId }, JWT_SECRET, { expiresIn: '1h' });
+  // Set the JWT in an HTTP-only cookie
+  reply.setCookie('token', token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'Strict',
+    path: '/',
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  });
+  return token;
+};
+
 const loginHandler = async (request, reply) => {
   const { username, password } = request.body;
   if (!username || !password) {
@@ -32,19 +48,13 @@ const loginHandler = async (request, reply) => {
   if (!isMatch) {
     return handleError(reply, new Error('Invalid credentials'), 401);
   }
-  let userId = user.userId;
-  const sessionId = crypto.randomBytes(32).toString('hex');
-  const token = jwt.sign({ userId, sessionId }, JWT_SECRET, { expiresIn: '1h' });
-  // Set the JWT in an HTTP-only cookie
-  reply.setCookie('token', token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'Strict',
-    path: '/',
-    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-  });
+  const token = setCookie(reply, user);
   return reply.status(200).send({
     message: 'Login successful',
+    token,
+    username: user.username,
+    email: user.email,
+    avatar: user.avatar,
   });
 };
 
@@ -70,9 +80,15 @@ const registerHandler = async (request, reply) => {
     if (!registerUser) {
       return handleError(reply, new Error('Registration failed'), 500);
     }
-    return reply.status(201).send({ message: 'Registration successful' });
+    const token = setCookie(reply, registerUser);
+    return reply.status(201).send({
+      message: 'Registration successful',
+      username: registerUser.username,
+      email: registerUser.email,
+      avatar: registerUser.avatar,
+    });
   } catch (error) {
-    console.error('Registration error:', err);
+    console.error('Registration error:', error);
     return handleError(reply, new Error('Registration failed'), 500);
   }
 };
@@ -90,14 +106,13 @@ const verificationHandler = async (request, reply) => {
   }
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = await authServices.checkCredentials(decoded.email);
+    const user = await userServices.getUserById(decoded.userId);
     if (!user) {
       return handleError(reply, new Error('Invalid credentials'), 401);
     }
-    let username = user.username;
-    reply.send({ user: decoded, username });
+    reply.send({ username: user.username, email: user.email, avatar: user.avatar });
   } catch (error) {
-    return handleError(reply, err, 401);
+    return handleError(reply, error, 401);
   }
 };
 

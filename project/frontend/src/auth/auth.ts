@@ -1,9 +1,12 @@
-import { showLoginView } from '../navigation/navigation.js';
+import {
+  showLoginView,
+  showLandingView,
+  showMessage,
+  navigateTo,
+} from '../navigation/navigation.js';
+import { Session } from '../session/session.js';
 
-function showMessage(el: HTMLElement, text: string): void {
-  el.classList.remove('hidden');
-  el.textContent = text;
-}
+export const globalSession = new Session();
 
 /**
  * Handle login form submission
@@ -34,6 +37,7 @@ export async function handleLogin(): Promise<void> {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           username: usernameInput.value,
           password: passwordInput.value,
@@ -42,26 +46,9 @@ export async function handleLogin(): Promise<void> {
 
       const data = await res.json();
       if (res.ok) {
-        localStorage.setItem('username', usernameInput.value);
-        localStorage.setItem('avatar', data.avatar || '/avatars/wow-cat.jpeg'); // assuming backend sends `avatar` URL
-
-        // update UI
+        globalSession.login(data.username, data.email, data.avatar);
         showMessage(loginMessage, 'Logged in successfully');
-        document.getElementById('username')!.textContent = usernameInput.value;
-
-        document
-          .getElementById('profilePic')!
-          .setAttribute('src', data.avatar || '/avatars/wow-cat.jpeg');
-        document
-          .getElementById('avatar-profile')!
-          .setAttribute('src', data.avatar || '/avatars/wow-cat.jpeg');
-
-        // SPA Navigation
-        document.getElementById('authPage')?.classList.add('hidden');
-        document.getElementById('landingPage')?.classList.remove('hidden');
-
-        // Push new state to history
-        history.pushState({ view: 'landing' }, '', '/landing');
+        navigateTo('landing', '/landing', showLandingView);
       } else {
         showMessage(loginMessage, data.error || 'Login failed');
       }
@@ -77,7 +64,6 @@ export async function handleLogin(): Promise<void> {
  * Validates input fields and displays a success or error message
  */
 export async function handleRegister(): Promise<void> {
-  // Prevent form from reloading the page
   const registerForm = document.getElementById('registerForm') as HTMLFormElement;
   const registerMessage = document.getElementById('registerMessage') as HTMLElement;
 
@@ -98,11 +84,11 @@ export async function handleRegister(): Promise<void> {
 
   registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           username: usernameInput.value,
           email: emailInput.value,
@@ -110,13 +96,11 @@ export async function handleRegister(): Promise<void> {
         }),
       });
 
+      console.log(res);
+      const data = await res.json();
       if (res.ok) {
-        showMessage(registerMessage, 'User registered successfully');
-
-        // Redirect to login view
-        showLoginView();
-        history.pushState({ view: 'auth', form: 'login' }, '', '/login');
-
+        globalSession.login(data.username, data.email, data.avatar);
+        navigateTo('landing', '/landing', showLandingView);
         registerForm.reset();
       } else {
         showMessage(registerMessage, 'Username or email is already in use');
@@ -126,4 +110,23 @@ export async function handleRegister(): Promise<void> {
       showMessage(registerMessage, 'Server error');
     }
   });
+}
+
+export async function handleLogout() {
+  try {
+    const res = await fetch('/api/auth/logout', {
+      method: 'POST',
+      credentials: 'include',
+    });
+
+    if (res.ok) {
+      globalSession.logout();
+      navigateTo('auth', 'login', showLoginView);
+    } else {
+      alert('Failed to log out.');
+    }
+  } catch (error) {
+    console.error('Logout error:', error);
+    alert('Error logging out.');
+  }
 }
