@@ -1,4 +1,4 @@
-import { getCanvasContext } from './aiToggle.js';
+import { getCanvasContext } from './render.js';
 import { showPongScore } from './render.js';
 export const GAME_CONSTS = {
   WIDTH: 800,

@@ -1,8 +1,6 @@
-import { renderGame } from './render.js';
-import { cleanPongField } from './pong.js';
-import { cleanSnakeField } from './snake.js';
+import { toggleHandler } from './gameHandler.js';
 
-let gameType: string | null = null;
+// let gameType: string | null = null;
 
 export function setupSocketEvents(socket: WebSocket) {
   socket.onopen = () => {
@@ -21,78 +19,67 @@ export function setupSocketEvents(socket: WebSocket) {
 
 export function setupGameToggle(socket: WebSocket) {
   console.log('Game Toggle');
-  const pongBtn = document.getElementById('pong-btn');
-  const snakeBtn = document.getElementById('snake-btn');
-  const mainMenu = document.getElementById('main-menu');
-  const pongStop = document.getElementById('stop-button-pong');
-  const snakeStop = document.getElementById('stop-button-snake');
-  const pongContainer = document.getElementById('pong-container');
-  const snakeContainer = document.getElementById('snake-container');
+
+  /* Container holding start*/
+  // const pongStartContainer = document.getElementById('pong-start-container"');
+  // const snakeStartContainer = document.getElementById('snake-start-container"');
+  // const practiceStartContainer = document.getElementById('practice-start-container"');
+  // const aiStartContainer = document.getElementById('ai-start-container"');
+
+  /*Previous Enter, starting game*/
   const startPong = document.getElementById('start-button-pong');
   const startSnake = document.getElementById('start-button-snake');
+  const startPractice = document.getElementById('start-button-practice');
+  const startAi = document.getElementById('start-button-ai');
 
-  if (!startPong) throw new Error('Start button Pong element not found');
-  if (!startSnake) throw new Error('Start button Snake element not found');
+  /*Go to menu */
+  const pongStop = document.getElementById('stop-button-pong');
+  const snakeStop = document.getElementById('stop-button-snake');
+  const practiceStop = document.getElementById('stop-button-practice');
+  const aiStop = document.getElementById('stop-button-ai');
 
-  pongBtn?.addEventListener('click', () => {
-    pongContainer?.classList.remove('hidden');
-    startPong?.classList.remove('hidden');
-    snakeContainer?.classList.add('hidden');
-    mainMenu?.classList.add('hidden');
-    const scorePong = document.getElementById('pong-score');
-    if (scorePong) scorePong.textContent = '0 : 0';
-    cleanPongField();
-  });
+  /* Canvas Container*/
+  // const pongContainer = document.getElementById('pong-container');
+  // const snakeContainer = document.getElementById('snake-container');
+  // const practiceContainer = document.getElementById('practice-container');
+  // const aiContainer = document.getElementById('ai-container');
 
-  snakeBtn?.addEventListener('click', () => {
-    console.log('Snake button clicked');
-    snakeContainer?.classList.remove('hidden');
-    startSnake?.classList.remove('hidden');
-    pongContainer?.classList.add('hidden');
-    mainMenu?.classList.add('hidden');
-    const scoreSnake = document.getElementById('snake-score');
-    if (scoreSnake) scoreSnake.textContent = '0 : 0';
-    cleanSnakeField();
-  });
+  if (!startPong || !startSnake || !startAi || !startPractice)
+    throw new Error('Start button Pong element not found');
 
   startPong.addEventListener('click', () => {
-    socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'pong' }));
-    gameType = 'pong';
-    startPong?.classList.add('hidden');
-    renderGame(socket, gameType);
-  });
-  startSnake.addEventListener('click', () => {
-    socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'snake' }));
-    gameType = 'snake';
-    startSnake?.classList.add('hidden');
-    renderGame(socket, gameType);
+    toggleHandler.pongPage.clean();
+    toggleHandler.pongPage.start(socket);
   });
 
   pongStop?.addEventListener('click', () => {
-    //STOP THE Pong
-    resetPongGame(socket);
-    pongContainer?.classList.add('hidden');
-    mainMenu?.classList.remove('hidden');
+    toggleHandler.pongPage.reset(socket);
   });
+
+  startSnake.addEventListener('click', () => {
+    toggleHandler.snakePage.clean();
+    toggleHandler.snakePage.start(socket);
+  });
+
   snakeStop?.addEventListener('click', () => {
-    //STOP THE Snake
-    resetSnakeGame(socket);
-    snakeContainer?.classList.add('hidden');
-    mainMenu?.classList.remove('hidden');
+    toggleHandler.snakePage.reset(socket);
   });
-}
 
-export function resetPongGame(socket: WebSocket) {
-  if (socket.readyState === WebSocket.OPEN) {
-    socket.send(JSON.stringify({ type: 'disconnectFromGame' }));
-  }
-  cleanPongField();
-}
+  startPractice.addEventListener('click', () => {
+    toggleHandler.practicePage.clean();
+    toggleHandler.practicePage.start();
+  });
 
-export function resetSnakeGame(socket: WebSocket) {
-  console.log('resetSnakeGame');
-  if (socket.readyState === WebSocket.OPEN) {
-    socket.send(JSON.stringify({ type: 'disconnectFromGame' }));
-  }
-  cleanSnakeField();
+  practiceStop?.addEventListener('click', () => {
+    toggleHandler.practicePage.reset();
+  });
+
+  startAi.addEventListener('click', () => {
+    toggleHandler.aiPage.clean();
+    toggleHandler.aiPage.start();
+  });
+
+  aiStop?.addEventListener('click', () => {
+    toggleHandler.aiPage.reset();
+  });
 }

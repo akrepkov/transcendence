@@ -1,7 +1,7 @@
 import { handleLogin, handleRegister } from './auth/auth.js';
 import { toggleForms } from './toggle/toggleForms.js';
 import { setupGameToggle, setupSocketEvents } from './games/gameToggle.js';
-import { setupAiToggle } from './ai/aiToggle.js';
+import { setupAiToggle } from './games/ai/aiToggle.js';
 import { restoreViewOnReload } from './navigation/navigation.js';
 import { initProfileEvents } from './profile/profile.js';
 import { initLandingEvents, initBackToLanding } from './landing/landing.js';
@@ -19,9 +19,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   initHistoryHandling();
 
   //back buttons
-  initBackToLanding('backFromPong');
-  initBackToLanding('backFromSnake');
-  initBackToLanding('backFromPractice');
+  initBackToLanding('stop-button-pong');
+  initBackToLanding('stop-button-snake');
+  initBackToLanding('stop-button-practice');
+  initBackToLanding('stop-button-ai');
 });
 
 /* ANNA START*/
@@ -30,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('Am I logged IN : ', localStorage.getItem('username'));
   setupSocketEvents(socket);
   setupGameToggle(socket);
-  setupAiToggle();
+  // setupAiToggle();
 });
 
 /* ANNA END*/
