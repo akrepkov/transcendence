@@ -23,3 +23,14 @@ export function initProfileEvents() {
     });
   }
 }
+
+//method clickOnFriend() {
+//   showprofileview with friends name
+//
+// }
+
+//game stats send api request from backend
+
+//friends list send api request from backend
+
+//game history send api from backend

@@ -41,7 +41,7 @@ const getLoggerConfig = () =>
             return `{ method: ${request.method}, url: ${request.url}}`;
           },
           res(response) {
-            return `{ statusCode: ${response.statusCode} } for req { method: ${response.request.method}, url: '${response.request.url}' }`;
+            return `{ statusCode: ${response.statusCode} } for req { method: , url: '' }`;
           },
         },
       }
