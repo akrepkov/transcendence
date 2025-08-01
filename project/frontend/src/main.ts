@@ -48,10 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ANNA START*/
 document.addEventListener('DOMContentLoaded', () => {
-  // const socket = new WebSocket(`wss://${window.location.hostname}/ws/connect`);
-  // console.log('Am I logged IN : ', localStorage.getItem('username'));
-  // setupSocketEvents(socket);
-  // setupGameToggle(socket);
+  const socket = new WebSocket(`wss://${window.location.hostname}:3000/ws/connect`);
+  console.log('Am I logged IN : ', localStorage.getItem('username'));
+  setupSocketEvents(socket);
+  setupGameToggle(socket);
   setupAiToggle();
 });
 
