@@ -1,4 +1,4 @@
-import { navigateTo, showCreditView, showLoginView } from '../navigation/navigation.js';
+import { showCreditView, showLoginView } from '../navigation/navigation.js';
 
 export function initCreditsNavigation() {
   const creditLink = document.getElementById('creditLink');
