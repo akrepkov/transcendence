@@ -9,6 +9,8 @@ const registerMessage = document.getElementById('registerMessage');
 const authPage = document.getElementById('authPage');
 const landingPage = document.getElementById('landingPage');
 const profilePage = document.getElementById('profilePage');
+// const settingsPage = document.getElementById('settingsPage');
+const creditPage = document.getElementById('creditPage');
 
 function hideAllPages() {
   [
@@ -19,6 +21,7 @@ function hideAllPages() {
     'pongPage',
     'snakePage',
     'practicePage',
+    'creditPage',
   ].forEach((id) => document.getElementById(id)?.classList.add('hidden'));
 }
 
@@ -45,6 +48,7 @@ export function showLoginView() {
   authPage?.classList.remove('hidden');
   landingPage?.classList.add('hidden');
   profilePage?.classList.add('hidden');
+  creditPage?.classList.add('hidden');
 }
 
 export function showRegisterView() {
@@ -62,6 +66,7 @@ export function showRegisterView() {
   authPage?.classList.remove('hidden');
   landingPage?.classList.add('hidden');
   profilePage?.classList.add('hidden');
+  creditPage?.classList.add('hidden');
 }
 
 export function showLandingView() {
@@ -100,6 +105,7 @@ export async function restoreViewOnReload() {
     '/pong': showPongView,
     '/snake': showSnakeView,
     '/practice': showPracticeView,
+    '/credits': showCreditView,
   };
 
   const viewFunc = views[path];
@@ -204,6 +210,12 @@ export function showPracticeView() {
   hideAllPages();
   document.getElementById('practicePage')?.classList.remove('hidden');
   setView('practice'); //new
+}
+
+export function showCreditView() {
+  hideAllPages();
+  document.getElementById('creditPage')?.classList.remove('hidden');
+  setView('credits');
 }
 
 export async function checkLoginStatus() {

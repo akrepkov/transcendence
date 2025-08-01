@@ -21,7 +21,7 @@
             background-size: cover;
             background-position: center;
         }
-        .bg-gif-profile {
+        .bg-gif-credit {
             background-color: #0550ae;
             background-image: url('/assets/jelly_fish.gif');
             background-repeat: no-repeat;
@@ -186,7 +186,8 @@
         <div class="absolute top-5 right-5">
             <div class="flex items-center space-x-2">
 <!--                <span class="text-xl">Meet the team</span>-->
-                <a href="/team" class="text-xl underline hover:text-blue-300 cursor-pointer">Meet the team</a>
+<!--                <a href="/team" class="text-xl underline hover:text-blue-300 cursor-pointer">Meet the team</a>-->
+                <p id="creditLink" class="text-xl underline hover:text-blue-300 cursor-pointer">Meet the team</p>
                 <svg fill="none" height="12" viewBox="0 0 12 12" width="12"
                      xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 0H0V2H2V4H4V6H6V8H8V10H10V12H12V0Z" fill="black" />
@@ -370,6 +371,28 @@
             ENTER
         </button>
     </div>
+</div>
+
+<!-- Credit Page -->
+<div id="creditPage" class="relative hidden min-h-screen bg-gif-credit text-white flex flex-col items-center justify-center text-center p-8">
+
+    <!-- Back Button in Top Right -->
+    <button id="backFromCredit" class="absolute top-6 right-6 text-xl underline hover:text-pink-300">
+        Back
+    </button>
+
+    <!-- Centered Content -->
+    <header class="mb-12">
+        <h1 class="text-5xl font-bold">Credits</h1>
+    </header>
+
+    <main class="space-y-6 text-xl">
+        <p>Everything by: <strong>Anna</strong></p>
+        <p>Donkey by: <strong>Lena</strong></p>
+        <p>Wombat by: <strong>Jan</strong></p>
+        <p>Ferret by: <strong>Djoyke</strong></p>
+        <p>Special Thanks: <strong>to everyone who distracted us</strong></p>
+    </main>
 </div>
 
 <!-- SPA Controller Script -->
