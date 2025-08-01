@@ -22,6 +22,10 @@ function hideAllPages() {
   ].forEach((id) => document.getElementById(id)?.classList.add('hidden'));
 }
 
+function setView(viewName: string) {
+  document.body.setAttribute('data-view', viewName);
+}
+
 export function showMessage(el: HTMLElement, text: string): void {
   el.classList.remove('hidden');
   el.textContent = text;
@@ -37,6 +41,7 @@ export function showLoginView() {
   toggle.textContent = 'No account? Register';
 
   loginMessage.classList.remove('hidden');
+  setView('login'); //new
   authPage?.classList.remove('hidden');
   landingPage?.classList.add('hidden');
   profilePage?.classList.add('hidden');
@@ -53,6 +58,7 @@ export function showRegisterView() {
 
   loginMessage.classList.add('hidden');
   registerMessage.classList.remove('hidden');
+  setView('register'); //new
   authPage?.classList.remove('hidden');
   landingPage?.classList.add('hidden');
   profilePage?.classList.add('hidden');
@@ -76,6 +82,7 @@ export function showLandingView() {
 
   hideAllPages();
   landingPage.classList.remove('hidden');
+  setView('landing'); //new
 }
 
 export async function restoreViewOnReload() {
@@ -144,26 +151,31 @@ export function showProfileView() {
     avatarProfile.src = globalSession.getAvatar();
   }
   profilePage?.classList.remove('hidden');
+  setView('profile'); //new
 }
 
 export function showSettingsView() {
   hideAllPages();
   document.getElementById('settingsPage')?.classList.remove('hidden');
+  setView('settings'); // new
 }
 
 export function showPongView() {
   hideAllPages();
   document.getElementById('pongPage')?.classList.remove('hidden');
+  setView('pong'); //new
 }
 
 export function showSnakeView() {
   hideAllPages();
   document.getElementById('snakePage')?.classList.remove('hidden');
+  setView('snake'); //new
 }
 
 export function showPracticeView() {
   hideAllPages();
   document.getElementById('practicePage')?.classList.remove('hidden');
+  setView('practice'); //new
 }
 
 export async function checkLoginStatus() {
