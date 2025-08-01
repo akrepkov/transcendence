@@ -10,7 +10,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   await handleLogin();
   await handleRegister();
   toggleForms();
+
   await restoreViewOnReload();
+
   initLandingEvents();
   initProfileEvents();
   initMainEvents();
