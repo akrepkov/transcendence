@@ -93,6 +93,7 @@ export async function restoreViewOnReload() {
     '/pong': showPongView, // is this the path?
     '/snake': showSnakeView, // is this the path?
     '/practice': showPracticeView, // is this the path?
+    '/ai': showAiView, // is this the path?
   };
 
   const viewFunc = views[path];
@@ -159,6 +160,11 @@ export function showSnakeView() {
 export function showPracticeView() {
   hideAllPages();
   document.getElementById('practicePage')?.classList.remove('hidden');
+}
+
+export function showAiView() {
+  hideAllPages();
+  document.getElementById('aiPage')?.classList.remove('hidden');
 }
 
 export async function checkLoginStatus() {

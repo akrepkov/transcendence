@@ -20,7 +20,16 @@ export function showPongScore() {
 }
 
 export function handleStartGame() {
+  console.log('Starting AI game');
   if (game?.isRunning) return;
   game = new Game();
   game.start();
+}
+
+export function cleanAiField() {
+  const canvas = getCanvasContext();
+  canvas.clearRect(0, 0, canvas.canvas.width, canvas.canvas.height);
+  const scoreAi = document.getElementById('ai-score');
+  if (scoreAi) scoreAi.textContent = '0 : 0';
+  if (game) game.stopGame();
 }

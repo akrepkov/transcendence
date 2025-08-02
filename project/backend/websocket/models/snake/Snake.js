@@ -10,7 +10,7 @@ export const SNAKE_CONSTS = {
   SNAKE_SPEED: 20,
   LEFT_PLAYER: [{ x: 0, y: 300 }],
   RIGHT_PLAYER: [{ x: 780, y: 300 }],
-  MAX_SCORE: 1,
+  MAX_SCORE: 10,
 };
 
 export class Snake {

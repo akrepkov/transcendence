@@ -21,10 +21,10 @@ export function setupGameToggle(socket: WebSocket) {
   console.log('Game Toggle');
 
   /* Container holding start*/
-  // const pongStartContainer = document.getElementById('pong-start-container"');
-  // const snakeStartContainer = document.getElementById('snake-start-container"');
-  // const practiceStartContainer = document.getElementById('practice-start-container"');
-  // const aiStartContainer = document.getElementById('ai-start-container"');
+  // const pongStartContainer = document.getElementById('pong-start-container');
+  // const snakeStartContainer = document.getElementById('snake-start-container');
+  // const practiceStartContainer = document.getElementById('practice-start-container');
+  // const aiStartContainer = document.getElementById('ai-start-container');
 
   /*Previous Enter, starting game*/
   const startPong = document.getElementById('start-button-pong');
@@ -45,7 +45,7 @@ export function setupGameToggle(socket: WebSocket) {
   // const aiContainer = document.getElementById('ai-container');
 
   if (!startPong || !startSnake || !startAi || !startPractice)
-    throw new Error('Start button Pong element not found');
+    throw new Error('Start button element not found');
 
   startPong.addEventListener('click', () => {
     toggleHandler.pongPage.clean();
@@ -75,6 +75,7 @@ export function setupGameToggle(socket: WebSocket) {
   });
 
   startAi.addEventListener('click', () => {
+    console.log('Starting AI game');
     toggleHandler.aiPage.clean();
     toggleHandler.aiPage.start();
   });

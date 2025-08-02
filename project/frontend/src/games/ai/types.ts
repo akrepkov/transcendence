@@ -83,7 +83,7 @@ export class Game {
   public animationId: number | null = null;
   public isRunning: boolean = false;
   private aiReactionCounter: number = 0;
-  private aiReactionRate: number = 5;
+  private aiReactionRate: number = 4;
 
   constructor() {
     this.player = new Paddle(0, 'Player');
@@ -165,6 +165,7 @@ export class Game {
     } catch (e) {
       console.warn('Canvas could not be reset:', e);
     }
+    console.log('Game stopped, winner:', this.winner);
     const aiScoreEl = document.getElementById('ai-score');
     const scoreText = `The winner is ${this.winner}`;
     if (aiScoreEl && aiScoreEl.offsetParent !== null) {

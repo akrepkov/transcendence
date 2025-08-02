@@ -7,6 +7,7 @@ import {
   showSnakeView,
   showPongView,
   showPracticeView,
+  showAiView,
 } from '../navigation/navigation.js';
 import { globalSession } from '../auth/auth.js';
 
@@ -78,6 +79,15 @@ export function initHistoryHandling(): void {
     } else if (state.view === 'practice') {
       if (isLoggedIn) {
         showPracticeView();
+      } else {
+        showLoginView();
+        setTimeout(() => {
+          history.pushState({ view: 'auth', form: 'login' }, '', '/login');
+        }, 0);
+      }
+    } else if (state.view === 'ai') {
+      if (isLoggedIn) {
+        showAiView();
       } else {
         showLoginView();
         setTimeout(() => {

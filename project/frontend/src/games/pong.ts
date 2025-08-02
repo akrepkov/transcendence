@@ -60,11 +60,13 @@ export function drawPong(data: GameStatePong, ctx: CanvasRenderingContext2D) {
 }
 
 export function showPongScore(data: GameStatePong) {
-  const scorePong = document.getElementById('pong-score');
-  if (scorePong)
-    scorePong.innerHTML = `
+  if (running === true) {
+    const scorePong = document.getElementById('pong-score');
+    if (scorePong)
+      scorePong.innerHTML = `
   <span style="color: red;">${data.players[0].playerName}</span> ${data.players[0].score} : 
   ${data.players[1].score} <span style="color: blue;">${data.players[1].playerName}</span>`;
+  }
 }
 
 export function cleanPongField() {
@@ -84,6 +86,7 @@ export function cleanPongField() {
 
 export function gameOverPong(winner: string) {
   cleanPongField();
+  console.log(`Game over, winner: ${winner}`);
   const pongScore = document.getElementById('pong-score');
   const scoreText = `The winner is ${winner}`;
   if (pongScore && pongScore.offsetParent !== null) {

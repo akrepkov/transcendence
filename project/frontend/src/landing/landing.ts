@@ -3,12 +3,14 @@ import {
   showSnakeView,
   showPracticeView,
   showLandingView,
+  showAiView,
 } from '../navigation/navigation.js';
 
 export function initLandingEvents(): void {
   const pongButton = document.getElementById('pongButton');
   const snakeButton = document.getElementById('snakeButton');
   const practiceButton = document.getElementById('practiceButton');
+  const aiButton = document.getElementById('aiButton');
 
   if (pongButton) {
     pongButton.addEventListener('click', () => {
@@ -28,6 +30,12 @@ export function initLandingEvents(): void {
     practiceButton.addEventListener('click', () => {
       showPracticeView();
       history.pushState({ view: 'practice' }, '', '/practice');
+    });
+  }
+  if (aiButton) {
+    aiButton.addEventListener('click', () => {
+      showAiView();
+      history.pushState({ view: 'ai' }, '', '/ai');
     });
   }
 }

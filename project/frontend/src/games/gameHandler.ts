@@ -4,7 +4,7 @@ import { renderGame } from './render.js';
 import { cleanPongField } from './pong.js';
 import { cleanSnakeField } from './snake.js';
 import { handleStartGame } from './ai/render.js';
-
+import { cleanAiField } from './ai/render.js';
 export const gameHandler = {
   pong: {
     create: pong.createPongGame,
@@ -77,10 +77,9 @@ export const toggleHandler = {
     startBtn: 'start-button-practice',
     stopBtn: 'stop-button-practice',
     start() {
-      // socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'practice' }));
       // document.getElementById(this.startContainer)?.classList.add('hidden');
       // document.getElementById(this.gameContainer)?.classList.remove('hidden');
-      // renderGame(socket, 'practice');
+      // handleStartGame();
     },
     clean() {
       // const scorepractice = document.getElementById('practice-score');
@@ -107,17 +106,15 @@ export const toggleHandler = {
       handleStartGame();
     },
     clean() {
-      // const scoreai = document.getElementById('ai-score');
-      // if (scoreai) scoreai.textContent = '0 : 0';
-      // cleanAiField();
+      const scoreai = document.getElementById('ai-score');
+      if (scoreai) scoreai.textContent = '0 : 0';
+      cleanAiField();
     },
     reset() {
-      // document.getElementById(this.startContainer)?.classList.remove('hidden');
-      // document.getElementById(this.gameContainer)?.classList.add('hidden');
-      // if (socket.readyState === WebSocket.OPEN) {
-      // 	socket.send(JSON.stringify({ type: 'disconnectFromGame' }));
-      // }
-      // cleanAiField();
+      document.getElementById(this.startContainer)?.classList.remove('hidden');
+      document.getElementById(this.gameContainer)?.classList.add('hidden');
+      cleanAiField();
+      document.getElementById('aiPage')?.classList.add('hidden');
     },
   },
 };

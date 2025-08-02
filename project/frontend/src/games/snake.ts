@@ -14,7 +14,7 @@ export function createSnakeGame(data: GameStateSnake, socket: WebSocket) {
 export function drawSnake(data: GameStateSnake, ctx: CanvasRenderingContext2D) {
   if (running === true) {
     ctx.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = 'white';
     ctx.fillRect(data.apple.x, data.apple.y, 20, 20);
     data.players.forEach((player, index) => {
       ctx.fillStyle = index === 0 ? 'red' : 'blue';
@@ -43,11 +43,13 @@ export function moveSnakes(game: GameStateSnake, event: KeyboardEvent, socket: W
 }
 
 export function showSnakeScore(data: GameStateSnake) {
-  const scoreSnake = document.getElementById('snake-score');
-  if (scoreSnake)
-    scoreSnake.innerHTML = `
+  if (running === true) {
+    const scoreSnake = document.getElementById('snake-score');
+    if (scoreSnake)
+      scoreSnake.innerHTML = `
   <span style="color: red;">${data.players[0].playerName}</span> ${data.players[0].score} : 
   ${data.players[1].score} <span style="color: blue;">${data.players[1].playerName}</span>`;
+  }
 }
 
 export function cleanSnakeField() {
