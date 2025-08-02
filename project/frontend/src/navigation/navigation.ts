@@ -22,6 +22,10 @@ function hideAllPages() {
   ].forEach((id) => document.getElementById(id)?.classList.add('hidden'));
 }
 
+function setView(viewName: string) {
+  document.body.setAttribute('data-view', viewName);
+}
+
 export function showMessage(el: HTMLElement, text: string): void {
   el.classList.remove('hidden');
   el.textContent = text;
@@ -37,6 +41,7 @@ export function showLoginView() {
   toggle.textContent = 'No account? Register';
 
   loginMessage.classList.remove('hidden');
+  setView('login'); //new
   authPage?.classList.remove('hidden');
   landingPage?.classList.add('hidden');
   profilePage?.classList.add('hidden');
@@ -53,6 +58,7 @@ export function showRegisterView() {
 
   loginMessage.classList.add('hidden');
   registerMessage.classList.remove('hidden');
+  setView('register'); //new
   authPage?.classList.remove('hidden');
   landingPage?.classList.add('hidden');
   profilePage?.classList.add('hidden');
@@ -76,6 +82,7 @@ export function showLandingView() {
 
   hideAllPages();
   landingPage.classList.remove('hidden');
+  setView('landing'); //new
 }
 
 export async function restoreViewOnReload() {
@@ -99,10 +106,15 @@ export async function restoreViewOnReload() {
   const viewFunc = views[path];
 
   if (!viewFunc) {
-    // Unknown path — redirect to login
-    history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
-    showLoginView();
-    return;
+    if (isLoggedIn) {
+      navigateTo('landing', '/landing', showLandingView);
+      return;
+    } else {
+      // Unknown path — redirect to login
+      history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
+      showLoginView();
+      return;
+    }
   }
 
   const isAuthPage = path === '/login' || path === '/register';
@@ -125,6 +137,34 @@ export async function restoreViewOnReload() {
   }
 }
 
+/***
+function should accept a string which is either your own username or friends name
+export function showProfileView(string username (either globalSession.username (default own profile) else friends name)) {
+  hideAllPages();
+
+  const res = await fetch('/api/view_user_profile?userName=username', {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    }),
+  });
+
+  document.getElementById('profilePage')?.classList.remove('hidden');
+
+  const heading = document.getElementById('profileHeading');
+  if (heading) {
+    const username = globalSession.getUsername();
+    heading.textContent = `${username}'s Profile`;
+  }
+
+  const avatarProfile = document.getElementById('avatar-profile') as HTMLImageElement;
+  if (avatarProfile) {
+    avatarProfile.src = globalSession.getAvatar();
+  }
+  profilePage?.classList.remove('hidden');
+  setView('profile'); //new
+}*/
+
 export function showProfileView() {
   hideAllPages();
   document.getElementById('profilePage')?.classList.remove('hidden');
@@ -140,26 +180,31 @@ export function showProfileView() {
     avatarProfile.src = globalSession.getAvatar();
   }
   profilePage?.classList.remove('hidden');
+  setView('profile'); //new
 }
 
 export function showSettingsView() {
   hideAllPages();
   document.getElementById('settingsPage')?.classList.remove('hidden');
+  setView('settings'); // new
 }
 
 export function showPongView() {
   hideAllPages();
   document.getElementById('pongPage')?.classList.remove('hidden');
+  setView('pong'); //new
 }
 
 export function showSnakeView() {
   hideAllPages();
   document.getElementById('snakePage')?.classList.remove('hidden');
+  setView('snake'); //new
 }
 
 export function showPracticeView() {
   hideAllPages();
   document.getElementById('practicePage')?.classList.remove('hidden');
+  setView('practice'); //new
 }
 
 export function showAiView() {
