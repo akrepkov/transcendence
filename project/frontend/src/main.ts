@@ -5,6 +5,7 @@ import { initProfileEvents } from './profile/profile.js';
 import { initLandingEvents, initBackToLanding } from './landing/landing.js';
 import { initMainEvents } from './init/initMainEvents.js';
 import { initHistoryHandling } from './init/initHistory.js';
+import { initCreditsNavigation } from './init/initCredits.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   await handleLogin();
@@ -17,6 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initProfileEvents();
   initMainEvents();
   initHistoryHandling();
+  initCreditsNavigation();
 
   //back buttons
   initBackToLanding('backFromPong');
