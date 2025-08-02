@@ -50,10 +50,10 @@ const getLoggerConfig = () =>
 const fastify = Fastify({
   // logger: true,
   logger: getLoggerConfig(),
-  // https: {
-  //   key: fs.readFileSync(path.join(__dirname, 'certs/key.pem')),
-  //   cert: fs.readFileSync(path.join(__dirname, 'certs/cert.pem')),
-  // },
+  https: {
+    key: fs.readFileSync(path.join(__dirname, 'certs/key.pem')),
+    cert: fs.readFileSync(path.join(__dirname, 'certs/cert.pem')),
+  },
 });
 
 fastify.register(fastifyMultipart, {

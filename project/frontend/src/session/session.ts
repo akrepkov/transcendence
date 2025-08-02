@@ -27,7 +27,7 @@ export class Session {
   public login(username: string, email: string, avatar: string) {
     this.username = username;
     this.email = email;
-    this.socket = new WebSocket(`wss://${window.location.hostname}/ws/connect`);
+    this.socket = new WebSocket(`wss://${window.location.hostname}:3000/ws/connect`);
     // console.log('Am I logged IN : ', localStorage.getItem('username'));
     setupSocketEvents(this.socket);
     setupGameToggle(this.socket);
