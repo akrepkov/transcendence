@@ -142,24 +142,41 @@ export async function restoreViewOnReload() {
   }
 }
 
-/***
-function should accept a string which is either your own username or friends name
-export function showProfileView(string username (either globalSession.username (default own profile) else friends name)) {
+/**
+ * Displays the profile view for a specified user or defaults to the currently logged-in user.
+ *
+ * - Hides all other views before displaying the profile page.
+ * - Fetches profile data from the server for the given or current user.
+ * - Updates the profile heading and avatar.
+ * - Handles fallback if no username is provided.
+ *
+ * @param {string} [username] - Optional username to display the profile for.
+ *                              If not provided, defaults to the currently logged-in user via `globalSession.getUsername()`.
+ */
+export async function showProfileView(username?: string) {
   hideAllPages();
 
-  const res = await fetch('/api/view_user_profile?userName=username', {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    }),
-  });
+  const providedUsername = username || globalSession.getUsername();
+
+  const res = await fetch(
+    `/api/view_user_profile?userName=${encodeURIComponent(providedUsername)}`,
+    {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+    },
+  );
+
+  if (!res.ok) {
+    console.error('Failed to fetch user profile');
+    return;
+  }
 
   document.getElementById('profilePage')?.classList.remove('hidden');
 
   const heading = document.getElementById('profileHeading');
   if (heading) {
-    const username = globalSession.getUsername();
-    heading.textContent = `${username}'s Profile`;
+    heading.textContent = `${providedUsername}'s Profile`;
   }
 
   const avatarProfile = document.getElementById('avatar-profile') as HTMLImageElement;
@@ -167,49 +184,49 @@ export function showProfileView(string username (either globalSession.username (
     avatarProfile.src = globalSession.getAvatar();
   }
   profilePage?.classList.remove('hidden');
-  setView('profile'); //new
-}*/
-
-export function showProfileView() {
-  hideAllPages();
-  document.getElementById('profilePage')?.classList.remove('hidden');
-
-  const heading = document.getElementById('profileHeading');
-  if (heading) {
-    const username = globalSession.getUsername();
-    heading.textContent = `${username}'s Profile`;
-  }
-
-  const avatarProfile = document.getElementById('avatar-profile') as HTMLImageElement;
-  if (avatarProfile) {
-    avatarProfile.src = globalSession.getAvatar();
-  }
-  profilePage?.classList.remove('hidden');
-  setView('profile'); //new
+  setView('profile');
 }
+
+// export function showProfileView() {
+//   hideAllPages();
+//   document.getElementById('profilePage')?.classList.remove('hidden');
+//
+//   const heading = document.getElementById('profileHeading');
+//   if (heading) {
+//     const username = globalSession.getUsername();
+//     heading.textContent = `${username}'s Profile`;
+//   }
+//
+//   const avatarProfile = document.getElementById('avatar-profile') as HTMLImageElement;
+//   if (avatarProfile) {
+//     avatarProfile.src = globalSession.getAvatar();
+//   }
+//   profilePage?.classList.remove('hidden');
+//   setView('profile');
+// }
 
 export function showSettingsView() {
   hideAllPages();
   document.getElementById('settingsPage')?.classList.remove('hidden');
-  setView('settings'); // new
+  setView('settings');
 }
 
 export function showPongView() {
   hideAllPages();
   document.getElementById('pongPage')?.classList.remove('hidden');
-  setView('pong'); //new
+  setView('pong');
 }
 
 export function showSnakeView() {
   hideAllPages();
   document.getElementById('snakePage')?.classList.remove('hidden');
-  setView('snake'); //new
+  setView('snake');
 }
 
 export function showPracticeView() {
   hideAllPages();
   document.getElementById('practicePage')?.classList.remove('hidden');
-  setView('practice'); //new
+  setView('practice');
 }
 
 export function showCreditView() {
