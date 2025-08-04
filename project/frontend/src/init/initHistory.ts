@@ -7,6 +7,7 @@ import {
   showSnakeView,
   showPongView,
   showPracticeView,
+  showCreditView,
 } from '../navigation/navigation.js';
 import { globalSession } from '../auth/auth.js';
 
@@ -29,6 +30,8 @@ export function initHistoryHandling(): void {
         showLoginView();
       } else if (state.form === 'register') {
         showRegisterView();
+      } else if (state.form === 'credits') {
+        showCreditView();
       }
     } else if (state.view === 'landing') {
       if (isLoggedIn) {

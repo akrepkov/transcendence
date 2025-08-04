@@ -24,6 +24,9 @@ export function initProfileEvents() {
   }
 }
 
+// add a friend ('/api/add_friend') pass (userName, friendUsername) fetch (POST)
+// make friend visible
+
 //method clickOnFriend() {
 //   showprofileview with friends name
 //
