@@ -125,8 +125,8 @@ export async function websocketHandler(socket, req) {
   }
   await handleNewConnection(socket, decodedToken);
 }
-
-const loggingInterval = setInterval(() => {
-  gameManager.printGameSystemStatus();
-  connectionManager.printUsers();
-}, 15000);
+//
+// const loggingInterval = setInterval(() => {
+//   gameManager.printGameSystemStatus();
+//   connectionManager.printUsers();
+// }, 15000);
