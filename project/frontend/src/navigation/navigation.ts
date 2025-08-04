@@ -1,4 +1,5 @@
 import { globalSession } from '../auth/auth.js';
+import { showFriends, fetchUserProfile } from '../profile/profile.js';
 
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
@@ -157,38 +158,51 @@ export async function showProfileView(username?: string) {
   hideAllPages();
 
   const providedUsername = username || globalSession.getUsername();
+  try {
+    document.getElementById('profilePage')?.classList.remove('hidden');
 
-  const res = await fetch(
-    `/api/view_user_profile?userName=${encodeURIComponent(providedUsername)}`,
-    {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-    },
-  );
+    const jsonResult = await fetchUserProfile(providedUsername);
+    const heading = document.getElementById('profileHeading');
+    if (heading) {
+      heading.textContent = jsonResult.username;
+    }
 
-  if (!res.ok) {
-    console.error('Failed to fetch user profile');
+    const avatarProfile = document.getElementById('avatar-profile') as HTMLImageElement;
+    if (avatarProfile) {
+      if (jsonResult.avatar === null) {
+        avatarProfile.src = '/uploads/avatars/wow_cat.jpg'; //TODO remove after backend database fix
+      } else {
+        avatarProfile.src = jsonResult.avatar;
+      }
+    }
+    await showFriends(providedUsername);
+    // Hide "Add Friend" input if viewing another user's profile
+    const isOwnProfile = providedUsername === globalSession.getUsername();
+    const addFriendSection = document.getElementById('addFriendSection');
+
+    if (addFriendSection) {
+      if (isOwnProfile) {
+        addFriendSection.classList.remove('hidden');
+      } else {
+        addFriendSection.classList.add('hidden');
+      }
+    }
+
+    const backToOwnButton = document.getElementById('backToOwnProfile');
+    if (backToOwnButton) {
+      if (isOwnProfile) {
+        backToOwnButton.classList.add('hidden');
+      } else {
+        backToOwnButton.classList.remove('hidden');
+      }
+    }
+
+    profilePage?.classList.remove('hidden');
+    setView('profile');
+  } catch (err) {
+    console.error('Error loading profile:', err);
     return;
   }
-
-  // console.log(res.json());
-
-  document.getElementById('profilePage')?.classList.remove('hidden');
-
-  const heading = document.getElementById('profileHeading');
-  if (heading) {
-    heading.textContent = `${providedUsername}'s Profile`;
-  }
-
-  const friendlist = document.getElementById('friendlist');
-
-  const avatarProfile = document.getElementById('avatar-profile') as HTMLImageElement;
-  if (avatarProfile) {
-    avatarProfile.src = globalSession.getAvatar();
-  }
-  profilePage?.classList.remove('hidden');
-  setView('profile');
 }
 
 export function showSettingsView() {
