@@ -41,6 +41,19 @@ export function initProfileEvents() {
   }
 }
 
+function showFriendMessage(text: string, isError = false) {
+  const message = document.getElementById('friendMessage');
+  if (!message) return;
+
+  message.textContent = text;
+  message.classList.remove('text-blue-800', 'text-red-800', 'hidden');
+  message.classList.add(isError ? 'text-red-800' : 'text-blue-800');
+
+  setTimeout(() => {
+    message.textContent = '';
+  }, 4000);
+}
+
 export async function fetchUserProfile(username: string) {
   const res = await fetch(`/api/view_user_profile?userName=${encodeURIComponent(username)}`, {
     method: 'GET',
@@ -78,11 +91,14 @@ export async function addFriend() {
     if (res.ok) {
       await showFriends(userName);
       input.value = ''; // clear input after adding
+      showFriendMessage('${friendUsername} Friend added successfully');
     } else {
-      console.error('Error adding friend booh');
+      const { message } = await res.json().catch(() => ({}));
+      showFriendMessage(message || 'Could not add friend', true);
     }
   } catch (err) {
     console.error('Request failed:', err);
+    showFriendMessage('Server error. Please try again later.', true);
   }
 }
 
