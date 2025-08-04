@@ -1,3 +1,6 @@
+import { setupSocketEvents } from '../games/gameToggle.js';
+import { setupGameToggle } from '../games/gameToggle.js';
+
 export class Session {
   private username: string = '';
   private email: string = '';
@@ -5,6 +8,7 @@ export class Session {
   private loggedIn: boolean = false;
   private snakeStats: string = '';
   private pongStats: string = '';
+  private socket: WebSocket | null = null;
 
   public constructor() {
     this.reset();
@@ -17,11 +21,16 @@ export class Session {
     this.loggedIn = false;
     this.snakeStats = '';
     this.pongStats = '';
+    this.socket = null;
   }
 
   public login(username: string, email: string, avatar: string) {
     this.username = username;
     this.email = email;
+    this.socket = new WebSocket(`wss://${window.location.hostname}:3000/ws/connect`);
+    // console.log('Am I logged IN : ', localStorage.getItem('username'));
+    setupSocketEvents(this.socket);
+    setupGameToggle(this.socket);
     if (!avatar) {
       this.avatar = '/uploads/avatars/wow_cat.jpg';
     } else {
@@ -31,6 +40,7 @@ export class Session {
   }
 
   public logout() {
+    this.socket?.close();
     this.reset();
   }
 

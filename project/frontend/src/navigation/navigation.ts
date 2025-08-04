@@ -106,6 +106,7 @@ export async function restoreViewOnReload() {
     '/snake': showSnakeView,
     '/practice': showPracticeView,
     '/credits': showCreditView,
+    '/ai': showAiView, // is this the path?
   };
 
   const viewFunc = views[path];
@@ -233,6 +234,11 @@ export function showCreditView() {
   hideAllPages();
   document.getElementById('creditPage')?.classList.remove('hidden');
   setView('credits');
+}
+
+export function showAiView() {
+  hideAllPages();
+  document.getElementById('aiPage')?.classList.remove('hidden');
 }
 
 export async function checkLoginStatus() {

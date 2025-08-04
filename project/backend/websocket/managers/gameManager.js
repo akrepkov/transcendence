@@ -1,5 +1,6 @@
 import { messageManager } from './messageManager.js';
 import { Pong } from '../models/pong/Pong.js';
+import { Snake } from '../models/snake/Snake.js';
 import { REJECT } from './messageManager.js';
 import { matchmakingHandler } from '../handlers/matchmakingHandler.js';
 import { waitingListManager } from './waitingListManager.js';
@@ -23,7 +24,7 @@ function createGame(connection1, connection2, gameType) {
     game = new Pong(connection1, connection2, gameId);
   } else if (gameType === 'snake') {
     console.log('Creating Snake game, sssssssssss');
-    return;
+    game = new Snake(connection1, connection2, gameId);
   }
   activeGames.set(gameId, game);
 
@@ -118,6 +119,7 @@ async function handleDisconnect(connection, reason = 'disconnected') {
           .createBroadcast({
             type: 'opponentDisconnected',
             reason: reason,
+            winner: otherPlayer.username,
           })
           .to.single(otherPlayer.socket);
       }
