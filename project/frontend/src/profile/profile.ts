@@ -27,7 +27,6 @@ export function initProfileEvents() {
 
   if (addFriendButton) {
     addFriendButton.addEventListener('click', () => {
-      const username = globalSession.getUsername();
       addFriend(); // needs value from promise?
     });
   }
@@ -91,7 +90,7 @@ export async function addFriend() {
     if (res.ok) {
       await showFriends(userName);
       input.value = ''; // clear input after adding
-      showFriendMessage('${friendUsername} Friend added successfully');
+      showFriendMessage('Friend added successfully');
     } else {
       const { message } = await res.json().catch(() => ({}));
       showFriendMessage(message || 'Could not add friend', true);

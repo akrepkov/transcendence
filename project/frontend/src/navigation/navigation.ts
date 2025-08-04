@@ -10,7 +10,6 @@ const registerMessage = document.getElementById('registerMessage');
 const authPage = document.getElementById('authPage');
 const landingPage = document.getElementById('landingPage');
 const profilePage = document.getElementById('profilePage');
-// const settingsPage = document.getElementById('settingsPage');
 const creditPage = document.getElementById('creditPage');
 
 function hideAllPages() {
@@ -194,6 +193,15 @@ export async function showProfileView(username?: string) {
         backToOwnButton.classList.add('hidden');
       } else {
         backToOwnButton.classList.remove('hidden');
+      }
+    }
+
+    const settingsButton = document.getElementById('settingsToggle');
+    if (settingsButton) {
+      if (isOwnProfile) {
+        settingsButton.classList.remove('hidden');
+      } else {
+        settingsButton.classList.add('hidden');
       }
     }
 
