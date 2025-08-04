@@ -112,7 +112,15 @@ export class Snake {
           winner,
         })
         .to.sockets(this.playerSockets);
-      // gameManager.saveGameInDatabase(this.gameId, winner, loser, ...)
+      let winnerPlayer = this.players.find((player) => player.playerName === winner);
+      let loserPlayer = this.players.find((player) => player.playerName === loser);
+      gameManager.saveGameInDatabase(
+        this.gameId,
+        winner,
+        loser,
+        winnerPlayer.score,
+        loserPlayer.score,
+      );
       gameManager.removeGame(this.gameId);
     }
   }
