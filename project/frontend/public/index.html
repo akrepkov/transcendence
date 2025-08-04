@@ -2,136 +2,126 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Transcendence</title>
-	<script src="https://cdn.tailwindcss.com"></script>
-	<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
-	<link rel="icon" type="image/x-icon" href="/favicon.ico" />
-	<link rel="icon" type="image/png" href="/favicon.png" />
-	<link rel="shortcut icon" href="/favicon.ico" />
-	<style>
-		body {
-			font-family: 'VT323', monospace;
-			background-color: #000000;
-			color: #FFFFFF;
-		}
-
-		.bg-auth-gif {
-			background-image: url('/assets/legs.gif');
-			background-repeat: no-repeat;
-			background-size: cover;
-			background-position: center;
-		}
-
-		.bg-gif-landing {
-			background-color: #2196f3;
-			background-image: url('/assets/store-front.gif');
-			background-repeat: no-repeat;
-			background-size: cover;
-			background-position: center;
-		}
-
-		.bg-gif-pong {
-			background-color: #a5d6ff;
-			background-image: url('/assets/supermarket.gif');
-			background-repeat: no-repeat;
-			background-size: cover;
-			background-position: center;
-		}
-
-		.bg-gif-snake {
-			background-color: #0f5323;
-			background-image: url('/assets/fairytale.gif');
-			background-repeat: no-repeat;
-			background-size: cover;
-			background-position: center;
-		}
-
-		.bg-gif-profile {
-			background-color: #ffbedd;
-			background-image: url('/assets/school_window.gif');
-			background-repeat: no-repeat;
-			background-size: cover;
-			background-position: center;
-		}
-
-		.bg-gif-practice {
-			background-color: #a5d6ff;
-			background-image: url('/assets/train_rain.gif');
-			background-repeat: no-repeat;
-			background-size: cover;
-			background-position: center;
-		}
-
-		.bg-gif-tournament {
-			background-color: #a5d6ff;
-			background-image: url('/assets/train_rain.gif');
-			background-repeat: no-repeat;
-			background-size: cover;
-			background-position: center;
-		}
-
-		.bg-gif-settings {
-			background-color: #000000;
-			background-image: url('/assets/sushi-belt.gif');
-			background-repeat: no-repeat;
-			background-size: cover;
-			background-position: center;
-		}
-
-		.pixelated-border {
-			border: 4px solid #FFFFFF;
-			box-shadow: 4px 4px 0px #FFFFFF;
-		}
-
-		.pixelated-border-landing {
-			border: 4px solid #000;
-			box-shadow: 4px 4px 0px #000;
-		}
-
-		.pixelated-bracket {
-			font-size: 8rem;
-			line-height: 1;
-		}
-
-		.pixelated-icon {
-			font-family: 'VT323', monospace;
-			font-size: 8rem;
-		}
-
-		.pixelated-button {
-			border: 2px solid #FFFFFF;
-			padding: 8px 16px;
-			text-align: center;
-			display: inline-block;
-			color: #FFFFFF;
-			cursor: pointer;
-			box-shadow: 2px 2px 0px #FFFFFF;
-			transition: all 0.1s ease-in-out;
-		}
-
-		.pixelated-button-landing {
-			border: 2px solid #000;
-			padding: 8px 16px;
-			text-align: center;
-			display: inline-block;
-			color: #000;
-			cursor: pointer;
-			box-shadow: 2px 2px 0px #000;
-			transition: all 0.1s ease-in-out;
-		}
-
-		.pixelated-button:hover {
-			background-color: #FFFFFF;
-			color: #000000;
-			box-shadow: -2px -2px 0px #FFFFFF;
-		}
-
-		.hidden {
-			display: none;
-		}
-	</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transcendence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <style>
+        body {
+            font-family: 'VT323', monospace;
+            background-color: #000000;
+            color: #FFFFFF;
+        }
+        .bg-auth-gif {
+            background-image: url('/assets/legs.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+        .bg-gif-credit {
+            background-color: #0550ae;
+            background-image: url('/assets/jelly_fish.gif');
+            /*background-image: url('/assets/cooking.gif');*/
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+        .bg-gif-landing {
+            background-color: #2196f3;
+            background-image: url('/assets/store-front.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+        .bg-gif-pong {
+            background-color: #a5d6ff;
+            background-image: url('/assets/supermarket.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+        .bg-gif-snake {
+            background-color: #0f5323;
+            background-image: url('/assets/fairytale.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+        .bg-gif-profile {
+            background-color: #ffbedd;
+            background-image: url('/assets/school_window.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+        .bg-gif-practice {
+            background-color: #a5d6ff;
+            background-image: url('/assets/train_rain.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+        .bg-gif-tournament {
+            background-color: #a5d6ff;
+            background-image: url('/assets/train_rain.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+        .bg-gif-settings {
+            background-color: #000000;
+            background-image: url('/assets/sushi-belt.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+        .pixelated-border {
+            border: 4px solid #FFFFFF;
+            box-shadow: 4px 4px 0px #FFFFFF;
+        }
+        .pixelated-border-landing {
+            border: 4px solid #000;
+            box-shadow: 4px 4px 0px #000;
+        }
+        .pixelated-bracket {
+            font-size: 8rem;
+            line-height: 1;
+        }
+        .pixelated-icon {
+            font-family: 'VT323', monospace;
+            font-size: 8rem;
+        }
+        .pixelated-button {
+            border: 2px solid #FFFFFF;
+            padding: 8px 16px;
+            text-align: center;
+            display: inline-block;
+            color: #FFFFFF;
+            cursor: pointer;
+            box-shadow: 2px 2px 0px #FFFFFF;
+            transition: all 0.1s ease-in-out;
+        }
+        .pixelated-button-landing {
+            border: 2px solid #000;
+            padding: 8px 16px;
+            text-align: center;
+            display: inline-block;
+            color: #000;
+            cursor: pointer;
+            box-shadow: 2px 2px 0px #000;
+            transition: all 0.1s ease-in-out;
+        }
+        .pixelated-button:hover {
+            background-color: #FFFFFF;
+            color: #000000;
+            box-shadow: -2px -2px 0px #FFFFFF;
+        }
+        .hidden {display: none;}
+    </style>
 </head>
 
 <body class="min-h-screen">
@@ -147,80 +137,84 @@
 				<h1 class="text-6xl font-bold">TRANSCENDENCE</h1>
 			</div>
 
-			<!-- Page -->
-			<h2 id="formTitle" class="text-3xl font-bold text-center">Login</h2>
-			<!-- Login Form -->
-			<form id="loginForm" class="space-y-6 text-left">
-				<div class="relative">
-					<input id="loginUsername" name="username" type="text" placeholder="Enter your username"
-						class="block w-full px-4 py-3 bg-black/70 border-2 border-white focus:outline-none focus:ring-0"
-						required />
-				</div>
+        <!-- Page -->
+        <h2 id="formTitle" class="text-3xl font-bold text-center">Login</h2>
+        <!-- Login Form -->
+        <form id="loginForm" class="space-y-6 text-left">
+            <div class="relative">
+                <input id="loginUsername"
+                       name="username"
+                       type="text"
+                       placeholder="Enter your username"
+                       class="block w-full px-4 py-3 bg-black/70 border-2 border-white focus:outline-none focus:ring-0" required />
+            </div>
 
-				<div class="relative">
-					<input id="loginPassword" name="password" type="password" placeholder="Enter your password"
-						class="block w-full px-4 py-3 bg-black/70 border-2 border-white focus:outline-none focus:ring-0"
-						required />
-				</div>
+            <div class="relative">
+                <input id="loginPassword"
+                       name="password"
+                       type="password"
+                       placeholder="Enter your password"
+                       class="block w-full px-4 py-3 bg-black/70 border-2 border-white focus:outline-none focus:ring-0" required />
+            </div>
 
-				<button type="submit" class="pixelated-button bg-black/70 w-full text-xl">Log In</button>
-			</form>
+            <button type="submit" class="pixelated-button bg-black/70 w-full text-xl">Log In</button>
+        </form>
 
-			<!-- Register Form (initially hidden) -->
-			<form id="registerForm" class="space-y-6 text-left hidden">
-				<div class="relative">
-					<input id="registerUsername" type="text" placeholder="Enter username"
-						class="block w-full px-4 py-3 bg-black/70 border-2 border-white focus:outline-none focus:ring-0"
-						required />
-				</div>
+        <!-- Register Form (initially hidden) -->
+        <form id="registerForm" class="space-y-6 text-left hidden">
+            <div class="relative">
+                <input id="registerUsername" type="text" placeholder="Enter username"
+                       class="block w-full px-4 py-3 bg-black/70 border-2 border-white focus:outline-none focus:ring-0" required />
+            </div>
 
-				<div class="relative">
-					<input id="registerEmail" type="email" placeholder="Enter email"
-						class="block w-full px-4 py-3 bg-black/70 border-2 border-white focus:outline-none focus:ring-0"
-						required />
-				</div>
+            <div class="relative">
+                <input id="registerEmail" type="email" placeholder="Enter email"
+                       class="block w-full px-4 py-3 bg-black/70 border-2 border-white focus:outline-none focus:ring-0" required />
+            </div>
 
-				<div class="relative">
-					<input id="registerPassword" type="password" placeholder="Enter password"
-						class="block w-full px-4 py-3 bg-black/70 border-2 border-white focus:outline-none focus:ring-0 peer"
-						required />
-				</div>
+            <div class="relative">
+                <input id="registerPassword" type="password" placeholder="Enter password"
+                       class="block w-full px-4 py-3 bg-black/70 border-2 border-white focus:outline-none focus:ring-0 peer" required />
+            </div>
 
-				<button type="submit" class="pixelated-button bg-black/70 w-full text-xl">Register</button>
-			</form>
+            <button type="submit" class="pixelated-button bg-black/70 w-full text-xl">Register</button>
+        </form>
 
-			<!-- Toggle -->
-			<p id="toggleForm" class="mt-4 text-lg underline cursor-pointer hover:text-blue-400 text-center">
-				No account? Register
-			</p>
+        <!-- Toggle -->
+        <p id="toggleForm" class="mt-4 text-lg underline cursor-pointer hover:text-blue-400 text-center">
+            No account? Register
+        </p>
 
-			<!-- Messages -->
-			<p id="registerMessage" class="text-xl text-center"></p>
-			<p id="loginMessage" class="text-xl text-center"></p>
+        <!-- Messages -->
+        <p id="registerMessage" class="text-xl text-center"></p>
+        <p id="loginMessage" class="text-xl text-center"></p>
 
-			<!-- Dev + Footer Info -->
-			<div class="absolute top-5 right-5">
-				<div class="flex items-center space-x-2">
-					<span class="text-xl">Meet the team</span>
-					<svg fill="none" height="12" viewBox="0 0 12 12" width="12" xmlns="http://www.w3.org/2000/svg">
-						<path d="M12 0H0V2H2V4H4V6H6V8H8V10H10V12H12V0Z" fill="black" />
-					</svg>
-				</div>
-			</div>
-		</div>
-	</div>
+        <!-- Dev + Footer Info -->
+        <div class="absolute top-5 right-5">
+            <div class="flex items-center space-x-2">
+<!--                <span class="text-xl">Meet the team</span>-->
+<!--                <a href="/team" class="text-xl underline hover:text-blue-300 cursor-pointer">Meet the team</a>-->
+                <p id="creditLink" class="text-xl underline hover:text-blue-300 cursor-pointer">Meet the team</p>
+                <svg fill="none" height="12" viewBox="0 0 12 12" width="12"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 0H0V2H2V4H4V6H6V8H8V10H10V12H12V0Z" fill="black" />
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
 
-	<!-- Landing Page -->
-	<div id="landingPage" class="hidden min-h-screen p-8 bg-gif-landing text-black">
-		<header class="flex justify-between items-center mb-16 px-6 py-4">
-			<nav class="flex items-center space-x-8 text-xl">
-				<!-- nav content -->
-			</nav>
-			<div class="flex flex-col items-center text-center bg-blue-300 bg-opacity-70 px-4 py-3 rounded-lg">
-				<span class="text-xl">Welcome, <span id="username"></span></span>
-				<img src="" alt="Avatar" id="avatar" class="w-32 h-32 mt-5 pixelated-border-landing cursor-pointer" />
-			</div>
-		</header>
+<!-- Landing Page -->
+<div id="landingPage" class="hidden min-h-screen p-8 bg-gif-landing text-black">
+    <header class="flex justify-between items-center mb-16 px-6 py-4">
+        <nav class="flex items-center space-x-8 text-xl">
+            <!-- nav content -->
+        </nav>
+        <div class="flex flex-col items-center text-center bg-blue-300 bg-opacity-70 px-4 py-3 rounded-lg">
+            <span class="text-xl">Welcome, <span id="username"></span></span>
+            <img src="" alt="Avatar" id="avatar" class="w-32 h-32 mt-5 pixelated-border-landing cursor-pointer" />
+        </div>
+    </header>
 
 		<main>
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
@@ -247,81 +241,79 @@
 			</div>
 		</main>
 
-		<!-- Footer -->
-		<footer id="logoutLanding" class="fixed bottom-8 right-8 text-2xl text-white font-bold cursor-pointer">
-			LOG OUT
-		</footer>
-	</div>
+    <!-- Footer -->
+    <footer id="logoutLanding" class="fixed bottom-8 right-8 text-2xl text-white font-bold cursor-pointer">
+        LOG OUT
+    </footer>
+</div>
 
-	<!-- Profile Page -->
-	<div id="profilePage" class="hidden min-h-screen p-8 bg-gif-profile text-black">
-		<header class="flex justify-end items-center gap-6 mb-16 px-6 py-4">
-			<div class="text-right">
-				<h1 id="profileHeading" class="text-5xl text-white font-bold leading-tight"></h1>
-				<p id="settingsToggle" class="text-lg text-white cursor-pointer hover:text-pink-300 mt-1">
-					Settings
-				</p>
-			</div>
-			<div class="relative">
-				<img id="avatar-profile" src="" alt="Avatar"
-					class="w-20 h-32 object-cover rounded-full pixelated-border-landing cursor-pointer" />
-			</div>
-		</header>
+<!-- Profile Page -->
+<div id="profilePage" class="hidden min-h-screen p-8 bg-gif-profile text-black">
+    <header class="flex justify-end items-center gap-6 mb-16 px-6 py-4">
+        <div class="text-right">
+            <h1 id="profileHeading" class="text-5xl text-white font-bold leading-tight"></h1>
+            <p id="settingsToggle" class="text-lg text-white cursor-pointer hover:text-pink-300 mt-1">
+                Settings
+            </p>
+        </div>
+        <div class="relative">
+            <img id="avatar-profile" src="" alt="Avatar" class="w-20 h-32 object-cover rounded-full pixelated-border-landing cursor-pointer" />
+        </div>
+    </header>
 
-		<main class="grid grid-cols-1 md:grid-cols-2 gap-8">
-			<!--         Add Friends-->
-			<!--        <section class="bg-blue-300 bg-opacity-70 rounded-lg p-6">-->
-			<!--            <h2 class="text-4xl font-bold mb-4">Add Friends</h2>-->
-			<!--            <input type="text" placeholder="Enter username" class="w-full p-2 mb-4 border border-black" />-->
-			<!--            <button class="pixelated-button-landing text-xl w-full">Send Friend Request</button>-->
-			<!--        </section>-->
+    <main class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!--         Add Friends-->
+<!--        <section class="bg-blue-300 bg-opacity-70 rounded-lg p-6">-->
+<!--            <h2 class="text-4xl font-bold mb-4">Add Friends</h2>-->
+<!--            <input type="text" placeholder="Enter username" class="w-full p-2 mb-4 border border-black" />-->
+<!--            <button class="pixelated-button-landing text-xl w-full">Send Friend Request</button>-->
+<!--        </section>-->
 
-			<!-- Game History -->
-			<!--        <section class="bg-blue-300 bg-opacity-70 rounded-lg p-6">-->
-			<!--            <h2 class="text-4xl font-bold mb-4">Game History</h2>-->
-			<!--            <ul class="space-y-2">-->
-			<!--                <li class="bg-blue-300 bg-opacity-70 p-2 rounded text-black"> Pong vs @friend — Won</li>-->
-			<!--            </ul>-->
-			<!--        </section>-->
-		</main>
+        <!-- Game History -->
+<!--        <section class="bg-blue-300 bg-opacity-70 rounded-lg p-6">-->
+<!--            <h2 class="text-4xl font-bold mb-4">Game History</h2>-->
+<!--            <ul class="space-y-2">-->
+<!--                <li class="bg-blue-300 bg-opacity-70 p-2 rounded text-black"> Pong vs @friend — Won</li>-->
+<!--            </ul>-->
+<!--        </section>-->
+    </main>
 
-		<!-- Footer -->
-		<footer id="return-to-landing" class="fixed bottom-8 right-8 text-2xl text-white font-bold cursor-pointer">
-			RETURN
-		</footer>
-	</div>
+    <!-- Footer -->
+    <footer id="return-to-landing" class="fixed bottom-8 right-8 text-2xl text-white font-bold cursor-pointer">
+        RETURN
+    </footer>
+</div>
 
-	<!-- Settings Page -->
-	<div id="settingsPage" class="hidden min-h-screen p-8 bg-gif-settings text-white">
-		<header class="flex justify-between items-center mb-12">
-			<h1 class="text-5xl font-bold">Settings</h1>
-			<button id="backToProfile" class="text-xl underline hover:text-pink-400">Back to Profile</button>
-		</header>
+<!-- Settings Page -->
+<div id="settingsPage" class="hidden min-h-screen p-8 bg-gif-settings text-white">
+    <header class="flex justify-between items-center mb-12">
+        <h1 class="text-5xl font-bold">Settings</h1>
+        <button id="backToProfile" class="text-xl underline hover:text-pink-400">Back to Profile</button>
+    </header>
 
-		<main class="grid grid-cols-1 md:grid-cols-2 gap-8">
-			<!-- Change Username -->
-			<section class="bg-black/70 p-6 rounded-lg shadow-lg">
-				<h2 class="text-3xl font-bold mb-4">Change Username</h2>
-				<input type="text" id="newUsername" class="w-full p-2 mb-4 text-black" placeholder="New username" />
-				<button id="saveUsername" class="pixelated-button w-full">Save</button>
-			</section>
+    <main class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Change Username -->
+        <section class="bg-black/70 p-6 rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold mb-4">Change Username</h2>
+            <input type="text" id="newUsername" class="w-full p-2 mb-4 text-black" placeholder="New username" />
+            <button id="saveUsername" class="pixelated-button w-full">Save</button>
+        </section>
 
-			<!-- Change Password -->
-			<section class="bg-black/70 p-6 rounded-lg shadow-lg">
-				<h2 class="text-3xl font-bold mb-4">Change Password</h2>
-				<input type="password" id="newPassword" class="w-full p-2 mb-4 text-black" placeholder="New password" />
-				<button id="savePassword" class="pixelated-button w-full">Save</button>
-			</section>
+        <!-- Change Password -->
+        <section class="bg-black/70 p-6 rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold mb-4">Change Password</h2>
+            <input type="password" id="newPassword" class="w-full p-2 mb-4 text-black" placeholder="New password" />
+            <button id="savePassword" class="pixelated-button w-full">Save</button>
+        </section>
 
-			<!-- Change Avatar -->
-			<section class="bg-black/70 p-6 rounded-lg shadow-lg col-span-full">
-				<h2 class="text-3xl font-bold mb-4">Change Avatar</h2>
-				<input type="text" id="newAvatarUrl" class="w-full p-2 mb-4 text-black"
-					placeholder="Avatar image URL" />
-				<button id="saveAvatar" class="pixelated-button w-full">Save</button>
-			</section>
-		</main>
-	</div>
+        <!-- Change Avatar -->
+        <section class="bg-black/70 p-6 rounded-lg shadow-lg col-span-full">
+            <h2 class="text-3xl font-bold mb-4">Change Avatar</h2>
+            <input type="text" id="newAvatarUrl" class="w-full p-2 mb-4 text-black" placeholder="Avatar image URL" />
+            <button id="saveAvatar" class="pixelated-button w-full">Save</button>
+        </section>
+    </main>
+</div>
 
 	<!-- Pong Page -->
 	<div id="pongPage" class="hidden min-h-screen p-8 bg-gif-pong text-white">
@@ -427,8 +419,31 @@
 			</div>
 		</main>
 	</div>
-	<!-- SPA Controller Script -->
-	<script src="../dist/main.js" type="module"></script>
-</body>
 
+<!-- Credit Page -->
+<div id="creditPage" class="relative hidden min-h-screen bg-gif-credit text-white flex flex-col items-center justify-center text-center p-8">
+
+    <!-- Back Button in Top Right -->
+    <button id="backFromCredit" class="absolute top-6 right-6 text-xl underline hover:text-pink-300">
+        Back
+    </button>
+
+    <!-- Centered Content -->
+    <header class="mb-12">
+        <h1 class="text-5xl font-bold">Credits</h1>
+    </header>
+
+    <main class="space-y-6 text-xl">
+        <p>Everything by: <strong>Anna</strong></p>
+        <p>Donkey by: <strong>Lena</strong></p>
+        <p>Wombat by: <strong>Jan</strong></p>
+        <p>Ferret by: <strong>Djoyke</strong></p>
+        <p>Special Thanks: <strong>to everyone who distracted us</strong></p>
+    </main>
+</div>
+
+<!-- SPA Controller Script -->
+<!--<script src="../dist/main.js" type="module"></script>-->
+<script src="../dist/main.js" type="module" defer></script>
+</body>
 </html>

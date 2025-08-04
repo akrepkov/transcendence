@@ -7,6 +7,7 @@ import { initLandingEvents, initBackToLanding } from './landing/landing.js';
 import { initMainEvents } from './init/initMainEvents.js';
 import { initHistoryHandling } from './init/initHistory.js';
 // import { languageSwitcherFunction } from './translations/languageManager.js';
+import { initCreditsNavigation } from './init/initCredits.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   // languageSwitcherFunction();
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initProfileEvents();
   initMainEvents();
   initHistoryHandling();
+  initCreditsNavigation();
 
   //back buttons
   initBackToLanding('stop-button-pong');
