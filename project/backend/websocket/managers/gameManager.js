@@ -1,5 +1,6 @@
 import { messageManager } from './messageManager.js';
 import { Pong } from '../models/pong/Pong.js';
+import { Snake } from '../models/snake/Snake.js';
 import { REJECT } from './messageManager.js';
 import { matchmakingHandler } from '../handlers/matchmakingHandler.js';
 import { waitingListManager } from './waitingListManager.js';
@@ -23,7 +24,7 @@ function createGame(connection1, connection2, gameType) {
     game = new Pong(connection1, connection2, gameId);
   } else if (gameType === 'snake') {
     console.log('Creating Snake game, sssssssssss');
-    return;
+    game = new Snake(connection1, connection2, gameId);
   }
   activeGames.set(gameId, game);
 
@@ -78,13 +79,15 @@ async function saveGameInDatabase(gameId, winnerName, loserName, scoreWinner, sc
     } else {
       console.error('Failed to save game results in database');
     }
-    // } else if (game instanceof Snake) {
-    //   const databaseGame = gameServices.saveSnake(winnerName, loserName, scoreWinner, scoreLoser);
-    //   if (databaseGame && saveGameResults('snake', winnerName, loserName, databaseGame)) {
-    //     console.log(`Game saved: winner: ${winnerName} loser: ${loserName}, score: ${scoreWinner} - ${scoreLoser}`);
-    //   } else {
-    //     console.error('Failed to save game results in database');
-    //   }
+  } else if (game instanceof Snake) {
+    const databaseGame = gameServices.saveSnake(winnerName, loserName, scoreWinner, scoreLoser);
+    if (databaseGame && (await saveGameResults('snake', winnerName, loserName, databaseGame))) {
+      console.log(
+        `Game saved: winner: ${winnerName} loser: ${loserName}, score: ${scoreWinner} - ${scoreLoser}`,
+      );
+    } else {
+      console.error('Failed to save game results in database');
+    }
   } else {
     console.error('Unknown game type:', game);
   }
@@ -118,15 +121,20 @@ async function handleDisconnect(connection, reason = 'disconnected') {
           .createBroadcast({
             type: 'opponentDisconnected',
             reason: reason,
+            winner: otherPlayer.username,
           })
           .to.single(otherPlayer.socket);
       }
+      const disconnectedPlayer = game.players.find(
+        (player) => player.playerId === connection.userId,
+      );
+      const opponent = game.players.find((player) => player.playerId !== connection.userId);
       await saveGameInDatabase(
         game.gameId,
-        otherPlayer.username,
-        connection.username,
-        game.players[0].score,
-        game.players[1].score,
+        opponent.playerName, //winner
+        disconnectedPlayer.playerName, // loser
+        opponent.score,
+        disconnectedPlayer.score,
       );
       removeGame(game.gameId);
     } else {
