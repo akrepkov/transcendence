@@ -172,12 +172,16 @@ export async function showProfileView(username?: string) {
     return;
   }
 
+  // console.log(res.json());
+
   document.getElementById('profilePage')?.classList.remove('hidden');
 
   const heading = document.getElementById('profileHeading');
   if (heading) {
     heading.textContent = `${providedUsername}'s Profile`;
   }
+
+  const friendlist = document.getElementById('friendlist');
 
   const avatarProfile = document.getElementById('avatar-profile') as HTMLImageElement;
   if (avatarProfile) {
@@ -186,24 +190,6 @@ export async function showProfileView(username?: string) {
   profilePage?.classList.remove('hidden');
   setView('profile');
 }
-
-// export function showProfileView() {
-//   hideAllPages();
-//   document.getElementById('profilePage')?.classList.remove('hidden');
-//
-//   const heading = document.getElementById('profileHeading');
-//   if (heading) {
-//     const username = globalSession.getUsername();
-//     heading.textContent = `${username}'s Profile`;
-//   }
-//
-//   const avatarProfile = document.getElementById('avatar-profile') as HTMLImageElement;
-//   if (avatarProfile) {
-//     avatarProfile.src = globalSession.getAvatar();
-//   }
-//   profilePage?.classList.remove('hidden');
-//   setView('profile');
-// }
 
 export function showSettingsView() {
   hideAllPages();
