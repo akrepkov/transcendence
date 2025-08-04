@@ -25,7 +25,6 @@
         .bg-gif-credit {
             background-color: #0550ae;
             background-image: url('/assets/jelly_fish.gif');
-            /*background-image: url('/assets/cooking.gif');*/
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
@@ -192,8 +191,6 @@
         <!-- Dev + Footer Info -->
         <div class="absolute top-5 right-5">
             <div class="flex items-center space-x-2">
-<!--                <span class="text-xl">Meet the team</span>-->
-<!--                <a href="/team" class="text-xl underline hover:text-blue-300 cursor-pointer">Meet the team</a>-->
                 <p id="creditLink" class="text-xl underline hover:text-blue-300 cursor-pointer">Meet the team</p>
                 <svg fill="none" height="12" viewBox="0 0 12 12" width="12"
                      xmlns="http://www.w3.org/2000/svg">
@@ -250,6 +247,7 @@
 <!-- Profile Page -->
 <div id="profilePage" class="hidden min-h-screen p-8 bg-gif-profile text-black">
     <header class="flex justify-end items-center gap-6 mb-16 px-6 py-4">
+
         <div class="text-right">
             <h1 id="profileHeading" class="text-5xl text-white font-bold leading-tight"></h1>
             <p id="settingsToggle" class="text-lg text-white cursor-pointer hover:text-pink-300 mt-1">
@@ -261,22 +259,64 @@
         </div>
     </header>
 
-    <main class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<!--         Add Friends-->
-<!--        <section class="bg-blue-300 bg-opacity-70 rounded-lg p-6">-->
-<!--            <h2 class="text-4xl font-bold mb-4">Add Friends</h2>-->
-<!--            <input type="text" placeholder="Enter username" class="w-full p-2 mb-4 border border-black" />-->
-<!--            <button class="pixelated-button-landing text-xl w-full">Send Friend Request</button>-->
-<!--        </section>-->
+    <main class="flex justify-center items-start gap-8 flex-wrap md:flex-nowrap">
+        <!-- Friends Block -->
+        <section class="relative bg-pink-200/40 text-black rounded-lg p-6 w-full md:w-[400px] h-[400px] flex flex-col">
+            <h2 class="text-4xl font-bold mb-4">Friends</h2>
 
-        <!-- Game History -->
-<!--        <section class="bg-blue-300 bg-opacity-70 rounded-lg p-6">-->
-<!--            <h2 class="text-4xl font-bold mb-4">Game History</h2>-->
-<!--            <ul class="space-y-2">-->
-<!--                <li class="bg-blue-300 bg-opacity-70 p-2 rounded text-black"> Pong vs @friend — Won</li>-->
-<!--            </ul>-->
-<!--        </section>-->
+            <!-- Add Friend Input -->
+            <div id="addFriendSection" class="flex items-center mb-4">
+                <input id="addFriendInput" type="text" placeholder="Enter username"
+                       class="flex-grow p-2 mr-2 bg-transparent border rounded-lg border-black text-black placeholder-black focus:outline-none focus:ring-0" />
+                <button id="addFriendButton" class="hover:text-pink-400 hidden text-xl">Add</button>
+            </div>
+
+            <!-- Friends List -->
+            <div id="friendsList"
+                 class="rounded-lg border border-black p-2 overflow-y-auto h-64">
+                <ul class="space-y-2">
+                    <!-- Friend <li> elements go here -->
+                </ul>
+            </div>
+
+            <!-- Feedback Message (fixed at bottom of this section) -->
+            <p id="friendMessage"
+               class="text-center text-xl text-black mt-2 min-h-[24px]">
+            </p>
+        </section>
+
+        <!-- Game Stats Block -->
+        <section class="bg-pink-200/40 rounded-lg p-6 text-black w-full md:w-[400px] h-[400px] flex flex-col justify-between">
+            <h2 class="text-4xl font-bold mb-4">Game Stats</h2>
+            <ul class="space-y-2 text-xl flex-grow">
+                <li class="flex justify-between border-b border-black pb-1">
+                    <span>Total Games</span>
+                    <span id="totalGames">0</span>
+                </li>
+                <li class="flex justify-between border-b border-black pb-1">
+                    <span>Pong Wins</span>
+                    <span id="pongWins">0</span>
+                </li>
+                <li class="flex justify-between border-b border-black pb-1">
+                    <span>Pong Losses</span>
+                    <span id="pongLosses">0</span>
+                </li>
+                <li class="flex justify-between border-b border-black pb-1">
+                    <span>Snake Wins</span>
+                    <span id="snakeWins">0</span>
+                </li>
+                <li class="flex justify-between">
+                    <span>Snake Losses</span>
+                    <span id="snakeLosses">0</span>
+                </li>
+            </ul>
+        </section>
     </main>
+
+    <button id="backToOwnProfile"
+            class="fixed bottom-8 left-8 hidden text-lg text-white underline hover:text-pink-300 mt-4">
+        Return to My Profile
+    </button>
 
     <!-- Footer -->
     <footer id="return-to-landing" class="fixed bottom-8 right-8 text-2xl text-white font-bold cursor-pointer">
@@ -319,6 +359,7 @@
 	<div id="pongPage" class="hidden min-h-screen p-8 bg-gif-pong text-white">
 		<header class="flex justify-between items-center mb-12">
 			<h1 class="text-5xl font-bold">Pong</h1>
+            <button class="text-xl underline hover:text-black" id="backFromPong">Back</button>
 		</header>
 		<main>
 			<div id="pong-start-container" class="absolute inset-0 flex items-center justify-center z-10" id="pongEnterOverlay">
@@ -344,7 +385,7 @@
 	<div id="snakePage" class="hidden min-h-screen p-8 bg-gif-snake text-white">
 		<header class="flex justify-between items-center mb-12">
 			<h1 class="text-5xl font-bold">Snake</h1>
-			<!-- <button class="text-xl underline hover:text-black" id="backFromSnake">Back</button> -->
+			 <button class="text-xl underline hover:text-black" id="backFromSnake">Back</button>
 		</header>
 		<main>
 			<div id="snake-start-container" class="absolute inset-0 flex items-center justify-center z-10" id="snakeEnterOverlay">
@@ -370,7 +411,7 @@
 	<div id="practicePage" class="hidden min-h-screen p-8 bg-gif-practice text-white">
 		<header class="flex justify-between items-center mb-12">
 			<h1 class="text-5xl font-bold">Practice Mode</h1>
-			<!-- <button class="text-xl underline hover:text-black" id="backFromPractice">Back</button> -->
+			 <button class="text-xl underline hover:text-black" id="backFromPractice">Back</button>
 		</header>
 		<main>
 			<div id="practice-start-container" class="absolute inset-0 flex items-center justify-center z-10"
@@ -398,7 +439,7 @@
 	<div id="aiPage" class="hidden min-h-screen p-8 bg-gif-ai text-white">
 		<header class="flex justify-between items-center mb-12">
 			<h1 class="text-5xl font-bold">AI Mode</h1>
-			<!-- <button class="text-xl underline hover:text-black" id="backFromai">Back</button> -->
+			 <button class="text-xl underline hover:text-black" id="backFromai">Back</button>
 		</header>
 		<main>
 			<div id="ai-start-container" class="absolute inset-0 flex items-center justify-center z-10" id="aiEnterOverlay">
@@ -443,7 +484,6 @@
 </div>
 
 <!-- SPA Controller Script -->
-<!--<script src="../dist/main.js" type="module"></script>-->
 <script src="../dist/main.js" type="module" defer></script>
 </body>
 </html>
