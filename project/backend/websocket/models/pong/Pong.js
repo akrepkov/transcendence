@@ -39,10 +39,10 @@ export class Pong {
       player.paddleY -= PONG_CONSTS.PADDLE_SPEED;
     } else if (
       direction === 'down' &&
-      player.paddleY + PONG_CONSTS.PADDLE_HEIGHT / 2 < PONG_CONSTS.HEIGHT
+      player.paddleY + PONG_CONSTS.PADDLE_HEIGHT < PONG_CONSTS.HEIGHT
     ) {
       player.paddleY += PONG_CONSTS.PADDLE_SPEED;
-    } else {
+    } else if (direction !== 'up' && direction !== 'down') {
       console.warn(`Invalid direction: ${direction} for player: ${player.playerName}`);
       throw new Error(`${REJECT.WRONG_DIRECTION}`);
     }
