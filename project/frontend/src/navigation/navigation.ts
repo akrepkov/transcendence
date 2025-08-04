@@ -1,5 +1,5 @@
 import { globalSession, checkLoginStatus } from '../auth/auth.js';
-import { showFriends, fetchUserProfile } from '../profile/profile.js';
+import { showFriends, fetchUserProfile, showGameStats } from '../profile/profile.js';
 import { hideAllPages, setView, toggleOwnProfileButtons } from '../utils/uiHelpers.js';
 
 const loginForm = document.getElementById('loginForm');
@@ -24,6 +24,8 @@ export function showLoginView() {
   if (!loginForm || !registerForm || !formTitle || !toggle || !loginMessage || !registerMessage)
     return;
 
+  hideAllPages();
+
   registerForm.classList.add('hidden');
   loginForm.classList.remove('hidden');
   formTitle.textContent = 'Login';
@@ -47,6 +49,8 @@ export function showLoginView() {
 export function showRegisterView() {
   if (!loginForm || !registerForm || !formTitle || !toggle || !loginMessage || !registerMessage)
     return;
+
+  hideAllPages();
 
   loginForm.classList.add('hidden');
   registerForm.classList.remove('hidden');
@@ -87,7 +91,7 @@ export function showLandingView() {
 
   hideAllPages();
   landingPage.classList.remove('hidden');
-  setView('landing'); //new
+  setView('landing');
 }
 
 /**
@@ -182,7 +186,8 @@ export async function showProfileView(username?: string) {
       }
     }
     await showFriends(providedUsername);
-    // Hide "Add Friend" input if viewing another user's profile
+    await showGameStats(providedUsername);
+
     const isOwnProfile = providedUsername === globalSession.getUsername();
     toggleOwnProfileButtons(isOwnProfile);
 
