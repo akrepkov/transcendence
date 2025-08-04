@@ -22,6 +22,7 @@ function hideAllPages() {
     'snakePage',
     'practicePage',
     'creditPage',
+    'aiPage',
   ].forEach((id) => document.getElementById(id)?.classList.add('hidden'));
 }
 
