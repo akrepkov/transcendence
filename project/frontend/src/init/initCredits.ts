@@ -1,4 +1,4 @@
-import { showCreditView, showLoginView } from '../navigation/navigation.js';
+import { showCreditView } from '../navigation/navigation.js';
 
 /**
  * Initializes navigation for the Credits screen.
@@ -22,8 +22,7 @@ export function initCreditsNavigation() {
 
   if (backFromCredit) {
     backFromCredit.addEventListener('click', () => {
-      history.pushState({ view: 'auth', form: 'login' }, '', '/login');
-      showLoginView();
+      history.back(); // Go back instead of pushing a new state
     });
   }
 }
