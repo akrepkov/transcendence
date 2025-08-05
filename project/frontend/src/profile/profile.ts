@@ -2,6 +2,21 @@ import { navigateTo, showProfileView, showSettingsView } from '../navigation/nav
 import { globalSession } from '../auth/auth.js';
 
 /**
+ * Checks if a specified user is currently online.
+ *
+ * - Fetches the user's profile data from the backend.
+ * - Returns the `isOnline` status from the response.
+ *
+ * @param {string} username - The username to check online status for.
+ * @returns {Promise<boolean>} A promise that resolves to `true` if the user is online, otherwise `false`.
+ * TODO change this based on how it's send from the backend
+ */
+async function isFriendOnline(username: string) {
+  const data = await fetchUserProfile(username);
+  return data.isOnline;
+}
+
+/**
  * Initializes all event listeners related to the user profile section.
  *
  * - Avatar click navigates to profile view.
@@ -140,6 +155,7 @@ export async function addFriend() {
  *
  * - Calls `fetchUserProfile` to retrieve friend data.
  * - Populates a list with clickable usernames that open their profile.
+ * - Shows if a friend is online.
  * - Handles the empty friend list case.
  *
  * @param {string} username - The username whose friends should be shown.
@@ -151,6 +167,7 @@ export async function showFriends(username: string) {
   try {
     const data = await fetchUserProfile(username);
     const friends = data.friends ?? [];
+    const isOnline = await isFriendOnline(username); //TODO display this in DOM add logic in html file
 
     list.innerHTML = ''; //sets list to empty?
 
@@ -190,6 +207,7 @@ export async function showGameStats(username: string) {
   try {
     const data = await fetchUserProfile(username);
 
+    //game history send api from backend
     const pongWins = data.pongWins ?? 0;
     const pongLosses = data.pongLosses ?? 0;
     const snakeWins = data.snakeWins ?? 0;
@@ -211,7 +229,3 @@ export async function showGameStats(username: string) {
     console.error('Error loading game stats:', err);
   }
 }
-
-//game history send api from backend
-
-//add is friend online
