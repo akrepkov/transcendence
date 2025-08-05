@@ -1,10 +1,6 @@
-import {
-  showLoginView,
-  showLandingView,
-  showMessage,
-  navigateTo,
-} from '../navigation/navigation.js';
+import { showLoginView, showLandingView, navigateTo } from '../navigation/navigation.js';
 import { Session } from '../session/session.js';
+import { showMessage } from '../utils/uiHelpers.js';
 
 export const globalSession = new Session();
 

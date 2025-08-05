@@ -1,5 +1,6 @@
 import { globalSession } from '../auth/auth.js';
 import { showFriends, fetchUserProfile } from '../profile/profile.js';
+import { hideAllPages, setView, toggleOwnProfileButtons } from '../utils/uiHelpers.js';
 
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
@@ -12,28 +13,28 @@ const landingPage = document.getElementById('landingPage');
 const profilePage = document.getElementById('profilePage');
 const creditPage = document.getElementById('creditPage');
 
-function hideAllPages() {
-  [
-    'authPage',
-    'landingPage',
-    'profilePage',
-    'settingsPage',
-    'pongPage',
-    'snakePage',
-    'practicePage',
-    'creditPage',
-    'aiPage',
-  ].forEach((id) => document.getElementById(id)?.classList.add('hidden'));
-}
+// function hideAllPages() {
+//   [
+//     'authPage',
+//     'landingPage',
+//     'profilePage',
+//     'settingsPage',
+//     'pongPage',
+//     'snakePage',
+//     'practicePage',
+//     'creditPage',
+//     'aiPage',
+//   ].forEach((id) => document.getElementById(id)?.classList.add('hidden'));
+// }
 
-function setView(viewName: string) {
-  document.body.setAttribute('data-view', viewName);
-}
+// function setView(viewName: string) {
+//   document.body.setAttribute('data-view', viewName);
+// }
 
-export function showMessage(el: HTMLElement, text: string): void {
-  el.classList.remove('hidden');
-  el.textContent = text;
-}
+// export function showMessage(el: HTMLElement, text: string): void {
+//   el.classList.remove('hidden');
+//   el.textContent = text;
+// }
 
 export function showLoginView() {
   if (!loginForm || !registerForm || !formTitle || !toggle || !loginMessage || !registerMessage)
@@ -179,33 +180,43 @@ export async function showProfileView(username?: string) {
     await showFriends(providedUsername);
     // Hide "Add Friend" input if viewing another user's profile
     const isOwnProfile = providedUsername === globalSession.getUsername();
-    const addFriendSection = document.getElementById('addFriendSection');
-
-    if (addFriendSection) {
-      if (isOwnProfile) {
-        addFriendSection.classList.remove('hidden');
-      } else {
-        addFriendSection.classList.add('hidden');
-      }
-    }
-
-    const backToOwnButton = document.getElementById('backToOwnProfile');
-    if (backToOwnButton) {
-      if (isOwnProfile) {
-        backToOwnButton.classList.add('hidden');
-      } else {
-        backToOwnButton.classList.remove('hidden');
-      }
-    }
-
-    const settingsButton = document.getElementById('settingsToggle');
-    if (settingsButton) {
-      if (isOwnProfile) {
-        settingsButton.classList.remove('hidden');
-      } else {
-        settingsButton.classList.add('hidden');
-      }
-    }
+    toggleOwnProfileButtons(isOwnProfile);
+    // const addFriendSection = document.getElementById('addFriendSection');
+    //
+    // if (addFriendSection) {
+    //   if (isOwnProfile) {
+    //     addFriendSection.classList.remove('hidden');
+    //   } else {
+    //     addFriendSection.classList.add('hidden');
+    //   }
+    // }
+    //
+    // const addFriendButton = document.getElementById('addFriendButton');
+    // if (addFriendButton) {
+    //   if (isOwnProfile) {
+    //     addFriendButton.classList.remove('hidden');
+    //   } else {
+    //     addFriendButton.classList.add('hidden');
+    //   }
+    // }
+    //
+    // const backToOwnButton = document.getElementById('backToOwnProfile');
+    // if (backToOwnButton) {
+    //   if (isOwnProfile) {
+    //     backToOwnButton.classList.add('hidden');
+    //   } else {
+    //     backToOwnButton.classList.remove('hidden');
+    //   }
+    // }
+    //
+    // const settingsButton = document.getElementById('settingsToggle');
+    // if (settingsButton) {
+    //   if (isOwnProfile) {
+    //     settingsButton.classList.remove('hidden');
+    //   } else {
+    //     settingsButton.classList.add('hidden');
+    //   }
+    // }
 
     profilePage?.classList.remove('hidden');
     setView('profile');
