@@ -12,6 +12,25 @@ import {
 } from '../navigation/navigation.js';
 import { globalSession } from '../auth/auth.js';
 
+/**
+ * Initializes handling for browser history navigation (back/forward button support).
+ *
+ * - Sets an initial `history.state` if none is present on first load.
+ * - Listens for `popstate` events to handle view changes based on saved state.
+ * - Ensures only authorized users can access protected routes (like landing, profile, games, etc.).
+ * - If user is not logged in and tries to access a protected view, redirects them to login.
+ *
+ * Supported history state views:
+ * - auth (with form: 'login' or 'register')
+ * - landing
+ * - profile
+ * - settings
+ * - pong
+ * - snake
+ * - practice
+ * - ai
+ * - credits
+ */
 export function initHistoryHandling(): void {
   const formTitle = document.getElementById('formTitle')?.textContent || 'Login';
   const initialState = { view: 'auth', form: formTitle.toLowerCase() };

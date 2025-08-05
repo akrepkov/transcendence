@@ -2,6 +2,14 @@ import { toggleHandler } from './gameHandler.js';
 
 // let gameType: string | null = null;
 
+/**
+ * Sets up event handlers for a WebSocket connection.
+ *
+ * - Logs connection status to the console.
+ * - Handles errors, closures, and successful connections.
+ *
+ * @param {WebSocket} socket - The WebSocket instance used for real-time game communication.
+ */
 export function setupSocketEvents(socket: WebSocket) {
   socket.onopen = () => {
     console.log('WebSocket connection opened.');
@@ -17,6 +25,17 @@ export function setupSocketEvents(socket: WebSocket) {
   };
 }
 
+/**
+ * Attaches click event listeners to start/stop buttons for all supported games.
+ *
+ * - Handles game lifecycle: clean, start, and reset.
+ * - Connects multiplayer games via WebSocket.
+ * - AI and practice games start without socket interaction.
+ *
+ * Throws an error if any of the required start buttons are missing from the DOM.
+ *
+ * @param {WebSocket} socket - The WebSocket connection for multiplayer games (Pong, Snake).
+ */
 export function setupGameToggle(socket: WebSocket) {
   console.log('Game Toggle');
 

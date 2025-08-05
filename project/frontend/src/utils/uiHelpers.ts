@@ -1,3 +1,9 @@
+/**
+ * Hides all main application pages by adding the 'hidden' class to their elements.
+ *
+ * This function is typically used when navigating between different views
+ * to ensure that only the target view is visible.
+ */
 export function hideAllPages(): void {
   const pageIds = [
     'authPage',
@@ -17,15 +23,32 @@ export function hideAllPages(): void {
   });
 }
 
+/**
+ * Sets the current application view by updating a `data-view` attribute on the body.
+ *
+ * @param {string} viewName - The name of the view to set (e.g., 'login', 'landing').
+ */
 export function setView(viewName: string) {
   document.body.setAttribute('data-view', viewName);
 }
 
+/**
+ * Displays a message element with the provided text content.
+ *
+ * @param {HTMLElement} el - The HTML element where the message should be displayed.
+ * @param {string} text - The text content to show in the message element.
+ */
 export function showMessage(el: HTMLElement, text: string): void {
   el.classList.remove('hidden');
   el.textContent = text;
 }
 
+/**
+ * Toggles the visibility of a DOM element based on the `show` flag.
+ *
+ * @param {string} id - The ID of the DOM element to show or hide.
+ * @param {boolean} show - If true, shows the element; if false, hides it.
+ */
 export function toggleElement(id: string, show: boolean) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -37,6 +60,12 @@ export function toggleElement(id: string, show: boolean) {
   }
 }
 
+/**
+ * Toggles visibility of profile-related buttons depending on whether
+ * the user is viewing their own profile or someone else's.
+ *
+ * @param {boolean} isOwnProfile - True if viewing own profile, false for another user's profile.
+ */
 export function toggleOwnProfileButtons(isOwnProfile: boolean) {
   toggleElement('addFriendSection', isOwnProfile);
   toggleElement('addFriendButton', isOwnProfile);
