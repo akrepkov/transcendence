@@ -97,6 +97,8 @@ export function initHistoryHandling(): void {
           history.pushState({ view: 'auth', form: 'login' }, '', '/login');
         }, 0);
       }
+    } else if (state.view === 'credits') {
+      showCreditView();
     }
   });
 }
