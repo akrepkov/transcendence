@@ -176,6 +176,42 @@ export async function showFriends(username: string) {
   }
 }
 
-//game stats send api request from backend
+/**
+ * Fetches and displays the game statistics for a given user.
+ *
+ * - Retrieves the user's profile data from the backend.
+ * - Extracts Pong and Snake win/loss counts.
+ * - Calculates the total number of games played.
+ * - Updates the corresponding DOM elements in the profile page.
+ *
+ * @param {string} username - The username whose game stats should be displayed.
+ */
+export async function showGameStats(username: string) {
+  try {
+    const data = await fetchUserProfile(username);
+
+    const pongWins = data.pongWins ?? 0;
+    const pongLosses = data.pongLosses ?? 0;
+    const snakeWins = data.snakeWins ?? 0;
+    const snakeLosses = data.snakeLosses ?? 0;
+    const totalGames = pongWins + pongLosses + snakeWins + snakeLosses;
+
+    // Update DOM
+    const setText = (id: string, value: number) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value.toString();
+    };
+
+    setText('pongWins', pongWins);
+    setText('pongLosses', pongLosses);
+    setText('snakeWins', snakeWins);
+    setText('snakeLosses', snakeLosses);
+    setText('totalGames', totalGames);
+  } catch (err) {
+    console.error('Error loading game stats:', err);
+  }
+}
 
 //game history send api from backend
+
+//add is friend online
