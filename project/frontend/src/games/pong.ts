@@ -2,9 +2,20 @@ import { GameStatePong } from './types.js';
 import { GAME_CONSTS } from './types.js';
 import { getCanvasContext } from './render.js';
 
+/**
+ * Stores the current animation frame ID for cancellation.
+ */
 export let animationFrame: number | null = null;
+
+/**
+ * Tracks whether the Pong game loop is currently running.
+ */
 let running = false;
 
+/**
+ * Keypress state map for controlling paddles.
+ * Supports both WASD and arrow keys.
+ */
 const keys: Record<'w' | 's' | 'ArrowUp' | 'ArrowDown', boolean> = {
   w: false,
   s: false,
@@ -12,12 +23,27 @@ const keys: Record<'w' | 's' | 'ArrowUp' | 'ArrowDown', boolean> = {
   ArrowDown: false,
 };
 
+/**
+ * Initializes a Pong game.
+ *
+ * - Sets the `running` flag to true.
+ * - Starts listening for paddle input.
+ * - Begins the paddle movement loop.
+ *
+ * @param {GameStatePong} data - The initial state of the Pong game.
+ * @param {WebSocket} socket - The WebSocket used to send movement data to the server.
+ */
 export function createPongGame(data: GameStatePong, socket: WebSocket) {
   running = true;
   setupPaddleInput(socket);
   movePaddles(socket);
 }
 
+/**
+ * Registers event listeners for paddle key input (keydown and keyup).
+ *
+ * @param {WebSocket} socket - The WebSocket to use (not used here but passed for future-proofing).
+ */
 function setupPaddleInput(socket: WebSocket) {
   document.addEventListener('keydown', handlePaddleKeyDown);
   document.addEventListener('keyup', handlePaddleKeyUp);
@@ -31,6 +57,12 @@ function setupPaddleInput(socket: WebSocket) {
   }
 }
 
+/**
+ * Continuously checks which direction the player is pressing
+ * and sends a movement message via WebSocket to the server.
+ *
+ * @param {WebSocket} socket - The WebSocket connection to send movement data.
+ */
 function movePaddles(socket: WebSocket) {
   function loop() {
     // console.log('movePaddle loop is running');
@@ -46,6 +78,13 @@ function movePaddles(socket: WebSocket) {
   loop();
 }
 
+/**
+ * Renders the current game state onto the Pong canvas.
+ * Draws ball and player paddles.
+ *
+ * @param {GameStatePong} data - The latest game state received from the server.
+ * @param {CanvasRenderingContext2D} ctx - The 2D canvas context used for drawing.
+ */
 export function drawPong(data: GameStatePong, ctx: CanvasRenderingContext2D) {
   //   console.log('drawPong is running');
   if (running === true) {
@@ -59,6 +98,11 @@ export function drawPong(data: GameStatePong, ctx: CanvasRenderingContext2D) {
   }
 }
 
+/**
+ * Displays the current game score on the page.
+ *
+ * @param {GameStatePong} data - The game state including player scores and names.
+ */
 export function showPongScore(data: GameStatePong) {
   if (running === true) {
     const scorePong = document.getElementById('pong-score');
@@ -69,6 +113,10 @@ export function showPongScore(data: GameStatePong) {
   }
 }
 
+/**
+ * Stops the game loop, clears the canvas, and resets internal state.
+ * Safely handles the case where canvas context may not be found.
+ */
 export function cleanPongField() {
   if (animationFrame) {
     cancelAnimationFrame(animationFrame);
@@ -84,6 +132,11 @@ export function cleanPongField() {
   }
 }
 
+/**
+ * Ends the Pong game and shows the winner on the score display.
+ *
+ * @param {string} winner - The name of the player who won the game.
+ */
 export function gameOverPong(winner: string) {
   cleanPongField();
   console.log(`Game over, winner: ${winner}`);

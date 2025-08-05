@@ -1,7 +1,17 @@
+// Get DOM elements related to avatar upload and preview
 const avatarform = document.getElementById('avatar-form') as HTMLFormElement;
 const avatarinput = document.getElementById('avatar-input') as HTMLInputElement;
 const avatarpreview = document.getElementById('avatar-preview') as HTMLImageElement;
 
+/**
+ * Handles avatar form submission:
+ *
+ * - Prevents default form submission behavior.
+ * - Validates that a file has been selected.
+ * - Previews the selected image using FileReader.
+ * - Uploads the image to the server using a PATCH request.
+ * - Displays success or failure messages to the user.
+ */
 avatarform.addEventListener('submit', async (e: Event) => {
   e.preventDefault();
 
