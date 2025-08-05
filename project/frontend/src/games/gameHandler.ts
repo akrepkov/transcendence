@@ -5,6 +5,16 @@ import { cleanPongField } from './pong.js';
 import { cleanSnakeField } from './snake.js';
 import { handleStartGame } from './ai/render.js';
 import { cleanAiField } from './ai/render.js';
+
+/**
+ * Handles game-specific logic bindings for Pong and Snake.
+ *
+ * Each entry defines the key functions needed to:
+ * - create the game
+ * - render the canvas
+ * - show scores
+ * - handle game over logic
+ */
 export const gameHandler = {
   pong: {
     create: pong.createPongGame,
@@ -20,23 +30,46 @@ export const gameHandler = {
   },
 };
 
+/**
+ * Handles UI toggling, socket coordination, and cleanup for different game pages.
+ *
+ * Each entry represents a game view and contains:
+ * - DOM element references (start, stop, container IDs)
+ * - `start`: initiates the game (and sends socket event if multiplayer)
+ * - `clean`: resets UI and score state
+ * - `reset`: hides game, shows start screen, and resets socket and game field
+ */
 export const toggleHandler = {
   pongPage: {
     startContainer: 'pong-start-container',
     gameContainer: 'pong-container',
     startBtn: 'start-button-pong',
     stopBtn: 'stop-button-pong',
+
+    /**
+     * Starts Pong game: joins waiting room and renders game.
+     * @param {WebSocket} socket - Active WebSocket connection
+     */
     start(socket: WebSocket) {
       socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'pong' }));
       document.getElementById(this.startContainer)?.classList.add('hidden');
       document.getElementById(this.gameContainer)?.classList.remove('hidden');
       renderGame(socket, 'pong');
     },
+
+    /**
+     * Resets the score display and clears the Pong canvas.
+     */
     clean() {
       const scorePong = document.getElementById('pong-score');
       if (scorePong) scorePong.textContent = '0 : 0';
       cleanPongField();
     },
+
+    /**
+     * Resets the Pong UI and disconnects from the game.
+     * @param {WebSocket} socket - Active WebSocket connection
+     */
     reset(socket: WebSocket) {
       document.getElementById(this.startContainer)?.classList.remove('hidden');
       document.getElementById(this.gameContainer)?.classList.add('hidden');
@@ -46,22 +79,37 @@ export const toggleHandler = {
       cleanPongField();
     },
   },
+
   snakePage: {
     startContainer: 'snake-start-container',
     gameContainer: 'snake-container',
     startBtn: 'start-button-snake',
     stopBtn: 'stop-button-snake',
+
+    /**
+     * Starts Snake game: joins waiting room and renders game.
+     * @param {WebSocket} socket - Active WebSocket connection
+     */
     start(socket: WebSocket) {
       socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'snake' }));
       document.getElementById(this.startContainer)?.classList.add('hidden');
       document.getElementById(this.gameContainer)?.classList.remove('hidden');
       renderGame(socket, 'snake');
     },
+
+    /**
+     * Resets the score display and clears the Snake canvas.
+     */
     clean() {
       const scoresnake = document.getElementById('snake-score');
       if (scoresnake) scoresnake.textContent = '0 : 0';
       cleanSnakeField();
     },
+
+    /**
+     * Resets the Snake UI and disconnects from the game.
+     * @param {WebSocket} socket - Active WebSocket connection
+     */
     reset(socket: WebSocket) {
       document.getElementById(this.startContainer)?.classList.remove('hidden');
       document.getElementById(this.gameContainer)?.classList.add('hidden');
@@ -76,16 +124,29 @@ export const toggleHandler = {
     gameContainer: 'practice-container',
     startBtn: 'start-button-practice',
     stopBtn: 'stop-button-practice',
+
+    /**
+     * Starts the practice game (currently commented out).
+     * Intended for local single-player games.
+     */
     start() {
       // document.getElementById(this.startContainer)?.classList.add('hidden');
       // document.getElementById(this.gameContainer)?.classList.remove('hidden');
       // handleStartGame();
     },
+
+    /**
+     * Cleans up practice game UI and score (currently commented out).
+     */
     clean() {
       // const scorepractice = document.getElementById('practice-score');
       // if (scorepractice) scorepractice.textContent = '0 : 0';
       // cleanPracticeField();
     },
+
+    /**
+     * Resets practice UI and game state (currently commented out).
+     */
     reset() {
       // document.getElementById(this.startContainer)?.classList.remove('hidden');
       // document.getElementById(this.gameContainer)?.classList.add('hidden');
@@ -100,16 +161,29 @@ export const toggleHandler = {
     gameContainer: 'ai-container',
     startBtn: 'start-button-ai',
     stopBtn: 'stop-button-ai',
+
+    /**
+     * Starts the AI game by hiding the start screen and showing the game,
+     * then calling the AI game render logic.
+     */
     start() {
       document.getElementById(this.startContainer)?.classList.add('hidden');
       document.getElementById(this.gameContainer)?.classList.remove('hidden');
       handleStartGame();
     },
+
+    /**
+     * Resets the AI game score and canvas field.
+     */
     clean() {
       const scoreai = document.getElementById('ai-score');
       if (scoreai) scoreai.textContent = '0 : 0';
       cleanAiField();
     },
+
+    /**
+     * Resets AI game UI and hides the AI page.
+     */
     reset() {
       document.getElementById(this.startContainer)?.classList.remove('hidden');
       document.getElementById(this.gameContainer)?.classList.add('hidden');

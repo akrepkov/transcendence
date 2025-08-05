@@ -5,12 +5,30 @@ import { getCanvasContext } from './render.js';
 let running = false;
 let keyListener: ((event: KeyboardEvent) => void) | undefined;
 
+/**
+ * Initializes the Snake game logic.
+ *
+ * - Sets the game to running state.
+ * - Attaches a keydown event listener for movement input.
+ *
+ * @param {GameStateSnake} data - The initial game state.
+ * @param {WebSocket} socket - The WebSocket used to send movement commands.
+ */
 export function createSnakeGame(data: GameStateSnake, socket: WebSocket) {
   running = true;
   keyListener = (event) => moveSnakes(data, event, socket);
   document.addEventListener('keydown', keyListener);
 }
 
+/**
+ * Renders the current Snake game state on the canvas.
+ *
+ * - Draws apple and each player's snake.
+ * - Red snake = player 1, Blue snake = player 2.
+ *
+ * @param {GameStateSnake} data - The current game state from the server.
+ * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on.
+ */
 export function drawSnake(data: GameStateSnake, ctx: CanvasRenderingContext2D) {
   if (running === true) {
     ctx.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
@@ -25,6 +43,16 @@ export function drawSnake(data: GameStateSnake, ctx: CanvasRenderingContext2D) {
   }
 }
 
+/**
+ * Handles snake movement based on user keypress.
+ *
+ * - Translates keys into direction commands.
+ * - Sends direction to server via WebSocket.
+ *
+ * @param {GameStateSnake} game - The current game state (unused, could be used for validation).
+ * @param {KeyboardEvent} event - The keyboard event.
+ * @param {WebSocket} socket - The WebSocket connection to send movement messages.
+ */
 export function moveSnakes(game: GameStateSnake, event: KeyboardEvent, socket: WebSocket) {
   let direction;
   if (event.key === 'w' || event.key === 'ArrowUp') {
@@ -42,6 +70,13 @@ export function moveSnakes(game: GameStateSnake, event: KeyboardEvent, socket: W
   }
 }
 
+/**
+ * Displays the current score for both Snake players.
+ *
+ * - Player 1 (red) on the left, Player 2 (blue) on the right.
+ *
+ * @param {GameStateSnake} data - The game state containing player names and scores.
+ */
 export function showSnakeScore(data: GameStateSnake) {
   if (running === true) {
     const scoreSnake = document.getElementById('snake-score');
@@ -52,6 +87,12 @@ export function showSnakeScore(data: GameStateSnake) {
   }
 }
 
+/**
+ * Cleans up the Snake game UI and event listeners.
+ *
+ * - Removes keydown event listener.
+ * - Clears the canvas and resets running flag.
+ */
 export function cleanSnakeField() {
   console.log('cleanSnakeField');
   if (keyListener) {
@@ -67,6 +108,15 @@ export function cleanSnakeField() {
   }
 }
 
+/**
+ * Handles game over logic for the Snake game.
+ *
+ * - Stops the game.
+ * - Displays winner message.
+ * - Defaults to "Me! The apple!" if winner is null.
+ *
+ * @param {string} winner - The name of the winning player.
+ */
 export function gameOverSnake(winner: string) {
   if (winner === null) {
     winner = 'Me! The apple!';
