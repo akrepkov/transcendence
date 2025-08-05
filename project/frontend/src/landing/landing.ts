@@ -38,6 +38,7 @@ export function initLandingEvents(): void {
       history.pushState({ view: 'practice' }, '', '/practice');
     });
   }
+
   if (aiButton) {
     aiButton.addEventListener('click', () => {
       showAiView();
@@ -48,15 +49,14 @@ export function initLandingEvents(): void {
 
 /**
  * Attaches a click event listener to a button that navigates back to the landing page.
- *
- * @param {string} buttonId - The ID of the button that should trigger the return to landing view.
  */
-export function initBackToLanding(buttonId: string): void {
-  const btn = document.getElementById(buttonId);
-  if (btn) {
+export function initBackToLanding(): void {
+  const buttons = document.querySelectorAll('.back-button');
+  buttons.forEach((btn) => {
     btn.addEventListener('click', () => {
+      console.log(`Back button clicked: ${btn.id}`);
       showLandingView();
       history.pushState({ view: 'landing' }, '', '/landing');
     });
-  }
+  });
 }

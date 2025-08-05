@@ -37,9 +37,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   initHistoryHandling();
   initCreditsNavigation();
 
-  //back buttons
-  initBackToLanding('stop-button-pong');
-  initBackToLanding('stop-button-snake');
-  initBackToLanding('stop-button-practice');
-  initBackToLanding('stop-button-ai');
+  initBackToLanding();
 });

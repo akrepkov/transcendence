@@ -66,14 +66,21 @@
         }
         .bg-gif-tournament {
             background-color: #a5d6ff;
-            background-image: url('/assets/train_rain.gif');
+            background-image: url('/assets/balcony.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+        .bg-gif-ai {
+            background-color: #801F0F;
+            background-image: url('/assets/vending-machine.gif');
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
         }
         .bg-gif-settings {
-            background-color: #000000;
-            background-image: url('/assets/sushi-belt.gif');
+            background-color: #9e6a03;
+            background-image: url('/assets/home.gif');
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
@@ -359,10 +366,12 @@
 	<div id="pongPage" class="hidden min-h-screen p-8 bg-gif-pong text-white">
 		<header class="flex justify-between items-center mb-12">
 			<h1 class="text-5xl font-bold">Pong</h1>
-            <button class="text-xl underline hover:text-black" id="backFromPong">Back</button>
 		</header>
 		<main>
 			<div id="pong-start-container" class="absolute inset-0 flex items-center justify-center z-10" id="pongEnterOverlay">
+                <button id="backFromPong" class="back-button absolute top-8 right-8 text-xl underline hover:text-black">
+                    Back
+                </button>
 				<button id="start-button-pong"
 					class="text-white text-7xl bg-black/60 px-16 py-8 rounded-lg pixelated-button hover:bg-white hover:text-black transition">
 					START
@@ -375,7 +384,7 @@
 				<canvas id="pong" class="border-4 border-white mt-5 bg-black/60 " width="800" height="600"></canvas>
 				<div class="flex justify-between mt-4 w-full max-w-[800px]">
 					<button id="stop-button-pong"
-						class="bg-black/60  text-white pixelated-border text-black font-bold py-3 px-6 text-xl">Back</button>
+						class="back-button bg-black/60  text-white pixelated-border text-black font-bold py-3 px-6 text-xl">Back</button>
 				</div>
 			</div>
 		</main>
@@ -385,10 +394,12 @@
 	<div id="snakePage" class="hidden min-h-screen p-8 bg-gif-snake text-white">
 		<header class="flex justify-between items-center mb-12">
 			<h1 class="text-5xl font-bold">Snake</h1>
-			 <button class="text-xl underline hover:text-black" id="backFromSnake">Back</button>
 		</header>
 		<main>
 			<div id="snake-start-container" class="absolute inset-0 flex items-center justify-center z-10" id="snakeEnterOverlay">
+                <button id="backFromSnake" class="back-button absolute top-8 right-8 text-xl underline hover:text-black">
+                    Back
+                </button>
 				<button id="start-button-snake"
 					class="text-white text-7xl bg-black/60 px-16 py-8 rounded-lg pixelated-button hover:bg-white hover:text-black transition">
 					START
@@ -401,7 +412,7 @@
 				<canvas id="snake" class="border-4 border-white mt-5 bg-black/60 " width="800" height="600"></canvas>
 				<div class="flex justify-between mt-4 w-full max-w-[800px]">
 					<button id="stop-button-snake"
-						class="bg-black/60  text-white pixelated-border text-black font-bold py-3 px-6 text-xl">Back</button>
+						class="back-button bg-black/60  text-white pixelated-border text-black font-bold py-3 px-6 text-xl">Back</button>
 				</div>
 			</div>
 		</main>
@@ -411,12 +422,14 @@
 	<div id="practicePage" class="hidden min-h-screen p-8 bg-gif-practice text-white">
 		<header class="flex justify-between items-center mb-12">
 			<h1 class="text-5xl font-bold">Practice Mode</h1>
-			 <button class="text-xl underline hover:text-black" id="backFromPractice">Back</button>
 		</header>
 		<main>
 			<div id="practice-start-container" class="absolute inset-0 flex items-center justify-center z-10"
 				id="practiceEnterOverlay">
-				<button id="start-button-practice"
+                <button id="backFromPractice" class="back-button absolute top-8 right-8 text-xl underline hover:text-black">
+                    Back
+                </button>
+                <button id="start-button-practice"
 					class="text-white text-7xl bg-black/60 px-16 py-8 rounded-lg pixelated-button hover:bg-white hover:text-black transition">
 					START
 				</button>
@@ -428,7 +441,7 @@
 				<canvas id="practice" class="border-4 border-white mt-5 bg-black/60 " width="800" height="600"></canvas>
 				<div class="flex justify-between mt-4 w-full max-w-[800px]">
 					<button id="stop-button-practice"
-						class="bg-black/60  text-white pixelated-border text-black font-bold py-3 px-6 text-xl">Back</button>
+						class="back-button bg-black/60  text-white pixelated-border text-black font-bold py-3 px-6 text-xl">Back</button>
 				</div>
 			</div>
 		</main>
@@ -439,10 +452,12 @@
 	<div id="aiPage" class="hidden min-h-screen p-8 bg-gif-ai text-white">
 		<header class="flex justify-between items-center mb-12">
 			<h1 class="text-5xl font-bold">AI Mode</h1>
-			 <button class="text-xl underline hover:text-black" id="backFromai">Back</button>
 		</header>
 		<main>
 			<div id="ai-start-container" class="absolute inset-0 flex items-center justify-center z-10" id="aiEnterOverlay">
+                <button id="backFromAi" class="back-button absolute top-8 right-8 text-xl underline hover:text-black">
+                    Back
+                </button>
 				<button id="start-button-ai"
 					class="text-white text-7xl bg-black/60 px-16 py-8 rounded-lg pixelated-button hover:bg-white hover:text-black transition">
 					START
@@ -455,7 +470,7 @@
 				<canvas id="ai" class="border-4 border-white mt-5 bg-black/60 " width="800" height="600"></canvas>
 				<div class="flex justify-between mt-4 w-full max-w-[800px]">
 					<button id="stop-button-ai"
-						class="bg-black/60  text-white pixelated-border text-black font-bold py-3 px-6 text-xl">Back</button>
+						class="back-button bg-black/60  text-white pixelated-border text-black font-bold py-3 px-6 text-xl">Back</button>
 				</div>
 			</div>
 		</main>
