@@ -32,12 +32,16 @@ jobs:
         run: npx tailwindcss -i ./src/input.css -o ./src/output.css --minify
         working-directory: ./project/frontend
 
+      - name: compile typescript
+        run: npx tsc
+        working-directory: ./project/frontend
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
         working-directory: ./project/frontend
 
       - name: Start Backend
-        run: npx prisma generate --schema=database/prisma/schema.prisma && npm run start &
+        run: npx prisma generate --schema=database/prisma/schema.prisma && node index.js &
         working-directory: ./project/backend
 
       - name: Wait for server to be ready
