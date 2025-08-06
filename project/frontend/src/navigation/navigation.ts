@@ -24,6 +24,8 @@ export function showLoginView() {
   if (!loginForm || !registerForm || !formTitle || !toggle || !loginMessage || !registerMessage)
     return;
 
+  hideAllPages();
+
   registerForm.classList.add('hidden');
   loginForm.classList.remove('hidden');
   formTitle.textContent = 'Login';
@@ -47,6 +49,8 @@ export function showLoginView() {
 export function showRegisterView() {
   if (!loginForm || !registerForm || !formTitle || !toggle || !loginMessage || !registerMessage)
     return;
+
+  hideAllPages();
 
   loginForm.classList.add('hidden');
   registerForm.classList.remove('hidden');
@@ -87,7 +91,7 @@ export function showLandingView() {
 
   hideAllPages();
   landingPage.classList.remove('hidden');
-  setView('landing'); //new
+  setView('landing');
 }
 
 /**

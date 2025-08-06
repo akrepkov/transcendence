@@ -31,8 +31,8 @@ const getAllUsersHandler = async (request, reply) => {
 // return user information, excluding email and password
 const getUserProfileHandler = async (request, reply) => {
   try {
-    const { userName } = request.query;
-    const user = await userServices.getUserByUsername(userName);
+    const { username } = request.query;
+    const user = await userServices.getUserByUsername(username);
     if (!user) {
       return reply.status(404).send({ error: 'User not found' });
     }
@@ -47,11 +47,11 @@ const getUserProfileHandler = async (request, reply) => {
 // add a Friend (full match on name)
 const addFriendHandler = async (request, reply) => {
   try {
-    const { userName, friendUsername } = request.body;
-    if (!userName || !friendUsername) {
+    const { username, friendUsername } = request.body;
+    if (!username || !friendUsername) {
       return reply.status(404).send({ error: 'User/Friend name not found' });
     }
-    if (!(await userServices.addFriend(userName, friendUsername))) {
+    if (!(await userServices.addFriend(username, friendUsername))) {
       return reply.status(404).send({ error: 'Error adding friend' });
     }
     return reply.code(200).send({ success: true });
@@ -86,7 +86,7 @@ const updateUserHandler = async (request, reply) => {
     }
     const updatedUser = await userServices.getUserById(user.userId);
     const { password: pwd, email: mail, ...safeUser } = updatedUser;
-    console.log('updatedUser in code', safeUser);
+    // console.log('updatedUser in code', safeUser);
     return reply.code(200).send({ success: true, user: safeUser });
   } catch (error) {
     console.error('Error updating user', error);

@@ -60,7 +60,7 @@ const loginHandler = async (request, reply) => {
 
 const registerHandler = async (request, reply) => {
   const { email, password, username } = request.body;
-  console.log('Incoming data:', { email, username, password });
+  //   console.log('Incoming data:', { email, username, password });
 
   if (!email || !password || !username) {
     return handleError(reply, new Error('Email, username and password are required'), 400);

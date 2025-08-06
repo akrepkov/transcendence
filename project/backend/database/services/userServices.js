@@ -153,8 +153,30 @@ export async function getUserByUsername(username) {
     const user = await prisma.user.findUnique({
       where: { username },
       include: {
-        friends: true,
-        friendsOf: true,
+        friends: {
+          select: {
+            userId: true,
+            username: true,
+            avatar: true,
+            pong: true,
+            snake: true,
+            pongWins: true,
+            pongLosses: true,
+            snakeWins: true,
+            snakeLosses: true,
+          },
+        },
+        friendsOf: {
+          select: {
+            userId: true,
+            username: true,
+            avatar: true,
+            pongWins: true,
+            pongLosses: true,
+            snakeWins: true,
+            snakeLosses: true,
+          },
+        },
       },
     });
     return user;
@@ -192,19 +214,19 @@ export async function deleteUser(username) {
 }
 
 //can add a friend to the user's friends field (by userId)
-export async function addFriend(userName, friendName) {
+export async function addFriend(username, friendUsername) {
   try {
-    const friend = await getUserByUsername(friendName);
-    const user = await getUserByUsername(userName);
+    const friend = await getUserByUsername(friendUsername);
+    const user = await getUserByUsername(username);
     if (!friend || !user) {
       console.log('Data not found in the database');
       return false;
     }
     await prisma.user.update({
-      where: { username: userName },
+      where: { username: username },
       data: {
         friends: {
-          connect: { username: friendName },
+          connect: { username: friendUsername },
         },
       },
     });
