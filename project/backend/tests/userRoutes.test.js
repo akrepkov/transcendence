@@ -7,6 +7,9 @@ import cookie from '@fastify/cookie';
 await userServices.deleteUser('lena');
 await userServices.deleteUser('lenacik');
 
+await userServices.deleteUser('lena');
+await userServices.deleteUser('lenacik');
+
 describe('User Routes', () => {
   let fastify;
   let authCookie;
