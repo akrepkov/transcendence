@@ -51,6 +51,7 @@ export class Session {
     // console.log('Am I logged IN : ', localStorage.getItem('username'));
     setupSocketEvents(this.socket);
     setupGameToggle(this.socket);
+
     if (!avatar) {
       this.avatar = '/uploads/avatars/wow_cat.jpg';
     } else {
@@ -141,12 +142,76 @@ export class Session {
   }
 
   /**
+   * Gets the WebSocket connection for the session.
+   *
+   * * @returns {WebSocket | null} The WebSocket connection, or null if not connected.
+   */
+  public getSocket() {
+    return this.socket;
+  }
+
+  /**
+   * Sets the WebSocket connection for the session.
+   *
+   * @param {WebSocket} socket - The WebSocket connection to set.
+   */
+  public setSocket(socket: WebSocket | null) {
+    this.socket = socket;
+  }
+
+  /**
    * Gets the user's pong game statistics.
    *
    * @returns {string} Pong game stats (format TBD).
    */
   public getPongStats() {
     return this.pongStats;
+  }
+
+  /**
+   * Fetches the list of online friends from the server via WebSocket.
+   * Returns a promise that resolves with the list of friends or rejects on error.
+   * Please await
+   */
+  public async getOnlineFriends() {
+    return new Promise((resolve, reject) => {
+      if (!this.socket) {
+        reject(new Error('Socket not initialized'));
+        return;
+      }
+      const handler = (event: MessageEvent) => {
+        const data = JSON.parse(event.data);
+        console.log(data);
+        if (data.type === 'onlineFriends') {
+          this.socket!.removeEventListener('message', handler);
+          resolve(data.friends);
+        }
+      };
+
+      this.socket.addEventListener('message', handler);
+
+      const sendOrRetry = (attempt = 0) => {
+        if (!this.socket) {
+          reject(new Error('Socket not initialized'));
+          return;
+        }
+        if (this.socket.readyState === WebSocket.OPEN) {
+          this.socket.send(JSON.stringify({ type: 'getLoggedInFriends' }));
+        } else if (attempt < 10) {
+          setTimeout(() => sendOrRetry(attempt + 1), 100);
+        } else {
+          this.socket!.removeEventListener('message', handler);
+          reject(new Error('Socket not open after retry'));
+        }
+      };
+
+      sendOrRetry();
+
+      setTimeout(() => {
+        this.socket!.removeEventListener('message', handler);
+        reject(new Error('Timeout while waiting for online friends'));
+      }, 5000);
+    });
   }
 
   // need a set/update pong/snakeStats?
