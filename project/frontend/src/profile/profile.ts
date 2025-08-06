@@ -13,7 +13,11 @@ import { globalSession } from '../auth/auth.js';
  */
 async function isFriendOnline(username: string) {
   const data = await fetchUserProfile(username);
-  return data.isOnline;
+  return data.isOnline; // gets all online user which are friends
+
+  //data.friends.forEach(friend => {})
+  //need logic to display online sign after friend name also in html
+  // function is in session class TODO check pr jan
 }
 
 /**
