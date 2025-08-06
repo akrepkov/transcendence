@@ -80,7 +80,12 @@ async function saveGameInDatabase(gameId, winnerName, loserName, scoreWinner, sc
       console.error('Failed to save game results in database');
     }
   } else if (game instanceof Snake) {
-    const databaseGame = gameServices.saveSnake(winnerName, loserName, scoreWinner, scoreLoser);
+    const databaseGame = await gameServices.saveSnake(
+      winnerName,
+      loserName,
+      scoreWinner,
+      scoreLoser,
+    );
     if (databaseGame && (await saveGameResults('snake', winnerName, loserName, databaseGame))) {
       console.log(
         `Game saved: winner: ${winnerName} loser: ${loserName}, score: ${scoreWinner} - ${scoreLoser}`,
