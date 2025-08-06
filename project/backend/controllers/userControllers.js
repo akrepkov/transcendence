@@ -54,7 +54,7 @@ const addFriendHandler = async (request, reply) => {
     if (!(await userServices.addFriend(username, friendUsername))) {
       return reply.status(404).send({ error: 'Error adding friend' });
     }
-    return reply.code(200);
+    return reply.code(200).send({ success: true });
   } catch (error) {
     console.error('Adding friend error:', error);
     return reply.code(500).send({ error: 'Internal server error' });

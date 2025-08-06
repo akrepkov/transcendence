@@ -95,7 +95,7 @@ function showFriendMessage(text: string, isError = false) {
  * @throws {Error} If the request fails or returns a non-OK status.
  */
 export async function fetchUserProfile(username: string) {
-  const res = await fetch(`/api/view_user_profile?userName=${encodeURIComponent(username)}`, {
+  const res = await fetch(`/api/view_user_profile?username=${encodeURIComponent(username)}`, {
     method: 'GET',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -104,7 +104,6 @@ export async function fetchUserProfile(username: string) {
   if (!res.ok) {
     throw new Error('Failed to fetch user profile');
   }
-
   return res.json();
 }
 
@@ -127,17 +126,17 @@ export async function addFriend() {
   const friendUsername = input.value.trim();
   if (!friendUsername) return;
 
-  const userName = globalSession.getUsername();
+  const username = globalSession.getUsername();
 
   try {
     const res = await fetch('/api/add_friend', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userName, friendUsername }),
+      body: JSON.stringify({ username, friendUsername }),
     });
 
     if (res.ok) {
-      await showFriends(userName);
+      await showFriends(username);
       input.value = ''; // clear input after adding
       showFriendMessage('Friend added successfully');
     } else {
