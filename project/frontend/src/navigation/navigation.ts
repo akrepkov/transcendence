@@ -1,5 +1,5 @@
 import { globalSession, checkLoginStatus } from '../auth/auth.js';
-import { showFriends, fetchUserProfile } from '../profile/profile.js';
+import { showFriends, fetchUserProfile, showGameStats } from '../profile/profile.js';
 import { hideAllPages, setView, toggleOwnProfileButtons } from '../utils/uiHelpers.js';
 
 const loginForm = document.getElementById('loginForm');
@@ -182,7 +182,8 @@ export async function showProfileView(username?: string) {
       }
     }
     await showFriends(providedUsername);
-    // Hide "Add Friend" input if viewing another user's profile
+    await showGameStats(providedUsername);
+
     const isOwnProfile = providedUsername === globalSession.getUsername();
     toggleOwnProfileButtons(isOwnProfile);
 
