@@ -34,4 +34,4 @@ jobs:
 
     - name: Run Jest Unit Tests
       run: npm test --trace on
-      working-directory: ./project/backend
+      working-directory: ./project/backend/tests
