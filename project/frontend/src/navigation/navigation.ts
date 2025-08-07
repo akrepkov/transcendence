@@ -12,6 +12,7 @@ const authPage = document.getElementById('authPage');
 const landingPage = document.getElementById('landingPage');
 const profilePage = document.getElementById('profilePage');
 const creditPage = document.getElementById('creditPage');
+const tourPage = document.getElementById('TourPage');
 
 /**
  * Displays the login form view.
@@ -37,6 +38,7 @@ export function showLoginView() {
   landingPage?.classList.add('hidden');
   profilePage?.classList.add('hidden');
   creditPage?.classList.add('hidden');
+  tourPage?.classList.add('hidden');
 }
 
 /**
@@ -63,6 +65,7 @@ export function showRegisterView() {
   authPage?.classList.remove('hidden');
   landingPage?.classList.add('hidden');
   profilePage?.classList.add('hidden');
+  creditPage?.classList.add('hidden');
   creditPage?.classList.add('hidden');
 }
 
@@ -119,6 +122,7 @@ export async function restoreViewOnReload() {
     '/practice': showPracticeView,
     '/credits': showCreditView,
     '/ai': showAiView, // is this the path?
+    '/tournament': showTourView,
   };
 
   const viewFunc = views[path];
@@ -257,6 +261,18 @@ export function showCreditView() {
   hideAllPages();
   document.getElementById('creditPage')?.classList.remove('hidden');
   setView('credits');
+}
+
+/**
+ * Displays the Tournament page.
+ *
+ * - Hides all other views and shows the Tournament page.
+ * - Does not explicitly set a view (optionally could add setView('Tour')).
+ */
+export function showTourView() {
+  hideAllPages();
+  document.getElementById('TourPage')?.classList.remove('hidden');
+  setView('tournament');
 }
 
 /**

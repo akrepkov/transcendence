@@ -223,7 +223,7 @@
 
 		<main>
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-				<div class="bg-blue-300 bg-opacity-70 rounded-lg p-8 shadow-lg w-full max-w-xl">
+				<div class="bg-blue-300 bg-opacity-70 rounded-lg p-8 shadow-lg w-full max-w-3xl">
 					<h2 class="text-7xl font-bold leading-tight mb-8">Choose Your <br /> Game Mode</h2>
 					<p class="text-xl mb-8">
 						<span>Play solo</span>,
@@ -241,6 +241,8 @@
 							class="bg-blue-300 pixelated-border-landing text-black font-bold py-3 px-6 text-xl">Practice</button>
 						<button id="aiButton"
 							class="bg-blue-300 pixelated-border-landing text-black font-bold py-3 px-6 text-xl">AI</button>
+						<button id="tourButton"
+							class="bg-blue-300 pixelated-border-landing text-black font-bold py-3 px-6 text-xl">Tournament</button>
 					</div>
 				</div>
 			</div>
@@ -486,6 +488,47 @@
 		</main>
 	</div>
 
+	<!-- Tournament Page -->
+	<div id="TourPage" class="hidden min-h-screen p-8 bg-gif-tournament text-white">
+		<header class="flex justify-between items-center mb-12">
+			<h1 class="text-5xl font-bold">Tournament Mode</h1>
+		</header>
+		<main>
+			<div id="tour-start-container" class="absolute inset-0 flex flex-col items-center justify-center z-10" id="tourEnterOverlay">
+                <button id="backFromTour" class="back-button absolute top-8 right-8 text-xl underline hover:text-black">
+                    Back
+				</button>
+				  <!-- Username input field -->
+				<input
+					id="tournamentUsername"
+					type="text"
+					placeholder="Enter your username"
+					class="block mb-8 px-6 py-4 text-2xl rounded-lg text-black bg-white w-full max-w-md text-center"
+					required
+				/>
+				<button id="add-player-button"
+				class="mb-4 text-xl bg-blue-500 px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+				Add Player
+				</button>
+				<button id="start-button-tour"
+					class="text-white text-7xl bg-black/60 px-16 py-8 rounded-lg pixelated-button hover:bg-white hover:text-black transition">
+					START
+				</button>
+				<ul id="player-list" class="mt-6 text-2xl text-black bg-white bg-opacity-70 rounded-lg p-4 w-full max-w-md"></ul>
+			</div>
+			<div id="tour-container" class="hidden flex flex-col items-center min-w-[800px]">
+				<div class="flex justify-center mt-4">
+					<div id="tour-score" class="text-7xl font-bold leading-tight mb-8 text-center">0 : 0</div>
+				</div>
+				<canvas id="tour" class="border-4 border-white mt-5 bg-black/60 " width="800" height="600"></canvas>
+				<div class="flex justify-between mt-4 w-full max-w-[800px]">
+					<button id="stop-button-tour"
+						class="back-button bg-black/60  text-white pixelated-border text-black font-bold py-3 px-6 text-xl">Back</button>
+				</div>
+			</div>
+		</main>
+	</div>
+
 <!-- Credit Page -->
 <div id="creditPage" class="relative hidden min-h-screen bg-gif-credit text-white flex flex-col items-center justify-center text-center p-8">
 
@@ -510,5 +553,6 @@
 
 <!-- SPA Controller Script -->
 <script src="../dist/main.js" type="module" defer></script>
+<script type="module" src="../dist/games/tournament.js"></script>
 </body>
 </html>
