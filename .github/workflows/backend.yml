@@ -25,8 +25,8 @@ jobs:
       working-directory: ./project/backend
 
     - name: Start Backend
-      run: npx prisma generate --schema=database/prisma/schema.prisma && node index.js &
-      working-directory: ./project/backend/prisma
+      run: npx prisma migrate dev  --schema=database/prisma/schema.prisma fix-game-relations && npx prisma generate --schema=database/prisma/schema.prisma fix-game-relations  &
+      working-directory: ./project/backend
 
     - name: Wait for server to be ready
       run: npx wait-on https://localhost:3000 --insecure
