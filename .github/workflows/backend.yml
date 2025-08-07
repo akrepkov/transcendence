@@ -26,7 +26,7 @@ jobs:
 
     - name: Start Backend
       run: npx prisma generate --schema=database/prisma/schema.prisma && node index.js &
-      working-directory: ./project/backend
+      working-directory: ./project/backend/prisma
 
     - name: Wait for server to be ready
       run: npx wait-on https://localhost:3000 --insecure
