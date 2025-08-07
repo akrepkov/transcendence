@@ -1,16 +1,19 @@
-import {
-  showLoginView,
-  showLandingView,
-  showMessage,
-  navigateTo,
-} from '../navigation/navigation.js';
+import { showLoginView, showLandingView, navigateTo } from '../navigation/navigation.js';
 import { Session } from '../session/session.js';
+import { showMessage } from '../utils/uiHelpers.js';
 
 export const globalSession = new Session();
 
 /**
- * Handle login form submission
- * Verifies user credentials and displays a success or error message
+ * Handles the login form submission event.
+ *
+ * - Retrieves user input for username and password.
+ * - Sends a POST request to the `/api/auth/login` endpoint.
+ * - If login is successful, updates the session, shows a success message,
+ *   and navigates to the landing page.
+ * - If login fails, displays an appropriate error message.
+ *
+ * @returns {Promise<void>} A Promise that resolves when the login process completes.
  */
 export async function handleLogin(): Promise<void> {
   const loginForm = document.getElementById('loginForm') as HTMLFormElement;
@@ -60,8 +63,16 @@ export async function handleLogin(): Promise<void> {
 }
 
 /**
- * Handle registration form submission
- * Validates input fields and displays a success or error message
+ * Handles the registration form submission event.
+ *
+ * - Retrieves user input for username, email, and password.
+ * - Sends a POST request to the `/api/auth/register` endpoint.
+ * - If registration is successful, logs in the user, resets the form,
+ *   and navigates to the landing page.
+ * - If registration fails (e.g., due to duplicate credentials),
+ *   displays an appropriate error message.
+ *
+ * @returns {Promise<void>} A Promise that resolves when the registration process completes.
  */
 export async function handleRegister(): Promise<void> {
   const registerForm = document.getElementById('registerForm') as HTMLFormElement;
@@ -112,6 +123,15 @@ export async function handleRegister(): Promise<void> {
   });
 }
 
+/**
+ * Handles the user logout process.
+ *
+ * - Sends a POST request to the `/api/auth/logout` endpoint.
+ * - If successful, clears the session and redirects the user to the login view.
+ * - If logout fails, shows an alert to notify the user.
+ *
+ * @returns {Promise<void>} A Promise that resolves when the logout process completes.
+ */
 export async function handleLogout() {
   try {
     const res = await fetch('/api/auth/logout', {
@@ -128,5 +148,29 @@ export async function handleLogout() {
   } catch (error) {
     console.error('Logout error:', error);
     alert('Error logging out.');
+  }
+}
+
+/**
+ * Checks if the user is currently logged in by verifying session status from the backend.
+ *
+ * - Sends a request to `/api/auth/me`.
+ * - If valid session found, logs the user into `globalSession`.
+ */
+export async function checkLoginStatus() {
+  try {
+    const res = await fetch('/api/auth/me', {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      console.log('User data:', data);
+      globalSession.login(data.username, data.email, data.avatar);
+    }
+  } catch (err) {
+    console.error('Error checking login status:', err);
+    return null;
   }
 }

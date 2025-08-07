@@ -6,6 +6,12 @@ import {
   showAiView,
 } from '../navigation/navigation.js';
 
+/**
+ * Initializes click event listeners on buttons within the landing page.
+ *
+ * - Each button navigates the user to a different feature view (Pong, Snake, Practice, AI).
+ * - Updates the browser's history state accordingly.
+ */
 export function initLandingEvents(): void {
   const pongButton = document.getElementById('pongButton');
   const snakeButton = document.getElementById('snakeButton');
@@ -32,6 +38,7 @@ export function initLandingEvents(): void {
       history.pushState({ view: 'practice' }, '', '/practice');
     });
   }
+
   if (aiButton) {
     aiButton.addEventListener('click', () => {
       showAiView();
@@ -40,12 +47,16 @@ export function initLandingEvents(): void {
   }
 }
 
-export function initBackToLanding(buttonId: string): void {
-  const btn = document.getElementById(buttonId);
-  if (btn) {
+/**
+ * Attaches a click event listener to a button that navigates back to the landing page.
+ */
+export function initBackToLanding(): void {
+  const buttons = document.querySelectorAll('.back-button');
+  buttons.forEach((btn) => {
     btn.addEventListener('click', () => {
+      console.log(`Back button clicked: ${btn.id}`);
       showLandingView();
       history.pushState({ view: 'landing' }, '', '/landing');
     });
-  }
+  });
 }

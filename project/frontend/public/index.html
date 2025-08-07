@@ -45,7 +45,7 @@
         }
         .bg-gif-snake {
             background-color: #0f5323;
-            background-image: url('/assets/fairytale.gif');
+            background-image: url('/assets/stream.gif');
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
@@ -59,21 +59,29 @@
         }
         .bg-gif-practice {
             background-color: #a5d6ff;
-            background-image: url('/assets/train_rain.gif');
+            background-image: url('/assets/vending-machine.gif');
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
         }
         .bg-gif-tournament {
             background-color: #a5d6ff;
-            background-image: url('/assets/train_rain.gif');
+            background-image: url('/assets/balcony.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+        .bg-gif-ai {
+            background-color: #a5d6ff;
+            background-image: url('/assets/alley.gif');
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
         }
         .bg-gif-settings {
-            background-color: #000000;
-            background-image: url('/assets/sushi-belt.gif');
+            background-color: #9e6a03;
+            /*background-image: url('/assets/vertical-room.gif');*/
+            background-image: url('/assets/home.gif');
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
@@ -324,45 +332,56 @@
     </footer>
 </div>
 
-<!-- Settings Page -->
-<div id="settingsPage" class="hidden min-h-screen p-8 bg-gif-settings text-white">
-    <header class="flex justify-between items-center mb-12">
-        <h1 class="text-5xl font-bold">Settings</h1>
-        <button id="backToProfile" class="text-xl underline hover:text-pink-400">Back to Profile</button>
-    </header>
+    <!-- Settings Page -->
+    <div id="settingsPage" class="hidden min-h-screen p-8 bg-gif-settings text-white">
+        <header class="flex justify-between items-center mb-12">
+            <h1 class="text-5xl font-bold">Settings</h1>
+            <button id="backToProfile" class="text-xl underline hover:text-red-500">Back to Profile</button>
+        </header>
 
-    <main class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Change Username -->
-        <section class="bg-black/70 p-6 rounded-lg shadow-lg">
-            <h2 class="text-3xl font-bold mb-4">Change Username</h2>
-            <input type="text" id="newUsername" class="w-full p-2 mb-4 text-black" placeholder="New username" />
-            <button id="saveUsername" class="pixelated-button w-full">Save</button>
-        </section>
+        <main class="flex justify-center items-start gap-8 flex-wrap md:flex-nowrap">
+            <!-- Change Username Block -->
+            <section class="bg-black/50 rounded-lg p-6 w-full md:w-[400px] h-[300px] flex flex-col justify-between">
+                <h2 class="text-3xl font-bold mb-4">Change Username</h2>
+                <input type="text" id="newUsername bg-transparent"
+                       class="w-full p-2 border border-black rounded-lg text-black placeholder-black mb-4 focus:outline-none focus:ring-0"
+                       placeholder="New username" />
+                <button id="saveUsername"
+                        class="pixelated-button w-full hover:text-red-500 text-xl">Save</button>
+            </section>
 
-        <!-- Change Password -->
-        <section class="bg-black/70 p-6 rounded-lg shadow-lg">
-            <h2 class="text-3xl font-bold mb-4">Change Password</h2>
-            <input type="password" id="newPassword" class="w-full p-2 mb-4 text-black" placeholder="New password" />
-            <button id="savePassword" class="pixelated-button w-full">Save</button>
-        </section>
+            <!-- Change Password Block -->
+            <section class="bg-black/50 rounded-lg p-6 w-full md:w-[400px] h-[300px] flex flex-col justify-between">
+                <h2 class="text-3xl font-bold mb-4">Change Password</h2>
+                <input type="password" id="newPassword"
+                       class="w-full p-2 border border-black rounded-lg text-black placeholder-black mb-4 focus:outline-none focus:ring-0"
+                       placeholder="New password" />
+                <button id="savePassword"
+                        class="pixelated-button w-full hover:text-red-500 text-xl">Save</button>
+            </section>
 
-        <!-- Change Avatar -->
-        <section class="bg-black/70 p-6 rounded-lg shadow-lg col-span-full">
-            <h2 class="text-3xl font-bold mb-4">Change Avatar</h2>
-            <input type="text" id="newAvatarUrl" class="w-full p-2 mb-4 text-black" placeholder="Avatar image URL" />
-            <button id="saveAvatar" class="pixelated-button w-full">Save</button>
-        </section>
-    </main>
-</div>
+            <!-- Change Avatar Block -->
+            <section class="bg-black/50 rounded-lg p-6 w-full md:w-[400px] h-[300px] flex flex-col justify-between">
+                <h2 class="text-3xl font-bold mb-4">Change Avatar</h2>
+                <input type="text" id="newAvatarUrl"
+                       class="w-full p-2 border border-black rounded-lg text-black placeholder-black mb-4 focus:outline-none focus:ring-0"
+                       placeholder="Avatar image URL" />
+                <button id="saveAvatar"
+                        class="pixelated-button w-full hover:text-red-500 text-xl">Save</button>
+            </section>
+        </main>
+    </div>
 
-	<!-- Pong Page -->
+    <!-- Pong Page -->
 	<div id="pongPage" class="hidden min-h-screen p-8 bg-gif-pong text-white">
 		<header class="flex justify-between items-center mb-12">
 			<h1 class="text-5xl font-bold">Pong</h1>
-            <button class="text-xl underline hover:text-black" id="backFromPong">Back</button>
 		</header>
 		<main>
 			<div id="pong-start-container" class="absolute inset-0 flex items-center justify-center z-10" id="pongEnterOverlay">
+                <button id="backFromPong" class="back-button absolute top-8 right-8 text-xl underline hover:text-black">
+                    Back
+                </button>
 				<button id="start-button-pong"
 					class="text-white text-7xl bg-black/60 px-16 py-8 rounded-lg pixelated-button hover:bg-white hover:text-black transition">
 					START
@@ -375,7 +394,7 @@
 				<canvas id="pong" class="border-4 border-white mt-5 bg-black/60 " width="800" height="600"></canvas>
 				<div class="flex justify-between mt-4 w-full max-w-[800px]">
 					<button id="stop-button-pong"
-						class="bg-black/60  text-white pixelated-border text-black font-bold py-3 px-6 text-xl">Back</button>
+						class="back-button bg-black/60  text-white pixelated-border text-black font-bold py-3 px-6 text-xl">Back</button>
 				</div>
 			</div>
 		</main>
@@ -385,10 +404,12 @@
 	<div id="snakePage" class="hidden min-h-screen p-8 bg-gif-snake text-white">
 		<header class="flex justify-between items-center mb-12">
 			<h1 class="text-5xl font-bold">Snake</h1>
-			 <button class="text-xl underline hover:text-black" id="backFromSnake">Back</button>
 		</header>
 		<main>
 			<div id="snake-start-container" class="absolute inset-0 flex items-center justify-center z-10" id="snakeEnterOverlay">
+                <button id="backFromSnake" class="back-button absolute top-8 right-8 text-xl underline hover:text-black">
+                    Back
+                </button>
 				<button id="start-button-snake"
 					class="text-white text-7xl bg-black/60 px-16 py-8 rounded-lg pixelated-button hover:bg-white hover:text-black transition">
 					START
@@ -401,7 +422,7 @@
 				<canvas id="snake" class="border-4 border-white mt-5 bg-black/60 " width="800" height="600"></canvas>
 				<div class="flex justify-between mt-4 w-full max-w-[800px]">
 					<button id="stop-button-snake"
-						class="bg-black/60  text-white pixelated-border text-black font-bold py-3 px-6 text-xl">Back</button>
+						class="back-button bg-black/60  text-white pixelated-border text-black font-bold py-3 px-6 text-xl">Back</button>
 				</div>
 			</div>
 		</main>
@@ -411,12 +432,14 @@
 	<div id="practicePage" class="hidden min-h-screen p-8 bg-gif-practice text-white">
 		<header class="flex justify-between items-center mb-12">
 			<h1 class="text-5xl font-bold">Practice Mode</h1>
-			 <button class="text-xl underline hover:text-black" id="backFromPractice">Back</button>
 		</header>
 		<main>
 			<div id="practice-start-container" class="absolute inset-0 flex items-center justify-center z-10"
 				id="practiceEnterOverlay">
-				<button id="start-button-practice"
+                <button id="backFromPractice" class="back-button absolute top-8 right-8 text-xl underline hover:text-black">
+                    Back
+                </button>
+                <button id="start-button-practice"
 					class="text-white text-7xl bg-black/60 px-16 py-8 rounded-lg pixelated-button hover:bg-white hover:text-black transition">
 					START
 				</button>
@@ -428,7 +451,7 @@
 				<canvas id="practice" class="border-4 border-white mt-5 bg-black/60 " width="800" height="600"></canvas>
 				<div class="flex justify-between mt-4 w-full max-w-[800px]">
 					<button id="stop-button-practice"
-						class="bg-black/60  text-white pixelated-border text-black font-bold py-3 px-6 text-xl">Back</button>
+						class="back-button bg-black/60  text-white pixelated-border text-black font-bold py-3 px-6 text-xl">Back</button>
 				</div>
 			</div>
 		</main>
@@ -439,10 +462,12 @@
 	<div id="aiPage" class="hidden min-h-screen p-8 bg-gif-ai text-white">
 		<header class="flex justify-between items-center mb-12">
 			<h1 class="text-5xl font-bold">AI Mode</h1>
-			 <button class="text-xl underline hover:text-black" id="backFromai">Back</button>
 		</header>
 		<main>
 			<div id="ai-start-container" class="absolute inset-0 flex items-center justify-center z-10" id="aiEnterOverlay">
+                <button id="backFromAi" class="back-button absolute top-8 right-8 text-xl underline hover:text-black">
+                    Back
+                </button>
 				<button id="start-button-ai"
 					class="text-white text-7xl bg-black/60 px-16 py-8 rounded-lg pixelated-button hover:bg-white hover:text-black transition">
 					START
@@ -455,7 +480,7 @@
 				<canvas id="ai" class="border-4 border-white mt-5 bg-black/60 " width="800" height="600"></canvas>
 				<div class="flex justify-between mt-4 w-full max-w-[800px]">
 					<button id="stop-button-ai"
-						class="bg-black/60  text-white pixelated-border text-black font-bold py-3 px-6 text-xl">Back</button>
+						class="back-button bg-black/60  text-white pixelated-border text-black font-bold py-3 px-6 text-xl">Back</button>
 				</div>
 			</div>
 		</main>

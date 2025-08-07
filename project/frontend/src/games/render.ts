@@ -1,5 +1,15 @@
 import { gameHandler } from './gameHandler.js';
 
+/**
+ * Retrieves the 2D rendering context for the given game's canvas element.
+ *
+ * - Looks up a `<canvas>` element by ID based on the `gameType`.
+ * - Throws an error if the canvas or context cannot be found.
+ *
+ * @param {string} gameType - The type of game ('pong', 'snake', etc.), used as the canvas element ID.
+ * @returns {CanvasRenderingContext2D} The 2D rendering context for the canvas.
+ * @throws Will throw an error if the canvas or 2D context is not found.
+ */
 export function getCanvasContext(gameType: string): CanvasRenderingContext2D {
   const canvas = document.getElementById(gameType) as HTMLCanvasElement;
   if (!canvas) throw new Error('Canvas element not found');
@@ -8,6 +18,18 @@ export function getCanvasContext(gameType: string): CanvasRenderingContext2D {
   return ctx;
 }
 
+/**
+ * Sets up the WebSocket message handler and connects rendering logic
+ * to the appropriate game (Pong or Snake).
+ *
+ * - Attaches a `message` listener to the WebSocket.
+ * - Handles various message types such as game state updates, game start, game over, etc.
+ * - Uses the `gameHandler` to call the appropriate render and game logic for the given type.
+ *
+ * @param {WebSocket} socket - The WebSocket connection to receive game state updates.
+ * @param {string} gameType - The type of game being played ('pong' or 'snake').
+ * @throws Will throw an error if the provided `gameType` is not supported.
+ */
 export function renderGame(socket: WebSocket, gameType: string) {
   const ctx = getCanvasContext(gameType);
   if (!['pong', 'snake'].includes(gameType)) {

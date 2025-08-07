@@ -1,5 +1,6 @@
-import { globalSession } from '../auth/auth.js';
-import { showFriends, fetchUserProfile } from '../profile/profile.js';
+import { globalSession, checkLoginStatus } from '../auth/auth.js';
+import { showFriends, fetchUserProfile, showGameStats } from '../profile/profile.js';
+import { hideAllPages, setView, toggleOwnProfileButtons } from '../utils/uiHelpers.js';
 
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
@@ -12,32 +13,18 @@ const landingPage = document.getElementById('landingPage');
 const profilePage = document.getElementById('profilePage');
 const creditPage = document.getElementById('creditPage');
 
-function hideAllPages() {
-  [
-    'authPage',
-    'landingPage',
-    'profilePage',
-    'settingsPage',
-    'pongPage',
-    'snakePage',
-    'practicePage',
-    'creditPage',
-    'aiPage',
-  ].forEach((id) => document.getElementById(id)?.classList.add('hidden'));
-}
-
-function setView(viewName: string) {
-  document.body.setAttribute('data-view', viewName);
-}
-
-export function showMessage(el: HTMLElement, text: string): void {
-  el.classList.remove('hidden');
-  el.textContent = text;
-}
-
+/**
+ * Displays the login form view.
+ *
+ * - Hides the registration form and shows the login form.
+ * - Updates form title and toggle text.
+ * - Shows login message, sets current view to 'login', and updates visible page to auth.
+ */
 export function showLoginView() {
   if (!loginForm || !registerForm || !formTitle || !toggle || !loginMessage || !registerMessage)
     return;
+
+  hideAllPages();
 
   registerForm.classList.add('hidden');
   loginForm.classList.remove('hidden');
@@ -52,9 +39,18 @@ export function showLoginView() {
   creditPage?.classList.add('hidden');
 }
 
+/**
+ * Displays the registration form view.
+ *
+ * - Hides the login form and shows the registration form.
+ * - Updates form title and toggle text.
+ * - Shows registration message, sets current view to 'register', and updates visible page to auth.
+ */
 export function showRegisterView() {
   if (!loginForm || !registerForm || !formTitle || !toggle || !loginMessage || !registerMessage)
     return;
+
+  hideAllPages();
 
   loginForm.classList.add('hidden');
   registerForm.classList.remove('hidden');
@@ -70,6 +66,13 @@ export function showRegisterView() {
   creditPage?.classList.add('hidden');
 }
 
+/**
+ * Displays the landing page view for a logged-in user.
+ *
+ * - Updates username and avatar from the global session.
+ * - Hides all other pages and shows the landing page.
+ * - Sets the current view to 'landing'.
+ */
 export function showLandingView() {
   if (!authPage || !landingPage) {
     console.warn('Missing authPage or landingPage');
@@ -88,9 +91,17 @@ export function showLandingView() {
 
   hideAllPages();
   landingPage.classList.remove('hidden');
-  setView('landing'); //new
+  setView('landing');
 }
 
+/**
+ * Restores the appropriate view on page reload or direct access via URL.
+ *
+ * - Checks login status via the backend.
+ * - Matches the current path to a registered view.
+ * - If logged in or on an auth page, loads the appropriate view.
+ * - Otherwise, redirects to the login page.
+ */
 export async function restoreViewOnReload() {
   await checkLoginStatus();
 
@@ -145,15 +156,13 @@ export async function restoreViewOnReload() {
 }
 
 /**
- * Displays the profile view for a specified user or defaults to the currently logged-in user.
+ * Displays the profile page for a specified user or the currently logged-in user.
  *
- * - Hides all other views before displaying the profile page.
- * - Fetches profile data from the server for the given or current user.
+ * - Fetches user profile data and friends list.
  * - Updates the profile heading and avatar.
- * - Handles fallback if no username is provided.
+ * - Toggles visibility of profile-related buttons based on whether the viewed profile is the user's own.
  *
- * @param {string} [username] - Optional username to display the profile for.
- *                              If not provided, defaults to the currently logged-in user via `globalSession.getUsername()`.
+ * @param {string} [username] - Optional username to show profile for. Defaults to the logged-in user.
  */
 export async function showProfileView(username?: string) {
   hideAllPages();
@@ -177,35 +186,10 @@ export async function showProfileView(username?: string) {
       }
     }
     await showFriends(providedUsername);
-    // Hide "Add Friend" input if viewing another user's profile
+    await showGameStats(providedUsername);
+
     const isOwnProfile = providedUsername === globalSession.getUsername();
-    const addFriendSection = document.getElementById('addFriendSection');
-
-    if (addFriendSection) {
-      if (isOwnProfile) {
-        addFriendSection.classList.remove('hidden');
-      } else {
-        addFriendSection.classList.add('hidden');
-      }
-    }
-
-    const backToOwnButton = document.getElementById('backToOwnProfile');
-    if (backToOwnButton) {
-      if (isOwnProfile) {
-        backToOwnButton.classList.add('hidden');
-      } else {
-        backToOwnButton.classList.remove('hidden');
-      }
-    }
-
-    const settingsButton = document.getElementById('settingsToggle');
-    if (settingsButton) {
-      if (isOwnProfile) {
-        settingsButton.classList.remove('hidden');
-      } else {
-        settingsButton.classList.add('hidden');
-      }
-    }
+    toggleOwnProfileButtons(isOwnProfile);
 
     profilePage?.classList.remove('hidden');
     setView('profile');
@@ -215,59 +199,88 @@ export async function showProfileView(username?: string) {
   }
 }
 
+/**
+ * Displays the settings page.
+ *
+ * - Hides all other views and shows the settings page.
+ * - Sets the current view to 'settings'.
+ */
 export function showSettingsView() {
   hideAllPages();
   document.getElementById('settingsPage')?.classList.remove('hidden');
   setView('settings');
 }
 
+/**
+ * Displays the Pong game page.
+ *
+ * - Hides all other views and shows the Pong page.
+ * - Sets the current view to 'pong'.
+ */
 export function showPongView() {
   hideAllPages();
   document.getElementById('pongPage')?.classList.remove('hidden');
   setView('pong');
 }
 
+/**
+ * Displays the Snake game page.
+ *
+ * - Hides all other views and shows the Snake page.
+ * - Sets the current view to 'snake'.
+ */
 export function showSnakeView() {
   hideAllPages();
   document.getElementById('snakePage')?.classList.remove('hidden');
   setView('snake');
 }
 
+/**
+ * Displays the Practice page.
+ *
+ * - Hides all other views and shows the Practice page.
+ * - Sets the current view to 'practice'.
+ */
 export function showPracticeView() {
   hideAllPages();
   document.getElementById('practicePage')?.classList.remove('hidden');
   setView('practice');
 }
 
+/**
+ * Displays the Credits page.
+ *
+ * - Hides all other views and shows the Credits page.
+ * - Sets the current view to 'credits'.
+ */
 export function showCreditView() {
   hideAllPages();
   document.getElementById('creditPage')?.classList.remove('hidden');
   setView('credits');
 }
 
+/**
+ * Displays the AI page.
+ *
+ * - Hides all other views and shows the AI page.
+ * - Does not explicitly set a view (optionally could add setView('ai')).
+ */
 export function showAiView() {
   hideAllPages();
   document.getElementById('aiPage')?.classList.remove('hidden');
 }
 
-export async function checkLoginStatus() {
-  try {
-    const res = await fetch('/api/auth/me', {
-      method: 'GET',
-      credentials: 'include',
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-      console.log('User data:', data);
-      globalSession.login(data.username, data.email, data.avatar);
-    }
-  } catch (err) {
-    console.error('Error checking login status:', err);
-    return null;
-  }
-}
-
+/**
+ * Handles navigation and view updates across the application.
+ *
+ * - Pushes a new state to browser history if the view has changed.
+ * - Invokes the provided function to display the corresponding view.
+ *
+ * @param {string} view - A unique identifier for the view.
+ * @param {string} url - The URL path to navigate to.
+ * @param {Function} showView - The function that displays the view content.
+ * @param {Record<string, never>} [extraState={}] - Optional extra state to pass with navigation.
+ */
 export function navigateTo(
   view: string,
   url: string,
