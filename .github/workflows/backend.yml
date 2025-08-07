@@ -24,8 +24,19 @@ jobs:
       run: npm ci
       working-directory: ./project/backend
 
+    - name: Install wait-on
+      run: npm install wait-on
+
+    - name: Run Prisma Migrate
+      run: npx prisma migrate dev --name fix-game-relations --schema=database/prisma/schema.prisma
+      working-directory: ./project/backend
+
+    - name: Run Prisma Generate
+      run: npx prisma generate --schema=database/prisma/schema.prisma
+      working-directory: ./project/backend
+
     - name: Start Backend
-      run: npx prisma migrate dev  --schema=database/prisma/schema.prisma fix-game-relations && npx prisma generate --schema=database/prisma/schema.prisma fix-game-relations && node.js  &
+      run: node index.js &
       working-directory: ./project/backend
 
     - name: Wait for server to be ready
