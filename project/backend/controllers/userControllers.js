@@ -9,6 +9,7 @@ import fs from 'fs';
 import * as utils from '../utils/utils.js';
 import path from 'path';
 import { connectionManager } from '../websocket/managers/connectionManager.js';
+import { Console } from 'console';
 
 // Returns all users registered in the db (userId and username only)
 const getAllUsersHandler = async (request, reply) => {
@@ -63,7 +64,20 @@ const addFriendHandler = async (request, reply) => {
 
 const updateUserHandler = async (request, reply) => {
   try {
-    const { username, email, password, avatar } = request.body;
+    const parts = request.parts();
+    let username, email, password, avatar;
+    for await (const part of parts) {
+      if (part.file && part.fieldname === 'avatar') {
+        avatar = part;
+      } else if (part.fieldname === 'username') {
+        username = part.value;
+      } else if (part.fieldname === 'password') {
+        password = part.value;
+      } else if (part.fieldname === 'email') {
+        email = part.value;
+      }
+    }
+    console.log('Parsed form data:', { username, password, avatar });
     const requestUserId = request.user.userId;
     const user = await userServices.getUserById(requestUserId);
     if (username) {
@@ -97,9 +111,10 @@ const uploadAvatarHandler = async (request, reply) => {
     const data = await request.file();
     const filename = `avatar_${Date.now()}_${data.filename}`;
     const filepath = path.join(__dirname, '..', 'uploads', filename);
+    console.log('FILEPATH IN userCONTROLLERS: ', filepath);
     pump(data.file, fs.createWriteStream(filepath));
     let avatarUrl = `../uploads/avatars/${filename}`;
-    userServices.uploadAvatarinDatabase(avatarUrl, username);
+    userServices.uploadAvatarInDatabase(avatarUrl, username);
     return reply.code(200).send({
       success: true,
       avatar: avatarUrl,

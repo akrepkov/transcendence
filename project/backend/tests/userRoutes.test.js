@@ -3,6 +3,11 @@ import Fastify from 'fastify';
 import userRoutes from '../routes/userRoutes.js';
 import * as userServices from '../database/services/userServices.js';
 import cookie from '@fastify/cookie';
+import FormData from 'form-data';
+import fs from 'fs';
+import util from 'util';
+import fastifyMultipart from '@fastify/multipart';
+
 
 describe('User Routes', () => {
 	let fastify;
@@ -11,6 +16,7 @@ describe('User Routes', () => {
 	beforeAll(async () => {
 		fastify = Fastify();
 		fastify.register(cookie);
+		fastify.register(fastifyMultipart);
 		await userRoutes(fastify); // register your routes
 		await fastify.ready();
 	});
@@ -50,7 +56,7 @@ describe('User Routes', () => {
     expect(response.statusCode).toBe(200);
     const body = await JSON.parse(response.body);
 	authCookie = body.token;
-	// console.log("cookie after login: ", authCookie);
+	console.log("cookie after login: ", authCookie);
 	// console.log("body: ", body.message);
     expect(body.message).toBe('Login successful');
   });
@@ -85,33 +91,41 @@ describe('User Routes', () => {
 	});
     const body = await JSON.parse(response.body);
 	const user = await userServices.getUserByUsername(body.username);
-	console.log("user: ", user);
+	// console.log("user: ", user);
     expect(response.statusCode).toBe(200);
     expect(user.username).toBe('lena');
   });
 
     test('PATCH update_user_profile', async () => {
-	// console.log("cookie in test PATCH: ", authCookie);
 	const oldUser = await userServices.getUserByUsername('lena');
-    const response = await fastify.inject({
+	console.log("ORIGINAL USER: ", oldUser);
+
+	const form = new FormData();
+		form.append('username', 'lenacik');
+		form.append('password', 'lenacik');
+		form.append('avatar', fs.readFileSync('/Users/mbp14/Downloads/loki_mad.webp'), {
+		filename: 'loki_mad.webp',
+		contentType: 'image/webp'
+	});
+
+  	const payload = form.getBuffer();
+	const response = await fastify.inject({
       method: 'PATCH',
       url: '/api/update_user_profile',
-      payload: {
-        username: 'lenacik',
-        password: 'lenacik',
-      },
+	  payload,
+	  headers: form.getHeaders(),
 	  cookies: {
 		token: authCookie
 	  }
     });
     const body = await JSON.parse(response.body);
-	// console.log("body: ", body);
+	console.log("body: ", body);
 	const updatedUser = await userServices.getUserByUsername('lenacik');
 	const findOldUser = await userServices.getUserByUsername('lena');
-	// console.log("updatedUser: ", updatedUser);
+	console.log("UPDATED USER: ", updatedUser);
     expect(updatedUser).toBeDefined();
     expect(findOldUser).toBeNull();
-  });
+  }, 15000);
 
 	test('POST /api/auth/logout', async() => {
 		const response = await fastify.inject({
