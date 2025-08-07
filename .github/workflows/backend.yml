@@ -44,5 +44,5 @@ jobs:
       timeout-minutes: 1
 
     - name: Run Jest Unit Tests
-      run: npm test --trace on
+      run: npm test ./tests --trace on
       working-directory: ./project/backend/tests
