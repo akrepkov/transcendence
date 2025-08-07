@@ -84,10 +84,7 @@ const updateUserHandler = async (request, reply) => {
     if (avatar) {
       await uploadAvatarHandler(request, reply);
     }
-    const updatedUser = await userServices.getUserById(user.userId);
-    const { password: pwd, email: mail, ...safeUser } = updatedUser;
-    // console.log('updatedUser in code', safeUser);
-    return reply.code(200).send({ success: true, user: safeUser });
+    return reply.code(200).send({ success: true });
   } catch (error) {
     console.error('Error updating user', error);
     return reply.code(500).send({ error: 'Internal server error' });
