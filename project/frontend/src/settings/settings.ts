@@ -1,33 +1,66 @@
+import { fetchUserProfile } from '../profile/profile.js';
+import { globalSession } from '../auth/auth.js';
+
+export function initSettingsEvents() {
+  const usernameButton = document.getElementById('saveUsername');
+  const passwordButton = document.getElementById('savePassword');
+  const avatarButton = document.getElementById('saveAvatar');
+
+  if (usernameButton) {
+    usernameButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      changeUsername();
+    });
+  }
+
+  if (passwordButton) {
+    passwordButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      changePassword();
+    });
+  }
+
+  if (avatarButton) {
+    avatarButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      changeAvatar();
+    });
+  }
+}
+
 /**
  * Sends a PATCH request to update the user's username.
  *
- * - Retrieves the new username from the input field with ID 'username-input'.
+ * - Retrieves the new username from the input field with ID 'newUsername'.
  * - Validates the input.
  * - Sends the new username in JSON format to the server.
  * - Displays success or failure messages to the user.
  */
 export async function changeUsername() {
-  const input = document.getElementById('username-input') as HTMLInputElement;
+  const input = document.getElementById('newUsername') as HTMLInputElement;
   const username = input?.value;
 
   if (!username) {
-    alert('Username is required.');
+    alert('Username is required.'); // TODO make into message
     return;
   }
 
   try {
     const response = await fetch('/api/update_user_profile', {
       method: 'PATCH',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username }),
+      body: JSON.stringify({ username: username }),
     });
 
     if (!response.ok) {
-      alert('Username change failed.');
+      alert('Username change failed.'); // TODO make into message
       return;
     }
 
-    alert('Username updated successfully.');
+    const data = await response.json();
+    alert('Username updated successfully.'); // TODO make into message
+    globalSession.setUsername(data?.username ?? username);
   } catch (err) {
     alert((err as Error).message);
   }
@@ -36,33 +69,34 @@ export async function changeUsername() {
 /**
  * Sends a PATCH request to update the user's password.
  *
- * - Retrieves the new password from the input field with ID 'password-input'.
+ * - Retrieves the new password from the input field with ID 'newPassword'.
  * - Validates the input.
  * - Sends the new password in JSON format to the server.
  * - Displays success or failure messages to the user.
  */
 export async function changePassword() {
-  const passwordInput = document.getElementById('password-input') as HTMLInputElement;
+  const passwordInput = document.getElementById('newPassword') as HTMLInputElement;
   const password = passwordInput?.value;
 
   if (!password) {
-    alert('Password is required.');
+    alert('Password is required.'); // TODO make into message
     return;
   }
 
   try {
     const response = await fetch('/api/update_user_profile', {
       method: 'PATCH',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password }),
+      body: JSON.stringify({ password: password }),
     });
 
     if (!response.ok) {
-      alert('Password change failed.');
+      alert('Password change failed.'); // TODO make into message
       return;
     }
 
-    alert('Password updated successfully.');
+    alert('Password updated successfully.'); // TODO make into message
   } catch (err) {
     alert((err as Error).message);
   }
@@ -106,6 +140,8 @@ export async function changeAvatar() {
     try {
       const response = await fetch('/api/update_user_profile', {
         method: 'PATCH',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: formData, // No JSON.stringify and no Content-Type
       });
 
