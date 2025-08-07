@@ -3,8 +3,8 @@ import * as snake from './snake.js';
 import { renderGame } from './render.js';
 import { cleanPongField } from './pong.js';
 import { cleanSnakeField } from './snake.js';
-import { handleStartGame } from './ai/render.js';
-import { cleanAiField } from './ai/render.js';
+import { handleStartGame } from './frontendGame/frontendRender.js';
+import { resetGame } from './frontendGame/frontendRender.js';
 
 /**
  * Handles game-specific logic bindings for Pong and Snake.
@@ -169,7 +169,7 @@ export const toggleHandler = {
     start() {
       document.getElementById(this.startContainer)?.classList.add('hidden');
       document.getElementById(this.gameContainer)?.classList.remove('hidden');
-      handleStartGame();
+      handleStartGame('ai');
     },
 
     /**
@@ -178,7 +178,7 @@ export const toggleHandler = {
     clean() {
       const scoreai = document.getElementById('ai-score');
       if (scoreai) scoreai.textContent = '0 : 0';
-      cleanAiField();
+      resetGame('ai');
     },
 
     /**
@@ -187,7 +187,7 @@ export const toggleHandler = {
     reset() {
       document.getElementById(this.startContainer)?.classList.remove('hidden');
       document.getElementById(this.gameContainer)?.classList.add('hidden');
-      cleanAiField();
+      resetGame('ai');
       document.getElementById('aiPage')?.classList.add('hidden');
     },
   },
