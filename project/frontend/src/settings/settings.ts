@@ -1,4 +1,3 @@
-import { fetchUserProfile } from '../profile/profile.js';
 import { globalSession } from '../auth/auth.js';
 
 export function initSettingsEvents() {
@@ -20,12 +19,7 @@ export function initSettingsEvents() {
     });
   }
 
-  if (avatarButton) {
-    avatarButton.addEventListener('click', (e) => {
-      e.preventDefault();
-      changeAvatar();
-    });
-  }
+  initAvatarUpload();
 }
 
 /**
@@ -102,47 +96,73 @@ export async function changePassword() {
   }
 }
 
-/**
- * Initializes avatar upload logic via form submission.
- *
- * - Attaches a submit handler to the form with ID 'avatar-form'.
- * - Validates that an image file is selected.
- * - Previews the selected image using FileReader.
- * - Uploads the image to the server using a FormData-based PATCH request.
- * - Displays success or failure messages to the user.
- */
-export async function changeAvatar() {
-  const avatarform = document.getElementById('avatar-form') as HTMLFormElement;
-  const avatarinput = document.getElementById('avatar-input') as HTMLInputElement;
-  const avatarpreview = document.getElementById('avatar-preview') as HTMLImageElement;
+export function initAvatarUpload() {
+  const dropZone = document.getElementById('avatar-drop-zone') as HTMLElement;
+  const input = document.getElementById('avatar-input') as HTMLInputElement;
+  const preview = document.getElementById('avatar-preview') as HTMLImageElement;
+  const saveButton = document.getElementById('saveAvatar') as HTMLButtonElement;
 
-  avatarform.addEventListener('submit', async (e: Event) => {
+  let selectedFile: File | null = null;
+
+  // Click to browse
+  dropZone.addEventListener('click', () => input.click());
+
+  // File selected manually
+  input.addEventListener('change', () => {
+    if (input.files && input.files[0]) {
+      previewFile(input.files[0]);
+    }
+  });
+
+  // Drag events
+  dropZone.addEventListener('dragover', (e) => {
     e.preventDefault();
+    dropZone.classList.add('bg-black/70');
+  });
 
-    const file = avatarinput.files?.[0];
-    if (!file) {
-      alert('Please select an image');
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('bg-black/70');
+  });
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('bg-black/70');
+
+    const file = e.dataTransfer?.files?.[0];
+    if (file) previewFile(file);
+  });
+
+  function previewFile(file: File) {
+    if (!file.type.startsWith('image/')) {
+      alert('Only image files are allowed.');
       return;
     }
 
-    // Show preview
+    selectedFile = file;
     const reader = new FileReader();
     reader.onload = () => {
-      avatarpreview.src = reader.result as string;
-      avatarpreview.classList.remove('hidden');
+      preview.src = reader.result as string;
+      preview.classList.remove('hidden');
     };
     reader.readAsDataURL(file);
+  }
 
-    // Prepare form data
+  saveButton.addEventListener('click', async () => {
+    if (!selectedFile) {
+      alert('No image selected.');
+      return;
+    }
+
     const formData = new FormData();
-    formData.append('avatar', file);
+    console.log(formData);
+    formData.append('avatar', selectedFile);
+    console.log(formData);
 
     try {
       const response = await fetch('/api/update_user_profile', {
         method: 'PATCH',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: formData, // No JSON.stringify and no Content-Type
+        body: JSON.stringify({ avatar: formData }),
       });
 
       if (!response.ok) {
@@ -150,7 +170,13 @@ export async function changeAvatar() {
         return;
       }
 
-      alert('Avatar uploaded successfully.');
+      const result = await response.json();
+      alert('Avatar updated successfully.');
+
+      // Update avatars across app
+      globalSession.setAvatar(result.avatarUrl);
+      document.getElementById('avatar')?.setAttribute('src', result.avatarUrl);
+      document.getElementById('avatar-profile')?.setAttribute('src', result.avatarUrl);
     } catch (err) {
       alert((err as Error).message);
     }

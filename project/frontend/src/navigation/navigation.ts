@@ -180,6 +180,7 @@ export async function showProfileView(username?: string) {
     const avatarProfile = document.getElementById('avatar-profile') as HTMLImageElement;
     if (avatarProfile) {
       if (jsonResult.avatar === null) {
+        console.log('avatar is null');
         avatarProfile.src = '/uploads/avatars/wow_cat.jpg'; //TODO remove after backend database fix
       } else {
         avatarProfile.src = jsonResult.avatar;
