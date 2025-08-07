@@ -25,7 +25,7 @@ jobs:
       working-directory: ./project/backend
 
     - name: Start Backend
-      run: npx prisma migrate dev  --schema=database/prisma/schema.prisma fix-game-relations && npx prisma generate --schema=database/prisma/schema.prisma fix-game-relations  &
+      run: npx prisma migrate dev  --schema=database/prisma/schema.prisma fix-game-relations && npx prisma generate --schema=database/prisma/schema.prisma fix-game-relations && node.js  &
       working-directory: ./project/backend
 
     - name: Wait for server to be ready
