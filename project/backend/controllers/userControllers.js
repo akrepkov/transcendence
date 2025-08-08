@@ -73,7 +73,7 @@ const updateUserHandler = async (request, reply) => {
     const timeout = setTimeout(() => {
       console.error('Timeout: request.parts() is hanging');
     }, 5000);
-    let username, email, password, avatar;
+    let username, email, password, avatar, oldName;
     for await (const part of parts) {
       if (part.file && part.fieldname === 'avatar') {
         avatar = part;
@@ -83,20 +83,13 @@ const updateUserHandler = async (request, reply) => {
         password = part.value;
       } else if (part.fieldname === 'email') {
         email = part.value;
-      }
-      if (avatar) {
-        console.log('Avatar info:', {
-          filename: avatar.filename,
-          mimetype: avatar.mimetype,
-          fileType: typeof avatar.file,
-        });
+      } else if (part.fieldname === 'oldName') {
+        oldName = part.value;
       }
     }
-    console.log('Parsed form data:', { username, password, avatar });
-    const requestUserId = request.user.userId;
-    const user = await userServices.getUserById(requestUserId);
-    console.log("I'M HERE ", user);
-    avatar = part;
+    const userId = request.userId;
+    const user = await userServices.getUserById(userId);
+    console.log('USER IT REQUEST: ', request.userId);
     if (username) {
       const existUsername = await authServices.checkUniqueUsername(username);
       if (existUsername) {

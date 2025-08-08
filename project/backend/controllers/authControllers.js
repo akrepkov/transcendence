@@ -14,7 +14,9 @@ const authenticate = async (request, reply) => {
   }
   try {
     const payload = jwt.verify(token, JWT_SECRET);
+    console.log('PAYLOAD: ', payload);
     request.user = payload;
+    return request;
   } catch (error) {
     return handleError(reply, error, 401);
   }

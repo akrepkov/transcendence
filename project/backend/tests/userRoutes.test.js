@@ -96,53 +96,6 @@ describe('User Routes', () => {
     expect(user.username).toBe('lena');
   });
 
-    test('PATCH update_user_profile', async () => {
-	const oldUser = await userServices.getUserByUsername('lena');
-	console.log("ORIGINAL USER: ", oldUser);
-
-	const form = new FormData();
-		form.append('username', 'lenacik');
-		form.append('password', 'lenacik');
-		form.append('email', 'lenacik');
-		form.append('avatar', fs.createReadStream('/home/evoronin/Downloads/Elena_Voronin.jpeg'), {
-    	filename: 'Elena_Voronin.jpeg',
-			contentType: 'image/jpeg'
-		});
-
-	form.on('end', () => {
-	console.log('Form stream ended');
-	});
-	afterAll(async () => {
-	await fastify.close();
-	});
-	const res = await fetch('http://localhost:3000/api/update_user_profile', {
-		method: 'PATCH',
-		body: form,
-		headers: {
-		cookie: `token=${authCookie}`
-		}
-	});
-
-	const body = await res.json();
-	console.log(body);
-	// const response = await fastify.inject({
-    //   method: 'PATCH',
-    //   url: '/api/update_user_profile',
-	//   payload: form,
-	//   headers: form.getHeaders(),
-	//   cookies: {
-	// 	token: authCookie
-	//   }
-    // });
-    // const body = await JSON.parse(response.body);
-	// console.log("body: ", body);
-	// const updatedUser = await userServices.getUserByUsername('lenacik');
-	// const findOldUser = await userServices.getUserByUsername('lena');
-	// console.log("UPDATED USER: ", updatedUser);
-    // expect(updatedUser).toBeDefined();
-    // expect(findOldUser).toBeNull();
-  }, 15000);
-
 	test('POST /api/auth/logout', async() => {
 		const response = await fastify.inject({
 			method: 'POST',
@@ -157,5 +110,13 @@ describe('User Routes', () => {
 });
 
 
-// await userServices.deleteUser('lena');
-// await userServices.deleteUser('lenacik');
+await userServices.deleteUser('lena');
+await userServices.deleteUser('lenacik');
+
+
+// curl -X PATCH https://localhost:3000/api/update_user_profile \
+//   -F "username=lenacik" \
+//   -F "password=lenacik" \
+//   -F "avatar=@/Users/mbp14/Downloads/loki_mad.webp" \
+//  -F "oldName=lena" \                      
+//  -H "cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMxNywic2Vzc2lvbklkIjoiM2Y3YTU3ZmRlZjVhZjA1OTdlOGExZWM4NmI4NGNmMGYyZmNmOWFiN2ZmMjRkMWVjNzU0NjgxZmY1YTFkYzEyMyIsImlhdCI6MTc1NDY1NDY5OSwiZXhwIjoxNzU0NjU4Mjk5fQ.BefbJHFyzf69cwLDO6kZ-3ruIdeGIIyCbWYDR0cndkA" -k
