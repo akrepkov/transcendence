@@ -137,15 +137,18 @@ export class Pong {
     if (this.running) return;
 
     this.running = true;
-    this.gameLoop = setInterval(() => {
-      this.ball.updateBall();
-      this.players.forEach((player) => {
-        player.updatePaddle();
-      });
-      this.handleBallEvents();
-      if (this.running) {
-        this.broadcastState();
-      }
-    }, 1000 / 60);
+    this.broadcastState();
+    setTimeout(() => {
+      this.gameLoop = setInterval(() => {
+        this.ball.updateBall();
+        this.players.forEach((player) => {
+          player.updatePaddle();
+        });
+        this.handleBallEvents();
+        if (this.running) {
+          this.broadcastState();
+        }
+      }, 1000 / 60);
+    }, 3000);
   }
 }
