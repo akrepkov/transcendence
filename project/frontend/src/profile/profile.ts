@@ -141,8 +141,8 @@ export async function addFriend() {
       input.value = ''; // clear input after adding
       showFriendMessage('Friend added successfully');
     } else {
-      const { message } = await res.json().catch(() => ({}));
-      showFriendMessage(message || 'Could not add friend', true);
+      // const { message } = await res.json().catch(() => ({}));
+      showFriendMessage('Could not add friend');
     }
   } catch (err) {
     console.error('Request failed:', err);
@@ -245,5 +245,32 @@ export async function showGameStats(username: string) {
     setText('totalGames', totalGames);
   } catch (err) {
     console.error('Error loading game stats:', err);
+  }
+}
+
+export async function showGameHistory(username: string) {
+  const list = document.getElementById('historyList')?.querySelector('ul');
+  if (!list) return;
+
+  try {
+    const data = await fetchUserProfile(username);
+
+    console.log("DATA FROM USER RE PONG:", data.pong);
+    const gameHistory = data.gameHistory ?? [];
+
+    list.innerHTML = '';
+
+    if (gameHistory.length === 0) {
+      list.innerHTML = '<li class="text-black text-lg">No game history yet</li>';
+      return;
+    }
+
+    for (const game of gameHistory) {
+      const li = document.createElement('li');
+      li.className =
+        'border-b border-black pb-1 flex items-center gap-2';
+
+
+    }
   }
 }
