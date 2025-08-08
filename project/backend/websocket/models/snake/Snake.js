@@ -18,8 +18,8 @@ export class Snake {
     this.gameId = gameId;
     this.apple = new Apple();
     this.players = [
-      new SnakePlayer(connection1.username, connection1.userId, SNAKE_CONSTS.LEFT_PLAYER),
-      new SnakePlayer(connection2.username, connection2.userId, SNAKE_CONSTS.RIGHT_PLAYER),
+      new SnakePlayer(connection1.username, connection1.userId, SNAKE_CONSTS.LEFT_PLAYER, 1),
+      new SnakePlayer(connection2.username, connection2.userId, SNAKE_CONSTS.RIGHT_PLAYER, -1),
     ];
     this.playerSockets = [connection1.socket, connection2.socket];
     this.playerConnections = [connection1, connection2];
@@ -45,6 +45,12 @@ export class Snake {
         break;
       case 'right':
         if (player.directions.x != -1) player.directions = { x: 1, y: 0 };
+        break;
+      case 'reverse':
+        // console.log ("Original positions: ", player.positions);
+        player.positions = player.positions.map((pos) => ({ ...pos })).reverse();
+        // console.log ("Reversed positions: ", player.positions);
+        player.changeDirections();
         break;
       default:
         console.warn(`Invalid direction: ${direction} for player: ${playerId}`);
@@ -127,10 +133,10 @@ export class Snake {
 
   updatePlayers() {
     const [player1, player2] = this.players;
-    player1.checkCollisions(player2);
-    player2.checkCollisions(player1);
     player1.automatedMove(this.apple, player2);
     player2.automatedMove(this.apple, player1);
+    player1.checkCollisions(player2);
+    player2.checkCollisions(player1);
     this.checkWinCondition();
   }
   resetGame() {

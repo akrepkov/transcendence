@@ -20,6 +20,7 @@ async function handleMessage(connection, data) {
       gameManager.printGameSystemStatus();
       break;
     case 'move':
+      console.log('I move');
       gameManager.handleInput(connection, data.direction);
       break;
     case 'stopGame':
