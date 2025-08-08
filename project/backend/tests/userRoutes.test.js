@@ -9,6 +9,8 @@ import util from 'util';
 import fastifyMultipart from '@fastify/multipart';
 
 
+await userServices.deleteUser('lena');
+
 describe('User Routes', () => {
 	let fastify;
 	let authCookie;
@@ -26,6 +28,7 @@ describe('User Routes', () => {
 		await prisma.$disconnect();
 	});
 	
+
   test('POST /api/auth/register', async () => {
     const response = await fastify.inject({
       method: 'POST',
@@ -92,7 +95,6 @@ describe('User Routes', () => {
     const body = await JSON.parse(response.body);
 	console.log('Response body:\n', JSON.stringify(body, null, 2));
 	const user = await userServices.getUserByUsername(body.username);
-	// console.log("user: ", user);
     expect(response.statusCode).toBe(200);
     expect(user.username).toBe('lena');
   });
@@ -111,8 +113,7 @@ describe('User Routes', () => {
 });
 
 
-await userServices.deleteUser('lena');
-await userServices.deleteUser('lenacik');
+
 
 
 // curl -X PATCH https://localhost:3000/api/update_user_profile \
@@ -120,4 +121,8 @@ await userServices.deleteUser('lenacik');
 //   -F "password=lenacik" \
 //   -F "avatar=@/Users/mbp14/Downloads/loki_mad.webp" \
 //  -F "oldName=lena" \                      
-//  -H "cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMxNywic2Vzc2lvbklkIjoiM2Y3YTU3ZmRlZjVhZjA1OTdlOGExZWM4NmI4NGNmMGYyZmNmOWFiN2ZmMjRkMWVjNzU0NjgxZmY1YTFkYzEyMyIsImlhdCI6MTc1NDY1NDY5OSwiZXhwIjoxNzU0NjU4Mjk5fQ.BefbJHFyzf69cwLDO6kZ-3ruIdeGIIyCbWYDR0cndkA" -k
+//  -H "cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMyMywic2Vzc2lvbklkIjoiMmMzMmYzZDAxODU3NjEzODkwYTFmYjRjYTQ2ZWExZjJkNWVlNWYxNWE3MjczNzBkOWU3Y2IzOGU2MThkNjdkNCIsImlhdCI6MTc1NDY2MjQ2NiwiZXhwIjoxNzU0NjY2MDY2fQ.oKYo_dUrS3gYVzJnMZfYXYwZfsTfiFeZ2gRirYACBjA" -k
+
+
+
+//  curl -X GET https://localhost:3000/api/view_user_profile?username=lena -H "Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMyNywic2Vzc2lvbklkIjoiNDU4M2E3ZDIxNDA1MDg2YWI0NWMwNmMxN2RhMjZmOGVkZGI5YTZiOTNlNzgzOTA1N2Q0NDNkYjE2YTE4ODFjNSIsImlhdCI6MTc1NDY2ODE4OCwiZXhwIjoxNzU0NjcxNzg4fQ.A9ree_SM5EXocPtBO91xvw-RNoGOZwmX4AhuTkuIDzs" -k

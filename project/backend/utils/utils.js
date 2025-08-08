@@ -32,3 +32,8 @@ export async function getRandomAvatar() {
   const randomIndex = Math.floor(Math.random() * files.length);
   return path.join('/uploads', 'avatars', files[randomIndex]);
 }
+
+export async function isDefaultAvatar(avatarPath) {
+  if (typeof avatarPath !== 'string') return false;
+  return path.basename(avatarPath).startsWith('default_');
+}

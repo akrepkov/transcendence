@@ -15,6 +15,7 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const ROOT = path.join(__dirname, '..');
 
 // Returns all users registered in the db (userId and username only)
 const getAllUsersHandler = async (request, reply) => {
@@ -83,13 +84,10 @@ const updateUserHandler = async (request, reply) => {
         password = part.value;
       } else if (part.fieldname === 'email') {
         email = part.value;
-      } else if (part.fieldname === 'oldName') {
-        oldName = part.value;
       }
     }
-    const userId = request.userId;
+    const userId = request.user.userId;
     const user = await userServices.getUserById(userId);
-    console.log('USER IT REQUEST: ', request.userId);
     if (username) {
       const existUsername = await authServices.checkUniqueUsername(username);
       if (existUsername) {
@@ -117,12 +115,17 @@ const updateUserHandler = async (request, reply) => {
 
 const uploadAvatarHandler = async (avatar, username) => {
   try {
-    console.log('AVATAR: ', avatar);
     const filename = `avatar_${username}_${Date.now()}.jpg`;
-    const filepath = path.join(__dirname, '..', 'uploads', filename);
+    const filepath = path.join(__dirname, '..', '/uploads/avatars', filename);
     const writeStream = fs.createWriteStream(filepath);
-    await pipeline(avatar.file, writeStream); // pipe the stream to disk
-    await userServices.uploadAvatarInDatabase(filepath, username);
+    await pipeline(avatar.file, writeStream);
+    const oldAvatar = await userServices.getAvatarFromDatabase(username);
+    const oldAbsolutePath = path.join(__dirname, '..', 'uploads/avatars', oldAvatar);
+    if (oldAbsolutePath && utils.isDefaultAvatar(oldAbsolutePath)) {
+      await fs.unlink(oldAbsolutePath);
+    }
+
+    await userServices.uploadAvatarInDatabase(filename, username);
     return true;
   } catch (error) {
     console.error('Upload avatar error:', error);
@@ -136,8 +139,8 @@ const getAvatarHandler = async (request, reply) => {
     let avatarFilepath = userServices.getAvatarFromDatabase(username);
     const fileExistsResult = await utils.fileExists(avatarFilepath);
     if (!fileExistsResult) {
-      console.log('Avatar not found, using default avatar');
-      avatarFilepath = '../uploads/avatars/bunny.jpg';
+      console.log('Avatar not found');
+      return false;
     }
     if (!avatarFilepath) {
       return reply.code(404).send({ error: 'Avatar not found' });
