@@ -193,6 +193,9 @@ export class Game {
     this.ball.update();
     this.ball.draw(this.canvasContext);
     this.checkBall();
+    if (!this.isRunning) {
+      return;
+    }
     this.showPongScore();
     this.animationId = requestAnimationFrame(this.gameLoop);
   };
