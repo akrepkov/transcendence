@@ -128,7 +128,7 @@ export async function addFriend() {
   if (!friendUsername) return;
 
   const username = globalSession.getUsername();
-  if (username === globalSession.getAvatar()) {
+  if (friendUsername === username) {
     showFriendMessage('You cannot add yourself as a friend');
     return;
   }
