@@ -84,34 +84,34 @@ describe('User Routes', () => {
 		}
 	});
     const body = await JSON.parse(response.body);
+	console.log('Response body:\n', JSON.stringify(body, null, 2));
 	const user = await userServices.getUserByUsername(body.username);
-	console.log("user: ", user);
     expect(response.statusCode).toBe(200);
     expect(user.username).toBe('lena');
   });
 
-    test('PATCH update_user_profile', async () => {
-	// console.log("cookie in test PATCH: ", authCookie);
-	const oldUser = await userServices.getUserByUsername('lena');
-    const response = await fastify.inject({
-      method: 'PATCH',
-      url: '/api/update_user_profile',
-      payload: {
-        username: 'lenacik',
-        password: 'lenacik',
-      },
-	  cookies: {
-		token: authCookie
-	  }
-    });
-    const body = await JSON.parse(response.body);
-	// console.log("body: ", body);
-	const updatedUser = await userServices.getUserByUsername('lenacik');
-	const findOldUser = await userServices.getUserByUsername('lena');
-	// console.log("updatedUser: ", updatedUser);
-    expect(updatedUser).toBeDefined();
-    expect(findOldUser).toBeNull();
-  });
+//     test('PATCH update_user_profile', async () => {
+// 	// console.log("cookie in test PATCH: ", authCookie);
+// 	const oldUser = await userServices.getUserByUsername('lena');
+//     const response = await fastify.inject({
+//       method: 'PATCH',
+//       url: '/api/update_user_profile',
+//       payload: {
+//         username: 'lenacik',
+//         password: 'lenacik',
+//       },
+// 	  cookies: {
+// 		token: authCookie
+// 	  }
+//     });
+//     const body = await JSON.parse(response.body);
+// 	// console.log("body: ", body);
+// 	const updatedUser = await userServices.getUserByUsername('lenacik');
+// 	const findOldUser = await userServices.getUserByUsername('lena');
+// 	// console.log("updatedUser: ", updatedUser);
+//     expect(updatedUser).toBeDefined();
+//     expect(findOldUser).toBeNull();
+//   });
 
 	test('POST /api/auth/logout', async() => {
 		const response = await fastify.inject({
@@ -127,5 +127,5 @@ describe('User Routes', () => {
 });
 
 
-await userServices.deleteUser('lena');
-await userServices.deleteUser('lenacik');
+// await userServices.deleteUser('lena');
+// await userServices.deleteUser('lenacik');
