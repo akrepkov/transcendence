@@ -130,30 +130,26 @@ export const toggleHandler = {
      * Intended for local single-player games.
      */
     start() {
-      // document.getElementById(this.startContainer)?.classList.add('hidden');
-      // document.getElementById(this.gameContainer)?.classList.remove('hidden');
-      // handleStartGame();
+      document.getElementById(this.startContainer)?.classList.add('hidden');
+      document.getElementById(this.gameContainer)?.classList.remove('hidden');
+      handleStartGame('practice', 'player1', 'player2');
     },
 
     /**
      * Cleans up practice game UI and score (currently commented out).
      */
     clean() {
-      // const scorepractice = document.getElementById('practice-score');
-      // if (scorepractice) scorepractice.textContent = '0 : 0';
-      // cleanPracticeField();
+      resetGame('practice');
     },
 
     /**
      * Resets practice UI and game state (currently commented out).
      */
     reset() {
-      // document.getElementById(this.startContainer)?.classList.remove('hidden');
-      // document.getElementById(this.gameContainer)?.classList.add('hidden');
-      // if (socket.readyState === WebSocket.OPEN) {
-      // 	socket.send(JSON.stringify({ type: 'disconnectFromGame' }));
-      // }
-      // cleanPracticeField();
+      document.getElementById(this.startContainer)?.classList.remove('hidden');
+      document.getElementById(this.gameContainer)?.classList.add('hidden');
+      resetGame('practice');
+      document.getElementById('practicePage')?.classList.add('hidden');
     },
   },
   aiPage: {
@@ -176,8 +172,6 @@ export const toggleHandler = {
      * Resets the AI game score and canvas field.
      */
     clean() {
-      const scoreai = document.getElementById('ai-score');
-      if (scoreai) scoreai.textContent = '0 : 0';
       resetGame('ai');
     },
 
