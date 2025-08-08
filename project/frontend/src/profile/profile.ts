@@ -2,6 +2,7 @@ import { navigateTo, showProfileView, showSettingsView } from '../navigation/nav
 import { globalSession } from '../auth/auth.js';
 
 let friendsRenderToken = 0;
+let currentFriends = new Set<string>();
 
 /**
  * Checks if a specific friend is currently online by comparing against the live list from the WebSocket.
@@ -139,6 +140,11 @@ export async function addFriend() {
     return;
   }
 
+  if (currentFriends.has(friendUsername)) {
+    showFriendMessage(`${friendUsername} is already your friend`, true);
+    return;
+  }
+
   try {
     const res = await fetch('/api/add_friend', {
       method: 'POST',
@@ -151,7 +157,7 @@ export async function addFriend() {
       input.value = ''; // clear input after adding
       showFriendMessage('Friend added successfully');
     } else {
-      showFriendMessage('Could not add friend');
+      showFriendMessage('Profile does not exist');
     }
   } catch (err) {
     console.error('Request failed:', err);
@@ -177,62 +183,53 @@ export async function showFriends(username: string) {
   const token = ++friendsRenderToken;
 
   try {
-    const data = await fetchUserProfile(username);
-    const friends = data.friends ?? [];
+    // Fetch profile + online list in parallel
+    const [data, onlineFriends] = await Promise.all([
+      fetchUserProfile(username),
+      globalSession.getOnlineFriends(),
+    ]);
 
     if (token !== friendsRenderToken) return;
+
+    const friends = data.friends ?? [];
+    currentFriends = new Set(friends.map((f: { username: string }) => f.username));
+    const onlineSet = new Set<string>(Array.isArray(onlineFriends) ? onlineFriends : []);
 
     if (friends.length === 0) {
       const empty = document.createElement('li');
       empty.className = 'text-black text-lg';
       empty.textContent = 'No friends yet';
-      // atomic swap (also clears old content)
       list.replaceChildren(empty);
       return;
     }
 
-    // Build off-DOM
     const frag = document.createDocumentFragment();
 
-    // (Optional perf) resolve online states in parallel
-    const items = await Promise.all(
-      friends.map(async (friend) => {
-        const li = document.createElement('li');
-        li.className =
-          'border-b border-black pb-1 cursor-pointer hover:text-pink-400 transition-colors flex items-center gap-2';
+    for (const friend of friends) {
+      const li = document.createElement('li');
+      li.className =
+        'border-b border-black pb-1 cursor-pointer hover:text-pink-400 transition-colors flex items-center gap-2';
 
-        let isOnline = false;
-        try {
-          isOnline = await isFriendOnline(friend.username);
-        } catch {}
+      const isOnline = onlineSet.has(friend.username);
+      const indicator = isOnline
+        ? '<img src="/assets/online_status.png" alt="Online" class="w-4 h-4" />'
+        : '<img src="/assets/offline_status.png" alt="Offline" class="w-4 h-4" />';
 
-        li.innerHTML = `
-          <span>${
-            isOnline
-              ? '<img src="/assets/online_status.png" alt="Online" class="w-4 h-4" />'
-              : '<img src="/assets/offline_status.png" alt="Offline" class="w-4 h-4" />'
-          }</span>
-          <span>${friend.username}</span>
-        `;
+      li.innerHTML = `<span>${indicator}</span><span>${friend.username}</span>`;
 
-        li.addEventListener('click', () => {
-          navigateTo(
-            'profile',
-            `/profile?username=${encodeURIComponent(friend.username)}`,
-            () => showProfileView(friend.username),
-            { username: friend.username },
-          );
-        });
+      li.addEventListener('click', () => {
+        navigateTo(
+          'profile',
+          `/profile?username=${encodeURIComponent(friend.username)}`,
+          () => showProfileView(friend.username),
+          { username: friend.username },
+        );
+      });
 
-        return li;
-      }),
-    );
+      frag.appendChild(li);
+    }
 
-    if (token !== friendsRenderToken) return; // still the latest?
-
-    items.forEach((li) => frag.appendChild(li));
-
-    // Single atomic write — no duplicates, always clears previous
+    if (token !== friendsRenderToken) return;
     list.replaceChildren(frag);
   } catch (err) {
     console.error('Error loading friends:', err);
@@ -291,6 +288,24 @@ interface Match {
 
 type WithType = Match & { gameType: 'Pong' | 'Snake' };
 
+/**
+ * Fetches and displays the game history for a given user.
+ *
+ * - Retrieves the user's Pong and Snake match data from the backend via `fetchUserProfile`.
+ * - Merges both game types into a single list with an added `gameType` property.
+ * - Sorts the matches by date in descending order (newest first).
+ * - Renders each match as a list item with:
+ *    - Game type icon and label.
+ *    - Match date/time.
+ *    - Player names and scores.
+ *    - Winner’s name.
+ * - Highlights the current user’s name in the match details.
+ * - Handles the case where the user has no game history with a fallback message.
+ * - Replaces any existing list content with the newly generated match history.
+ *
+ * @param {string} username - The username whose game history should be displayed.
+ * @returns {Promise<void>} Resolves when the game history has been rendered to the DOM.
+ */
 export async function showGameHistory(username: string) {
   const list = document.getElementById('historyList')?.querySelector('ul');
   if (!list) return;
