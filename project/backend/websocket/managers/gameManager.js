@@ -105,7 +105,6 @@ function handleInput(connection, direction) {
   }
   const game = activeGames.get(playingUsers.get(connection.userId)) || null;
   if (game) {
-    console.log('Direction: ', direction);
     game.handleInput(connection.userId, direction);
   } else {
     console.warn('No game found for player:', connection.username);
