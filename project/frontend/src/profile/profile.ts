@@ -1,6 +1,8 @@
 import { navigateTo, showProfileView, showSettingsView } from '../navigation/navigation.js';
 import { globalSession } from '../auth/auth.js';
 
+let friendsRenderToken = 0;
+
 /**
  * Checks if a specific friend is currently online by comparing against the live list from the WebSocket.
  *
@@ -16,6 +18,7 @@ async function isFriendOnline(friendUsername: string): Promise<boolean> {
     return false;
   }
 }
+let profileEventsInitialized = false;
 
 /**
  * Initializes all event listeners related to the user profile section.
@@ -26,6 +29,9 @@ async function isFriendOnline(friendUsername: string): Promise<boolean> {
  * - Add friend button sends a friend request.
  */
 export function initProfileEvents() {
+  if (profileEventsInitialized) return;
+  profileEventsInitialized = true;
+
   const avatar = document.getElementById('avatar');
   const settingsButon = document.getElementById('settingsToggle');
   const backButton = document.getElementById('backToProfile');
@@ -145,7 +151,6 @@ export async function addFriend() {
       input.value = ''; // clear input after adding
       showFriendMessage('Friend added successfully');
     } else {
-      // const { message } = await res.json().catch(() => ({}));
       showFriendMessage('Could not add friend');
     }
   } catch (err) {
@@ -169,47 +174,66 @@ export async function showFriends(username: string) {
   const list = document.getElementById('friendsList')?.querySelector('ul');
   if (!list) return;
 
+  const token = ++friendsRenderToken;
+
   try {
     const data = await fetchUserProfile(username);
     const friends = data.friends ?? [];
 
-    list.innerHTML = '';
+    if (token !== friendsRenderToken) return;
 
     if (friends.length === 0) {
-      list.innerHTML = '<li class="text-black text-lg">No friends yet</li>';
+      const empty = document.createElement('li');
+      empty.className = 'text-black text-lg';
+      empty.textContent = 'No friends yet';
+      // atomic swap (also clears old content)
+      list.replaceChildren(empty);
       return;
     }
 
-    for (const friend of friends) {
-      const li = document.createElement('li');
-      li.className =
-        'border-b border-black pb-1 cursor-pointer hover:text-pink-400 transition-colors flex items-center gap-2';
+    // Build off-DOM
+    const frag = document.createDocumentFragment();
 
-      // Check if friend is online
-      let onlineIndicator = '';
-      try {
-        const isOnline = await isFriendOnline(friend.username);
-        onlineIndicator = isOnline
-          ? '<img src="/assets/online_status.png" alt="Online" class="w-4 h-4" />'
-          : '<img src="/assets/offline_status.png" alt="Offline" class="w-4 h-4" />';
-      } catch (err) {
-        console.warn(`Failed to check online status for ${friend.username}:`, err);
-      }
+    // (Optional perf) resolve online states in parallel
+    const items = await Promise.all(
+      friends.map(async (friend) => {
+        const li = document.createElement('li');
+        li.className =
+          'border-b border-black pb-1 cursor-pointer hover:text-pink-400 transition-colors flex items-center gap-2';
 
-      li.innerHTML = `<span>${onlineIndicator}</span><span>${friend.username}</span>`;
+        let isOnline = false;
+        try {
+          isOnline = await isFriendOnline(friend.username);
+        } catch {}
 
-      // Navigate to friend's profile
-      li.addEventListener('click', () => {
-        navigateTo(
-          'profile',
-          `/profile?username=${encodeURIComponent(friend.username)}`,
-          () => showProfileView(friend.username),
-          { username: friend.username },
-        );
-      });
+        li.innerHTML = `
+          <span>${
+            isOnline
+              ? '<img src="/assets/online_status.png" alt="Online" class="w-4 h-4" />'
+              : '<img src="/assets/offline_status.png" alt="Offline" class="w-4 h-4" />'
+          }</span>
+          <span>${friend.username}</span>
+        `;
 
-      list.appendChild(li);
-    }
+        li.addEventListener('click', () => {
+          navigateTo(
+            'profile',
+            `/profile?username=${encodeURIComponent(friend.username)}`,
+            () => showProfileView(friend.username),
+            { username: friend.username },
+          );
+        });
+
+        return li;
+      }),
+    );
+
+    if (token !== friendsRenderToken) return; // still the latest?
+
+    items.forEach((li) => frag.appendChild(li));
+
+    // Single atomic write — no duplicates, always clears previous
+    list.replaceChildren(frag);
   } catch (err) {
     console.error('Error loading friends:', err);
   }
@@ -252,21 +276,33 @@ export async function showGameStats(username: string) {
   }
 }
 
+interface Match {
+  gameId: number;
+  player1Id: number;
+  player2Id: number;
+  winnerId: number;
+  player1Score: number;
+  player2Score: number;
+  createdAt: string; // ISO
+  // Optional if backend ever supplies them:
+  player1Name?: string;
+  player2Name?: string;
+}
+
+type WithType = Match & { gameType: 'Pong' | 'Snake' };
+
 export async function showGameHistory(username: string) {
   const list = document.getElementById('historyList')?.querySelector('ul');
   if (!list) return;
 
   try {
     const data = await fetchUserProfile(username);
-    console.log(data);
 
-    // Combine pong and snake into one array with game type added
-    const gameHistory = [
-      ...(data.pong ?? []).map((g) => ({ ...g, gameType: 'Pong' })),
-      ...(data.snake ?? []).map((g) => ({ ...g, gameType: 'Snake' })),
+    const gameHistory: WithType[] = [
+      ...(data.pong ?? []).map((g: Match) => ({ ...g, gameType: 'Pong' })),
+      ...(data.snake ?? []).map((g: Match) => ({ ...g, gameType: 'Snake' })),
     ];
 
-    // Sort by newest first
     gameHistory.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     list.innerHTML = '';
@@ -276,28 +312,57 @@ export async function showGameHistory(username: string) {
       return;
     }
 
+    const youId = data.userId as number;
+    const youName = data.username as string;
+    const nameFor = (id: number, fallbackName?: string) =>
+      id === youId ? youName : fallbackName || `User#${id}`;
+
     for (const game of gameHistory) {
       const li = document.createElement('li');
-      li.className = 'border-b border-black pb-1 flex flex-col';
+      li.className = 'border-b border-black pb-1 flex flex-col gap-1';
 
-      // Pick an icon based on game type
-      const icon = game.gameType === 'Pong' ? '🏓' : '🐍';
+      // header: icon + title + date
+      const header = document.createElement('div');
+      header.className = 'flex items-center justify-between';
 
-      const player1Name =
-        game.player1Id === data.userId ? data.username : `Opponent#${game.player1Name}`;
-      const player2Name =
-        game.player2Id === data.userId ? data.username : `Opponent#${game.player2Name}`;
-      const winnerName = game.winnerId;
+      const left = document.createElement('div');
+      left.className = 'flex items-center gap-2';
 
-      const date = new Date(game.createdAt).toLocaleString();
+      const iconImg = document.createElement('img');
+      iconImg.src = game.gameType === 'Pong' ? '/assets/pong_icon.png' : '/assets/snake_icon.png';
+      iconImg.alt = `${game.gameType} icon`;
+      iconImg.className = 'w-5 h-5';
+      (iconImg.style as any).imageRendering = 'pixelated';
 
-      li.innerHTML = `
-    <div class="flex justify-between">
-      <span class="font-bold">${icon}</span>
-      <span class="text-sm text-black">${date}</span>
-    </div>
-    <div>${player1Name}: ${game.player1Score} vs ${player2Name}: ${game.player2Score} - Winner: ${winnerName}</div>`;
+      const title = document.createElement('span');
+      title.className = 'font-bold';
+      title.textContent = game.gameType;
 
+      left.appendChild(iconImg);
+      left.appendChild(title);
+
+      const when = document.createElement('span');
+      when.className = 'text-sm text-black';
+      when.textContent = new Date(game.createdAt).toLocaleString();
+
+      header.appendChild(left);
+      header.appendChild(when);
+
+      // details: names + scores + winner
+      const p1Name = nameFor(game.player1Id, game.player1Name);
+      const p2Name = nameFor(game.player2Id, game.player2Name);
+      const winnerName =
+        game.winnerId === game.player1Id
+          ? p1Name
+          : game.winnerId === game.player2Id
+            ? p2Name
+            : `User#${game.winnerId}`;
+
+      const details = document.createElement('div');
+      details.textContent = `${p1Name}: ${game.player1Score} vs ${p2Name}: ${game.player2Score} — Winner: ${winnerName}`;
+
+      li.appendChild(header);
+      li.appendChild(details);
       list.appendChild(li);
     }
   } catch (err) {
