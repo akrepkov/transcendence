@@ -193,20 +193,21 @@ export class Game {
     }
   }
 
-  gameLoop = () => {
-    if (!this.isRunning) return;
+  drawCanvas(): void {
     this.canvasContext.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
-    this.player1.move(this.ball);
-    this.player2.move(this.ball);
     this.player1.draw(this.canvasContext);
     this.player2.draw(this.canvasContext);
-    this.ball.update();
     this.ball.draw(this.canvasContext);
-    this.checkBall();
-    if (!this.isRunning) {
-      return;
-    }
     this.showPongScore();
+  }
+
+  gameLoop = () => {
+    if (!this.isRunning) return;
+    this.player1.move(this.ball);
+    this.player2.move(this.ball);
+    this.ball.update();
+    this.drawCanvas();
+    this.checkBall();
     this.animationId = requestAnimationFrame(this.gameLoop);
   };
 

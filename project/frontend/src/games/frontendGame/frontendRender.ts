@@ -23,7 +23,10 @@ export function handleStartGame(mode: string, player1Name?: string, player2Name?
   } else {
     game = new Game(canvasId, scoreFieldId, player1Name!, player2Name!);
   }
-  game.start();
+  game!.drawCanvas();
+  setTimeout(() => {
+    game!.start();
+  }, 3000);
 }
 
 export function resetGame(mode: string) {
