@@ -76,7 +76,7 @@ export class Snake {
     let winner = null;
     let loser = null;
     let gameOver = false;
-    console.log(`Player 1 ${player1.collision} Player 2 ${player2.collision}`);
+    // console.log(`Player 1 ${player1.collision} Player 2 ${player2.collision}`);
     if (player1.collision || player2.collision) {
       gameOver = true;
       if (player1.collision && !player2.collision) {

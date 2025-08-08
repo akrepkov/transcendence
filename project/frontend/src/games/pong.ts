@@ -90,7 +90,7 @@ export function drawPong(data: GameStatePong, ctx: CanvasRenderingContext2D) {
   if (running === true) {
     ctx.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
     ctx.fillStyle = 'white';
-    ctx.fillRect(data.ball.x, data.ball.y, 10, 10);
+    ctx.fillRect(data.ball.x, data.ball.y, 20, 20);
     ctx.fillStyle = 'red';
     ctx.fillRect(0, data.players[0].paddleY, 10, 100);
     ctx.fillStyle = 'blue';

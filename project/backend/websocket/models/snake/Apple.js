@@ -17,8 +17,8 @@ export class Apple {
     let attempts = 0;
 
     while (!applePositionValid && attempts < maxAttempts) {
-      x = Math.floor((Math.random() * SNAKE_CONSTS.WIDTH - 60) / 20) * 20;
-      y = Math.floor((Math.random() * SNAKE_CONSTS.HEIGHT - 60) / 20) * 20;
+      x = Math.floor((Math.random() * SNAKE_CONSTS.WIDTH) / 20) * 20;
+      y = Math.floor((Math.random() * SNAKE_CONSTS.HEIGHT) / 20) * 20;
       applePositionValid = true;
       for (let segment of player1.positions) {
         if (segment.x === x && segment.y === y) {

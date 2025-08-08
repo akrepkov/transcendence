@@ -21,12 +21,12 @@ export class SnakePlayer {
 
   checkCollisions(opponent) {
     const head = this.positions[0];
+    // console.log('Check collisions for player: ', this.playerName, head.x, ' ', head.y);
     if (
-      (console.log('Check collisions for player: ', this.playerName, head.x, ' ', head.y),
       head.x < 0 ||
-        head.x > SNAKE_CONSTS.WIDTH - 20 ||
-        head.y < 0 ||
-        head.y > SNAKE_CONSTS.HEIGHT - 20)
+      head.x > SNAKE_CONSTS.WIDTH - 20 ||
+      head.y < 0 ||
+      head.y > SNAKE_CONSTS.HEIGHT - 20
     ) {
       console.log(`${this.playerName} Player hit the wall`);
       this.collision = true;
@@ -41,7 +41,7 @@ export class SnakePlayer {
     }
     for (let segment of opponent.positions) {
       if (head.x === segment.x && head.y === segment.y) {
-        console.log(`${this.userId} collided with ${opponent.userId}`);
+        console.log(`${this.playerName} collided with ${opponent.playerName}`);
         this.collision = true;
         return;
       }
