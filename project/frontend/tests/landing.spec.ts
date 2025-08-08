@@ -1,4 +1,3 @@
-// tests/landing.spec.ts
 import { test, expect, Page } from '@playwright/test';
 
 type Mode = 'pong' | 'snake' | 'practice' | 'ai';
