@@ -5,6 +5,7 @@ import { cleanPongField } from './pong.js';
 import { cleanSnakeField } from './snake.js';
 import { handleStartGame } from './frontendGame/frontendRender.js';
 import { resetGame } from './frontendGame/frontendRender.js';
+import { getRandomPlayerNames } from './frontendGame/playerNames.js';
 
 /**
  * Handles game-specific logic bindings for Pong and Snake.
@@ -132,7 +133,8 @@ export const toggleHandler = {
     start() {
       document.getElementById(this.startContainer)?.classList.add('hidden');
       document.getElementById(this.gameContainer)?.classList.remove('hidden');
-      handleStartGame('practice', 'player1', 'player2');
+      const [player1Name, player2Name] = getRandomPlayerNames();
+      handleStartGame('practice', player1Name, player2Name);
     },
 
     /**
