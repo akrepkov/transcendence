@@ -128,6 +128,10 @@ export async function addFriend() {
   if (!friendUsername) return;
 
   const username = globalSession.getUsername();
+  if (username === globalSession.getAvatar()) {
+    showFriendMessage('You cannot add yourself as a friend');
+    return;
+  }
 
   try {
     const res = await fetch('/api/add_friend', {
@@ -155,7 +159,6 @@ export async function addFriend() {
  *
  * - Retrieves the user's friends from the backend.
  * - For each friend, checks their online status and displays an indicator:
- *   🟢 = online, 🔴 = offline, ⚪ = status unknown.
  * - Each friend's name is rendered as a clickable list item that navigates to their profile.
  * - Handles the empty list case with a fallback message.
  * - Catches and logs errors gracefully if fetching data fails.
@@ -186,10 +189,11 @@ export async function showFriends(username: string) {
       let onlineIndicator = '';
       try {
         const isOnline = await isFriendOnline(friend.username);
-        onlineIndicator = isOnline ? '🟢' : '🔴';
+        onlineIndicator = isOnline
+          ? '<img src="/assets/online_status.png" alt="Online" class="w-4 h-4" />'
+          : '<img src="/assets/offline_status.png" alt="Offline" class="w-4 h-4" />';
       } catch (err) {
         console.warn(`Failed to check online status for ${friend.username}:`, err);
-        onlineIndicator = '⚪';
       }
 
       li.innerHTML = `<span>${onlineIndicator}</span><span>${friend.username}</span>`;
@@ -254,9 +258,16 @@ export async function showGameHistory(username: string) {
 
   try {
     const data = await fetchUserProfile(username);
+    console.log(data);
 
-    console.log('DATA FROM USER RE PONG:', data.pong);
-    const gameHistory = data.gameHistory ?? [];
+    // Combine pong and snake into one array with game type added
+    const gameHistory = [
+      ...(data.pong ?? []).map((g) => ({ ...g, gameType: 'Pong' })),
+      ...(data.snake ?? []).map((g) => ({ ...g, gameType: 'Snake' })),
+    ];
+
+    // Sort by newest first
+    gameHistory.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     list.innerHTML = '';
 
@@ -267,7 +278,27 @@ export async function showGameHistory(username: string) {
 
     for (const game of gameHistory) {
       const li = document.createElement('li');
-      li.className = 'border-b border-black pb-1 flex items-center gap-2';
+      li.className = 'border-b border-black pb-1 flex flex-col';
+
+      // Pick an icon based on game type
+      const icon = game.gameType === 'Pong' ? '🏓' : '🐍';
+
+      const player1Name =
+        game.player1Id === data.userId ? data.username : `Opponent#${game.player1Name}`;
+      const player2Name =
+        game.player2Id === data.userId ? data.username : `Opponent#${game.player2Name}`;
+      const winnerName = game.winnerId;
+
+      const date = new Date(game.createdAt).toLocaleString();
+
+      li.innerHTML = `
+    <div class="flex justify-between">
+      <span class="font-bold">${icon}</span>
+      <span class="text-sm text-black">${date}</span>
+    </div>
+    <div>${player1Name}: ${game.player1Score} vs ${player2Name}: ${game.player2Score} - Winner: ${winnerName}</div>`;
+
+      list.appendChild(li);
     }
   } catch (err) {
     console.error('Error loading game history:', err);
