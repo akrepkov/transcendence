@@ -90,6 +90,7 @@ describe('User Routes', () => {
 		}
 	});
     const body = await JSON.parse(response.body);
+	console.log('Response body:\n', JSON.stringify(body, null, 2));
 	const user = await userServices.getUserByUsername(body.username);
 	// console.log("user: ", user);
     expect(response.statusCode).toBe(200);
