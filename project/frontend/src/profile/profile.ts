@@ -2,18 +2,19 @@ import { navigateTo, showProfileView, showSettingsView } from '../navigation/nav
 import { globalSession } from '../auth/auth.js';
 
 /**
- * Checks if a specified user is currently online.
+ * Checks if a specific friend is currently online by comparing against the live list from the WebSocket.
  *
- * - Fetches the user's profile data from the backend.
- * - Returns the `isOnline` status from the response.
- *
- * @param {string} username - The username to check online status for.
- * @returns {Promise<boolean>} A promise that resolves to `true` if the user is online, otherwise `false`.
- * TODO change this based on how it's send from the backend
+ * @param {string} friendUsername - The username of the friend to check.
+ * @returns {Promise<boolean>} Resolves to true if the friend is online, false otherwise.
  */
-async function isFriendOnline(username: string) {
-  const data = await fetchUserProfile(username);
-  return data.isOnline;
+async function isFriendOnline(friendUsername: string): Promise<boolean> {
+  try {
+    const onlineFriends = await globalSession.getOnlineFriends();
+    return Array.isArray(onlineFriends) && onlineFriends.includes(friendUsername);
+  } catch (err) {
+    console.error('Failed to fetch online friends:', err);
+    return false;
+  }
 }
 
 /**
@@ -150,14 +151,16 @@ export async function addFriend() {
 }
 
 /**
- * Fetches and displays a user's friends list in the profile view.
+ * Fetches and displays the friends list for the specified user.
  *
- * - Calls `fetchUserProfile` to retrieve friend data.
- * - Populates a list with clickable usernames that open their profile.
- * - Shows if a friend is online.
- * - Handles the empty friend list case.
+ * - Retrieves the user's friends from the backend.
+ * - For each friend, checks their online status and displays an indicator:
+ *   🟢 = online, 🔴 = offline, ⚪ = status unknown.
+ * - Each friend's name is rendered as a clickable list item that navigates to their profile.
+ * - Handles the empty list case with a fallback message.
+ * - Catches and logs errors gracefully if fetching data fails.
  *
- * @param {string} username - The username whose friends should be shown.
+ * @param {string} username - The username whose friends list should be displayed.
  */
 export async function showFriends(username: string) {
   const list = document.getElementById('friendsList')?.querySelector('ul');
@@ -166,9 +169,8 @@ export async function showFriends(username: string) {
   try {
     const data = await fetchUserProfile(username);
     const friends = data.friends ?? [];
-    const isOnline = await isFriendOnline(username); //TODO display this in DOM add logic in html file
 
-    list.innerHTML = ''; //sets list to empty?
+    list.innerHTML = '';
 
     if (friends.length === 0) {
       list.innerHTML = '<li class="text-black text-lg">No friends yet</li>';
@@ -178,13 +180,30 @@ export async function showFriends(username: string) {
     for (const friend of friends) {
       const li = document.createElement('li');
       li.className =
-        'border-b border-black pb-1 cursor-pointer hover:text-pink-400 transition-colors';
-      li.textContent = friend.username;
+        'border-b border-black pb-1 cursor-pointer hover:text-pink-400 transition-colors flex items-center gap-2';
 
-      // make username clickable: view their profile on click
+      // Check if friend is online
+      let onlineIndicator = '';
+      try {
+        const isOnline = await isFriendOnline(friend.username);
+        onlineIndicator = isOnline ? '🟢' : '🔴';
+      } catch (err) {
+        console.warn(`Failed to check online status for ${friend.username}:`, err);
+        onlineIndicator = '⚪';
+      }
+
+      li.innerHTML = `<span>${onlineIndicator}</span><span>${friend.username}</span>`;
+
+      // Navigate to friend's profile
       li.addEventListener('click', () => {
-        showProfileView(friend.username);
+        navigateTo(
+          'profile',
+          `/profile?username=${encodeURIComponent(friend.username)}`,
+          () => showProfileView(friend.username),
+          { username: friend.username },
+        );
       });
+
       list.appendChild(li);
     }
   } catch (err) {

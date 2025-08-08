@@ -133,15 +133,6 @@ export class Session {
   }
 
   /**
-   * Gets the user's snake game statistics.
-   *
-   * @returns {string} Snake game stats (format TBD).
-   */
-  public getSnakeStats() {
-    return this.snakeStats;
-  }
-
-  /**
    * Gets the WebSocket connection for the session.
    *
    * * @returns {WebSocket | null} The WebSocket connection, or null if not connected.
@@ -157,15 +148,6 @@ export class Session {
    */
   public setSocket(socket: WebSocket | null) {
     this.socket = socket;
-  }
-
-  /**
-   * Gets the user's pong game statistics.
-   *
-   * @returns {string} Pong game stats (format TBD).
-   */
-  public getPongStats() {
-    return this.pongStats;
   }
 
   /**
@@ -213,6 +195,4 @@ export class Session {
       }, 5000);
     });
   }
-
-  // need a set/update pong/snakeStats?
 }
