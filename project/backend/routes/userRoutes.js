@@ -20,7 +20,7 @@ export default async function userRoutes(fastify) {
 
   fastify.patch(
     '/api/update_user_profile',
-    { preHandler: authControllers.authenticate },
+    // { preHandler: authControllers.authenticate },
     userControllers.updateUserHandler,
   );
 

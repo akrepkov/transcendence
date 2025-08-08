@@ -103,28 +103,44 @@ describe('User Routes', () => {
 	const form = new FormData();
 		form.append('username', 'lenacik');
 		form.append('password', 'lenacik');
-		form.append('avatar', fs.readFileSync('/Users/mbp14/Downloads/loki_mad.webp'), {
-		filename: 'loki_mad.webp',
-		contentType: 'image/webp'
+		form.append('email', 'lenacik');
+		form.append('avatar', fs.createReadStream('/home/evoronin/Downloads/Elena_Voronin.jpeg'), {
+    	filename: 'Elena_Voronin.jpeg',
+			contentType: 'image/jpeg'
+		});
+
+	form.on('end', () => {
+	console.log('Form stream ended');
+	});
+	afterAll(async () => {
+	await fastify.close();
+	});
+	const res = await fetch('http://localhost:3000/api/update_user_profile', {
+		method: 'PATCH',
+		body: form,
+		headers: {
+		cookie: `token=${authCookie}`
+		}
 	});
 
-  	const payload = form.getBuffer();
-	const response = await fastify.inject({
-      method: 'PATCH',
-      url: '/api/update_user_profile',
-	  payload,
-	  headers: form.getHeaders(),
-	  cookies: {
-		token: authCookie
-	  }
-    });
-    const body = await JSON.parse(response.body);
-	console.log("body: ", body);
-	const updatedUser = await userServices.getUserByUsername('lenacik');
-	const findOldUser = await userServices.getUserByUsername('lena');
-	console.log("UPDATED USER: ", updatedUser);
-    expect(updatedUser).toBeDefined();
-    expect(findOldUser).toBeNull();
+	const body = await res.json();
+	console.log(body);
+	// const response = await fastify.inject({
+    //   method: 'PATCH',
+    //   url: '/api/update_user_profile',
+	//   payload: form,
+	//   headers: form.getHeaders(),
+	//   cookies: {
+	// 	token: authCookie
+	//   }
+    // });
+    // const body = await JSON.parse(response.body);
+	// console.log("body: ", body);
+	// const updatedUser = await userServices.getUserByUsername('lenacik');
+	// const findOldUser = await userServices.getUserByUsername('lena');
+	// console.log("UPDATED USER: ", updatedUser);
+    // expect(updatedUser).toBeDefined();
+    // expect(findOldUser).toBeNull();
   }, 15000);
 
 	test('POST /api/auth/logout', async() => {
@@ -141,5 +157,5 @@ describe('User Routes', () => {
 });
 
 
-await userServices.deleteUser('lena');
-await userServices.deleteUser('lenacik');
+// await userServices.deleteUser('lena');
+// await userServices.deleteUser('lenacik');

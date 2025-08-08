@@ -10,6 +10,11 @@ import * as utils from '../utils/utils.js';
 import path from 'path';
 import { connectionManager } from '../websocket/managers/connectionManager.js';
 import { Console } from 'console';
+import { pipeline } from 'stream/promises';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Returns all users registered in the db (userId and username only)
 const getAllUsersHandler = async (request, reply) => {
@@ -65,6 +70,9 @@ const addFriendHandler = async (request, reply) => {
 const updateUserHandler = async (request, reply) => {
   try {
     const parts = request.parts();
+    const timeout = setTimeout(() => {
+      console.error('Timeout: request.parts() is hanging');
+    }, 5000);
     let username, email, password, avatar;
     for await (const part of parts) {
       if (part.file && part.fieldname === 'avatar') {
@@ -76,10 +84,19 @@ const updateUserHandler = async (request, reply) => {
       } else if (part.fieldname === 'email') {
         email = part.value;
       }
+      if (avatar) {
+        console.log('Avatar info:', {
+          filename: avatar.filename,
+          mimetype: avatar.mimetype,
+          fileType: typeof avatar.file,
+        });
+      }
     }
     console.log('Parsed form data:', { username, password, avatar });
     const requestUserId = request.user.userId;
     const user = await userServices.getUserById(requestUserId);
+    console.log("I'M HERE ", user);
+    avatar = part;
     if (username) {
       const existUsername = await authServices.checkUniqueUsername(username);
       if (existUsername) {
@@ -96,7 +113,7 @@ const updateUserHandler = async (request, reply) => {
       await userServices.updatePassword(user, hashedPassword);
     }
     if (avatar) {
-      await uploadAvatarHandler(request, reply);
+      await uploadAvatarHandler(avatar, user.username);
     }
     return reply.code(200).send({ success: true });
   } catch (error) {
@@ -105,26 +122,18 @@ const updateUserHandler = async (request, reply) => {
   }
 };
 
-const uploadAvatarHandler = async (request, reply) => {
+const uploadAvatarHandler = async (avatar, username) => {
   try {
-    let username = request.user.username;
-    const data = await request.file();
-    const filename = `avatar_${Date.now()}_${data.filename}`;
+    console.log('AVATAR: ', avatar);
+    const filename = `avatar_${username}_${Date.now()}.jpg`;
     const filepath = path.join(__dirname, '..', 'uploads', filename);
-    console.log('FILEPATH IN userCONTROLLERS: ', filepath);
-    pump(data.file, fs.createWriteStream(filepath));
-    let avatarUrl = `../uploads/avatars/${filename}`;
-    userServices.uploadAvatarInDatabase(avatarUrl, username);
-    return reply.code(200).send({
-      success: true,
-      avatar: avatarUrl,
-    });
+    const writeStream = fs.createWriteStream(filepath);
+    await pipeline(avatar.file, writeStream); // pipe the stream to disk
+    await userServices.uploadAvatarInDatabase(filepath, username);
+    return true;
   } catch (error) {
-    console.error('Upload error:', error);
-    return reply.code(500).send({
-      success: false,
-      error: 'Upload failed',
-    });
+    console.error('Upload avatar error:', error);
+    return false;
   }
 };
 
