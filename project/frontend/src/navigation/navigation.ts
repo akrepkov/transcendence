@@ -273,6 +273,7 @@ export function showCreditView() {
 export function showAiView() {
   hideAllPages();
   document.getElementById('aiPage')?.classList.remove('hidden');
+  setView('ai');
 }
 
 /**
