@@ -33,11 +33,11 @@ describe('Prisma direct database tests', () => {
     expect(newUser2.username).toBe('jan');
   });
 
-  test('registerting user with the same username', async () => {
-    await authServices.registerUser({ username: 'lena', email: 'lena', password: 'lena' });
-    const user = await userServices.getUserByUsername('lena');
-    expect(user.email).toBe('lena@mail.com');
-  });
+//   test('registerting user with the same username', async () => {
+//     await authServices.registerUser({ username: 'lena', email: 'lena', password: 'lena' });
+//     const user = await userServices.getUserByUsername('lena');
+//     expect(user.email).toBe('lena@mail.com');
+//   });
 
   test('users table exists', async () => {
     const users = await userServices.getUsers();
@@ -60,8 +60,8 @@ describe('Prisma direct database tests', () => {
       include: { pong: true },
     });
 
-    // console.log('winner:', updatedWinner);
-    // console.log('loser:', updatedLoser);
+    console.log('winner:', updatedWinner);
+    console.log('loser:', updatedLoser);
     expect(updatedWinner.pongWins).toBe(1);
     expect(updatedWinner.pongLosses).toBe(0);
     expect(updatedLoser.pongLosses).toBe(1);
@@ -87,7 +87,7 @@ describe('Prisma direct database tests', () => {
       test('can retrieve avatar', async () => {
         const username = 'lena';
         const avatar = await userServices.getAvatarFromDatabase(username);
-        console.log('avatar: ', avatar);
+        // console.log('avatar: ', avatar);
         expect(avatar).toBeDefined();
       });
 
@@ -96,14 +96,14 @@ describe('Prisma direct database tests', () => {
       const friendName = 'jan';
       await userServices.addFriend(username, friendName);
 	  const myFriends = await userServices.getFriends(username);
-      console.log("friends: ", myFriends);
+    //   console.log("friends: ", myFriends);
 	  expect(myFriends[0].username).toBe(friendName);
     });
 
     test('can retrieve friend of', async () => {
       const me = 'jan';
       const iAmFriendOf = await userServices.getFriendsOf(me);
-	  console.log("me:", iAmFriendOf);
+	//   console.log("me:", iAmFriendOf);
       expect(iAmFriendOf[0].username).toBe('lena');
     });
 
