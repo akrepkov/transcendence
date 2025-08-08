@@ -343,7 +343,7 @@
             <!-- Change Username Block -->
             <section class="bg-black/50 rounded-lg p-6 w-full md:w-[400px] h-[300px] flex flex-col justify-between">
                 <h2 class="text-3xl font-bold mb-4">Change Username</h2>
-                <input type="text" id="newUsername bg-transparent"
+                <input type="text" id="newUsername"
                        class="w-full p-2 border border-black rounded-lg text-black placeholder-black mb-4 focus:outline-none focus:ring-0"
                        placeholder="New username" />
                 <button id="saveUsername"
@@ -363,13 +363,22 @@
             <!-- Change Avatar Block -->
             <section class="bg-black/50 rounded-lg p-6 w-full md:w-[400px] h-[300px] flex flex-col justify-between">
                 <h2 class="text-3xl font-bold mb-4">Change Avatar</h2>
-                <input type="text" id="newAvatarUrl"
-                       class="w-full p-2 border border-black rounded-lg text-black placeholder-black mb-4 focus:outline-none focus:ring-0"
-                       placeholder="Avatar image URL" />
-                <button id="saveAvatar"
-                        class="pixelated-button w-full hover:text-red-500 text-xl">Save</button>
+
+                <!-- Drop Zone -->
+                <div id="avatar-drop-zone"
+                     class="flex items-center justify-center w-full h-40 border-2 border-dashed border-white text-white rounded-lg cursor-pointer text-center hover:bg-black/70 transition">
+                    <p>Drag & Drop your image</p>
+                    <input type="file" id="avatar-input" accept="image/*" class="hidden" />
+                </div>
+
+                <!-- Image Preview -->
+                <img id="avatar-preview" class="hidden w-24 h-24 rounded-full mt-4 mx-auto border-2 border-white" />
+
+                <!-- Upload Button -->
+                <button id="saveAvatar" class="pixelated-button w-full hover:text-red-500 text-xl mt-4">
+                    Upload Avatar
+                </button>
             </section>
-        </main>
     </div>
 
     <!-- Pong Page -->

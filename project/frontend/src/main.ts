@@ -8,6 +8,7 @@ import { initMainEvents } from './init/initMainEvents.js';
 import { initHistoryHandling } from './init/initHistory.js';
 // import { languageSwitcherFunction } from './translations/languageManager.js';
 import { initCreditsNavigation } from './init/initCredits.js';
+import { initSettingsEvents } from './settings/settings.js';
 
 /**
  * Initializes the application after the DOM is fully loaded.
@@ -34,6 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initLandingEvents();
   initProfileEvents();
   initMainEvents();
+  initSettingsEvents();
   initHistoryHandling();
   initCreditsNavigation();
 

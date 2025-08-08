@@ -3,8 +3,8 @@ import * as snake from './snake.js';
 import { renderGame } from './render.js';
 import { cleanPongField } from './pong.js';
 import { cleanSnakeField } from './snake.js';
-import { handleStartGame } from './ai/render.js';
-import { cleanAiField } from './ai/render.js';
+import { handleStartGame, resetGame } from './frontendGame/frontendRender.js';
+import { getRandomPlayerNames } from './frontendGame/playerNames.js';
 
 /**
  * Handles game-specific logic bindings for Pong and Snake.
@@ -130,30 +130,27 @@ export const toggleHandler = {
      * Intended for local single-player games.
      */
     start() {
-      // document.getElementById(this.startContainer)?.classList.add('hidden');
-      // document.getElementById(this.gameContainer)?.classList.remove('hidden');
-      // handleStartGame();
+      document.getElementById(this.startContainer)?.classList.add('hidden');
+      document.getElementById(this.gameContainer)?.classList.remove('hidden');
+      const [player1Name, player2Name] = getRandomPlayerNames();
+      handleStartGame('practice', player1Name, player2Name);
     },
 
     /**
      * Cleans up practice game UI and score (currently commented out).
      */
     clean() {
-      // const scorepractice = document.getElementById('practice-score');
-      // if (scorepractice) scorepractice.textContent = '0 : 0';
-      // cleanPracticeField();
+      resetGame('practice');
     },
 
     /**
      * Resets practice UI and game state (currently commented out).
      */
     reset() {
-      // document.getElementById(this.startContainer)?.classList.remove('hidden');
-      // document.getElementById(this.gameContainer)?.classList.add('hidden');
-      // if (socket.readyState === WebSocket.OPEN) {
-      // 	socket.send(JSON.stringify({ type: 'disconnectFromGame' }));
-      // }
-      // cleanPracticeField();
+      document.getElementById(this.startContainer)?.classList.remove('hidden');
+      document.getElementById(this.gameContainer)?.classList.add('hidden');
+      resetGame('practice');
+      document.getElementById('practicePage')?.classList.add('hidden');
     },
   },
   aiPage: {
@@ -169,16 +166,14 @@ export const toggleHandler = {
     start() {
       document.getElementById(this.startContainer)?.classList.add('hidden');
       document.getElementById(this.gameContainer)?.classList.remove('hidden');
-      handleStartGame();
+      handleStartGame('ai');
     },
 
     /**
      * Resets the AI game score and canvas field.
      */
     clean() {
-      const scoreai = document.getElementById('ai-score');
-      if (scoreai) scoreai.textContent = '0 : 0';
-      cleanAiField();
+      resetGame('ai');
     },
 
     /**
@@ -187,7 +182,7 @@ export const toggleHandler = {
     reset() {
       document.getElementById(this.startContainer)?.classList.remove('hidden');
       document.getElementById(this.gameContainer)?.classList.add('hidden');
-      cleanAiField();
+      resetGame('ai');
       document.getElementById('aiPage')?.classList.add('hidden');
     },
   },
