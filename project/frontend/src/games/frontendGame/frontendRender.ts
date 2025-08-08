@@ -1,4 +1,5 @@
 import { Game } from './frontendPong.js';
+import { globalSession } from '../../auth/auth.js';
 
 let game: Game | null = null;
 
@@ -19,7 +20,7 @@ export function handleStartGame(mode: string, player1Name?: string, player2Name?
   const { canvasId, scoreFieldId } = gameModeMap[mode];
   if (game?.isRunning) return;
   if (mode === 'ai') {
-    game = new Game(canvasId, scoreFieldId, 'Player');
+    game = new Game(canvasId, scoreFieldId, globalSession.getUsername());
   } else {
     game = new Game(canvasId, scoreFieldId, player1Name!, player2Name!);
   }
