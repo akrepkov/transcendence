@@ -255,7 +255,7 @@ export async function showGameHistory(username: string) {
   try {
     const data = await fetchUserProfile(username);
 
-    console.log("DATA FROM USER RE PONG:", data.pong);
+    console.log('DATA FROM USER RE PONG:', data.pong);
     const gameHistory = data.gameHistory ?? [];
 
     list.innerHTML = '';
@@ -267,10 +267,9 @@ export async function showGameHistory(username: string) {
 
     for (const game of gameHistory) {
       const li = document.createElement('li');
-      li.className =
-        'border-b border-black pb-1 flex items-center gap-2';
-
-
+      li.className = 'border-b border-black pb-1 flex items-center gap-2';
     }
+  } catch (err) {
+    console.error('Error loading game history:', err);
   }
 }
