@@ -66,9 +66,10 @@ function setupPaddleInput(socket: WebSocket) {
 function movePaddles(socket: WebSocket) {
   function loop() {
     // console.log('movePaddle loop is running');
-    let direction: 'up' | 'down' | undefined;
+    let direction: 'up' | 'down' | 'idle';
     if (keys.w || keys.ArrowUp) direction = 'up';
     else if (keys.s || keys.ArrowDown) direction = 'down';
+    else direction = 'idle';
 
     if (direction && socket.readyState === WebSocket.OPEN) {
       socket.send(JSON.stringify({ type: 'move', direction }));

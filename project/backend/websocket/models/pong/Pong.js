@@ -36,13 +36,15 @@ export class Pong {
   handleInput(playerId, direction) {
     const player = this.players.find((player) => player.playerId === playerId);
     if (direction === 'up' && player.paddleY > 0) {
-      player.paddleY -= PONG_CONSTS.PADDLE_SPEED;
+      player.direction = 'up';
     } else if (
       direction === 'down' &&
       player.paddleY + PONG_CONSTS.PADDLE_HEIGHT < PONG_CONSTS.HEIGHT
     ) {
-      player.paddleY += PONG_CONSTS.PADDLE_SPEED;
-    } else if (direction !== 'up' && direction !== 'down') {
+      player.direction = 'down';
+    } else if (direction === 'idle') {
+      player.direction = 'idle';
+    } else if (direction !== 'up' && direction !== 'down' && direction !== 'idle') {
       console.warn(`Invalid direction: ${direction} for player: ${player.playerName}`);
       throw new Error(`${REJECT.WRONG_DIRECTION}`);
     }
@@ -137,6 +139,9 @@ export class Pong {
     this.running = true;
     this.gameLoop = setInterval(() => {
       this.ball.updateBall();
+      this.players.forEach((player) => {
+        player.updatePaddle();
+      });
       this.handleBallEvents();
       if (this.running) {
         this.broadcastState();
