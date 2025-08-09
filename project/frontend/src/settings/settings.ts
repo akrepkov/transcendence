@@ -1,5 +1,45 @@
 import { globalSession } from '../auth/auth.js';
 
+let settingsMessageTimer: number | undefined;
+
+function showSettingsMessage(
+  text: string,
+  isError = false,
+  messageType: 'username' | 'password' | 'avatar' = 'username',
+) {
+  const usernameMessage = document.getElementById('UsernameSettingsMessage');
+  const passwordMessage = document.getElementById('PasswordSettingsMessage');
+  const avatarMessage = document.getElementById('AvatarSettingsMessage');
+  if (!usernameMessage || !passwordMessage || !avatarMessage) return;
+
+  // reset timeout
+  if (settingsMessageTimer) {
+    clearTimeout(settingsMessageTimer);
+    settingsMessageTimer = undefined;
+  }
+
+  const element =
+    messageType === 'username'
+      ? usernameMessage
+      : messageType === 'password'
+        ? passwordMessage
+        : messageType === 'avatar'
+          ? avatarMessage
+          : null;
+
+  if (!element) return;
+
+  // reset colors
+  element.classList.remove('text-yellow-500', 'text-red-500', 'hidden');
+  element.classList.add(isError ? 'text-red-500' : 'text-yellow-500');
+  element.textContent = text;
+
+  // empty after 4 seconds
+  settingsMessageTimer = window.setTimeout(() => {
+    element.textContent = '';
+  }, 4000);
+}
+
 export function initSettingsEvents() {
   const usernameButton = document.getElementById('saveUsername');
   const passwordButton = document.getElementById('savePassword');
@@ -35,7 +75,7 @@ export async function changeUsername() {
   const username = input?.value;
 
   if (!username) {
-    alert('Username is required.'); // TODO make into message
+    showSettingsMessage('Username is required.', true, 'username');
     return;
   }
 
@@ -48,12 +88,12 @@ export async function changeUsername() {
     });
 
     if (!response.ok) {
-      alert('Username change failed.'); // TODO make into message
+      showSettingsMessage('Username change failed.', true, 'username');
       return;
     }
 
     const data = await response.json();
-    alert('Username updated successfully.'); // TODO make into message
+    showSettingsMessage('Username updated successfully.', false, 'username');
     globalSession.setUsername(data?.username ?? username);
   } catch (err) {
     alert((err as Error).message);
@@ -73,7 +113,7 @@ export async function changePassword() {
   const password = passwordInput?.value;
 
   if (!password) {
-    alert('Password is required.'); // TODO make into message
+    showSettingsMessage('Password is required.', true, 'password');
     return;
   }
 
@@ -86,11 +126,11 @@ export async function changePassword() {
     });
 
     if (!response.ok) {
-      alert('Password change failed.'); // TODO make into message
+      showSettingsMessage('Password change failed.', true, 'password');
       return;
     }
 
-    alert('Password updated successfully.'); // TODO make into message
+    showSettingsMessage('Password updated successfully.', false, 'password');
   } catch (err) {
     alert((err as Error).message);
   }
@@ -134,7 +174,7 @@ export function initAvatarUpload() {
 
   function previewFile(file: File) {
     if (!file.type.startsWith('image/')) {
-      alert('Only image files are allowed.');
+      showSettingsMessage('Only image files are allowed.', true, 'avatar');
       return;
     }
 
@@ -149,7 +189,7 @@ export function initAvatarUpload() {
 
   saveButton.addEventListener('click', async () => {
     if (!selectedFile) {
-      alert('No image selected.');
+      showSettingsMessage('No image selected.', true, 'avatar');
       return;
     }
 
@@ -166,12 +206,12 @@ export function initAvatarUpload() {
       });
 
       if (!response.ok) {
-        alert('Avatar upload failed.');
+        showSettingsMessage('Avatar upload failed.', true, 'avatar');
         return;
       }
 
       const result = await response.json();
-      alert('Avatar updated successfully.');
+      showSettingsMessage('Avatar updated successfully.', false, 'avatar');
 
       // Update avatars across app
       globalSession.setAvatar(result.avatarUrl);
