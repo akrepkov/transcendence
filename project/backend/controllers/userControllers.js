@@ -72,9 +72,6 @@ const addFriendHandler = async (request, reply) => {
 const updateUserHandler = async (request, reply) => {
   try {
     const parts = request.parts();
-    const timeout = setTimeout(() => {
-      return reply.code(500).send({ error: 'Internal server error' });
-    }, 5000);
     let username, email, password, avatar, oldName;
     for await (const part of parts) {
       if (part.file && part.fieldname === 'avatar') {
@@ -122,7 +119,7 @@ const uploadAvatarHandler = async (avatar, username) => {
     await pipeline(avatar.file, writeStream);
     const oldAvatar = await userServices.getAvatarFromDatabase(username);
     const oldAbsolutePath = path.join(__dirname, '..', oldAvatar);
-    if (oldAbsolutePath && utils.isDefaultAvatar(oldAbsolutePath)) {
+    if (oldAbsolutePath && (await utils.isDefaultAvatar(oldAbsolutePath)) == false) {
       await fsPromises.unlink(oldAbsolutePath);
     }
     await userServices.uploadAvatarInDatabase(path.join('/uploads/avatars', filename), username);

@@ -35,5 +35,6 @@ export async function getRandomAvatar() {
 
 export async function isDefaultAvatar(avatarPath) {
   if (typeof avatarPath !== 'string') return false;
+  console.log('TRUE OR FALSE: ', path.basename(avatarPath).startsWith('default_'));
   return path.basename(avatarPath).startsWith('default_');
 }
