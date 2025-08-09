@@ -9,9 +9,9 @@ export const PONG_CONSTS = {
   HEIGHT: 600,
   PADDLE_HEIGHT: 100,
   PADDLE_WIDTH: 10,
-  BALL_SIZE: 10,
+  BALL_SIZE: 20,
   MAX_SCORE: 3,
-  BALL_SPEED: 2,
+  BALL_SPEED: 5.6,
   PADDLE_SPEED: 10,
 };
 
@@ -141,9 +141,6 @@ export class Pong {
       if (this.running) {
         this.broadcastState();
       }
-    }, 1000 / 60); // 60 FPS
+    }, 1000 / 60);
   }
-
-  // function for pausing and resuming?
-  // function for the loop
 }

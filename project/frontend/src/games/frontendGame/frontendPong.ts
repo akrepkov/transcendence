@@ -3,6 +3,7 @@ export const GAME_CONSTS = {
   WIDTH: 800,
   HEIGHT: 600,
   MAX_SCORE: 3,
+  SPEED: 5.6,
 };
 
 type Key = 'w' | 's' | 'ArrowUp' | 'ArrowDown';
@@ -36,11 +37,20 @@ export class Ball {
     context.fillRect(this.x, this.y, this.size, this.size);
   }
 
+  getRandomDirection() {
+    const min = GAME_CONSTS.SPEED * 0.3; // avoid too slow, e.g. 30% of speed
+    const directionSign = Math.random() > 0.5 ? -1 : 1;
+    const value = Math.random() * (GAME_CONSTS.SPEED - min) + min;
+    return value * directionSign;
+  }
+
   reset(): void {
     this.x = GAME_CONSTS.WIDTH / 2;
     this.y = GAME_CONSTS.HEIGHT / 2;
-    this.speedX = -this.speedX;
-    console.log('Speed in reset:', this.speedX);
+    this.speedX = this.getRandomDirection();
+    this.speedY = Math.sqrt(GAME_CONSTS.SPEED ** 2 - this.speedX ** 2);
+    console.log('Speed in reset X:', this.speedX);
+    console.log('Speed in reset Y:', this.speedY);
   }
 }
 
