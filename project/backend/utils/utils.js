@@ -26,9 +26,15 @@ export async function fileExists(filePath) {
 }
 
 export async function getRandomAvatar() {
-  const avatarDir = path.join(__dirname, '..', 'uploads', 'avatars');
+  const avatarDir = path.join(__dirname, '..', 'uploads', 'default');
   const files = fs.readdirSync(avatarDir);
   if (files.length === 0) return null;
   const randomIndex = Math.floor(Math.random() * files.length);
-  return path.join('/uploads', 'avatars', files[randomIndex]);
+  return path.join('/uploads', 'default', files[randomIndex]);
+}
+
+export async function isDefaultAvatar(avatarPath) {
+  if (typeof avatarPath !== 'string') return false;
+  console.log('TRUE OR FALSE: ', path.basename(avatarPath).startsWith('default_'));
+  return path.basename(avatarPath).startsWith('default_');
 }
