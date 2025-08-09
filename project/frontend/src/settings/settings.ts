@@ -30,8 +30,8 @@ function showSettingsMessage(
   if (!element) return;
 
   // reset colors
-  element.classList.remove('text-yellow-500', 'text-red-500', 'hidden');
-  element.classList.add(isError ? 'text-red-500' : 'text-yellow-500');
+  element.classList.remove('text-yellow-300', 'text-red-300', 'hidden');
+  element.classList.add(isError ? 'text-red-300' : 'text-yellow-300');
   element.textContent = text;
 
   // empty after 4 seconds
@@ -43,7 +43,6 @@ function showSettingsMessage(
 export function initSettingsEvents() {
   const usernameButton = document.getElementById('saveUsername');
   const passwordButton = document.getElementById('savePassword');
-  const avatarButton = document.getElementById('saveAvatar');
 
   if (usernameButton) {
     usernameButton.addEventListener('click', (e) => {
@@ -88,7 +87,7 @@ export async function changeUsername() {
     });
 
     if (!response.ok) {
-      showSettingsMessage('Username change failed.', true, 'username');
+      showSettingsMessage('Username change failed, perhaps name already in use', true, 'username');
       return;
     }
 
