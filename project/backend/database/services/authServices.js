@@ -16,9 +16,8 @@ export async function registerUser({ username, email, password }) {
       return null;
     }
     const filepath = await getRandomAvatar();
-    const filename = path.basename(filepath);
     return await prisma.user.create({
-      data: { username, email, password, avatar: filename },
+      data: { username, email, password, avatar: filepath },
     });
   } catch (error) {
     console.error('Error in registerUser:', error);

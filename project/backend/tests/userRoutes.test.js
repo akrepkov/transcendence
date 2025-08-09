@@ -112,17 +112,11 @@ describe('User Routes', () => {
 	})
 });
 
-
-
-
-
+// TEST UPDATE USER PROFILE (AVATAR UPLOAD)
 // curl -X PATCH https://localhost:3000/api/update_user_profile \
-//   -F "username=lenacik" \
-//   -F "password=lenacik" \
-//   -F "avatar=@/Users/mbp14/Downloads/loki_mad.webp" \
-//  -F "oldName=lena" \                      
-//  -H "cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMyMywic2Vzc2lvbklkIjoiMmMzMmYzZDAxODU3NjEzODkwYTFmYjRjYTQ2ZWExZjJkNWVlNWYxNWE3MjczNzBkOWU3Y2IzOGU2MThkNjdkNCIsImlhdCI6MTc1NDY2MjQ2NiwiZXhwIjoxNzU0NjY2MDY2fQ.oKYo_dUrS3gYVzJnMZfYXYwZfsTfiFeZ2gRirYACBjA" -k
+//   -F "avatar=@/Users/mbp14/Downloads/loki_mad.webp" \              
+//  -H "cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMzMCwic2Vzc2lvbklkIjoiNTJmZjQ0OWNkYzIzYmFiYjZjOGFiOWM5ZjVkNzRiY2NiMmJiNmU2OTMyNjhhODE2NDc5ZjQwOWZmNWFmNTE5ZiIsImlhdCI6MTc1NDc0NjU5MywiZXhwIjoxNzU0NzUwMTkzfQ.KAgFGavQWfl4mzyL_BNtJiPhTykRhzO1x-jj70EIxhI" -k
 
 
 
-//  curl -X GET https://localhost:3000/api/view_user_profile?username=lena -H "Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMyNywic2Vzc2lvbklkIjoiNDU4M2E3ZDIxNDA1MDg2YWI0NWMwNmMxN2RhMjZmOGVkZGI5YTZiOTNlNzgzOTA1N2Q0NDNkYjE2YTE4ODFjNSIsImlhdCI6MTc1NDY2ODE4OCwiZXhwIjoxNzU0NjcxNzg4fQ.A9ree_SM5EXocPtBO91xvw-RNoGOZwmX4AhuTkuIDzs" -k
+//  curl -X GET https://localhost:3000/api/view_user_profile?username=lena -H "Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMzMCwic2Vzc2lvbklkIjoiNTJmZjQ0OWNkYzIzYmFiYjZjOGFiOWM5ZjVkNzRiY2NiMmJiNmU2OTMyNjhhODE2NDc5ZjQwOWZmNWFmNTE5ZiIsImlhdCI6MTc1NDc0NjU5MywiZXhwIjoxNzU0NzUwMTkzfQ.KAgFGavQWfl4mzyL_BNtJiPhTykRhzO1x-jj70EIxhI" -k

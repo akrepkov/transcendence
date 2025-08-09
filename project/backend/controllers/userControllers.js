@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import pump from 'pump';
 import fs from 'fs';
+import { promises as fsPromises } from 'fs';
 import * as utils from '../utils/utils.js';
 import path from 'path';
 import { connectionManager } from '../websocket/managers/connectionManager.js';
@@ -120,12 +121,11 @@ const uploadAvatarHandler = async (avatar, username) => {
     const writeStream = fs.createWriteStream(filepath);
     await pipeline(avatar.file, writeStream);
     const oldAvatar = await userServices.getAvatarFromDatabase(username);
-    const oldAbsolutePath = path.join(__dirname, '..', 'uploads/avatars', oldAvatar);
+    const oldAbsolutePath = path.join(__dirname, '..', oldAvatar);
     if (oldAbsolutePath && utils.isDefaultAvatar(oldAbsolutePath)) {
-      await fs.unlink(oldAbsolutePath);
+      await fsPromises.unlink(oldAbsolutePath);
     }
-
-    await userServices.uploadAvatarInDatabase(filename, username);
+    await userServices.uploadAvatarInDatabase(path.join('/uploads/avatars', filename), username);
     return true;
   } catch (error) {
     console.error('Upload avatar error:', error);

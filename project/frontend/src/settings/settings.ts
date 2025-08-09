@@ -162,7 +162,7 @@ export function initAvatarUpload() {
       const response = await fetch('/api/update_user_profile', {
         method: 'PATCH',
         credentials: 'include',
-        body: JSON.stringify({ avatar: formData }),
+        body: formData,
       });
 
       if (!response.ok) {
