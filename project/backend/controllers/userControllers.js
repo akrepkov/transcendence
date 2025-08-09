@@ -73,7 +73,7 @@ const updateUserHandler = async (request, reply) => {
   try {
     const parts = request.parts();
     const timeout = setTimeout(() => {
-      console.error('Timeout: request.parts() is hanging');
+      return reply.code(500).send({ error: 'Internal server error' });
     }, 5000);
     let username, email, password, avatar, oldName;
     for await (const part of parts) {
