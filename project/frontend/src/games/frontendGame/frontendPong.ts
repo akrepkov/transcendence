@@ -1,4 +1,5 @@
 import { getCanvasContext } from './frontendRender.js';
+import { turnOffKeyboardScrolling } from '../../utils/uiHelpers.js';
 
 export const GAME_CONSTS = {
   WIDTH: 800,
@@ -215,12 +216,14 @@ export class Game {
   start() {
     if (this.isRunning) return;
     this.isRunning = true;
+    document.addEventListener('keydown', turnOffKeyboardScrolling);
     this.reset();
     this.animationId = requestAnimationFrame(this.gameLoop);
   }
 
   stopGame() {
     console.log('Stopping game');
+    document.removeEventListener('keydown', turnOffKeyboardScrolling);
     if (this.animationId !== null) {
       cancelAnimationFrame(this.animationId);
       this.animationId = null;

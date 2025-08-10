@@ -72,3 +72,9 @@ export function toggleOwnProfileButtons(isOwnProfile: boolean) {
   toggleElement('settingsToggle', isOwnProfile);
   toggleElement('backToOwnProfile', !isOwnProfile);
 }
+
+export function turnOffKeyboardScrolling(event: KeyboardEvent): void {
+  if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+    event.preventDefault();
+  }
+}

@@ -1,6 +1,7 @@
 import { GameStatePong } from './types.js';
 import { GAME_CONSTS } from './types.js';
 import { getCanvasContext } from './render.js';
+import { turnOffKeyboardScrolling } from '../utils/uiHelpers.js';
 
 /**
  * Stores the current animation frame ID for cancellation.
@@ -37,6 +38,7 @@ export function createPongGame(data: GameStatePong, socket: WebSocket) {
   running = true;
   setupPaddleInput(socket);
   movePaddles(socket);
+  document.addEventListener('keydown', turnOffKeyboardScrolling);
 }
 
 /**
@@ -152,6 +154,7 @@ export function cleanPongField() {
  */
 export function gameOverPong(winner: string) {
   cleanPongField();
+  document.removeEventListener('keydown', turnOffKeyboardScrolling);
   console.log(`Game over, winner: ${winner}`);
   const pongScore = document.getElementById('pong-score');
   const scoreText = `The winner is ${winner}`;

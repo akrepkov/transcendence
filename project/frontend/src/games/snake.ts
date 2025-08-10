@@ -1,6 +1,7 @@
 import { GameStateSnake } from './types.js';
 import { GAME_CONSTS } from './types.js';
 import { getCanvasContext } from './render.js';
+import { turnOffKeyboardScrolling } from '../utils/uiHelpers.js';
 
 let running = false;
 let keyListener: ((event: KeyboardEvent) => void) | undefined;
@@ -18,6 +19,7 @@ export function createSnakeGame(data: GameStateSnake, socket: WebSocket) {
   running = true;
   keyListener = (event) => moveSnakes(data, event, socket);
   document.addEventListener('keydown', keyListener);
+  document.addEventListener('keydown', turnOffKeyboardScrolling);
 }
 
 /**
@@ -139,6 +141,7 @@ export function gameOverSnake(winner: string) {
     winner = 'Me! The apple!';
   }
   cleanSnakeField();
+  document.removeEventListener('keydown', turnOffKeyboardScrolling);
   const snakeScore = document.getElementById('snake-score');
   const scoreText = `The winner is ${winner}`;
   if (snakeScore && snakeScore.offsetParent !== null) {
