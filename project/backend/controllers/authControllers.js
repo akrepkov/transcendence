@@ -14,7 +14,10 @@ const authenticate = async (request, reply) => {
   }
   try {
     const payload = jwt.verify(token, JWT_SECRET);
-    request.user = payload;
+    const userId = Number(payload.userId);
+    request.user = { ...payload, userId };
+    request.userId = userId;
+    return request;
   } catch (error) {
     return handleError(reply, error, 401);
   }
@@ -60,8 +63,6 @@ const loginHandler = async (request, reply) => {
 
 const registerHandler = async (request, reply) => {
   const { email, password, username } = request.body;
-  //   console.log('Incoming data:', { email, username, password });
-
   if (!email || !password || !username) {
     return handleError(reply, new Error('Email, username and password are required'), 400);
   }

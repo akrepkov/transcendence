@@ -1,6 +1,9 @@
 import { navigateTo, showProfileView, showSettingsView } from '../navigation/navigation.js';
 import { globalSession } from '../auth/auth.js';
 
+let friendsRenderToken = 0;
+let currentFriends = new Set<string>();
+
 /**
  * Checks if a specific friend is currently online by comparing against the live list from the WebSocket.
  *
@@ -16,6 +19,7 @@ async function isFriendOnline(friendUsername: string): Promise<boolean> {
     return false;
   }
 }
+let profileEventsInitialized = false;
 
 /**
  * Initializes all event listeners related to the user profile section.
@@ -26,6 +30,9 @@ async function isFriendOnline(friendUsername: string): Promise<boolean> {
  * - Add friend button sends a friend request.
  */
 export function initProfileEvents() {
+  if (profileEventsInitialized) return;
+  profileEventsInitialized = true;
+
   const avatar = document.getElementById('avatar');
   const settingsButon = document.getElementById('settingsToggle');
   const backButton = document.getElementById('backToProfile');
@@ -128,6 +135,15 @@ export async function addFriend() {
   if (!friendUsername) return;
 
   const username = globalSession.getUsername();
+  if (friendUsername === username) {
+    showFriendMessage('You cannot add yourself as a friend');
+    return;
+  }
+
+  if (currentFriends.has(friendUsername)) {
+    showFriendMessage(`${friendUsername} is already your friend`, true);
+    return;
+  }
 
   try {
     const res = await fetch('/api/add_friend', {
@@ -141,8 +157,7 @@ export async function addFriend() {
       input.value = ''; // clear input after adding
       showFriendMessage('Friend added successfully');
     } else {
-      const { message } = await res.json().catch(() => ({}));
-      showFriendMessage(message || 'Could not add friend', true);
+      showFriendMessage('Profile does not exist');
     }
   } catch (err) {
     console.error('Request failed:', err);
@@ -155,7 +170,6 @@ export async function addFriend() {
  *
  * - Retrieves the user's friends from the backend.
  * - For each friend, checks their online status and displays an indicator:
- *   🟢 = online, 🔴 = offline, ⚪ = status unknown.
  * - Each friend's name is rendered as a clickable list item that navigates to their profile.
  * - Handles the empty list case with a fallback message.
  * - Catches and logs errors gracefully if fetching data fails.
@@ -166,35 +180,43 @@ export async function showFriends(username: string) {
   const list = document.getElementById('friendsList')?.querySelector('ul');
   if (!list) return;
 
-  try {
-    const data = await fetchUserProfile(username);
-    const friends = data.friends ?? [];
+  const token = ++friendsRenderToken;
 
-    list.innerHTML = '';
+  try {
+    // Fetch profile + online list in parallel
+    const [data, onlineFriends] = await Promise.all([
+      fetchUserProfile(username),
+      globalSession.getOnlineFriends(),
+    ]);
+
+    if (token !== friendsRenderToken) return;
+
+    const friends = data.friends ?? [];
+    currentFriends = new Set(friends.map((f: { username: string }) => f.username));
+    const onlineSet = new Set<string>(Array.isArray(onlineFriends) ? onlineFriends : []);
 
     if (friends.length === 0) {
-      list.innerHTML = '<li class="text-black text-lg">No friends yet</li>';
+      const empty = document.createElement('li');
+      empty.className = 'text-black text-lg';
+      empty.textContent = 'No friends yet';
+      list.replaceChildren(empty);
       return;
     }
+
+    const frag = document.createDocumentFragment();
 
     for (const friend of friends) {
       const li = document.createElement('li');
       li.className =
         'border-b border-black pb-1 cursor-pointer hover:text-pink-400 transition-colors flex items-center gap-2';
 
-      // Check if friend is online
-      let onlineIndicator = '';
-      try {
-        const isOnline = await isFriendOnline(friend.username);
-        onlineIndicator = isOnline ? '🟢' : '🔴';
-      } catch (err) {
-        console.warn(`Failed to check online status for ${friend.username}:`, err);
-        onlineIndicator = '⚪';
-      }
+      const isOnline = onlineSet.has(friend.username);
+      const indicator = isOnline
+        ? '<img src="/assets/online_status.png" alt="Online" class="w-4 h-4" />'
+        : '<img src="/assets/offline_status.png" alt="Offline" class="w-4 h-4" />';
 
-      li.innerHTML = `<span>${onlineIndicator}</span><span>${friend.username}</span>`;
+      li.innerHTML = `<span>${indicator}</span><span>${friend.username}</span>`;
 
-      // Navigate to friend's profile
       li.addEventListener('click', () => {
         navigateTo(
           'profile',
@@ -204,8 +226,11 @@ export async function showFriends(username: string) {
         );
       });
 
-      list.appendChild(li);
+      frag.appendChild(li);
     }
+
+    if (token !== friendsRenderToken) return;
+    list.replaceChildren(frag);
   } catch (err) {
     console.error('Error loading friends:', err);
   }
@@ -245,5 +270,117 @@ export async function showGameStats(username: string) {
     setText('totalGames', totalGames);
   } catch (err) {
     console.error('Error loading game stats:', err);
+  }
+}
+
+interface Match {
+  gameId: number;
+  player1Id: number;
+  player2Id: number;
+  winnerId: number;
+  player1Score: number;
+  player2Score: number;
+  createdAt: string; // ISO
+  // Optional if backend ever supplies them:
+  player1Name?: string;
+  player2Name?: string;
+}
+
+type WithType = Match & { gameType: 'Pong' | 'Snake' };
+
+/**
+ * Fetches and displays the game history for a given user.
+ *
+ * - Retrieves the user's Pong and Snake match data from the backend via `fetchUserProfile`.
+ * - Merges both game types into a single list with an added `gameType` property.
+ * - Sorts the matches by date in descending order (newest first).
+ * - Renders each match as a list item with:
+ *    - Game type icon and label.
+ *    - Match date/time.
+ *    - Player names and scores.
+ *    - Winner’s name.
+ * - Highlights the current user’s name in the match details.
+ * - Handles the case where the user has no game history with a fallback message.
+ * - Replaces any existing list content with the newly generated match history.
+ *
+ * @param {string} username - The username whose game history should be displayed.
+ * @returns {Promise<void>} Resolves when the game history has been rendered to the DOM.
+ */
+export async function showGameHistory(username: string) {
+  const list = document.getElementById('historyList')?.querySelector('ul');
+  if (!list) return;
+
+  try {
+    const data = await fetchUserProfile(username);
+
+    const gameHistory: WithType[] = [
+      ...(data.pong ?? []).map((g: Match) => ({ ...g, gameType: 'Pong' })),
+      ...(data.snake ?? []).map((g: Match) => ({ ...g, gameType: 'Snake' })),
+    ];
+
+    gameHistory.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+    list.innerHTML = '';
+
+    if (gameHistory.length === 0) {
+      list.innerHTML = '<li class="text-black text-lg">No game history yet</li>';
+      return;
+    }
+
+    const youId = data.userId as number;
+    const youName = data.username as string;
+    const nameFor = (id: number, fallbackName?: string) =>
+      id === youId ? youName : fallbackName || `User#${id}`;
+
+    for (const game of gameHistory) {
+      const li = document.createElement('li');
+      li.className = 'border-b border-black pb-1 flex flex-col gap-1';
+
+      // header: icon + title + date
+      const header = document.createElement('div');
+      header.className = 'flex items-center justify-between';
+
+      const left = document.createElement('div');
+      left.className = 'flex items-center gap-2';
+
+      const iconImg = document.createElement('img');
+      iconImg.src = game.gameType === 'Pong' ? '/assets/pong_icon.png' : '/assets/snake_icon.png';
+      iconImg.alt = `${game.gameType} icon`;
+      iconImg.className = 'w-5 h-5';
+      (iconImg.style as any).imageRendering = 'pixelated';
+
+      const title = document.createElement('span');
+      title.className = 'font-bold';
+      title.textContent = game.gameType;
+
+      left.appendChild(iconImg);
+      left.appendChild(title);
+
+      const when = document.createElement('span');
+      when.className = 'text-sm text-black';
+      when.textContent = new Date(game.createdAt).toLocaleString();
+
+      header.appendChild(left);
+      header.appendChild(when);
+
+      // details: names + scores + winner
+      const p1Name = nameFor(game.player1Id, game.player1Name);
+      const p2Name = nameFor(game.player2Id, game.player2Name);
+      const winnerName =
+        game.winnerId === game.player1Id
+          ? p1Name
+          : game.winnerId === game.player2Id
+            ? p2Name
+            : `User#${game.winnerId}`;
+
+      const details = document.createElement('div');
+      details.textContent = `${p1Name}: ${game.player1Score} vs ${p2Name}: ${game.player2Score} — Winner: ${winnerName}`;
+
+      li.appendChild(header);
+      li.appendChild(details);
+      list.appendChild(li);
+    }
+  } catch (err) {
+    console.error('Error loading game history:', err);
   }
 }

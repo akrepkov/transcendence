@@ -6,9 +6,17 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import pump from 'pump';
 import fs from 'fs';
+import { promises as fsPromises } from 'fs';
 import * as utils from '../utils/utils.js';
 import path from 'path';
 import { connectionManager } from '../websocket/managers/connectionManager.js';
+import { Console } from 'console';
+import { pipeline } from 'stream/promises';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const ROOT = path.join(__dirname, '..');
 
 // Returns all users registered in the db (userId and username only)
 const getAllUsersHandler = async (request, reply) => {
@@ -63,9 +71,21 @@ const addFriendHandler = async (request, reply) => {
 
 const updateUserHandler = async (request, reply) => {
   try {
-    const { username, email, password, avatar } = request.body;
-    const requestUserId = request.user.userId;
-    const user = await userServices.getUserById(requestUserId);
+    const parts = request.parts();
+    let username, email, password, avatar, oldName;
+    for await (const part of parts) {
+      if (part.file && part.fieldname === 'avatar') {
+        avatar = part;
+      } else if (part.fieldname === 'username') {
+        username = part.value;
+      } else if (part.fieldname === 'password') {
+        password = part.value;
+      } else if (part.fieldname === 'email') {
+        email = part.value;
+      }
+    }
+    const userId = request.user.userId;
+    const user = await userServices.getUserById(userId);
     if (username) {
       const existUsername = await authServices.checkUniqueUsername(username);
       if (existUsername) {
@@ -82,7 +102,7 @@ const updateUserHandler = async (request, reply) => {
       await userServices.updatePassword(user, hashedPassword);
     }
     if (avatar) {
-      await uploadAvatarHandler(request, reply);
+      await uploadAvatarHandler(avatar, user.username);
     }
     return reply.code(200).send({ success: true });
   } catch (error) {
@@ -91,25 +111,22 @@ const updateUserHandler = async (request, reply) => {
   }
 };
 
-const uploadAvatarHandler = async (request, reply) => {
+const uploadAvatarHandler = async (avatar, username) => {
   try {
-    let username = request.user.username;
-    const data = await request.file();
-    const filename = `avatar_${Date.now()}_${data.filename}`;
-    const filepath = path.join(__dirname, '..', 'uploads', filename);
-    pump(data.file, fs.createWriteStream(filepath));
-    let avatarUrl = `../uploads/avatars/${filename}`;
-    userServices.uploadAvatarinDatabase(avatarUrl, username);
-    return reply.code(200).send({
-      success: true,
-      avatar: avatarUrl,
-    });
+    const filename = `avatar_${username}_${Date.now()}.jpg`;
+    const filepath = path.join(__dirname, '..', '/uploads/avatars', filename);
+    const writeStream = fs.createWriteStream(filepath);
+    await pipeline(avatar.file, writeStream);
+    const oldAvatar = await userServices.getAvatarFromDatabase(username);
+    const oldAbsolutePath = path.join(__dirname, '..', oldAvatar);
+    if (oldAbsolutePath && (await utils.isDefaultAvatar(oldAbsolutePath)) == false) {
+      await fsPromises.unlink(oldAbsolutePath);
+    }
+    await userServices.uploadAvatarInDatabase(path.join('/uploads/avatars', filename), username);
+    return true;
   } catch (error) {
-    console.error('Upload error:', error);
-    return reply.code(500).send({
-      success: false,
-      error: 'Upload failed',
-    });
+    console.error('Upload avatar error:', error);
+    return false;
   }
 };
 
@@ -119,8 +136,8 @@ const getAvatarHandler = async (request, reply) => {
     let avatarFilepath = userServices.getAvatarFromDatabase(username);
     const fileExistsResult = await utils.fileExists(avatarFilepath);
     if (!fileExistsResult) {
-      console.log('Avatar not found, using default avatar');
-      avatarFilepath = '../uploads/avatars/bunny.jpg';
+      console.log('Avatar not found');
+      return false;
     }
     if (!avatarFilepath) {
       return reply.code(404).send({ error: 'Avatar not found' });
