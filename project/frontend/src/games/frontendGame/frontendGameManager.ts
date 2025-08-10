@@ -20,7 +20,7 @@ export function handleStartGame(mode: string, player1Name?: string, player2Name?
   game!.drawCanvas();
   setTimeout(() => {
     game!.start();
-  }, 3000);
+  }, 500);
 }
 
 export function resetGame(mode: string) {

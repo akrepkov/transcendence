@@ -74,6 +74,20 @@ export function moveSnakes(game: GameStateSnake, event: KeyboardEvent, socket: W
 }
 
 /**
+ * Displays a message in the Snake game UI.
+ *
+ * - Updates the text content of the element with ID 'snake-score'.
+ *
+ * @param {string} message - The message to display.
+ */
+export function showMessageSnake(message: string) {
+  const messageElement = document.getElementById('snake-score');
+  if (messageElement) {
+    messageElement.textContent = message;
+  }
+}
+
+/**
  * Displays the current score for both Snake players.
  *
  * - Player 1 (red) on the left, Player 2 (blue) on the right.

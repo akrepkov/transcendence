@@ -21,12 +21,14 @@ export const gameHandler = {
     draw: pong.drawPong,
     score: pong.showPongScore,
     gameOver: pong.gameOverPong,
+    showMessage: pong.showMessagePong,
   },
   snake: {
     create: snake.createSnakeGame,
     draw: snake.drawSnake,
     score: snake.showSnakeScore,
     gameOver: snake.gameOverSnake,
+    showMessage: snake.showMessageSnake,
   },
 };
 

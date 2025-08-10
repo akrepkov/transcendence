@@ -100,6 +100,18 @@ export function drawPong(data: GameStatePong, ctx: CanvasRenderingContext2D) {
 }
 
 /**
+ * Displays a message in the Pong game UI.
+ *
+ * @param {string} message - The message to display.
+ */
+export function showMessagePong(message: string) {
+  const messageElement = document.getElementById('pong-score');
+  if (messageElement) {
+    messageElement.textContent = message;
+  }
+}
+
+/**
  * Displays the current game score on the page.
  *
  * @param {GameStatePong} data - The game state including player scores and names.

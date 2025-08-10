@@ -137,7 +137,9 @@ export class Pong {
     if (this.running) return;
 
     this.running = true;
-    this.broadcastState();
+    setTimeout(() => {
+      this.broadcastState();
+    }, 500);
     setTimeout(() => {
       this.gameLoop = setInterval(() => {
         this.ball.updateBall();
@@ -149,6 +151,6 @@ export class Pong {
           this.broadcastState();
         }
       }, 1000 / 60);
-    }, 3000);
+    }, 1000);
   }
 }

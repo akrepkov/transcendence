@@ -161,9 +161,14 @@ export class Snake {
     // this.resetGame();
     this.running = true;
     console.log('Game starts');
-    this.gameLoop = setInterval(() => {
-      this.updatePlayers();
-      if (this.running) this.broadcastState();
+    setTimeout(() => {
+      this.broadcastState();
     }, 500);
+    setTimeout(() => {
+      this.gameLoop = setInterval(() => {
+        this.updatePlayers();
+        if (this.running) this.broadcastState();
+      }, 500);
+    }, 1000);
   }
 }

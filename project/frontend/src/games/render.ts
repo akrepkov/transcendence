@@ -44,12 +44,14 @@ export function renderGame(socket: WebSocket, gameType: string) {
     switch (data.type) {
       case 'waitingForOpponent':
         console.log('Waiting for the opponent');
+        handler.showMessage('Waiting for an opponent...');
         break;
       case 'gameStarting':
         handler.create(data, socket);
+        handler.showMessage('Game starting...');
         break;
       case 'updateGameState':
-        console.log('Sent updataGameState');
+        console.log('Sent updateGameState');
         handler.score?.(data);
         handler.draw(data, ctx);
         break;
