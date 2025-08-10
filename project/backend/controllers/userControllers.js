@@ -156,8 +156,8 @@ const uploadAvatarHandler = async (avatar, username) => {
       const oldAbsolutePath = path.join(__dirname, '..', oldAvatar);
       try {
         await fsPromises.unlink(oldAbsolutePath);
-      } catch (e) {
-        if (e.code !== 'ENOENT') console.warn('unlink failed:', oldAbsolutePath, e.message);
+      } catch (error) {
+        if (error.code !== 'ENOENT') console.warn('unlink failed:', oldAbsolutePath, error.message);
       }
     }
     await userServices.uploadAvatarInDatabase(path.join('uploads', 'avatars', filename), username);
