@@ -165,7 +165,10 @@ export function initAvatarUpload() {
         body: formData,
       });
 
-      if (!response.ok) {
+      if (response.status == 418) {
+        alert('Image is too big, try uploading something up to 1MB.');
+        return;
+      } else if (!response.ok) {
         alert('Avatar upload failed.');
         return;
       }

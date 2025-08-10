@@ -26,7 +26,7 @@ const authenticate = async (request, reply) => {
 const setCookie = (reply, user) => {
   let userId = user.userId;
   const sessionId = crypto.randomBytes(32).toString('hex');
-  const token = jwt.sign({ userId, sessionId }, JWT_SECRET, { expiresIn: '1h' });
+  const token = jwt.sign({ userId, sessionId }, JWT_SECRET, { expiresIn: '5h' });
   // Set the JWT in an HTTP-only cookie
   reply.setCookie('token', token, {
     httpOnly: true,
