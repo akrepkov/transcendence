@@ -3,7 +3,7 @@ import * as snake from './snake.js';
 import { renderGame } from './render.js';
 import { cleanPongField } from './pong.js';
 import { cleanSnakeField } from './snake.js';
-import { handleStartGame, resetGame } from './frontendGame/frontendRender.js';
+import { handleStartGame, resetGame } from './frontendGame/frontendGameManager.js';
 import { getRandomPlayerNames } from './frontendGame/playerNames.js';
 
 /**

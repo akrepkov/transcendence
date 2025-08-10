@@ -1,4 +1,5 @@
 import { getCanvasContext } from './frontendRender.js';
+
 export const GAME_CONSTS = {
   WIDTH: 800,
   HEIGHT: 600,
