@@ -124,7 +124,6 @@ const updateUserHandler = async (request, reply) => {
         user.username,
       );
     }
-    console.log('AM I EVEN IN THIS WOLRD HUUG');
     const updatedUser = await userServices.getUserById(userId);
     const updatedAvatar = updatedUser.avatar;
     return reply.code(200).send({ success: true, avatarUrl: updatedAvatar });
