@@ -33,8 +33,6 @@ export async function getRandomAvatar() {
   return path.join('/uploads', 'default', files[randomIndex]);
 }
 
-export async function isDefaultAvatar(avatarPath) {
-  if (typeof avatarPath !== 'string') return false;
-  console.log('TRUE OR FALSE: ', path.basename(avatarPath).startsWith('default_'));
+export function isDefaultAvatar(avatarPath) {
   return path.basename(avatarPath).startsWith('default_');
 }

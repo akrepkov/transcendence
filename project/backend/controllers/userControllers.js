@@ -12,6 +12,7 @@ import path from 'path';
 import { connectionManager } from '../websocket/managers/connectionManager.js';
 import { Console } from 'console';
 import { pipeline } from 'stream/promises';
+import { Readable } from 'node:stream';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -71,21 +72,37 @@ const addFriendHandler = async (request, reply) => {
 
 const updateUserHandler = async (request, reply) => {
   try {
+    const userId = request.user.userId;
+    const user = await userServices.getUserById(userId);
     const parts = request.parts();
-    let username, email, password, avatar, oldName;
+    let username, email, password, avatarPart, oldName;
+    let avatarBuf = null;
+    let avatarName = null;
+    let avatarMime = null;
     for await (const part of parts) {
-      if (part.file && part.fieldname === 'avatar') {
-        avatar = part;
-      } else if (part.fieldname === 'username') {
+      if (part.fieldname === 'username') {
         username = part.value;
       } else if (part.fieldname === 'password') {
         password = part.value;
       } else if (part.fieldname === 'email') {
         email = part.value;
+      } else if (part.file && part.fieldname === 'avatar') {
+        let totalBytes = 0;
+        const chunks = [];
+        for await (const chunk of part.file) {
+          totalBytes += chunk.length;
+          if (totalBytes >= 1 * 1024 * 1024) {
+            return reply.code(418).send({ error: 'File too large' });
+          }
+          chunks.push(chunk);
+        }
+        avatarBuf = Buffer.concat(chunks);
+        avatarName = part.filename;
+        avatarMime = part.mimetype;
+      } else {
+        if (part.file) part.file.resume();
       }
     }
-    const userId = request.user.userId;
-    const user = await userServices.getUserById(userId);
     if (username) {
       const existUsername = await authServices.checkUniqueUsername(username);
       if (existUsername) {
@@ -101,28 +118,50 @@ const updateUserHandler = async (request, reply) => {
       const hashedPassword = await bcrypt.hash(password, 10);
       await userServices.updatePassword(user, hashedPassword);
     }
-    if (avatar) {
-      await uploadAvatarHandler(avatar, user.username);
+    if (avatarBuf) {
+      await uploadAvatarHandler(
+        { buffer: avatarBuf, filename: avatarName, mimetype: avatarMime },
+        user.username,
+      );
     }
-    return reply.code(200).send({ success: true });
+    console.log('AM I EVEN IN THIS WOLRD HUUG');
+    const updatedUser = await userServices.getUserById(userId);
+    const updatedAvatar = updatedUser.avatar;
+    return reply.code(200).send({ success: true, avatarUrl: updatedAvatar });
   } catch (error) {
     console.error('Error updating user', error);
     return reply.code(500).send({ error: 'Internal server error' });
   }
 };
 
+function extFrom(mimetype) {
+  const ext = mimetype.includes('.') ? n.slice(n.lastIndexOf('.')).toLowerCase() : '';
+  if (ext) return ext;
+  const mime = (mimetype || '').toLowerCase();
+  if (mime.includes('png')) return '.png';
+  if (mime.includes('webp')) return '.webp';
+  if (mime.includes('jpeg') || mime.includes('jpg')) return '.jpg';
+  return '.jpg';
+}
+
 const uploadAvatarHandler = async (avatar, username) => {
   try {
-    const filename = `avatar_${username}_${Date.now()}.jpg`;
-    const filepath = path.join(__dirname, '..', '/uploads/avatars', filename);
+    const ext = extFrom(avatar.mimetype);
+    const safeUser = String(username).replace(/[^\w.-]+/g, '_');
+    const filename = `avatar_${safeUser}_${Date.now()}${ext}`;
+    const filepath = path.join(__dirname, '..', 'uploads', 'avatars', filename);
     const writeStream = fs.createWriteStream(filepath);
-    await pipeline(avatar.file, writeStream);
+    await pipeline(Readable.from(avatar.buffer), fs.createWriteStream(filepath));
     const oldAvatar = await userServices.getAvatarFromDatabase(username);
-    const oldAbsolutePath = path.join(__dirname, '..', oldAvatar);
-    if (oldAbsolutePath && (await utils.isDefaultAvatar(oldAbsolutePath)) == false) {
-      await fsPromises.unlink(oldAbsolutePath);
+    if (oldAvatar && utils.isDefaultAvatar(oldAvatar) == false) {
+      const oldAbsolutePath = path.join(__dirname, '..', oldAvatar);
+      try {
+        await fsPromises.unlink(oldAbsolutePath);
+      } catch (e) {
+        if (e.code !== 'ENOENT') console.warn('unlink failed:', oldAbsolutePath, e.message);
+      }
     }
-    await userServices.uploadAvatarInDatabase(path.join('/uploads/avatars', filename), username);
+    await userServices.uploadAvatarInDatabase(path.join('uploads', 'avatars', filename), username);
     return true;
   } catch (error) {
     console.error('Upload avatar error:', error);
@@ -133,7 +172,7 @@ const uploadAvatarHandler = async (avatar, username) => {
 const getAvatarHandler = async (request, reply) => {
   try {
     let username = request.user.username;
-    let avatarFilepath = userServices.getAvatarFromDatabase(username);
+    let avatarFilepath = await userServices.getAvatarFromDatabase(username);
     const fileExistsResult = await utils.fileExists(avatarFilepath);
     if (!fileExistsResult) {
       console.log('Avatar not found');
