@@ -40,7 +40,7 @@ export class Ball {
 
   getRandomDirection() {
     const min = GAME_CONSTS.SPEED * 0.5;
-    const directionSign = Math.random() > 0.5 ? -1 : 1;
+    const directionSign = this.speedX > 0 ? -1 : 1;
     const value = Math.random() * (GAME_CONSTS.SPEED - min) + min;
     return value * directionSign;
   }
