@@ -78,3 +78,14 @@ export function turnOffKeyboardScrolling(event: KeyboardEvent): void {
     event.preventDefault();
   }
 }
+
+export function centerOnCanvas(canvasId: string) {
+  const rect = document.getElementById(canvasId)?.getBoundingClientRect();
+  if (!rect) return;
+
+  window.scrollTo({
+    top: window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2,
+    left: window.scrollX + rect.left - window.innerWidth / 2 + rect.width / 2,
+    behavior: 'smooth',
+  });
+}

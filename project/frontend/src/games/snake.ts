@@ -1,7 +1,7 @@
 import { GameStateSnake } from './types.js';
 import { GAME_CONSTS } from './types.js';
 import { getCanvasContext } from './render.js';
-import { turnOffKeyboardScrolling } from '../utils/uiHelpers.js';
+import { centerOnCanvas, turnOffKeyboardScrolling } from '../utils/uiHelpers.js';
 
 let running = false;
 let keyListener: ((event: KeyboardEvent) => void) | undefined;
@@ -20,6 +20,7 @@ export function createSnakeGame(data: GameStateSnake, socket: WebSocket) {
   keyListener = (event) => moveSnakes(data, event, socket);
   document.addEventListener('keydown', keyListener);
   document.addEventListener('keydown', turnOffKeyboardScrolling);
+  centerOnCanvas('snake');
 }
 
 /**

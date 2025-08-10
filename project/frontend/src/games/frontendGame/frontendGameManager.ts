@@ -1,6 +1,7 @@
 import { Game } from './frontendPong.js';
 import { globalSession } from '../../auth/auth.js';
 import { getCanvasContext, putMessageOnScoreField } from './frontendRender.js';
+import { centerOnCanvas } from '../../utils/uiHelpers.js';
 
 let game: Game | null = null;
 
@@ -18,6 +19,7 @@ export function handleStartGame(mode: string, player1Name?: string, player2Name?
     game = new Game(canvasId, scoreFieldId, player1Name!, player2Name!);
   }
   game!.drawCanvas();
+  centerOnCanvas(canvasId);
   setTimeout(() => {
     game!.start();
   }, 500);

@@ -1,7 +1,7 @@
 import { GameStatePong } from './types.js';
 import { GAME_CONSTS } from './types.js';
 import { getCanvasContext } from './render.js';
-import { turnOffKeyboardScrolling } from '../utils/uiHelpers.js';
+import { centerOnCanvas, turnOffKeyboardScrolling } from '../utils/uiHelpers.js';
 
 /**
  * Stores the current animation frame ID for cancellation.
@@ -39,6 +39,7 @@ export function createPongGame(data: GameStatePong, socket: WebSocket) {
   setupPaddleInput(socket);
   movePaddles(socket);
   document.addEventListener('keydown', turnOffKeyboardScrolling);
+  centerOnCanvas('pong');
 }
 
 /**
