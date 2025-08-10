@@ -99,7 +99,7 @@ class Player extends Paddle {
 
 class AI extends Paddle {
   private aiReactionCounter: number = 0;
-  private aiReactionRate: number = 1;
+  private aiReactionRate: number = 2;
 
   constructor(x: number) {
     super(x, 'AI');
