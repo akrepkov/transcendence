@@ -134,7 +134,7 @@ const updateUserHandler = async (request, reply) => {
 };
 
 function extFrom(mimetype) {
-  const ext = mimetype.includes('.') ? n.slice(n.lastIndexOf('.')).toLowerCase() : '';
+  const ext = mimetype.includes('.') ? mimetype.slice(mimetype.lastIndexOf('.')).toLowerCase() : '';
   if (ext) return ext;
   const mime = (mimetype || '').toLowerCase();
   if (mime.includes('png')) return '.png';
