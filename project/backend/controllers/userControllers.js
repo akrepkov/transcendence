@@ -6,9 +6,18 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import pump from 'pump';
 import fs from 'fs';
+import { promises as fsPromises } from 'fs';
 import * as utils from '../utils/utils.js';
 import path from 'path';
 import { connectionManager } from '../websocket/managers/connectionManager.js';
+import { Console } from 'console';
+import { pipeline } from 'stream/promises';
+import { Readable } from 'node:stream';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const ROOT = path.join(__dirname, '..');
 
 // Returns all users registered in the db (userId and username only)
 const getAllUsersHandler = async (request, reply) => {
@@ -63,9 +72,61 @@ const addFriendHandler = async (request, reply) => {
 
 const updateUserHandler = async (request, reply) => {
   try {
-    const { username, email, password, avatar } = request.body;
-    const requestUserId = request.user.userId;
-    const user = await userServices.getUserById(requestUserId);
+    const userId = request.user.userId;
+    const user = await userServices.getUserById(userId);
+    let { username, password } = request.body;
+    if (username) {
+      const existUsername = await authServices.checkUniqueUsername(username);
+      if (existUsername) {
+        return reply.code(418).send({ error: 'Username already in use' });
+      }
+      await userServices.updateUsername(user, username);
+      await connectionManager.updateUsernameInConnections(user.userId, username);
+    }
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await userServices.updatePassword(user, hashedPassword);
+    }
+    return reply.code(200).send({ success: true });
+  } catch (error) {
+    console.error('Error updating user', error);
+    return reply.code(500).send({ error: 'Internal server error' });
+  }
+};
+
+const updateUserAvatar = async (request, reply) => {
+  try {
+    const userId = request.user.userId;
+    const user = await userServices.getUserById(userId);
+    const parts = request.parts();
+    let username, email, password, avatarPart, oldName;
+    let avatarBuf = null;
+    let avatarName = null;
+    let avatarMime = null;
+    for await (const part of parts) {
+      if (part.fieldname === 'username') {
+        username = part.value;
+      } else if (part.fieldname === 'password') {
+        password = part.value;
+      } else if (part.fieldname === 'email') {
+        email = part.value;
+      } else if (part.file && part.fieldname === 'avatar') {
+        let totalBytes = 0;
+        const chunks = [];
+        for await (const chunk of part.file) {
+          totalBytes += chunk.length;
+          if (totalBytes >= 1 * 1024 * 1024) {
+            return reply.code(418).send({ error: 'File too large' });
+          }
+          chunks.push(chunk);
+        }
+        avatarBuf = Buffer.concat(chunks);
+        avatarName = part.filename;
+        avatarMime = part.mimetype;
+      } else {
+        if (part.file) part.file.resume();
+      }
+    }
     if (username) {
       const existUsername = await authServices.checkUniqueUsername(username);
       if (existUsername) {
@@ -81,46 +142,64 @@ const updateUserHandler = async (request, reply) => {
       const hashedPassword = await bcrypt.hash(password, 10);
       await userServices.updatePassword(user, hashedPassword);
     }
-    if (avatar) {
-      await uploadAvatarHandler(request, reply);
+    if (avatarBuf) {
+      await uploadAvatarHandler(
+        { buffer: avatarBuf, filename: avatarName, mimetype: avatarMime },
+        user.username,
+      );
     }
-    return reply.code(200).send({ success: true });
+    const updatedUser = await userServices.getUserById(userId);
+    const updatedAvatar = updatedUser.avatar;
+    return reply.code(200).send({ success: true, avatarUrl: updatedAvatar });
   } catch (error) {
     console.error('Error updating user', error);
     return reply.code(500).send({ error: 'Internal server error' });
   }
 };
 
-const uploadAvatarHandler = async (request, reply) => {
+function extFrom(mimetype) {
+  const ext = mimetype.includes('.') ? mimetype.slice(mimetype.lastIndexOf('.')).toLowerCase() : '';
+  if (ext) return ext;
+  const mime = (mimetype || '').toLowerCase();
+  if (mime.includes('png')) return '.png';
+  if (mime.includes('webp')) return '.webp';
+  if (mime.includes('jpeg') || mime.includes('jpg')) return '.jpg';
+  return '.jpg';
+}
+
+const uploadAvatarHandler = async (avatar, username) => {
   try {
-    let username = request.user.username;
-    const data = await request.file();
-    const filename = `avatar_${Date.now()}_${data.filename}`;
-    const filepath = path.join(__dirname, '..', 'uploads', filename);
-    pump(data.file, fs.createWriteStream(filepath));
-    let avatarUrl = `../uploads/avatars/${filename}`;
-    userServices.uploadAvatarinDatabase(avatarUrl, username);
-    return reply.code(200).send({
-      success: true,
-      avatar: avatarUrl,
-    });
+    const ext = extFrom(avatar.mimetype);
+    const safeUser = String(username).replace(/[^\w.-]+/g, '_');
+    const filename = `avatar_${safeUser}_${Date.now()}${ext}`;
+    const filepath = path.join(__dirname, '..', 'uploads', 'avatars', filename);
+    const writeStream = fs.createWriteStream(filepath);
+    await pipeline(Readable.from(avatar.buffer), fs.createWriteStream(filepath));
+    const oldAvatar = await userServices.getAvatarFromDatabase(username);
+    if (oldAvatar && utils.isDefaultAvatar(oldAvatar) == false) {
+      const oldAbsolutePath = path.join(__dirname, '..', oldAvatar);
+      try {
+        await fsPromises.unlink(oldAbsolutePath);
+      } catch (error) {
+        if (error.code !== 'ENOENT') console.warn('unlink failed:', oldAbsolutePath, error.message);
+      }
+    }
+    await userServices.uploadAvatarInDatabase(path.join('uploads', 'avatars', filename), username);
+    return true;
   } catch (error) {
-    console.error('Upload error:', error);
-    return reply.code(500).send({
-      success: false,
-      error: 'Upload failed',
-    });
+    console.error('Upload avatar error:', error);
+    return false;
   }
 };
 
 const getAvatarHandler = async (request, reply) => {
   try {
     let username = request.user.username;
-    let avatarFilepath = userServices.getAvatarFromDatabase(username);
+    let avatarFilepath = await userServices.getAvatarFromDatabase(username);
     const fileExistsResult = await utils.fileExists(avatarFilepath);
     if (!fileExistsResult) {
-      console.log('Avatar not found, using default avatar');
-      avatarFilepath = '../uploads/avatars/bunny.jpg';
+      console.log('Avatar not found');
+      return false;
     }
     if (!avatarFilepath) {
       return reply.code(404).send({ error: 'Avatar not found' });
@@ -139,6 +218,7 @@ export default {
   getAllUsersHandler,
   getUserProfileHandler,
   updateUserHandler,
+  updateUserAvatar,
   addFriendHandler,
   uploadAvatarHandler,
   getAvatarHandler,

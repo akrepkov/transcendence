@@ -24,6 +24,7 @@ ws
 prisma
 @prisma/client
 @fastify/multipart
+form-data
 
 2. backend_dev_dependencies
 nodemon
