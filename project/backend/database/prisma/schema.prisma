@@ -26,11 +26,9 @@ model User {
 
 model Pong {
   gameId       Int      @id @default(autoincrement())
-  player1Id    Int
   player1Name	String
-  player2Id    Int
   player2Name	String
-  winnerId     Int
+  winnerName  String
   player1Score Int
   player2Score Int
   createdAt    DateTime @default(now())
@@ -39,9 +37,9 @@ model Pong {
 
 model Snake {
   gameId       Int      @id @default(autoincrement())
-  player1Id    Int
-  player2Id    Int
-  winnerId     Int
+  player1Name    String
+  player2Name    String
+  winnerName     String
   player1Score Int
   player2Score Int
   createdAt    DateTime @default(now())
