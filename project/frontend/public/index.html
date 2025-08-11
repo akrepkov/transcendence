@@ -368,8 +368,9 @@
                 <input type="text" id="newUsername"
                        class="w-full p-2 border border-black rounded-lg text-black placeholder-black mb-4 focus:outline-none focus:ring-0"
                        placeholder="New username" />
+                <div id="UsernameSettingsMessage" role="status" aria-live="polite" class="hidden text-sm mt-2"></div>
                 <button id="saveUsername"
-                        class="pixelated-button w-full hover:text-red-500 text-xl">Save</button>
+                        class="pixelated-button w-full hover:text-black text-xl">Save</button>
             </section>
 
             <!-- Change Password Block -->
@@ -378,8 +379,9 @@
                 <input type="password" id="newPassword"
                        class="w-full p-2 border border-black rounded-lg text-black placeholder-black mb-4 focus:outline-none focus:ring-0"
                        placeholder="New password" />
+                <div id="PasswordSettingsMessage" role="status" aria-live="polite" class="hidden text-sm mt-2"></div>
                 <button id="savePassword"
-                        class="pixelated-button w-full hover:text-red-500 text-xl">Save</button>
+                        class="pixelated-button w-full hover:text-black text-xl">Save</button>
             </section>
 
             <!-- Change Avatar Block -->
@@ -397,10 +399,12 @@
                 <img id="avatar-preview" class="hidden w-24 h-24 rounded-full mt-4 mx-auto border-2 border-white" />
 
                 <!-- Upload Button -->
-                <button id="saveAvatar" class="pixelated-button w-full hover:text-red-500 text-xl mt-4">
+                <div id="AvatarSettingsMessage" role="status" aria-live="polite" class="hidden text-sm mt-2"></div>
+                <button id="saveAvatar" class="pixelated-button w-full hover:text-black text-xl mt-4">
                     Upload Avatar
                 </button>
             </section>
+            </main>
     </div>
 
     <!-- Pong Page -->

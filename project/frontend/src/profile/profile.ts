@@ -3,22 +3,6 @@ import { globalSession } from '../auth/auth.js';
 
 let friendsRenderToken = 0;
 let currentFriends = new Set<string>();
-
-/**
- * Checks if a specific friend is currently online by comparing against the live list from the WebSocket.
- *
- * @param {string} friendUsername - The username of the friend to check.
- * @returns {Promise<boolean>} Resolves to true if the friend is online, false otherwise.
- */
-async function isFriendOnline(friendUsername: string): Promise<boolean> {
-  try {
-    const onlineFriends = await globalSession.getOnlineFriends();
-    return Array.isArray(onlineFriends) && onlineFriends.includes(friendUsername);
-  } catch (err) {
-    console.error('Failed to fetch online friends:', err);
-    return false;
-  }
-}
 let profileEventsInitialized = false;
 
 /**
