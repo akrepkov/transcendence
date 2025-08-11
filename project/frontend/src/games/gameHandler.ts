@@ -3,8 +3,9 @@ import * as snake from './snake.js';
 import { renderGame } from './render.js';
 import { cleanPongField } from './pong.js';
 import { cleanSnakeField } from './snake.js';
-import { handleStartGame, resetGame } from './frontendGame/frontendRender.js';
+import { handleStartGame, resetGame } from './frontendGame/frontendGameManager.js';
 import { getRandomPlayerNames } from './frontendGame/playerNames.js';
+import { globalSession } from '../auth/auth.js';
 
 /**
  * Handles game-specific logic bindings for Pong and Snake.
@@ -21,14 +22,40 @@ export const gameHandler = {
     draw: pong.drawPong,
     score: pong.showPongScore,
     gameOver: pong.gameOverPong,
+    showMessage: pong.showMessagePong,
   },
   snake: {
     create: snake.createSnakeGame,
     draw: snake.drawSnake,
     score: snake.showSnakeScore,
     gameOver: snake.gameOverSnake,
+    showMessage: snake.showMessageSnake,
   },
 };
+
+function handleHistoryPopPong(event: PopStateEvent): void {
+  console.log('history popping pong');
+  toggleHandler.pongPage.reset(globalSession.getSocket());
+  window.removeEventListener('popstate', handleHistoryPopPong);
+}
+
+function handleHistoryPopSnake(event: PopStateEvent): void {
+  console.log('history popping snake');
+  toggleHandler.snakePage.reset(globalSession.getSocket());
+  window.removeEventListener('popstate', handleHistoryPopSnake);
+}
+
+function handleHistoryPopPractice(event: PopStateEvent): void {
+  console.log('history popping practice');
+  toggleHandler.practicePage.reset();
+  window.removeEventListener('popstate', handleHistoryPopPractice);
+}
+
+function handleHistoryPopAi(event: PopStateEvent): void {
+  console.log('history popping ai');
+  toggleHandler.aiPage.reset();
+  window.removeEventListener('popstate', handleHistoryPopAi);
+}
 
 /**
  * Handles UI toggling, socket coordination, and cleanup for different game pages.
@@ -51,10 +78,11 @@ export const toggleHandler = {
      * @param {WebSocket} socket - Active WebSocket connection
      */
     start(socket: WebSocket) {
-      socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'pong' }));
       document.getElementById(this.startContainer)?.classList.add('hidden');
       document.getElementById(this.gameContainer)?.classList.remove('hidden');
       renderGame(socket, 'pong');
+      socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'pong' }));
+      window.addEventListener('popstate', handleHistoryPopPong);
     },
 
     /**
@@ -70,10 +98,10 @@ export const toggleHandler = {
      * Resets the Pong UI and disconnects from the game.
      * @param {WebSocket} socket - Active WebSocket connection
      */
-    reset(socket: WebSocket) {
+    reset(socket: WebSocket | null) {
       document.getElementById(this.startContainer)?.classList.remove('hidden');
       document.getElementById(this.gameContainer)?.classList.add('hidden');
-      if (socket.readyState === WebSocket.OPEN) {
+      if (socket && socket.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify({ type: 'disconnectFromGame' }));
       }
       cleanPongField();
@@ -91,10 +119,11 @@ export const toggleHandler = {
      * @param {WebSocket} socket - Active WebSocket connection
      */
     start(socket: WebSocket) {
-      socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'snake' }));
       document.getElementById(this.startContainer)?.classList.add('hidden');
       document.getElementById(this.gameContainer)?.classList.remove('hidden');
       renderGame(socket, 'snake');
+      socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'snake' }));
+      window.addEventListener('popstate', handleHistoryPopSnake);
     },
 
     /**
@@ -110,10 +139,10 @@ export const toggleHandler = {
      * Resets the Snake UI and disconnects from the game.
      * @param {WebSocket} socket - Active WebSocket connection
      */
-    reset(socket: WebSocket) {
+    reset(socket: WebSocket | null) {
       document.getElementById(this.startContainer)?.classList.remove('hidden');
       document.getElementById(this.gameContainer)?.classList.add('hidden');
-      if (socket.readyState === WebSocket.OPEN) {
+      if (socket && socket.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify({ type: 'disconnectFromGame' }));
       }
       cleanSnakeField();
@@ -134,6 +163,7 @@ export const toggleHandler = {
       document.getElementById(this.gameContainer)?.classList.remove('hidden');
       const [player1Name, player2Name] = getRandomPlayerNames();
       handleStartGame('practice', player1Name, player2Name);
+      window.addEventListener('popstate', handleHistoryPopPractice);
     },
 
     /**
@@ -167,6 +197,7 @@ export const toggleHandler = {
       document.getElementById(this.startContainer)?.classList.add('hidden');
       document.getElementById(this.gameContainer)?.classList.remove('hidden');
       handleStartGame('ai');
+      window.addEventListener('popstate', handleHistoryPopAi);
     },
 
     /**

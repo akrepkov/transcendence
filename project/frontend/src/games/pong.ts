@@ -1,6 +1,7 @@
 import { GameStatePong } from './types.js';
 import { GAME_CONSTS } from './types.js';
 import { getCanvasContext } from './render.js';
+import { centerOnCanvas, turnOffKeyboardScrolling } from '../utils/uiHelpers.js';
 
 /**
  * Stores the current animation frame ID for cancellation.
@@ -37,6 +38,8 @@ export function createPongGame(data: GameStatePong, socket: WebSocket) {
   running = true;
   setupPaddleInput(socket);
   movePaddles(socket);
+  document.addEventListener('keydown', turnOffKeyboardScrolling);
+  centerOnCanvas('pong');
 }
 
 /**
@@ -66,9 +69,10 @@ function setupPaddleInput(socket: WebSocket) {
 function movePaddles(socket: WebSocket) {
   function loop() {
     // console.log('movePaddle loop is running');
-    let direction: 'up' | 'down' | undefined;
+    let direction: 'up' | 'down' | 'idle';
     if (keys.w || keys.ArrowUp) direction = 'up';
     else if (keys.s || keys.ArrowDown) direction = 'down';
+    else direction = 'idle';
 
     if (direction && socket.readyState === WebSocket.OPEN) {
       socket.send(JSON.stringify({ type: 'move', direction }));
@@ -95,6 +99,18 @@ export function drawPong(data: GameStatePong, ctx: CanvasRenderingContext2D) {
     ctx.fillRect(0, data.players[0].paddleY, 10, 100);
     ctx.fillStyle = 'blue';
     ctx.fillRect(GAME_CONSTS.WIDTH - 10, data.players[1].paddleY, 10, 100);
+  }
+}
+
+/**
+ * Displays a message in the Pong game UI.
+ *
+ * @param {string} message - The message to display.
+ */
+export function showMessagePong(message: string) {
+  const messageElement = document.getElementById('pong-score');
+  if (messageElement) {
+    messageElement.textContent = message;
   }
 }
 
@@ -139,6 +155,7 @@ export function cleanPongField() {
  */
 export function gameOverPong(winner: string) {
   cleanPongField();
+  document.removeEventListener('keydown', turnOffKeyboardScrolling);
   console.log(`Game over, winner: ${winner}`);
   const pongScore = document.getElementById('pong-score');
   const scoreText = `The winner is ${winner}`;
