@@ -81,7 +81,6 @@ const updateUserHandler = async (request, reply) => {
         return reply.code(418).send({ error: 'Username already in use' });
       }
       await userServices.updateUsername(user, username);
-      console.log('UPDATED USER IS: ', await userServices.getUserById(userId));
       await connectionManager.updateUsernameInConnections(user.userId, username);
     }
     if (password) {
