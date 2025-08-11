@@ -53,10 +53,10 @@ export const toggleHandler = {
      * @param {WebSocket} socket - Active WebSocket connection
      */
     start(socket: WebSocket) {
-      socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'pong' }));
       document.getElementById(this.startContainer)?.classList.add('hidden');
       document.getElementById(this.gameContainer)?.classList.remove('hidden');
       renderGame(socket, 'pong');
+      socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'pong' }));
     },
 
     /**
@@ -93,10 +93,10 @@ export const toggleHandler = {
      * @param {WebSocket} socket - Active WebSocket connection
      */
     start(socket: WebSocket) {
-      socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'snake' }));
       document.getElementById(this.startContainer)?.classList.add('hidden');
       document.getElementById(this.gameContainer)?.classList.remove('hidden');
       renderGame(socket, 'snake');
+      socket.send(JSON.stringify({ type: 'joinWaitingRoom', gameType: 'snake' }));
     },
 
     /**
