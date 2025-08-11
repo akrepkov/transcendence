@@ -86,7 +86,7 @@ export function renderGame(socket: WebSocket, gameType: string) {
       case 'logoutRequest':
         console.log('logoutRequest', data);
         break;
-      case 'onlineUsers':
+      case 'onlineFriends':
         console.log('onlineUsers', data);
         break;
       case 'socketRejection':
