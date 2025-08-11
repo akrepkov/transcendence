@@ -36,3 +36,7 @@ export function resetGame(mode: string) {
     game = null;
   }
 }
+
+export function getCurrentGame() {
+  return game;
+}
