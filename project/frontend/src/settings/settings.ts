@@ -213,6 +213,8 @@ export function initAvatarUpload() {
         return;
       } else if (!response.ok) {
         alert('Avatar upload failed.');
+      }
+
       if (!response.ok) {
         showSettingsMessage('Avatar upload failed.', true, 'avatar');
         return;
