@@ -231,7 +231,7 @@ export const toggleHandler = {
     start() {
       document.getElementById(this.startContainer)?.classList.add('hidden');
       document.getElementById(this.gameContainer)?.classList.remove('hidden');
-      handleStartGame('ai');
+      handleStartGame('tournament');
     },
 
     /**
@@ -247,7 +247,7 @@ export const toggleHandler = {
     reset() {
       document.getElementById(this.startContainer)?.classList.remove('hidden');
       document.getElementById(this.gameContainer)?.classList.add('hidden');
-      resetGame('ai');
+      resetGame('tournament');
       document.getElementById('tourPage')?.classList.add('hidden');
     },
   },

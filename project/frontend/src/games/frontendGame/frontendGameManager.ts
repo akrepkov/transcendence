@@ -8,6 +8,7 @@ let game: Game | null = null;
 const gameModeMap: Record<string, { canvasId: string; scoreFieldId: string }> = {
   ai: { canvasId: 'ai', scoreFieldId: 'ai-score' },
   practice: { canvasId: 'practice', scoreFieldId: 'practice-score' },
+  tournament: { canvasId: 'practice', scoreFieldId: 'practice-score' },
 };
 
 export function handleStartGame(mode: string, player1Name?: string, player2Name?: string) {
