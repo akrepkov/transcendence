@@ -1,4 +1,6 @@
 import { getCanvasContext } from './frontendRender.js';
+import { turnOffKeyboardScrolling } from '../../utils/uiHelpers.js';
+
 export const GAME_CONSTS = {
   WIDTH: 800,
   HEIGHT: 600,
@@ -38,8 +40,8 @@ export class Ball {
   }
 
   getRandomDirection() {
-    const min = GAME_CONSTS.SPEED * 0.3; // avoid too slow, e.g. 30% of speed
-    const directionSign = Math.random() > 0.5 ? -1 : 1;
+    const min = GAME_CONSTS.SPEED * 0.5;
+    const directionSign = this.speedX > 0 ? -1 : 1;
     const value = Math.random() * (GAME_CONSTS.SPEED - min) + min;
     return value * directionSign;
   }
@@ -98,7 +100,7 @@ class Player extends Paddle {
 
 class AI extends Paddle {
   private aiReactionCounter: number = 0;
-  private aiReactionRate: number = 1;
+  private aiReactionRate: number = 2;
 
   constructor(x: number) {
     super(x, 'AI');
@@ -193,32 +195,35 @@ export class Game {
     }
   }
 
-  gameLoop = () => {
-    if (!this.isRunning) return;
+  drawCanvas(): void {
     this.canvasContext.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
-    this.player1.move(this.ball);
-    this.player2.move(this.ball);
     this.player1.draw(this.canvasContext);
     this.player2.draw(this.canvasContext);
-    this.ball.update();
     this.ball.draw(this.canvasContext);
-    this.checkBall();
-    if (!this.isRunning) {
-      return;
-    }
     this.showPongScore();
+  }
+
+  gameLoop = () => {
+    if (!this.isRunning) return;
+    this.player1.move(this.ball);
+    this.player2.move(this.ball);
+    this.ball.update();
+    this.drawCanvas();
+    this.checkBall();
     this.animationId = requestAnimationFrame(this.gameLoop);
   };
 
   start() {
     if (this.isRunning) return;
     this.isRunning = true;
+    document.addEventListener('keydown', turnOffKeyboardScrolling);
     this.reset();
     this.animationId = requestAnimationFrame(this.gameLoop);
   }
 
   stopGame() {
     console.log('Stopping game');
+    document.removeEventListener('keydown', turnOffKeyboardScrolling);
     if (this.animationId !== null) {
       cancelAnimationFrame(this.animationId);
       this.animationId = null;

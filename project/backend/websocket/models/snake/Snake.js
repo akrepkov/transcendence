@@ -33,6 +33,9 @@ export class Snake {
 
   handleInput(playerId, direction) {
     const player = this.players.find((player) => player.playerId === playerId);
+    if (player.movedThisFrame) {
+      return;
+    }
     switch (direction) {
       case 'up':
         if (player.directions.y != 1) player.directions = { x: 0, y: -1 };
@@ -56,6 +59,7 @@ export class Snake {
         console.warn(`Invalid direction: ${direction} for player: ${playerId}`);
         throw new Error(`${REJECT.WRONG_DIRECTION}`);
     }
+    player.movedThisFrame = true;
   }
 
   broadcastState() {
@@ -137,6 +141,8 @@ export class Snake {
     player2.automatedMove(this.apple, player1);
     player1.checkCollisions(player2);
     player2.checkCollisions(player1);
+    player1.movedThisFrame = false;
+    player2.movedThisFrame = false;
     this.checkWinCondition();
   }
   resetGame() {
@@ -161,9 +167,14 @@ export class Snake {
     // this.resetGame();
     this.running = true;
     console.log('Game starts');
-    this.gameLoop = setInterval(() => {
-      this.updatePlayers();
-      if (this.running) this.broadcastState();
+    setTimeout(() => {
+      this.broadcastState();
     }, 500);
+    setTimeout(() => {
+      this.gameLoop = setInterval(() => {
+        this.updatePlayers();
+        if (this.running) this.broadcastState();
+      }, 500);
+    }, 1000);
   }
 }

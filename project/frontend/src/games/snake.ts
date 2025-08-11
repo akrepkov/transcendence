@@ -1,6 +1,7 @@
 import { GameStateSnake } from './types.js';
 import { GAME_CONSTS } from './types.js';
 import { getCanvasContext } from './render.js';
+import { centerOnCanvas, turnOffKeyboardScrolling } from '../utils/uiHelpers.js';
 
 let running = false;
 let keyListener: ((event: KeyboardEvent) => void) | undefined;
@@ -18,6 +19,8 @@ export function createSnakeGame(data: GameStateSnake, socket: WebSocket) {
   running = true;
   keyListener = (event) => moveSnakes(data, event, socket);
   document.addEventListener('keydown', keyListener);
+  document.addEventListener('keydown', turnOffKeyboardScrolling);
+  centerOnCanvas('snake');
 }
 
 /**
@@ -74,6 +77,20 @@ export function moveSnakes(game: GameStateSnake, event: KeyboardEvent, socket: W
 }
 
 /**
+ * Displays a message in the Snake game UI.
+ *
+ * - Updates the text content of the element with ID 'snake-score'.
+ *
+ * @param {string} message - The message to display.
+ */
+export function showMessageSnake(message: string) {
+  const messageElement = document.getElementById('snake-score');
+  if (messageElement) {
+    messageElement.textContent = message;
+  }
+}
+
+/**
  * Displays the current score for both Snake players.
  *
  * - Player 1 (red) on the left, Player 2 (blue) on the right.
@@ -125,6 +142,7 @@ export function gameOverSnake(winner: string) {
     winner = 'Me! The apple!';
   }
   cleanSnakeField();
+  document.removeEventListener('keydown', turnOffKeyboardScrolling);
   const snakeScore = document.getElementById('snake-score');
   const scoreText = `The winner is ${winner}`;
   if (snakeScore && snakeScore.offsetParent !== null) {
