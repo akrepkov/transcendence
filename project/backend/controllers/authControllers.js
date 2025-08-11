@@ -14,7 +14,10 @@ const authenticate = async (request, reply) => {
   }
   try {
     const payload = jwt.verify(token, JWT_SECRET);
-    request.user = payload;
+    const userId = Number(payload.userId);
+    request.user = { ...payload, userId };
+    request.userId = userId;
+    return request;
   } catch (error) {
     return handleError(reply, error, 401);
   }
@@ -23,7 +26,7 @@ const authenticate = async (request, reply) => {
 const setCookie = (reply, user) => {
   let userId = user.userId;
   const sessionId = crypto.randomBytes(32).toString('hex');
-  const token = jwt.sign({ userId, sessionId }, JWT_SECRET, { expiresIn: '1h' });
+  const token = jwt.sign({ userId, sessionId }, JWT_SECRET, { expiresIn: '5h' });
   // Set the JWT in an HTTP-only cookie
   reply.setCookie('token', token, {
     httpOnly: true,
@@ -60,8 +63,6 @@ const loginHandler = async (request, reply) => {
 
 const registerHandler = async (request, reply) => {
   const { email, password, username } = request.body;
-  //   console.log('Incoming data:', { email, username, password });
-
   if (!email || !password || !username) {
     return handleError(reply, new Error('Email, username and password are required'), 400);
   }

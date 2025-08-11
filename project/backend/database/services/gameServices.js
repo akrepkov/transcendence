@@ -12,9 +12,9 @@ export async function savePong(winnerName, loserName, scoreWinner, scoreLoser) {
   try {
     const pong = await prisma.pong.create({
       data: {
-        player1Id: winner.userId,
-        player2Id: loser.userId,
-        winnerId: winner.userId,
+        player1Name: winner.username,
+        player2Name: loser.username,
+        winnerName: winner.username,
         player1Score: scoreWinner,
         player2Score: scoreLoser,
       },
@@ -62,9 +62,9 @@ export async function saveSnake(winnerName, loserName, scoreWinner, scoreLoser) 
   try {
     const snake = await prisma.snake.create({
       data: {
-        player1Id: winner.userId,
-        player2Id: loser.userId,
-        winnerId: winner.userId,
+        player1Name: winner.username,
+        player2Name: loser.username,
+        winnerName: winner.username,
         player1Score: scoreWinner,
         player2Score: scoreLoser,
       },

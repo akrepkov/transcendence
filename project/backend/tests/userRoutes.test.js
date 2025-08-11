@@ -3,6 +3,13 @@ import Fastify from 'fastify';
 import userRoutes from '../routes/userRoutes.js';
 import * as userServices from '../database/services/userServices.js';
 import cookie from '@fastify/cookie';
+import FormData from 'form-data';
+import fs from 'fs';
+import util from 'util';
+import fastifyMultipart from '@fastify/multipart';
+
+
+await userServices.deleteUser('lena');
 
 describe('User Routes', () => {
 	let fastify;
@@ -11,6 +18,7 @@ describe('User Routes', () => {
 	beforeAll(async () => {
 		fastify = Fastify();
 		fastify.register(cookie);
+		fastify.register(fastifyMultipart);
 		await userRoutes(fastify); // register your routes
 		await fastify.ready();
 	});
@@ -20,6 +28,7 @@ describe('User Routes', () => {
 		await prisma.$disconnect();
 	});
 	
+
   test('POST /api/auth/register', async () => {
     const response = await fastify.inject({
       method: 'POST',
@@ -50,7 +59,7 @@ describe('User Routes', () => {
     expect(response.statusCode).toBe(200);
     const body = await JSON.parse(response.body);
 	authCookie = body.token;
-	// console.log("cookie after login: ", authCookie);
+	console.log("cookie after login: ", authCookie);
 	// console.log("body: ", body.message);
     expect(body.message).toBe('Login successful');
   });
@@ -90,29 +99,6 @@ describe('User Routes', () => {
     expect(user.username).toBe('lena');
   });
 
-//     test('PATCH update_user_profile', async () => {
-// 	// console.log("cookie in test PATCH: ", authCookie);
-// 	const oldUser = await userServices.getUserByUsername('lena');
-//     const response = await fastify.inject({
-//       method: 'PATCH',
-//       url: '/api/update_user_profile',
-//       payload: {
-//         username: 'lenacik',
-//         password: 'lenacik',
-//       },
-// 	  cookies: {
-// 		token: authCookie
-// 	  }
-//     });
-//     const body = await JSON.parse(response.body);
-// 	// console.log("body: ", body);
-// 	const updatedUser = await userServices.getUserByUsername('lenacik');
-// 	const findOldUser = await userServices.getUserByUsername('lena');
-// 	// console.log("updatedUser: ", updatedUser);
-//     expect(updatedUser).toBeDefined();
-//     expect(findOldUser).toBeNull();
-//   });
-
 	test('POST /api/auth/logout', async() => {
 		const response = await fastify.inject({
 			method: 'POST',
@@ -126,6 +112,11 @@ describe('User Routes', () => {
 	})
 });
 
+// TEST UPDATE USER PROFILE (AVATAR UPLOAD)
+// curl -X PATCH https://localhost:3000/api/update_user_profile \
+//   -F "avatar=@/Users/mbp14/Downloads/loki_mad.webp" \              
+//  -H "cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMzMCwic2Vzc2lvbklkIjoiNTJmZjQ0OWNkYzIzYmFiYjZjOGFiOWM5ZjVkNzRiY2NiMmJiNmU2OTMyNjhhODE2NDc5ZjQwOWZmNWFmNTE5ZiIsImlhdCI6MTc1NDc0NjU5MywiZXhwIjoxNzU0NzUwMTkzfQ.KAgFGavQWfl4mzyL_BNtJiPhTykRhzO1x-jj70EIxhI" -k
 
-// await userServices.deleteUser('lena');
-// await userServices.deleteUser('lenacik');
+
+
+//  curl -X GET https://localhost:3000/api/view_user_profile?username=lena -H "Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMzMCwic2Vzc2lvbklkIjoiNTJmZjQ0OWNkYzIzYmFiYjZjOGFiOWM5ZjVkNzRiY2NiMmJiNmU2OTMyNjhhODE2NDc5ZjQwOWZmNWFmNTE5ZiIsImlhdCI6MTc1NDc0NjU5MywiZXhwIjoxNzU0NzUwMTkzfQ.KAgFGavQWfl4mzyL_BNtJiPhTykRhzO1x-jj70EIxhI" -k

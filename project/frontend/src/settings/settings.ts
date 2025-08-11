@@ -86,6 +86,10 @@ export async function changeUsername() {
       body: JSON.stringify({ username: username }),
     });
 
+    if (response.status === 418) {
+      alert('This username is already in use, try another one.');
+      return;
+    }
     if (!response.ok) {
       showSettingsMessage('Username change failed, perhaps name already in use', true, 'username');
       return;
@@ -198,12 +202,17 @@ export function initAvatarUpload() {
     console.log(formData);
 
     try {
-      const response = await fetch('/api/update_user_profile', {
+      const response = await fetch('/api/update_user_avatar', {
         method: 'PATCH',
         credentials: 'include',
-        body: JSON.stringify({ avatar: formData }),
+        body: formData,
       });
 
+      if (response.status == 418) {
+        alert('Image is too big, try uploading something up to 1MB.');
+        return;
+      } else if (!response.ok) {
+        alert('Avatar upload failed.');
       if (!response.ok) {
         showSettingsMessage('Avatar upload failed.', true, 'avatar');
         return;
