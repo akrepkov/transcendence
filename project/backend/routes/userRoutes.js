@@ -24,6 +24,12 @@ export default async function userRoutes(fastify) {
     userControllers.updateUserHandler,
   );
 
+  fastify.patch(
+    '/api/update_user_avatar',
+    { preHandler: authControllers.authenticate },
+    userControllers.updateUserAvatar,
+  );
+
   fastify.post(
     '/api/add_friend',
     { preHandler: authControllers.authenticate },

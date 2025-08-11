@@ -153,28 +153,18 @@ export async function getUserByUsername(username) {
     const user = await prisma.user.findUnique({
       where: { username },
       include: {
+        pong: true,
+        snake: true,
         friends: {
-          select: {
-            userId: true,
-            username: true,
-            avatar: true,
+          include: {
             pong: true,
             snake: true,
-            pongWins: true,
-            pongLosses: true,
-            snakeWins: true,
-            snakeLosses: true,
           },
         },
         friendsOf: {
-          select: {
-            userId: true,
-            username: true,
-            avatar: true,
-            pongWins: true,
-            pongLosses: true,
-            snakeWins: true,
-            snakeLosses: true,
+          include: {
+            pong: true,
+            snake: true,
           },
         },
       },

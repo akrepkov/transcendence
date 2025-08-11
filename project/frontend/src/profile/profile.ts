@@ -1,20 +1,25 @@
 import { navigateTo, showProfileView, showSettingsView } from '../navigation/navigation.js';
 import { globalSession } from '../auth/auth.js';
 
+let friendsRenderToken = 0;
+let currentFriends = new Set<string>();
+
 /**
- * Checks if a specified user is currently online.
+ * Checks if a specific friend is currently online by comparing against the live list from the WebSocket.
  *
- * - Fetches the user's profile data from the backend.
- * - Returns the `isOnline` status from the response.
- *
- * @param {string} username - The username to check online status for.
- * @returns {Promise<boolean>} A promise that resolves to `true` if the user is online, otherwise `false`.
- * TODO change this based on how it's send from the backend
+ * @param {string} friendUsername - The username of the friend to check.
+ * @returns {Promise<boolean>} Resolves to true if the friend is online, false otherwise.
  */
-async function isFriendOnline(username: string) {
-  const data = await fetchUserProfile(username);
-  return data.isOnline;
+async function isFriendOnline(friendUsername: string): Promise<boolean> {
+  try {
+    const onlineFriends = await globalSession.getOnlineFriends();
+    return Array.isArray(onlineFriends) && onlineFriends.includes(friendUsername);
+  } catch (err) {
+    console.error('Failed to fetch online friends:', err);
+    return false;
+  }
 }
+let profileEventsInitialized = false;
 
 /**
  * Initializes all event listeners related to the user profile section.
@@ -25,6 +30,9 @@ async function isFriendOnline(username: string) {
  * - Add friend button sends a friend request.
  */
 export function initProfileEvents() {
+  if (profileEventsInitialized) return;
+  profileEventsInitialized = true;
+
   const avatar = document.getElementById('avatar');
   const settingsButon = document.getElementById('settingsToggle');
   const backButton = document.getElementById('backToProfile');
@@ -127,6 +135,15 @@ export async function addFriend() {
   if (!friendUsername) return;
 
   const username = globalSession.getUsername();
+  if (friendUsername === username) {
+    showFriendMessage('You cannot add yourself as a friend');
+    return;
+  }
+
+  if (currentFriends.has(friendUsername)) {
+    showFriendMessage(`${friendUsername} is already your friend`, true);
+    return;
+  }
 
   try {
     const res = await fetch('/api/add_friend', {
@@ -140,8 +157,7 @@ export async function addFriend() {
       input.value = ''; // clear input after adding
       showFriendMessage('Friend added successfully');
     } else {
-      const { message } = await res.json().catch(() => ({}));
-      showFriendMessage(message || 'Could not add friend', true);
+      showFriendMessage('Profile does not exist');
     }
   } catch (err) {
     console.error('Request failed:', err);
@@ -150,43 +166,71 @@ export async function addFriend() {
 }
 
 /**
- * Fetches and displays a user's friends list in the profile view.
+ * Fetches and displays the friends list for the specified user.
  *
- * - Calls `fetchUserProfile` to retrieve friend data.
- * - Populates a list with clickable usernames that open their profile.
- * - Shows if a friend is online.
- * - Handles the empty friend list case.
+ * - Retrieves the user's friends from the backend.
+ * - For each friend, checks their online status and displays an indicator:
+ * - Each friend's name is rendered as a clickable list item that navigates to their profile.
+ * - Handles the empty list case with a fallback message.
+ * - Catches and logs errors gracefully if fetching data fails.
  *
- * @param {string} username - The username whose friends should be shown.
+ * @param {string} username - The username whose friends list should be displayed.
  */
 export async function showFriends(username: string) {
   const list = document.getElementById('friendsList')?.querySelector('ul');
   if (!list) return;
 
-  try {
-    const data = await fetchUserProfile(username);
-    const friends = data.friends ?? [];
-    const isOnline = await isFriendOnline(username); //TODO display this in DOM add logic in html file
+  const token = ++friendsRenderToken;
 
-    list.innerHTML = ''; //sets list to empty?
+  try {
+    // Fetch profile + online list in parallel
+    const [data, onlineFriends] = await Promise.all([
+      fetchUserProfile(username),
+      globalSession.getOnlineFriends(),
+    ]);
+
+    if (token !== friendsRenderToken) return;
+
+    const friends = data.friends ?? [];
+    currentFriends = new Set(friends.map((f: { username: string }) => f.username));
+    const onlineSet = new Set<string>(Array.isArray(onlineFriends) ? onlineFriends : []);
 
     if (friends.length === 0) {
-      list.innerHTML = '<li class="text-black text-lg">No friends yet</li>';
+      const empty = document.createElement('li');
+      empty.className = 'text-black text-lg';
+      empty.textContent = 'No friends yet';
+      list.replaceChildren(empty);
       return;
     }
+
+    const frag = document.createDocumentFragment();
 
     for (const friend of friends) {
       const li = document.createElement('li');
       li.className =
-        'border-b border-black pb-1 cursor-pointer hover:text-pink-400 transition-colors';
-      li.textContent = friend.username;
+        'border-b border-black pb-1 cursor-pointer hover:text-pink-400 transition-colors flex items-center gap-2';
 
-      // make username clickable: view their profile on click
+      const isOnline = onlineSet.has(friend.username);
+      const indicator = isOnline
+        ? '<img src="/assets/online_status.png" alt="Online" class="w-4 h-4" />'
+        : '<img src="/assets/offline_status.png" alt="Offline" class="w-4 h-4" />';
+
+      li.innerHTML = `<span>${indicator}</span><span>${friend.username}</span>`;
+
       li.addEventListener('click', () => {
-        showProfileView(friend.username);
+        navigateTo(
+          'profile',
+          `/profile?username=${encodeURIComponent(friend.username)}`,
+          () => showProfileView(friend.username),
+          { username: friend.username },
+        );
       });
-      list.appendChild(li);
+
+      frag.appendChild(li);
     }
+
+    if (token !== friendsRenderToken) return;
+    list.replaceChildren(frag);
   } catch (err) {
     console.error('Error loading friends:', err);
   }
@@ -226,5 +270,117 @@ export async function showGameStats(username: string) {
     setText('totalGames', totalGames);
   } catch (err) {
     console.error('Error loading game stats:', err);
+  }
+}
+
+interface Match {
+  gameId: number;
+  player1Id: number;
+  player2Id: number;
+  winnerId: number;
+  player1Score: number;
+  player2Score: number;
+  createdAt: string; // ISO
+  // Optional if backend ever supplies them:
+  player1Name?: string;
+  player2Name?: string;
+}
+
+type WithType = Match & { gameType: 'Pong' | 'Snake' };
+
+/**
+ * Fetches and displays the game history for a given user.
+ *
+ * - Retrieves the user's Pong and Snake match data from the backend via `fetchUserProfile`.
+ * - Merges both game types into a single list with an added `gameType` property.
+ * - Sorts the matches by date in descending order (newest first).
+ * - Renders each match as a list item with:
+ *    - Game type icon and label.
+ *    - Match date/time.
+ *    - Player names and scores.
+ *    - Winner’s name.
+ * - Highlights the current user’s name in the match details.
+ * - Handles the case where the user has no game history with a fallback message.
+ * - Replaces any existing list content with the newly generated match history.
+ *
+ * @param {string} username - The username whose game history should be displayed.
+ * @returns {Promise<void>} Resolves when the game history has been rendered to the DOM.
+ */
+export async function showGameHistory(username: string) {
+  const list = document.getElementById('historyList')?.querySelector('ul');
+  if (!list) return;
+
+  try {
+    const data = await fetchUserProfile(username);
+
+    const gameHistory: WithType[] = [
+      ...(data.pong ?? []).map((g: Match) => ({ ...g, gameType: 'Pong' })),
+      ...(data.snake ?? []).map((g: Match) => ({ ...g, gameType: 'Snake' })),
+    ];
+
+    gameHistory.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+    list.innerHTML = '';
+
+    if (gameHistory.length === 0) {
+      list.innerHTML = '<li class="text-black text-lg">No game history yet</li>';
+      return;
+    }
+
+    const youId = data.userId as number;
+    const youName = data.username as string;
+    const nameFor = (id: number, fallbackName?: string) =>
+      id === youId ? youName : fallbackName || `User#${id}`;
+
+    for (const game of gameHistory) {
+      const li = document.createElement('li');
+      li.className = 'border-b border-black pb-1 flex flex-col gap-1';
+
+      // header: icon + title + date
+      const header = document.createElement('div');
+      header.className = 'flex items-center justify-between';
+
+      const left = document.createElement('div');
+      left.className = 'flex items-center gap-2';
+
+      const iconImg = document.createElement('img');
+      iconImg.src = game.gameType === 'Pong' ? '/assets/pong_icon.png' : '/assets/snake_icon.png';
+      iconImg.alt = `${game.gameType} icon`;
+      iconImg.className = 'w-5 h-5';
+      (iconImg.style as any).imageRendering = 'pixelated';
+
+      const title = document.createElement('span');
+      title.className = 'font-bold';
+      title.textContent = game.gameType;
+
+      left.appendChild(iconImg);
+      left.appendChild(title);
+
+      const when = document.createElement('span');
+      when.className = 'text-sm text-black';
+      when.textContent = new Date(game.createdAt).toLocaleString();
+
+      header.appendChild(left);
+      header.appendChild(when);
+
+      // details: names + scores + winner
+      const p1Name = nameFor(game.player1Id, game.player1Name);
+      const p2Name = nameFor(game.player2Id, game.player2Name);
+      const winnerName =
+        game.winnerId === game.player1Id
+          ? p1Name
+          : game.winnerId === game.player2Id
+            ? p2Name
+            : `User#${game.winnerId}`;
+
+      const details = document.createElement('div');
+      details.textContent = `${p1Name}: ${game.player1Score} vs ${p2Name}: ${game.player2Score} — Winner: ${winnerName}`;
+
+      li.appendChild(header);
+      li.appendChild(details);
+      list.appendChild(li);
+    }
+  } catch (err) {
+    console.error('Error loading game history:', err);
   }
 }

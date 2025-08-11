@@ -1,5 +1,10 @@
 import { globalSession, checkLoginStatus } from '../auth/auth.js';
-import { showFriends, fetchUserProfile, showGameStats } from '../profile/profile.js';
+import {
+  showFriends,
+  fetchUserProfile,
+  showGameStats,
+  showGameHistory,
+} from '../profile/profile.js';
 import { hideAllPages, setView, toggleOwnProfileButtons } from '../utils/uiHelpers.js';
 
 const loginForm = document.getElementById('loginForm');
@@ -98,24 +103,29 @@ export function showLandingView() {
 }
 
 /**
- * Restores the appropriate view on page reload or direct access via URL.
+ * Restores the appropriate application view on page reload or direct URL access.
  *
- * - Checks login status via the backend.
- * - Matches the current path to a registered view.
- * - If logged in or on an auth page, loads the appropriate view.
- * - Otherwise, redirects to the login page.
+ * - Checks if the user is logged in via the backend session.
+ * - Parses the current URL path and query parameters.
+ * - Matches the path to a predefined view and invokes its corresponding render function.
+ * - Supports friend profiles via the `?username=...` query param on `/profile`.
+ * - Handles authenticated and unauthenticated routes accordingly.
+ * - If no matching view is found, defaults to landing (if logged in) or login (if not).
+ * - Pushes or replaces browser history state if it's not already set.
  */
 export async function restoreViewOnReload() {
   await checkLoginStatus();
 
-  const path = window.location.pathname;
+  const url = new URL(window.location.href);
+  const path = url.pathname;
+  const usernameParam = url.searchParams.get('username');
   const isLoggedIn = globalSession.getLogstatus();
 
   const views: Record<string, () => void> = {
     '/login': showLoginView,
     '/register': showRegisterView,
     '/landing': showLandingView,
-    '/profile': showProfileView,
+    '/profile': () => showProfileView(usernameParam || undefined), // support friend profiles
     '/settings': showSettingsView,
     '/pong': showPongView,
     '/snake': showSnakeView,
@@ -127,33 +137,32 @@ export async function restoreViewOnReload() {
 
   const viewFunc = views[path];
 
+  const isAuthPage = path === '/login' || path === '/register';
+
   if (!viewFunc) {
     if (isLoggedIn) {
       navigateTo('landing', '/landing', showLandingView);
-      return;
     } else {
-      // Unknown path — redirect to login
       history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
       showLoginView();
-      return;
     }
+    return;
   }
-
-  const isAuthPage = path === '/login' || path === '/register';
 
   if (isLoggedIn || isAuthPage) {
     viewFunc();
 
-    // Only set history if there's no state (i.e. refresh or direct entry)
+    // Push correct history state if missing
     if (!history.state) {
       const state = isAuthPage
         ? { view: 'auth', form: path === '/register' ? 'register' : 'login' }
-        : { view: path.slice(1) };
+        : path === '/profile' && usernameParam
+          ? { view: 'profile', username: usernameParam }
+          : { view: path.slice(1) };
 
-      history.pushState(state, '', path);
+      history.replaceState(state, '', url.pathname + url.search);
     }
   } else {
-    // Not logged in — go to login page
     history.replaceState({ view: 'auth', form: 'login' }, '', '/login');
     showLoginView();
   }
@@ -184,6 +193,7 @@ export async function showProfileView(username?: string) {
     const avatarProfile = document.getElementById('avatar-profile') as HTMLImageElement;
     if (avatarProfile) {
       if (jsonResult.avatar === null) {
+        console.log('avatar is null');
         avatarProfile.src = '/uploads/avatars/wow_cat.jpg'; //TODO remove after backend database fix
       } else {
         avatarProfile.src = jsonResult.avatar;
@@ -191,6 +201,7 @@ export async function showProfileView(username?: string) {
     }
     await showFriends(providedUsername);
     await showGameStats(providedUsername);
+    await showGameHistory(providedUsername);
 
     const isOwnProfile = providedUsername === globalSession.getUsername();
     toggleOwnProfileButtons(isOwnProfile);
@@ -284,29 +295,35 @@ export function showTourView() {
 export function showAiView() {
   hideAllPages();
   document.getElementById('aiPage')?.classList.remove('hidden');
+  setView('ai');
 }
 
 /**
- * Handles navigation and view updates across the application.
+ * Navigates to a new application view and updates the browser history.
  *
- * - Pushes a new state to browser history if the view has changed.
- * - Invokes the provided function to display the corresponding view.
+ * - Pushes a new state to the browser's history stack if it differs from the current one.
+ * - Updates the URL using `history.pushState`.
+ * - Calls the provided `showView` function to render the corresponding view.
+ * - Avoids redundant state pushes by comparing the new and current state.
  *
- * @param {string} view - A unique identifier for the view.
- * @param {string} url - The URL path to navigate to.
- * @param {Function} showView - The function that displays the view content.
- * @param {Record<string, never>} [extraState={}] - Optional extra state to pass with navigation.
+ * @param {string} view - A unique identifier for the target view (e.g., 'profile', 'settings').
+ * @param {string} url - The URL to reflect in the browser's address bar (should match the view).
+ * @param {() => void} showView - A callback that renders the target view.
+ * @param {Record<string, any>} [extraState={}] - Optional additional state to include in history (e.g., username).
  */
 export function navigateTo(
   view: string,
   url: string,
   showView: () => void,
-  extraState: Record<string, never> = {},
+  extraState: Record<string, any> = {},
 ): void {
   const currentState = history.state;
 
-  if (!currentState || currentState.view !== view) {
-    history.pushState({ view, ...extraState }, '', url);
+  const newState = { view, ...extraState };
+
+  // Prevent duplicate state pushes
+  if (!currentState || JSON.stringify(currentState) !== JSON.stringify(newState)) {
+    history.pushState(newState, '', url);
   }
 
   showView();

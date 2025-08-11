@@ -63,6 +63,9 @@ export function moveSnakes(game: GameStateSnake, event: KeyboardEvent, socket: W
     direction = 'left';
   } else if (event.key === 'd' || event.key === 'ArrowRight') {
     direction = 'right';
+  } else if (event.key === 'r') {
+    console.log('KEY ', event.key);
+    direction = 'reverse';
   }
   console.log('Moving snake', direction);
   if (direction && socket.readyState === WebSocket.OPEN) {

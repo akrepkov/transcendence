@@ -65,7 +65,7 @@ export function initHistoryHandling(): void {
       }
     } else if (state.view === 'profile') {
       if (isLoggedIn) {
-        showProfileView();
+        showProfileView(state.username || undefined);
       } else {
         showLoginView();
         setTimeout(() => {

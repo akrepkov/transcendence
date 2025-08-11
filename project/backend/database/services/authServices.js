@@ -1,5 +1,6 @@
 import prisma from '../prisma/prismaClient.js';
 import { getRandomAvatar } from '../../utils/utils.js';
+import path from 'path';
 
 // Register a new user
 export async function registerUser({ username, email, password }) {
