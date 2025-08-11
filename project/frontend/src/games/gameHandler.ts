@@ -186,4 +186,38 @@ export const toggleHandler = {
       document.getElementById('aiPage')?.classList.add('hidden');
     },
   },
+
+  tourPage: {
+    startContainer: 'tour-start-container',
+    gameContainer: 'tour-container',
+    startBtn: 'start-button-tour',
+    stopBtn: 'stop-button-tour',
+
+    /**
+     * Starts the Tournament game by hiding the start screen and showing the game,
+     * then calling the game render logic.
+     */
+    start() {
+      document.getElementById(this.startContainer)?.classList.add('hidden');
+      document.getElementById(this.gameContainer)?.classList.remove('hidden');
+      handleStartGame('ai');
+    },
+
+    /**
+     * Resets the tournament game score and canvas field.
+     */
+    clean() {
+      resetGame('tournament');
+    },
+
+    /**
+     * Resets tournament game UI and hides the tournament page.
+     */
+    reset() {
+      document.getElementById(this.startContainer)?.classList.remove('hidden');
+      document.getElementById(this.gameContainer)?.classList.add('hidden');
+      resetGame('ai');
+      document.getElementById('tourPage')?.classList.add('hidden');
+    },
+  },
 };

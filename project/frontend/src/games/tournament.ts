@@ -1,41 +1,64 @@
 // import { Game } from './types'; TODO FOR JAN
-import { globalSession, checkLoginStatus } from '../auth/auth.js';
+import { globalSession } from '../auth/auth.js';
 
 // let game: Game;
-
-type Player = string;
-const players: Player[] = [];
-const isLoggedIn = globalSession.getLogstatus();
-console.log('isLoggedIn: ', isLoggedIn);
-if (isLoggedIn) {
-  const host = globalSession.getUsername();
-  players.push(host);
-  renderPlayerList();
-}
-
-console.log('players: ', players);
 
 const usernameInput = document.getElementById('tournamentUsername') as HTMLInputElement;
 const addPlayerButton = document.getElementById('add-player-button') as HTMLButtonElement;
 const playerList = document.getElementById('player-list') as HTMLUListElement;
 
-addPlayerButton?.addEventListener('click', () => {
+
+
+
+function validatePlayers(username: string) {
+  try {
+      const response = await fetch('/api/auth/me', {
+      method: 'PATCH',
+      // credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: username }),
+    });
+
+    if (!response.ok) {
+      return false;
+    } catch (error) {
+
+    }
+  }
+
+  
+  const isExistingUser = 
+
+}
+
+
+export function initTournamentPlayers() {
+  
+  playerList.innerHTML = '';
+  type Player = string;
+  const players: Player[] = [];
+  const isLoggedIn = globalSession.getLogstatus();
+  if (isLoggedIn) {
+    const host = globalSession.getUsername();
+    players.push(host);
+    const li = document.createElement('li');
+    li.textContent = host;
+    playerList.appendChild(li);
+  }
+  addPlayerButton?.addEventListener('click', () => {
   const username = usernameInput.value.trim();
   if (username && !players.includes(username)) {
     players.push(username);
-    renderPlayerList();
-    usernameInput.value = '';
-  }
-});
-
-function renderPlayerList() {
-  playerList.innerHTML = '';
-  players.forEach((player) => {
-    const li = document.createElement('li');
-    li.textContent = player;
-    playerList.appendChild(li);
+    if (validatePlayers(username)){
+      const li = document.createElement('li');
+      li.textContent = username;
+      usernameInput.value = ''; 
+      playerList.appendChild(li);
+      }
+    }
   });
 }
+
 
 // add Enter key support
 document.addEventListener('keydown', (event: KeyboardEvent) => {

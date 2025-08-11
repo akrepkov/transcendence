@@ -6,6 +6,7 @@ import {
   showGameHistory,
 } from '../profile/profile.js';
 import { hideAllPages, setView, toggleOwnProfileButtons } from '../utils/uiHelpers.js';
+import { initTournamentPlayers } from '../games/tournament.js';
 
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
@@ -17,7 +18,7 @@ const authPage = document.getElementById('authPage');
 const landingPage = document.getElementById('landingPage');
 const profilePage = document.getElementById('profilePage');
 const creditPage = document.getElementById('creditPage');
-const tourPage = document.getElementById('TourPage');
+const tourPage = document.getElementById('tourPage');
 
 /**
  * Displays the login form view.
@@ -282,7 +283,8 @@ export function showCreditView() {
  */
 export function showTourView() {
   hideAllPages();
-  document.getElementById('TourPage')?.classList.remove('hidden');
+  document.getElementById('tourPage')?.classList.remove('hidden');
+  initTournamentPlayers();
   setView('tournament');
 }
 
