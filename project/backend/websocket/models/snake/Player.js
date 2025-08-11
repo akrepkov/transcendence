@@ -9,6 +9,7 @@ export class SnakePlayer {
     this.playerName = username;
     this.playerId = userId;
     this.collision = false;
+    this.movedThisFrame = false;
   }
 
   getPlayerState() {

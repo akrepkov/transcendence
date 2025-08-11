@@ -9,8 +9,8 @@ export class Ball {
   }
 
   getRandomDirection() {
-    const min = PONG_CONSTS.BALL_SPEED * 0.4; // avoid too slow, e.g. 30% of speed
-    const directionSign = Math.random() > 0.5 ? -1 : 1;
+    const min = PONG_CONSTS.BALL_SPEED * 0.5;
+    const directionSign = this.speedX > 0 ? -1 : 1;
     const value = Math.random() * (PONG_CONSTS.BALL_SPEED - min) + min;
     return value * directionSign;
   }

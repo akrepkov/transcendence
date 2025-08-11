@@ -1,4 +1,24 @@
-import { gameHandler } from './gameHandler.js';
+import { gameHandler, toggleHandler } from './gameHandler.js';
+
+export const REJECT = {
+  NOT_AUTHENTICATED: 4001,
+  PLAYER_IN_GAME: 4002,
+  PLAYER_IN_WAITING_ROOM: 4003,
+  NOT_IN_WAITING_ROOM: 4004,
+  NOT_IN_GAME: 4005,
+  WRONG_DIRECTION: 4006,
+  INVALID_GAME_TYPE: 4007,
+};
+
+const SOCKET_REJECTS = {
+  [REJECT.NOT_AUTHENTICATED]: 'You must be logged in to perform this action.',
+  [REJECT.PLAYER_IN_GAME]: 'You are already in a game.',
+  [REJECT.PLAYER_IN_WAITING_ROOM]: 'You are already in the waiting list.',
+  [REJECT.NOT_IN_WAITING_ROOM]: 'Your connection is not in the waiting list.',
+  [REJECT.NOT_IN_GAME]: 'Your connection is not in a game.',
+  [REJECT.WRONG_DIRECTION]: 'Invalid direction specified. Use "up" or "down".',
+  [REJECT.INVALID_GAME_TYPE]: 'Invalid game type specified or none given. Use "pong" or "snake".',
+};
 
 /**
  * Retrieves the 2D rendering context for the given game's canvas element.
@@ -44,12 +64,14 @@ export function renderGame(socket: WebSocket, gameType: string) {
     switch (data.type) {
       case 'waitingForOpponent':
         console.log('Waiting for the opponent');
+        handler.showMessage('Waiting for an opponent...');
         break;
       case 'gameStarting':
         handler.create(data, socket);
+        handler.showMessage('Game starting...');
         break;
       case 'updateGameState':
-        console.log('Sent updataGameState');
+        console.log('Sent updateGameState');
         handler.score?.(data);
         handler.draw(data, ctx);
         break;
@@ -64,11 +86,19 @@ export function renderGame(socket: WebSocket, gameType: string) {
       case 'logoutRequest':
         console.log('logoutRequest', data);
         break;
-      case 'onlineUsers':
+      case 'onlineFriends':
         console.log('onlineUsers', data);
         break;
       case 'socketRejection':
         console.log('socketRejection', data);
+        if (data.code === REJECT.PLAYER_IN_GAME || data.code === REJECT.PLAYER_IN_WAITING_ROOM) {
+          alert(SOCKET_REJECTS[data.code]);
+          if (gameType === 'pong') {
+            toggleHandler.pongPage.reset(socket);
+          } else if (gameType === 'snake') {
+            toggleHandler.snakePage.reset(socket);
+          }
+        }
         break;
       default:
         console.warn('Unknown message type:', data.type);
