@@ -74,6 +74,31 @@ const updateUserHandler = async (request, reply) => {
   try {
     const userId = request.user.userId;
     const user = await userServices.getUserById(userId);
+    let { username, password } = request.body;
+    if (username) {
+      const existUsername = await authServices.checkUniqueUsername(username);
+      if (existUsername) {
+        return reply.code(418).send({ error: 'Username already in use' });
+      }
+      await userServices.updateUsername(user, username);
+      console.log('UPDATED USER IS: ', await userServices.getUserById(userId));
+      await connectionManager.updateUsernameInConnections(user.userId, username);
+    }
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await userServices.updatePassword(user, hashedPassword);
+    }
+    return reply.code(200).send({ success: true });
+  } catch (error) {
+    console.error('Error updating user', error);
+    return reply.code(500).send({ error: 'Internal server error' });
+  }
+};
+
+const updateUserAvatar = async (request, reply) => {
+  try {
+    const userId = request.user.userId;
+    const user = await userServices.getUserById(userId);
     const parts = request.parts();
     let username, email, password, avatarPart, oldName;
     let avatarBuf = null;
@@ -194,6 +219,7 @@ export default {
   getAllUsersHandler,
   getUserProfileHandler,
   updateUserHandler,
+  updateUserAvatar,
   addFriendHandler,
   uploadAvatarHandler,
   getAvatarHandler,
