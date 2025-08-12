@@ -83,6 +83,10 @@ export function renderGame(socket: WebSocket, gameType: string) {
         console.log(`Opponent disconnected, winner: ${data.winner}`);
         handler.gameOver(data.winner);
         break;
+      case 'resetGame':
+        console.log('resetGame', data);
+        handler.showMessage("You're both silly geese, resetting game...");
+        break;
       /* What do we do in these situations?*/
       case 'logoutRequest':
         console.log('logoutRequest', data);
