@@ -155,44 +155,26 @@ export class Session {
    * Returns a promise that resolves with the list of friends or rejects on error.
    * Please await
    */
-  public async getOnlineFriends() {
-    return new Promise((resolve, reject) => {
-      if (!this.socket) {
-        reject(new Error('Socket not initialized'));
-        return;
+  public async getOnlineFriends(username: string = this.username) {
+    try {
+      console.log('username', username);
+      const res = await fetch(`/api/get_online_friends?username=${encodeURIComponent(username)}`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.error('Error fetching online friends:', data.error);
+        return [];
       }
-      const handler = (event: MessageEvent) => {
-        const data = JSON.parse(event.data);
-        console.log(data);
-        if (data.type === 'onlineFriends') {
-          this.socket!.removeEventListener('message', handler);
-          resolve(data.friends);
-        }
-      };
-
-      this.socket.addEventListener('message', handler);
-
-      const sendOrRetry = (attempt = 0) => {
-        if (!this.socket) {
-          reject(new Error('Socket not initialized'));
-          return;
-        }
-        if (this.socket.readyState === WebSocket.OPEN) {
-          this.socket.send(JSON.stringify({ type: 'getLoggedInFriends' }));
-        } else if (attempt < 10) {
-          setTimeout(() => sendOrRetry(attempt + 1), 100);
-        } else {
-          this.socket!.removeEventListener('message', handler);
-          reject(new Error('Socket not open after retry'));
-        }
-      };
-
-      sendOrRetry();
-
-      setTimeout(() => {
-        this.socket!.removeEventListener('message', handler);
-        reject(new Error('Timeout while waiting for online friends'));
-      }, 5000);
-    });
+      console.log('friends', data);
+      return data.friends;
+    } catch (err) {
+      console.error('Error fetching online friends:', err);
+      return [];
+    }
   }
 }
