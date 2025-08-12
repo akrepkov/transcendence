@@ -1,5 +1,7 @@
 // map that holds all the users, it connects their IDs to a set of their connections
 // a user can have multiple connections, think multiple browser tabs logged into the same account
+import { getFriends, getUserById } from '../../database/services/userServices.js';
+
 const connectedUsers = new Map();
 
 // function to add a connection (socket) to a user
@@ -83,6 +85,25 @@ function updateUsernameInConnections(userId, newUsername) {
   });
 }
 
+async function getOnlineFriendsHandler(request, reply) {
+  const { username } = request.query;
+  if (!username) {
+    return reply.code(400).send({ error: 'Username is required' });
+  }
+  const friends = await getFriends(username);
+  if (!friends || friends.length === 0) {
+    console.log(`No friends found for user: ${username}`);
+    return [];
+  }
+  const onlineFriends = [];
+  friends.forEach((friend) => {
+    if (connectionManager.getUserConnections(friend.userId) !== undefined) {
+      onlineFriends.push(friend.username);
+    }
+  });
+  return reply.code(200).send({ friends: onlineFriends });
+}
+
 export const connectionManager = {
   addConnection,
   removeConnection,
@@ -90,6 +111,7 @@ export const connectionManager = {
   getUserConnectionsBySession,
   getConnectedUsers,
   updateUsernameInConnections,
+  getOnlineFriendsHandler,
   getUserNameById,
   getNamesOfConnectedUsers,
   printUsers,
