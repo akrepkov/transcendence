@@ -89,3 +89,58 @@ export function centerOnCanvas(canvasId: string) {
     behavior: 'smooth',
   });
 }
+
+function typeText(element: HTMLElement, text: string, speed = 40) {
+  let i = 0;
+  element.textContent = ''; // start with an empty string
+
+  const interval = setInterval(() => {
+    element.textContent += text[i++]; // add one character at a time
+    if (i >= text.length) clearInterval(interval); // stop when done
+  }, speed);
+}
+
+export function showInstructions(gameId: string) {
+  const instructionsPong = document.getElementById('instructionsPong') as HTMLParagraphElement;
+  const instructionsSnake = document.getElementById('instructionsSnake') as HTMLParagraphElement;
+  const instructionsPractice = document.getElementById(
+    'instructionsPractice',
+  ) as HTMLParagraphElement;
+  const instructionsAi = document.getElementById('instructionsAi') as HTMLParagraphElement;
+
+  if (!instructionsPong || !instructionsSnake || !instructionsPractice || !instructionsAi) return;
+
+  if (gameId === 'pong') {
+    instructionsPong.classList.remove('hidden');
+    typeText(
+      instructionsPong,
+      'Up: ↑ / W\n' + 'Down: ↓ / S\n Rules: Keep the ball in play. First to 5 points wins.',
+    );
+  } else if (gameId === 'ai') {
+    instructionsAi.classList.remove('hidden');
+    typeText(
+      instructionsAi,
+      'Up: W\n ' + 'Down: S\n Rules: Keep the ball in play. First to 5 points wins.',
+    );
+  } else if (gameId === 'practice') {
+    instructionsPractice.classList.remove('hidden');
+    typeText(
+      instructionsPractice,
+      'Up: ↑ / W\n' + 'Down: ↓ / S\n Rules: Keep the ball in play. First to 5 points wins.',
+    );
+  } else if (gameId === 'snake') {
+    instructionsSnake.classList.remove('hidden');
+    typeText(
+      instructionsSnake,
+      'Up: ↑ / W \n   ' +
+        'Down: ↓ / S\n  ' +
+        'Left: ← / A\n   ' +
+        'Right: → / D\n   ' +
+        'Reverse: R\n ' +
+        'Rules: \n' +
+        'Eat apples to grow longer.\n' +
+        'Win by eating 10 apples the fastest, making your opponent crash into a wall, their own tail, or your snake.\n' +
+        'If both players crash in the same frame the game restarts.',
+    );
+  }
+}
