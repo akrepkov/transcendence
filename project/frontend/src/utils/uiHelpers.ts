@@ -139,8 +139,8 @@ export function showInstructions(gameId: string) {
         'Reverse: R\n ' +
         'Rules: \n' +
         'Eat apples to grow longer.\n' +
-        'Win by making your opponent crash into a wall, their own tail, or your snake.\n' +
-        'If both players crash in the same frame the apple wins (tie).',
+        'Win by eating 10 apples the fastest, making your opponent crash into a wall, their own tail, or your snake.\n' +
+        'If both players crash in the same frame the game restarts.',
     );
   }
 }
