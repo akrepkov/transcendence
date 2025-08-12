@@ -1,4 +1,5 @@
 import { gameHandler, toggleHandler } from './gameHandler.js';
+import { showRenderMessage } from './renderMessageHandler.js';
 
 export const REJECT = {
   NOT_AUTHENTICATED: 4001,
@@ -96,10 +97,11 @@ export function renderGame(socket: WebSocket, gameType: string) {
       case 'socketRejection':
         console.log('socketRejection', data);
         if (data.code === REJECT.PLAYER_IN_GAME || data.code === REJECT.PLAYER_IN_WAITING_ROOM) {
-          alert(SOCKET_REJECTS[data.code]);
           if (gameType === 'pong') {
+            showRenderMessage(SOCKET_REJECTS[data.code], 'pong');
             toggleHandler.pongPage.reset(socket);
           } else if (gameType === 'snake') {
+            showRenderMessage(SOCKET_REJECTS[data.code], 'snake');
             toggleHandler.snakePage.reset(socket);
           }
         }
