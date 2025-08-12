@@ -57,6 +57,12 @@ function handleHistoryPopAi(event: PopStateEvent): void {
   window.removeEventListener('popstate', handleHistoryPopAi);
 }
 
+function handleHistoryPopTour(event: PopStateEvent): void {
+  console.log('history popping tournament');
+  toggleHandler.aiPage.reset();
+  window.removeEventListener('popstate', handleHistoryPopTour);
+}
+
 /**
  * Handles UI toggling, socket coordination, and cleanup for different game pages.
  *
@@ -232,17 +238,18 @@ export const toggleHandler = {
       document.getElementById(this.startContainer)?.classList.add('hidden');
       document.getElementById(this.gameContainer)?.classList.remove('hidden');
       handleStartGame('tournament');
+      window.addEventListener('popstate', handleHistoryPopTour);
     },
 
     /**
-     * Resets the tournament game score and canvas field.
+     * Resets the AI game score and canvas field.
      */
     clean() {
       resetGame('tournament');
     },
 
     /**
-     * Resets tournament game UI and hides the tournament page.
+     * Resets AI game UI and hides the AI page.
      */
     reset() {
       document.getElementById(this.startContainer)?.classList.remove('hidden');
