@@ -85,11 +85,7 @@ function updateUsernameInConnections(userId, newUsername) {
   });
 }
 
-async function getOnlineFriendsHandler(request, reply) {
-  const { username } = request.query;
-  if (!username) {
-    return reply.code(400).send({ error: 'Username is required' });
-  }
+async function getFriendNames(username) {
   const friends = await getFriends(username);
   if (!friends || friends.length === 0) {
     console.log(`No friends found for user: ${username}`);
@@ -101,7 +97,16 @@ async function getOnlineFriendsHandler(request, reply) {
       onlineFriends.push(friend.username);
     }
   });
-  return reply.code(200).send({ friends: onlineFriends });
+  return onlineFriends;
+}
+
+async function getOnlineFriendsHandler(request, reply) {
+  const { username } = request.query;
+  if (!username) {
+    return reply.code(400).send({ error: 'Username is required' });
+  }
+  const friendNames = await getFriendNames(username);
+  return reply.code(200).send({ friends: friendNames });
 }
 
 export const connectionManager = {
@@ -112,6 +117,7 @@ export const connectionManager = {
   getConnectedUsers,
   updateUsernameInConnections,
   getOnlineFriendsHandler,
+  getFriendNames,
   getUserNameById,
   getNamesOfConnectedUsers,
   printUsers,
