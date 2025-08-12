@@ -1,3 +1,4 @@
+// tests/settings.simple.spec.ts
 import { test, expect, Page } from '@playwright/test';
 
 async function loginAndOpenSettings(page: Page) {
@@ -6,29 +7,36 @@ async function loginAndOpenSettings(page: Page) {
   await page.fill('#loginPassword', 'djoyke');
   await page.click('#loginForm button[type="submit"]');
   await page.waitForSelector('body[data-view="landing"]');
-  await page.click('#avatar'); // to Profile
+
+  // Profile → Settings
+  await page.click('#avatar');
   await page.waitForSelector('body[data-view="profile"]');
-  await page.click('#settingsToggle'); // to Settings
+  await page.click('#settingsToggle');
   await page.waitForSelector('body[data-view="settings"]');
 }
 
-// tiny 1x1 PNG for upload
+// tiny 1x1 PNG for upload tests
 const tinyPng = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9U7Y0iUAAAAASUVORK5CYII=',
   'base64',
 );
 
-// ——— USERNAME ———
-test('username: success', async ({ page }) => {
+// -------- USERNAME --------
+test('username: success shows success message', async ({ page }) => {
   await loginAndOpenSettings(page);
 
-  await page.route('**/api/update_user_profile', (route) =>
-    route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({ username: 'new_djoyke' }),
-    }),
-  );
+  await page.route('**/api/update_user_profile', async (route) => {
+    const body = await route.request().postDataJSON();
+    if ('username' in body) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ username: body.username }),
+      });
+      return;
+    }
+    await route.fallback();
+  });
 
   await page.fill('#newUsername', 'new_djoyke');
   await page.click('#saveUsername');
@@ -38,33 +46,58 @@ test('username: success', async ({ page }) => {
   );
 });
 
-test('username: already in use (418) shows alert', async ({ page }) => {
+test('username: 418 shows inline "already in use" message', async ({ page }) => {
   await loginAndOpenSettings(page);
 
-  await page.route('**/api/update_user_profile', (route) => route.fulfill({ status: 418 }));
-
-  const dialog = new Promise<void>((resolve) => {
-    page.once('dialog', (d) => {
-      expect(d.message()).toMatch(/already in use/i);
-      d.accept();
-      resolve();
-    });
+  await page.route('**/api/update_user_profile', async (route) => {
+    const body = await route.request().postDataJSON();
+    if ('username' in body) {
+      await route.fulfill({ status: 418 });
+      return;
+    }
+    await route.fallback();
   });
 
   await page.fill('#newUsername', 'taken');
   await page.click('#saveUsername');
-  await dialog;
+
+  await expect(page.locator('#UsernameSettingsMessage')).toHaveText(
+    'Username is already in use, try another one.',
+  );
 });
 
-// ——— PASSWORD ———
-test('password: success', async ({ page }) => {
+test('username: generic failure shows inline error', async ({ page }) => {
   await loginAndOpenSettings(page);
 
-  await page.route('**/api/update_user_profile', (route) =>
-    route.fulfill({ status: 200, contentType: 'application/json', body: '{}' }),
-  );
+  await page.route('**/api/update_user_profile', async (route) => {
+    const body = await route.request().postDataJSON();
+    if ('username' in body) {
+      await route.fulfill({ status: 500 });
+      return;
+    }
+    await route.fallback();
+  });
 
-  await page.fill('#newPassword', 'secret');
+  await page.fill('#newUsername', 'x');
+  await page.click('#saveUsername');
+
+  await expect(page.locator('#UsernameSettingsMessage')).toHaveText('Username change failed');
+});
+
+// -------- PASSWORD --------
+test('password: success shows success message', async ({ page }) => {
+  await loginAndOpenSettings(page);
+
+  await page.route('**/api/update_user_profile', async (route) => {
+    const body = await route.request().postDataJSON();
+    if ('password' in body) {
+      await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
+      return;
+    }
+    await route.fallback();
+  });
+
+  await page.fill('#newPassword', 'supersecret');
   await page.click('#savePassword');
 
   await expect(page.locator('#PasswordSettingsMessage')).toHaveText(
@@ -72,10 +105,17 @@ test('password: success', async ({ page }) => {
   );
 });
 
-test('password: failure shows message', async ({ page }) => {
+test('password: failure shows inline error', async ({ page }) => {
   await loginAndOpenSettings(page);
 
-  await page.route('**/api/update_user_profile', (route) => route.fulfill({ status: 500 }));
+  await page.route('**/api/update_user_profile', async (route) => {
+    const body = await route.request().postDataJSON();
+    if ('password' in body) {
+      await route.fulfill({ status: 500 });
+      return;
+    }
+    await route.fallback();
+  });
 
   await page.fill('#newPassword', 'oops');
   await page.click('#savePassword');
@@ -83,17 +123,19 @@ test('password: failure shows message', async ({ page }) => {
   await expect(page.locator('#PasswordSettingsMessage')).toHaveText('Password change failed.');
 });
 
-// ——— AVATAR ———
-test('avatar: preview + upload success', async ({ page }) => {
+// -------- AVATAR --------
+test('avatar: preview shows and upload success updates messages & avatars', async ({ page }) => {
   await loginAndOpenSettings(page);
 
+  // preview
   await page.setInputFiles('#avatar-input', {
-    name: 'a.png',
+    name: 'tiny.png',
     mimeType: 'image/png',
     buffer: tinyPng,
   });
   await expect(page.locator('#avatar-preview')).toBeVisible();
 
+  // upload success
   await page.route('**/api/update_user_avatar', (route) =>
     route.fulfill({
       status: 200,
@@ -109,34 +151,29 @@ test('avatar: preview + upload success', async ({ page }) => {
   await expect(page.locator('#avatar-profile')).toHaveAttribute('src', '/uploads/avatars/new.png');
 });
 
-test('avatar: too big (418) shows alert', async ({ page }) => {
+test('avatar: 418 shows inline "too big" message', async ({ page }) => {
   await loginAndOpenSettings(page);
 
   await page.setInputFiles('#avatar-input', {
-    name: 'big.png',
+    name: 'huge.png',
     mimeType: 'image/png',
     buffer: tinyPng,
   });
 
   await page.route('**/api/update_user_avatar', (route) => route.fulfill({ status: 418 }));
 
-  const dialog = new Promise<void>((resolve) => {
-    page.once('dialog', (d) => {
-      expect(d.message()).toMatch(/too big/i);
-      d.accept();
-      resolve();
-    });
-  });
-
   await page.click('#saveAvatar');
-  await dialog;
+
+  await expect(page.locator('#AvatarSettingsMessage')).toHaveText(
+    'Image is too big, try uploading something up to 1MB.',
+  );
 });
 
-test('avatar: generic failure shows message', async ({ page }) => {
+test('avatar: generic failure shows inline error', async ({ page }) => {
   await loginAndOpenSettings(page);
 
   await page.setInputFiles('#avatar-input', {
-    name: 'a.png',
+    name: 'tiny.png',
     mimeType: 'image/png',
     buffer: tinyPng,
   });
