@@ -77,7 +77,7 @@ export function showRegisterView() {
   landingPage?.classList.add('hidden');
   profilePage?.classList.add('hidden');
   creditPage?.classList.add('hidden');
-  creditPage?.classList.add('hidden');
+  // creditPage?.classList.add('hidden');
 }
 
 /**
