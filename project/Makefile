@@ -70,10 +70,6 @@ lint-fix:
 # cleanup package.json as well
 reset: clean
 	@${RM} ~/.nvm
-	@${RM} ${BACKEND}/package.json
-	@${RM} ${BACKEND}/package-lock.json
-	@${RM} ${FRONTEND}/package.json
-	@${RM} ${FRONTEND}/package-lock.json
 
 update_json:
 	@echo "${YELLOW}Updating packages...${END}"
