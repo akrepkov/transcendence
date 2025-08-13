@@ -294,6 +294,7 @@ export function showTourView() {
   document.getElementById('tourPage')?.classList.remove('hidden');
   initTournamentPlayers();
   setView('tournament');
+  showInstructions('tour');
 }
 
 /**

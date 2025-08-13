@@ -1,4 +1,9 @@
 /**
+ * WeakMap frees entry if element is removed from DOM
+ */
+const __messageTimers = new WeakMap<HTMLElement, number>();
+
+/**
  * Hides all main application pages by adding the 'hidden' class to their elements.
  *
  * This function is typically used when navigating between different views
@@ -33,15 +38,44 @@ export function setView(viewName: string) {
   document.body.setAttribute('data-view', viewName);
 }
 
-/**
- * Displays a message element with the provided text content.
- *
- * @param {HTMLElement} el - The HTML element where the message should be displayed.
- * @param {string} text - The text content to show in the message element.
- */
-export function showMessage(el: HTMLElement, text: string): void {
-  el.classList.remove('hidden');
+// /**
+//  * Displays a message element with the provided text content.
+//  *
+//  * @param {HTMLElement} el - The HTML element where the message should be displayed.
+//  * @param {string} text - The text content to show in the message element.
+//  */
+// export function showMessage(el: HTMLElement, text: string): void {
+//   el.classList.remove('hidden');
+//   el.textContent = text;
+// }
+
+export function showMessage(
+  el: HTMLElement,
+  text: string,
+  options?: { isError?: boolean; duration?: number },
+): void {
+  if (!el) return;
+
+  const isError = options?.isError ?? false;
+  const duration = options?.duration ?? 4000;
+
+  // clear prior timer for this element
+  const prev = __messageTimers.get(el);
+  if (prev) window.clearTimeout(prev);
+
+  // apply styles similar to settings.ts (green for success, yellow for error)
+  el.classList.remove('hidden', 'text-green-400', 'text-yellow-400');
+  el.classList.add(isError ? 'text-yellow-400' : 'text-green-400');
+
   el.textContent = text;
+
+  const t = window.setTimeout(() => {
+    // you can either clear or just hide; settings clears text, so mirror that
+    el.textContent = '';
+    el.classList.add('hidden');
+  }, duration);
+
+  __messageTimers.set(el, t);
 }
 
 /**
@@ -108,8 +142,16 @@ export function showInstructions(gameId: string) {
     'instructionsPractice',
   ) as HTMLParagraphElement;
   const instructionsAi = document.getElementById('instructionsAi') as HTMLParagraphElement;
+  const instructionsTour = document.getElementById('instructionsTour') as HTMLParagraphElement;
 
-  if (!instructionsPong || !instructionsSnake || !instructionsPractice || !instructionsAi) return;
+  if (
+    !instructionsPong ||
+    !instructionsSnake ||
+    !instructionsPractice ||
+    !instructionsAi ||
+    !instructionsTour
+  )
+    return;
 
   if (gameId === 'pong') {
     instructionsPong.classList.remove('hidden');
@@ -142,6 +184,13 @@ export function showInstructions(gameId: string) {
         'Eat apples to grow longer.\n' +
         'Win by eating 10 apples the fastest, making your opponent crash into a wall, their own tail, or your snake.\n' +
         'If both players crash in the same frame the game restarts.',
+    );
+  } else if (gameId === 'tour') {
+    instructionsTour.classList.remove('hidden');
+    typeText(
+      instructionsTour,
+      'Up: ↑ / W\n' +
+        'Down: ↓ / S\n Rules: Keep the ball in play. First to 5 points wins. Amount of players needs to be 2^n. The player pairs will be assigned randomly, the winner from each pair will move on to the next round. After the final round, the Winner is declared.',
     );
   }
 }

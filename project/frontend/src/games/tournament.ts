@@ -1,6 +1,7 @@
 import { Game } from '../games/frontendGame/frontendPong.js';
 import * as frontendGameManager from '../games/frontendGame/frontendGameManager.js';
 import { globalSession } from '../auth/auth.js';
+import { showMessage } from '../utils/uiHelpers.js';
 
 export const MAX_SCORE = 3;
 
@@ -11,6 +12,7 @@ const addPlayerButton = document.getElementById('add-player-button') as HTMLButt
 const startButton = document.getElementById('start-button-tour') as HTMLButtonElement;
 const playerList = document.getElementById('player-list') as HTMLUListElement;
 const tourWinner = document.getElementById('tournament-winner');
+const tournamentMessage = document.getElementById('TournamentMessage') as HTMLElement;
 
 type Player = string;
 const players: Player[] = [];
@@ -66,6 +68,7 @@ function checkWinCondition(game: Game, player1: string, player2: string) {
     game.stopGame();
     const { winner, loser } = getWinnerAndLoser(game, player1, player2);
     alert('Game Over! And the winner is ' + winner + '!');
+    // showMessage(tournamentMessage, `Game Over! The winner is ${winner}!`);
   }
 }
 
@@ -120,7 +123,7 @@ export function initTournamentPlayers() {
         renderPlayersList();
         usernameInput.value = '';
       } else {
-        alert('This user is not registered, please register first.');
+        showMessage(tournamentMessage, 'This user is not registered, please register first.');
         return;
       }
     }
@@ -131,6 +134,11 @@ export function initTournamentPlayers() {
       const player1 = tour[currentRound - 1][i].player1;
       const player2 = tour[currentRound - 1][i].player2;
 
+      // TODO djoyke
+      // showMessage(
+      //   tournamentMessage,
+      //   `Round ${currentRound}: Match ${i / 2 + 1}: ${player1} vs ${player2}`,
+      // );
       alert(
         `Round ${currentRound}: Match ${i / 2 + 1}: ${player1} vs ${player2}\nPress OK when ready to start!`,
       );
@@ -158,14 +166,16 @@ export function initTournamentPlayers() {
   startButton?.addEventListener('click', async () => {
     console.log('START button clicked');
     if (players.length < 2 || (players.length & (players.length - 1)) !== 0) {
-      alert('The number of players must be a power of 2');
+      showMessage(tournamentMessage, 'The number of players must be a power of 2.', {
+        isError: true,
+      });
       return; //TODO: reset the tournament page - now ai starts;
     }
     const rounds = Math.log2(players.length);
     const tour: Tournament = [];
     for (let i = 0; i < rounds; i++) {
       await generatePlayerBrackets(rounds, i + 1, tour);
-      alert(`Round ${i + 1} is about to start.`);
+      showMessage(tournamentMessage, `Round ${i + 1} is about to start.`);
       await playGame(tour, i + 1);
       console.log('TOURNAMENT INFO THIS ROUND: ', tour[i]);
     }
