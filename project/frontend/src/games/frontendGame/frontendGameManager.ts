@@ -20,6 +20,7 @@ export function handleStartGame(mode: string, player1Name?: string, player2Name?
   } else {
     game = new Game(canvasId, scoreFieldId, player1Name!, player2Name!);
   }
+  console.log('INSIDE MANAGER: ', canvasId, player1Name, player2Name);
   game!.drawCanvas();
   centerOnCanvas(canvasId);
   setTimeout(() => {

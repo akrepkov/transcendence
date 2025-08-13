@@ -10,15 +10,12 @@ const usernameInput = document.getElementById('tournamentUsername') as HTMLInput
 const addPlayerButton = document.getElementById('add-player-button') as HTMLButtonElement;
 const startButton = document.getElementById('start-button-tour') as HTMLButtonElement;
 const playerList = document.getElementById('player-list') as HTMLUListElement;
+const tourWinner = document.getElementById('tournament-winner');
 
 type Player = string;
 const players: Player[] = [];
-type Tournament = {
-  match: number;
-  player1: string;
-  player2: string;
-  winner: string;
-};
+type Match = { round: number; player1: string; player2: string; winner: string };
+type Tournament = Match[][];
 
 async function validatePlayers(username: string) {
   try {
@@ -72,7 +69,37 @@ function checkWinCondition(game: Game, player1: string, player2: string) {
   }
 }
 
-function generatePlayerBrackets() {}
+async function generatePlayerBrackets(rounds: number, currentRound: number, tour: Tournament) {
+  if (!tour[currentRound - 1]) {
+    tour[currentRound - 1] = [];
+  }
+  if (currentRound == 1) {
+    for (let i = 0; i < players.length; i += 2) {
+      const player1 = players[i];
+      const player2 = players[i + 1];
+      const match: Match = {
+        round: currentRound,
+        player1: player1,
+        player2: player2,
+        winner: 'nobody',
+      };
+      tour[currentRound - 1].push(match);
+    }
+  } else if (currentRound > 1) {
+    for (let i = 0; i < tour[currentRound - 2].length; i += 2) {
+      const player1 = tour[currentRound - 2][i].winner;
+      const player2 = tour[currentRound - 2][i + 1].winner;
+      const match: Match = {
+        round: currentRound,
+        player1: player1,
+        player2: player2,
+        winner: 'nobody',
+      };
+      tour[currentRound - 1].push(match);
+    }
+  }
+  console.log('GENERATED BRACKETS: ', tour[currentRound - 1]);
+}
 
 export function initTournamentPlayers() {
   playerList.innerHTML = '';
@@ -99,16 +126,14 @@ export function initTournamentPlayers() {
     }
   });
 
-  startButton?.addEventListener('click', async () => {
-    console.log('START button clicked');
-    if (players.length < 2 || (players.length & (players.length - 1)) !== 0) {
-      alert('The number of players must be a power of 2');
-      return;
-    }
-    const tour: Tournament[] = [];
-    for (let i = 0; i < players.length; i += 2) {
-      const player1 = players[i];
-      const player2 = players[i + 1];
+  async function playGame(tour: Tournament, currentRound: number) {
+    for (let i = 0; i < tour[currentRound - 1].length; i++) {
+      const player1 = tour[currentRound - 1][i].player1;
+      const player2 = tour[currentRound - 1][i].player2;
+
+      alert(
+        `Round ${currentRound}: Match ${i / 2 + 1}: ${player1} vs ${player2}\nPress OK when ready to start!`,
+      );
       console.log('Starting game for:', player1, player2);
       frontendGameManager.handleStartGame('tournament', player1, player2);
 
@@ -116,16 +141,11 @@ export function initTournamentPlayers() {
       await new Promise((resolve) => setTimeout(resolve, 600));
 
       const game = frontendGameManager.getCurrentGame();
-      console.log('THE GAME IS: ', game);
+
       if (game) {
         console.log('Game started:', game);
         await waitForGameToEnd(game);
-        tour.push({
-          match: i + 1,
-          player1: game.player1.name,
-          player2: game.player2.name,
-          winner: game.winner,
-        });
+        tour[currentRound - 1][i].winner = game.winner;
         frontendGameManager.resetGame('tournament');
         // Wait a bit before starting the next game to ensure reset is complete
         await new Promise((resolve) => setTimeout(resolve, 200));
@@ -133,6 +153,37 @@ export function initTournamentPlayers() {
         console.log('No game instance returned!');
       }
     }
+  }
+
+  startButton?.addEventListener('click', async () => {
+    console.log('START button clicked');
+    if (players.length < 2 || (players.length & (players.length - 1)) !== 0) {
+      alert('The number of players must be a power of 2');
+      return; //TODO: reset the tournament page - now ai starts;
+    }
+    const rounds = Math.log2(players.length);
+    const tour: Tournament = [];
+    for (let i = 0; i < rounds; i++) {
+      await generatePlayerBrackets(rounds, i + 1, tour);
+      alert(`Round ${i + 1} is about to start.`);
+      await playGame(tour, i + 1);
+      console.log('TOURNAMENT INFO THIS ROUND: ', tour[i]);
+    }
+    const finalWinner = tour[rounds - 1][0].winner;
+    // if (tourWinner) {
+    //   tourWinner.textContent = 'AND THE WINNER IS: ' + finalWinner;
+    //   tourWinner.style.display = 'block';
+    // }
+    const reply = await fetch('/api/auth/tournament', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: finalWinner }),
+    });
+
+    // TODO:declare the final winner and hide the pong canvas
+    // TODO:save stats for the winner to the database
+    // TODO:log cleanup tournament
+    // TODO:clear cache of logged players from tournament page (ask Djoyke)
   });
 }
 
@@ -142,3 +193,8 @@ usernameInput.addEventListener('keydown', (event: KeyboardEvent) => {
     addPlayerButton.click();
   }
 });
+
+// export function resetPlayerList() {
+//     playerList.innerHTML = '';
+//     renderPlayersList();
+// }

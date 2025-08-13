@@ -137,7 +137,7 @@ export async function restoreViewOnReload() {
     '/snake': showSnakeView,
     '/practice': showPracticeView,
     '/credits': showCreditView,
-    '/ai': showAiView, // is this the path?
+    '/ai': showAiView,
     '/tournament': showTourView,
   };
 

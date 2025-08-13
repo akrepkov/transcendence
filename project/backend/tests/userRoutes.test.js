@@ -119,4 +119,4 @@ describe('User Routes', () => {
 
 
 
-//  curl -X GET https://localhost:3000/api/view_user_profile?username=lena -H "Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMzMCwic2Vzc2lvbklkIjoiNTJmZjQ0OWNkYzIzYmFiYjZjOGFiOWM5ZjVkNzRiY2NiMmJiNmU2OTMyNjhhODE2NDc5ZjQwOWZmNWFmNTE5ZiIsImlhdCI6MTc1NDc0NjU5MywiZXhwIjoxNzU0NzUwMTkzfQ.KAgFGavQWfl4mzyL_BNtJiPhTykRhzO1x-jj70EIxhI" -k
+//  curl -X GET https://localhost:3000/api/view_user_profile?username=lena -H "Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInNlc3Npb25JZCI6ImU0ZDM1MWI2ZDUyNzJmYTZiOGMwNWJiYWY4NWU0MGI3OTRlZTg4NTllYjc3NmRiNjcwMjg0MWZlOTU5ZWIyNGUiLCJpYXQiOjE3NTUwOTkxMzEsImV4cCI6MTc1NTExNzEzMX0.WfvC-hsxB3KPNaHe_elSO_wCsmXf8ssLSqLHWEu7eTA" -k

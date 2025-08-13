@@ -35,13 +35,7 @@ export default async function userRoutes(fastify) {
     '/api/add_friend',
     { preHandler: authControllers.authenticate },
     userControllers.addFriendHandler,
-  ); //needs to be tested
-
-  //   fastify.delete(
-  //     '/api/delete_friend',
-  //     { preHandler: authControllers.authenticate },
-  //     userControllers.deteleFriendHandler,
-  //   );
+  );
 
   fastify.get(
     '/api/get_online_friends',
@@ -57,4 +51,7 @@ export default async function userRoutes(fastify) {
   fastify.post('/api/auth/login', authControllers.loginHandler);
   fastify.post('/api/auth/register', authControllers.registerHandler);
   fastify.post('/api/auth/logout', authControllers.logoutHandler);
+
+  // Tournament
+  fastify.post('/api/auth/tournament', gameControllers.tournamentHandler);
 }

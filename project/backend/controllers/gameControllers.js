@@ -18,7 +18,7 @@ const saveGameHandler = (request, reply) => {
   reply.send({ message: 'Game results saved', gameId });
 };
 
-const getGameHandler = (request, reply) => {
+const getGameHandler = async (request, reply) => {
   const { gameId } = request.body;
   if (!gameId) {
     return reply.status(400).send({ error: 'Game ID is required' });
@@ -31,7 +31,18 @@ const getGameHandler = (request, reply) => {
   reply.send({ message: 'Game retrieved', game });
 };
 
+const tournamentHandler = async (request, reply) => {
+  const { username } = request.body || {};
+  if (!username) {
+    return reply.status(400).send({ error: 'Username is required' });
+  }
+  console.log('USER AFTER WIN: ', await userServices.getUserByUsername(username));
+  await userServices.updateTournamentWins(username);
+  reply.send({ mssage: 'Tournament Win saved.' });
+};
+
 export default {
   saveGameHandler,
   getGameHandler,
+  tournamentHandler,
 };
