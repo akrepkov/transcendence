@@ -105,11 +105,11 @@ export function setupGameToggle(socket: WebSocket) {
     toggleHandler.aiPage.reset();
   });
 
-  startTour.addEventListener('click', () => {
-    console.log('Starting Tournament game');
-    toggleHandler.tourPage.clean();
-    toggleHandler.tourPage.start();
-  });
+  // startTour.addEventListener('click', () => {
+  //   console.log('Starting Tournament game');
+  //   toggleHandler.tourPage.clean();
+  //   toggleHandler.tourPage.start();
+  // });
 
   tourStop?.addEventListener('click', () => {
     toggleHandler.tourPage.reset();
