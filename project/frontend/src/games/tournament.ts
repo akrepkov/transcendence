@@ -34,6 +34,7 @@ async function validatePlayers(username: string) {
 
 function renderPlayersList() {
   playerList.innerHTML = '';
+  console.log('PLAYERS WHEN RENDERING: ', players);
   const host = globalSession.getUsername();
   players.forEach((player) => {
     const li = document.createElement('li');
@@ -101,91 +102,86 @@ async function generatePlayerBrackets(rounds: number, currentRound: number, tour
   console.log('GENERATED BRACKETS: ', tour[currentRound - 1]);
 }
 
-export function initTournamentPlayers() {
-  playerList.innerHTML = '';
-  const isLoggedIn = globalSession.getLogstatus();
-  if (isLoggedIn) {
-    const host = globalSession.getUsername();
-    if (host) {
-      players.push(host);
+async function playGame(tour: Tournament, currentRound: number) {
+  for (let i = 0; i < tour[currentRound - 1].length; i++) {
+    const player1 = tour[currentRound - 1][i].player1;
+    const player2 = tour[currentRound - 1][i].player2;
+
+    alert(
+      `Round ${currentRound}: Match ${i + 1}: ${player1} vs ${player2}\nPress OK when ready to start!`,
+    );
+    console.log('Starting game for:', player1, player2);
+    frontendGameManager.handleStartGame('tournament', player1, player2);
+
+    // Wait for the game to be created and started
+    await new Promise((resolve) => setTimeout(resolve, 600));
+
+    const game = frontendGameManager.getCurrentGame();
+
+    if (game) {
+      console.log('Game started:', game);
+      await waitForGameToEnd(game);
+      tour[currentRound - 1][i].winner = game.winner;
+      frontendGameManager.resetGame('tournament');
+      // Wait a bit before starting the next game to ensure reset is complete
+      await new Promise((resolve) => setTimeout(resolve, 200));
+    } else {
+      console.log('No game instance returned!');
+      return;
     }
   }
-  renderPlayersList();
-  addPlayerButton?.addEventListener('click', async () => {
-    const username = usernameInput.value.trim();
-    if (username && !players.includes(username)) {
-      const isValid = await validatePlayers(username);
-      if (isValid) {
-        players.push(username);
-        renderPlayersList();
-        usernameInput.value = '';
-      } else {
-        alert('This user is not registered, please register first.');
-        return;
-      }
-    }
-  });
+}
 
-  async function playGame(tour: Tournament, currentRound: number) {
-    for (let i = 0; i < tour[currentRound - 1].length; i++) {
-      const player1 = tour[currentRound - 1][i].player1;
-      const player2 = tour[currentRound - 1][i].player2;
-
-      alert(
-        `Round ${currentRound}: Match ${i / 2 + 1}: ${player1} vs ${player2}\nPress OK when ready to start!`,
-      );
-      console.log('Starting game for:', player1, player2);
-      frontendGameManager.handleStartGame('tournament', player1, player2);
-
-      // Wait for the game to be created and started
-      await new Promise((resolve) => setTimeout(resolve, 600));
-
-      const game = frontendGameManager.getCurrentGame();
-
-      if (game) {
-        console.log('Game started:', game);
-        await waitForGameToEnd(game);
-        tour[currentRound - 1][i].winner = game.winner;
-        frontendGameManager.resetGame('tournament');
-        // Wait a bit before starting the next game to ensure reset is complete
-        await new Promise((resolve) => setTimeout(resolve, 200));
-      } else {
-        console.log('No game instance returned!');
-      }
-    }
+async function startTournament() {
+  const rounds = Math.log2(players.length);
+  const tour: Tournament = [];
+  for (let i = 0; i < rounds; i++) {
+    await generatePlayerBrackets(rounds, i + 1, tour);
+    alert(`Round ${i + 1} is about to start.`);
+    await playGame(tour, i + 1);
+    console.log('TOURNAMENT INFO THIS ROUND: ', tour[i]);
   }
-
-  startButton?.addEventListener('click', async () => {
-    console.log('START button clicked');
-    if (players.length < 2 || (players.length & (players.length - 1)) !== 0) {
-      alert('The number of players must be a power of 2');
-      return; //TODO: reset the tournament page - now ai starts;
-    }
-    const rounds = Math.log2(players.length);
-    const tour: Tournament = [];
-    for (let i = 0; i < rounds; i++) {
-      await generatePlayerBrackets(rounds, i + 1, tour);
-      alert(`Round ${i + 1} is about to start.`);
-      await playGame(tour, i + 1);
-      console.log('TOURNAMENT INFO THIS ROUND: ', tour[i]);
-    }
+  if (tour[rounds - 1]) {
     const finalWinner = tour[rounds - 1][0].winner;
-    // if (tourWinner) {
-    //   tourWinner.textContent = 'AND THE WINNER IS: ' + finalWinner;
-    //   tourWinner.style.display = 'block';
-    // }
+
     const reply = await fetch('/api/auth/tournament', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: finalWinner }),
     });
-
-    // TODO:declare the final winner and hide the pong canvas
-    // TODO:save stats for the winner to the database
-    // TODO:log cleanup tournament
-    // TODO:clear cache of logged players from tournament page (ask Djoyke)
-  });
+  }
 }
+
+export function initTournamentPlayers() {
+  players.length = 0;
+  playerList.innerHTML = '';
+}
+
+// TODO:declare the final winner and hide the pong canvas
+// TODO:alert is user is already added to the player list
+
+addPlayerButton?.addEventListener('click', async () => {
+  const username = usernameInput.value.trim();
+  if (username && !players.includes(username)) {
+    const isValid = await validatePlayers(username);
+    if (isValid) {
+      players.push(username);
+      renderPlayersList();
+      usernameInput.value = '';
+    } else {
+      alert('This user is not registered, please register first.');
+      return;
+    }
+  }
+});
+
+startButton?.addEventListener('click', async () => {
+  console.log('START button clicked');
+  if (players.length < 2 || (players.length & (players.length - 1)) !== 0) {
+    alert('The number of players must be a power of 2');
+    return; //TODO: reset the tournament page - now ai starts;
+  } else startTournament();
+});
 
 // add Enter key support
 usernameInput.addEventListener('keydown', (event: KeyboardEvent) => {
@@ -194,7 +190,8 @@ usernameInput.addEventListener('keydown', (event: KeyboardEvent) => {
   }
 });
 
-// export function resetPlayerList() {
-//     playerList.innerHTML = '';
-//     renderPlayersList();
-// }
+export function resetPlayerList() {
+  players.length = 0;
+  playerList.innerHTML = '';
+  renderPlayersList();
+}
