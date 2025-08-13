@@ -9,7 +9,8 @@
     "lint": "eslint . --ignore-pattern 'tests/*'",
     "lint:fix": "eslint . --fix --ignore-pattern 'tests/*'",
     "test": "node --experimental-vm-modules node_modules/.bin/jest",
-    "prepare": "cd ../.. && husky"
+    "prepare": "cd ../.. && husky",
+    "production": "node index.js"
   },
   "keywords": [],
   "author": "",

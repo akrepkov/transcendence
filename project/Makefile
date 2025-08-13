@@ -1,7 +1,3 @@
-# TODO
-# for later setup a production branch
-# and a frontend setup
-
 RED=\033[1;31m
 GREEN=\033[1;32m
 YELLOW=\033[1;33m
@@ -23,13 +19,15 @@ BACKEND_INIT = ./init_files/backend_init.sh
 FRONTEND_INIT = ./init_files/frontend_init.sh
 STARTUP_SCRIPT = ./init_files/startup.sh
 PACKAGE_SCRIPT = ./init_files/checkout_packages.sh
+PRODUCTION_SCRIPT = ./init_files/production.sh
 
 RM=rm -rf
 
 all: dev
 
-production:
-	@echo "${RED}No production flow yet :(${END}"
+production: node backend frontend
+	@echo "${GREEN}Running production script...${END}"
+	@${PRODUCTION_SCRIPT}
 
 # starts in dev mode, will start server with nodemon, so it monitors changes to files and restarts automatically
 dev: node backend frontend
