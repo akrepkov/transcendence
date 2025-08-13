@@ -25,7 +25,7 @@ RM=rm -rf
 
 all: dev
 
-production: node backend frontend
+production: clean node backend frontend
 	@echo "${GREEN}Running production script...${END}"
 	@${PRODUCTION_SCRIPT}
 
