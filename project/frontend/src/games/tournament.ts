@@ -2,18 +2,9 @@ import { Game } from '../games/frontendGame/frontendPong.js';
 import * as frontendGameManager from '../games/frontendGame/frontendGameManager.js';
 import { globalSession } from '../auth/auth.js';
 
-export const PONG_CONSTS = {
-  WIDTH: 800,
-  HEIGHT: 600,
-  PADDLE_HEIGHT: 100,
-  PADDLE_WIDTH: 10,
-  BALL_SIZE: 20,
-  MAX_SCORE: 3,
-  BALL_SPEED: 5.6,
-  PADDLE_SPEED: 10,
-};
+export const MAX_SCORE = 3;
 
-let game: Game;
+const game: Game | null = null;
 
 const usernameInput = document.getElementById('tournamentUsername') as HTMLInputElement;
 const addPlayerButton = document.getElementById('add-player-button') as HTMLButtonElement;
@@ -46,9 +37,10 @@ async function validatePlayers(username: string) {
 
 function renderPlayersList() {
   playerList.innerHTML = '';
+  const host = globalSession.getUsername();
   players.forEach((player) => {
     const li = document.createElement('li');
-    li.textContent = player;
+    li.textContent = player === host ? `${player} (host)` : player;
     playerList.appendChild(li);
   });
 }
@@ -73,7 +65,7 @@ function waitForGameToEnd(game: Game): Promise<void> {
 }
 
 function checkWinCondition(game: Game, player1: string, player2: string) {
-  if (game.player1.score >= PONG_CONSTS.MAX_SCORE || game.player2.score >= PONG_CONSTS.MAX_SCORE) {
+  if (game.player1.score >= MAX_SCORE || game.player2.score >= MAX_SCORE) {
     game.stopGame();
     const { winner, loser } = getWinnerAndLoser(game, player1, player2);
     alert('Game Over! And the winner is ' + winner + '!');
@@ -108,6 +100,7 @@ export function initTournamentPlayers() {
   });
 
   startButton?.addEventListener('click', async () => {
+    console.log('START button clicked');
     if (players.length < 2 || (players.length & (players.length - 1)) !== 0) {
       alert('The number of players must be a power of 2');
       return;
@@ -116,10 +109,16 @@ export function initTournamentPlayers() {
     for (let i = 0; i < players.length; i += 2) {
       const player1 = players[i];
       const player2 = players[i + 1];
+      console.log('Starting game for:', player1, player2);
       frontendGameManager.handleStartGame('tournament', player1, player2);
-      //   wait for game to end ()
+
+      // Wait for the game to be created and started
+      await new Promise((resolve) => setTimeout(resolve, 600));
+
       const game = frontendGameManager.getCurrentGame();
+      console.log('THE GAME IS: ', game);
       if (game) {
+        console.log('Game started:', game);
         await waitForGameToEnd(game);
         tour.push({
           match: i + 1,
@@ -128,6 +127,10 @@ export function initTournamentPlayers() {
           winner: game.winner,
         });
         frontendGameManager.resetGame('tournament');
+        // Wait a bit before starting the next game to ensure reset is complete
+        await new Promise((resolve) => setTimeout(resolve, 200));
+      } else {
+        console.log('No game instance returned!');
       }
     }
   });
