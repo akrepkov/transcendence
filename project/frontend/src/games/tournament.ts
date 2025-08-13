@@ -73,6 +73,7 @@ function checkWinCondition(game: Game, player1: string, player2: string) {
     // alert('Game Over! And the winner is ' + winner + '!');
     showMessage(tournamentMessage, `Game Over! The winner is ${winner}!`);
     // await showModal('Game Over! The winner is ' + winner + '!');
+    // await showModal('Game Over! The winner is ' + winner + '!');
   }
 }
 
