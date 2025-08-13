@@ -6,7 +6,6 @@ import { cleanSnakeField } from './snake.js';
 import { handleStartGame, resetGame } from './frontendGame/frontendGameManager.js';
 import { getRandomPlayerNames } from './frontendGame/playerNames.js';
 import { globalSession } from '../auth/auth.js';
-// import { resetPlayerList } from './tournament.js';
 
 /**
  * Handles game-specific logic bindings for Pong and Snake.
@@ -255,7 +254,6 @@ export const toggleHandler = {
     reset() {
       document.getElementById(this.startContainer)?.classList.remove('hidden');
       document.getElementById(this.gameContainer)?.classList.add('hidden');
-      // resetPlayerList();
       resetGame('tournament');
       document.getElementById('tourPage')?.classList.add('hidden');
     },
