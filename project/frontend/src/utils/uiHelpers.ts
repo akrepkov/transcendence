@@ -15,6 +15,7 @@ export function hideAllPages(): void {
     'practicePage',
     'creditPage',
     'aiPage',
+    'tourPage',
   ];
 
   pageIds.forEach((id) => {

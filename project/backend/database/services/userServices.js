@@ -13,6 +13,7 @@ export async function getUsers() {
         pongLosses: true,
         snakeWins: true,
         snakeLosses: true,
+        tournamentWins: true,
         friends: true,
         friendsOf: true,
       },
@@ -276,5 +277,25 @@ export async function getMatchHistory(username) {
   } catch (error) {
     console.error('Error retrieving match history', error);
     return null;
+  }
+}
+
+export async function updateTournamentWins(username) {
+  try {
+    const user = await getUserByUsername(username);
+    if (!user) {
+      console.log('Data not found in the database');
+      return false;
+    }
+    await prisma.user.update({
+      where: { username: username },
+      data: {
+        tournamentWins: { increment: 1 },
+      },
+    });
+    return true;
+  } catch (error) {
+    console.error('Error retrieving match history', error);
+    return false;
   }
 }

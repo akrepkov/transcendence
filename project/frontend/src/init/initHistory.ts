@@ -9,6 +9,7 @@ import {
   showPracticeView,
   showAiView,
   showCreditView,
+  showTourView,
 } from '../navigation/navigation.js';
 import { globalSession } from '../auth/auth.js';
 
@@ -110,6 +111,15 @@ export function initHistoryHandling(): void {
     } else if (state.view === 'ai') {
       if (isLoggedIn) {
         showAiView();
+      } else {
+        showLoginView();
+        setTimeout(() => {
+          history.pushState({ view: 'auth', form: 'login' }, '', '/login');
+        }, 0);
+      }
+    } else if (state.view === 'tournament') {
+      if (isLoggedIn) {
+        showTourView();
       } else {
         showLoginView();
         setTimeout(() => {

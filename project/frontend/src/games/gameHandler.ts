@@ -6,6 +6,7 @@ import { cleanSnakeField } from './snake.js';
 import { handleStartGame, resetGame } from './frontendGame/frontendGameManager.js';
 import { getRandomPlayerNames } from './frontendGame/playerNames.js';
 import { globalSession } from '../auth/auth.js';
+// import { resetPlayerList } from './tournament.js';
 
 /**
  * Handles game-specific logic bindings for Pong and Snake.
@@ -55,6 +56,12 @@ function handleHistoryPopAi(event: PopStateEvent): void {
   console.log('history popping ai');
   toggleHandler.aiPage.reset();
   window.removeEventListener('popstate', handleHistoryPopAi);
+}
+
+function handleHistoryPopTour(event: PopStateEvent): void {
+  console.log('history popping tournament');
+  toggleHandler.tourPage.reset();
+  window.removeEventListener('popstate', handleHistoryPopTour);
 }
 
 /**
@@ -215,6 +222,42 @@ export const toggleHandler = {
       document.getElementById(this.gameContainer)?.classList.add('hidden');
       resetGame('ai');
       document.getElementById('aiPage')?.classList.add('hidden');
+    },
+  },
+
+  tourPage: {
+    startContainer: 'tour-start-container',
+    gameContainer: 'tour-container',
+    startBtn: 'start-button-tour',
+    stopBtn: 'stop-button-tour',
+
+    /**
+     * Starts the Tournament game by hiding the start screen and showing the game,
+     * then calling the game render logic.
+     */
+    start() {
+      document.getElementById(this.startContainer)?.classList.add('hidden');
+      document.getElementById(this.gameContainer)?.classList.remove('hidden');
+      handleStartGame('tournament');
+      window.addEventListener('popstate', handleHistoryPopTour);
+    },
+
+    /**
+     * Resets the tournament game score and canvas field.
+     */
+    clean() {
+      resetGame('tournament');
+    },
+
+    /**
+     * Resets  game UI and hides the Tournament page.
+     */
+    reset() {
+      document.getElementById(this.startContainer)?.classList.remove('hidden');
+      document.getElementById(this.gameContainer)?.classList.add('hidden');
+      // resetPlayerList();
+      resetGame('tournament');
+      document.getElementById('tourPage')?.classList.add('hidden');
     },
   },
 };

@@ -8,9 +8,11 @@ let game: Game | null = null;
 const gameModeMap: Record<string, { canvasId: string; scoreFieldId: string }> = {
   ai: { canvasId: 'ai', scoreFieldId: 'ai-score' },
   practice: { canvasId: 'practice', scoreFieldId: 'practice-score' },
+  tournament: { canvasId: 'tournament', scoreFieldId: 'tournament-score' },
 };
 
 export function handleStartGame(mode: string, player1Name?: string, player2Name?: string) {
+  console.log('I AM HERE');
   const { canvasId, scoreFieldId } = gameModeMap[mode];
   if (game?.isRunning) return;
   if (mode === 'ai') {
@@ -18,6 +20,7 @@ export function handleStartGame(mode: string, player1Name?: string, player2Name?
   } else {
     game = new Game(canvasId, scoreFieldId, player1Name!, player2Name!);
   }
+  console.log('INSIDE MANAGER: ', canvasId, player1Name, player2Name);
   game!.drawCanvas();
   centerOnCanvas(canvasId);
   setTimeout(() => {
@@ -34,4 +37,8 @@ export function resetGame(mode: string) {
     game.stopGame();
     game = null;
   }
+}
+
+export function getCurrentGame() {
+  return game;
 }

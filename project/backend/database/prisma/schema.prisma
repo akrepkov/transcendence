@@ -18,6 +18,7 @@ model User {
   pongLosses     Int       @default(0)
   snakeWins      Int      @default(0)
   snakeLosses    Int      @default(0)
+  tournamentWins  Int     @default(0)
   createdAt DateTime @default(now())
   password  String
   friends   User[]   @relation("UserFriends")

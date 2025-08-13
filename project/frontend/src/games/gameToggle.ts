@@ -50,12 +50,14 @@ export function setupGameToggle(socket: WebSocket) {
   const startSnake = document.getElementById('start-button-snake');
   const startPractice = document.getElementById('start-button-practice');
   const startAi = document.getElementById('start-button-ai');
+  const startTour = document.getElementById('start-button-tour');
 
   /*Go to menu */
   const pongStop = document.getElementById('stop-button-pong');
   const snakeStop = document.getElementById('stop-button-snake');
   const practiceStop = document.getElementById('stop-button-practice');
   const aiStop = document.getElementById('stop-button-ai');
+  const tourStop = document.getElementById('stop-button-tour');
 
   /* Canvas Container*/
   // const pongContainer = document.getElementById('pong-container');
@@ -63,7 +65,7 @@ export function setupGameToggle(socket: WebSocket) {
   // const practiceContainer = document.getElementById('practice-container');
   // const aiContainer = document.getElementById('ai-container');
 
-  if (!startPong || !startSnake || !startAi || !startPractice)
+  if (!startPong || !startSnake || !startAi || !startPractice || !startTour)
     throw new Error('Start button element not found');
 
   startPong.addEventListener('click', () => {
@@ -101,5 +103,15 @@ export function setupGameToggle(socket: WebSocket) {
 
   aiStop?.addEventListener('click', () => {
     toggleHandler.aiPage.reset();
+  });
+
+  startTour.addEventListener('click', () => {
+    console.log('Starting Tournament game');
+    toggleHandler.tourPage.clean();
+    toggleHandler.tourPage.start();
+  });
+
+  tourStop?.addEventListener('click', () => {
+    toggleHandler.tourPage.reset();
   });
 }
