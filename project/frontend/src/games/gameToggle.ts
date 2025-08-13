@@ -111,7 +111,7 @@ export function setupGameToggle(socket: WebSocket) {
   //   toggleHandler.tourPage.start();
   // });
 
-  tourStop?.addEventListener('click', () => {
-    toggleHandler.tourPage.reset();
-  });
+  // tourStop?.addEventListener('click', () => {
+  //   toggleHandler.tourPage.reset();
+  // });
 }
