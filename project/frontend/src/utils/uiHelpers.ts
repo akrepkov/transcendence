@@ -38,17 +38,12 @@ export function setView(viewName: string) {
   document.body.setAttribute('data-view', viewName);
 }
 
-// /**
-//  * Displays a message element with the provided text content.
-//  *
-//  * @param {HTMLElement} el - The HTML element where the message should be displayed.
-//  * @param {string} text - The text content to show in the message element.
-//  */
-// export function showMessage(el: HTMLElement, text: string): void {
-//   el.classList.remove('hidden');
-//   el.textContent = text;
-// }
-
+/**
+ * Displays a message element with the provided text content.
+ *
+ * @param {HTMLElement} el - The HTML element where the message should be displayed.
+ * @param {string} text - The text content to show in the message element.
+ */
 export function showMessage(
   el: HTMLElement,
   text: string,
@@ -193,4 +188,45 @@ export function showInstructions(gameId: string) {
         'Down: ↓ / S\n Rules: Keep the ball in play. First to 5 points wins. Amount of players needs to be 2^n. The player pairs will be assigned randomly, the winner from each pair will move on to the next round. After the final round, the Winner is declared.',
     );
   }
+}
+
+export function showModal(message: string, { okText = 'OK' } = {}) {
+  return new Promise<void>((resolve) => {
+    // Backdrop
+    const backdrop = document.createElement('div');
+    backdrop.setAttribute('role', 'dialog');
+    backdrop.setAttribute('aria-modal', 'true');
+    backdrop.className = 'fixed inset-0 flex items-center justify-center z-50';
+
+    backdrop.innerHTML = `
+      <div class="absolute inset-0 bg-black/70"></div>
+      <div class="relative bg-black/80 text-white max-w-md w-[90%] p-6 rounded-lg pixelated-border text-center">
+        <p class="whitespace-pre-line text-xl mb-6">${message}</p>
+        <button id="__modal_ok__"
+          class="pixelated-button w-full hover:text-black text-xl">${okText}</button>
+      </div>
+    `;
+
+    document.body.appendChild(backdrop);
+
+    const okBtn = backdrop.querySelector('#__modal_ok__') as HTMLButtonElement | null;
+    const onClose = () => {
+      backdrop.remove();
+      document.body.style.overflow = '';
+      resolve();
+    };
+
+    okBtn?.addEventListener('click', onClose);
+    document.addEventListener('keydown', function onKey(e) {
+      if (e.key === 'Enter' || e.key === 'Escape') {
+        document.removeEventListener('keydown', onKey);
+        onClose();
+      }
+    });
+
+    document.body.style.overflow = 'hidden';
+
+    // Focus the button if it exists
+    setTimeout(() => okBtn?.focus(), 0);
+  });
 }

@@ -2,7 +2,8 @@ import { Game } from '../games/frontendGame/frontendPong.js';
 import { toggleHandler } from './gameHandler.js';
 import * as frontendGameManager from '../games/frontendGame/frontendGameManager.js';
 import { globalSession } from '../auth/auth.js';
-import { showMessage } from '../utils/uiHelpers.js';
+import { showMessage, showModal } from '../utils/uiHelpers.js';
+import { showFriends } from '../profile/profile';
 
 export const MAX_SCORE = 3;
 
@@ -69,8 +70,9 @@ function checkWinCondition(game: Game, player1: string, player2: string) {
   if (game.player1.score >= MAX_SCORE || game.player2.score >= MAX_SCORE) {
     game.stopGame();
     const { winner, loser } = getWinnerAndLoser(game, player1, player2);
-    alert('Game Over! And the winner is ' + winner + '!');
-    // showMessage(tournamentMessage, `Game Over! The winner is ${winner}!`);
+    // alert('Game Over! And the winner is ' + winner + '!');
+    showMessage(tournamentMessage, `Game Over! The winner is ${winner}!`);
+    // await showModal('Game Over! The winner is ' + winner + '!');
   }
 }
 
@@ -110,8 +112,7 @@ async function playGame(tour: Tournament, currentRound: number) {
   for (let i = 0; i < tour[currentRound - 1].length; i++) {
     const player1 = tour[currentRound - 1][i].player1;
     const player2 = tour[currentRound - 1][i].player2;
-
-    alert(
+    await showModal(
       `Round ${currentRound}: Match ${i + 1}: ${player1} vs ${player2}\nPress OK when ready to start!`,
     );
     console.log('Starting game for:', player1, player2);
@@ -141,7 +142,8 @@ async function startTournament() {
   const tour: Tournament = [];
   for (let i = 0; i < rounds; i++) {
     await generatePlayerBrackets(rounds, i + 1, tour);
-    alert(`Round ${i + 1} is about to start.`);
+    await showModal(`Round ${i + 1} is about to start.`);
+    // alert(`Round ${i + 1} is about to start.`);
     await playGame(tour, i + 1);
     console.log('TOURNAMENT INFO THIS ROUND: ', tour[i]);
   }
@@ -165,7 +167,7 @@ addPlayerButton?.addEventListener('click', async () => {
   const username = usernameInput.value.trim();
   if (players.includes(username)) {
     usernameInput.value = '';
-    alert("You're already in.");
+    showMessage(tournamentMessage, "You're already in.");
   }
   if (username && !players.includes(username)) {
     const isValid = await validatePlayers(username);
@@ -174,7 +176,7 @@ addPlayerButton?.addEventListener('click', async () => {
       renderPlayersList();
       usernameInput.value = '';
     } else {
-      alert('This user is not registered, please register first.');
+      showMessage(tournamentMessage, 'This user is not registered, please register first.');
       return;
     }
   }
@@ -182,12 +184,12 @@ addPlayerButton?.addEventListener('click', async () => {
 
 startButton?.addEventListener('click', async () => {
   if (players.length < 2 || (players.length & (players.length - 1)) !== 0) {
-    alert('The number of players must be a power of 2');
+    showMessage(tournamentMessage, 'The number of players must be a power of 2');
     return;
   } else {
     toggleHandler.tourPage.clean();
     toggleHandler.tourPage.start();
-    startTournament();
+    await startTournament();
   }
 });
 
