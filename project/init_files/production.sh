@@ -30,10 +30,5 @@ fi
 # initialises backend packages and prisma
 (cd ${BACKEND} && npm install && npx prisma migrate dev  --schema=database/prisma/schema.prisma fix-game-relations && npx prisma generate --schema=database/prisma/schema.prisma)
 
-# Starts the frontend and backend concurrently watching for changes to files
-# Also sets up pretty colours :)
-npx concurrently --no-prefix "npm run production --prefix ${FRONTEND}" "npm run production --prefix ${BACKEND}" \
-    --names "FRONTEND,BACKEND" \
-    --prefix-colors "blue,green" \
-    --kill-others-on-fail \
-    --success first
+npm run production --prefix ${FRONTEND}
+npm run production --prefix ${BACKEND}
