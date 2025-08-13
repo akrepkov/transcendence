@@ -12,7 +12,6 @@ const gameModeMap: Record<string, { canvasId: string; scoreFieldId: string }> = 
 };
 
 export function handleStartGame(mode: string, player1Name?: string, player2Name?: string) {
-  if (!mode || !player1Name || !player2Name) return;
   const { canvasId, scoreFieldId } = gameModeMap[mode];
   if (game?.isRunning) return;
   if (mode === 'ai') {

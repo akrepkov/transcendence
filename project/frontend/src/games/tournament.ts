@@ -1,4 +1,5 @@
 import { Game } from '../games/frontendGame/frontendPong.js';
+import { toggleHandler } from './gameHandler.js';
 import * as frontendGameManager from '../games/frontendGame/frontendGameManager.js';
 import { globalSession } from '../auth/auth.js';
 
@@ -157,11 +158,12 @@ export function initTournamentPlayers() {
   playerList.innerHTML = '';
 }
 
-// TODO:declare the final winner and hide the pong canvas
-// TODO:alert is user is already added to the player list
-
 addPlayerButton?.addEventListener('click', async () => {
   const username = usernameInput.value.trim();
+  if (players.includes(username)) {
+    usernameInput.value = '';
+    alert("You're already in.");
+  }
   if (username && !players.includes(username)) {
     const isValid = await validatePlayers(username);
     if (isValid) {
@@ -176,11 +178,14 @@ addPlayerButton?.addEventListener('click', async () => {
 });
 
 startButton?.addEventListener('click', async () => {
-  console.log('START button clicked');
   if (players.length < 2 || (players.length & (players.length - 1)) !== 0) {
     alert('The number of players must be a power of 2');
-    return; //TODO: reset the tournament page - now ai starts;
-  } else startTournament();
+    return;
+  } else {
+    toggleHandler.tourPage.clean();
+    toggleHandler.tourPage.start();
+    startTournament();
+  }
 });
 
 // add Enter key support

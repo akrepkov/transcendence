@@ -36,7 +36,6 @@ const tournamentHandler = async (request, reply) => {
   if (!username) {
     return reply.status(400).send({ error: 'Username is required' });
   }
-  console.log('USER AFTER WIN: ', await userServices.getUserByUsername(username));
   await userServices.updateTournamentWins(username);
   reply.send({ mssage: 'Tournament Win saved.' });
 };
