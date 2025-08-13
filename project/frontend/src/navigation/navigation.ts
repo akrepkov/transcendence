@@ -5,7 +5,12 @@ import {
   showGameStats,
   showGameHistory,
 } from '../profile/profile.js';
-import { hideAllPages, setView, toggleOwnProfileButtons } from '../utils/uiHelpers.js';
+import {
+  hideAllPages,
+  setView,
+  toggleOwnProfileButtons,
+  showInstructions,
+} from '../utils/uiHelpers.js';
 import { initTournamentPlayers } from '../games/tournament.js';
 
 const loginForm = document.getElementById('loginForm');
@@ -237,6 +242,7 @@ export function showPongView() {
   hideAllPages();
   document.getElementById('pongPage')?.classList.remove('hidden');
   setView('pong');
+  showInstructions('pong');
 }
 
 /**
@@ -249,6 +255,7 @@ export function showSnakeView() {
   hideAllPages();
   document.getElementById('snakePage')?.classList.remove('hidden');
   setView('snake');
+  showInstructions('snake');
 }
 
 /**
@@ -261,6 +268,7 @@ export function showPracticeView() {
   hideAllPages();
   document.getElementById('practicePage')?.classList.remove('hidden');
   setView('practice');
+  showInstructions('practice');
 }
 
 /**
@@ -298,6 +306,7 @@ export function showAiView() {
   hideAllPages();
   document.getElementById('aiPage')?.classList.remove('hidden');
   setView('ai');
+  showInstructions('ai');
 }
 
 /**

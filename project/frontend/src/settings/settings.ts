@@ -30,8 +30,8 @@ function showSettingsMessage(
   if (!element) return;
 
   // reset colors
-  element.classList.remove('text-yellow-300', 'text-red-300', 'hidden');
-  element.classList.add(isError ? 'text-red-300' : 'text-yellow-300');
+  element.classList.remove('text-green-400', 'text-yellow-400', 'hidden');
+  element.classList.add(isError ? 'text-yellow-400' : 'text-green-400');
   element.textContent = text;
 
   // empty after 4 seconds
@@ -87,11 +87,11 @@ export async function changeUsername() {
     });
 
     if (response.status === 418) {
-      alert('This username is already in use, try another one.');
+      showSettingsMessage('Username is already in use, try another one.', true, 'username');
       return;
     }
     if (!response.ok) {
-      showSettingsMessage('Username change failed, perhaps name already in use', true, 'username');
+      showSettingsMessage('Username change failed', true, 'username');
       return;
     }
 
@@ -209,10 +209,10 @@ export function initAvatarUpload() {
       });
 
       if (response.status == 418) {
-        alert('Image is too big, try uploading something up to 1MB.');
+        showSettingsMessage('Image is too big, try uploading something up to 1MB.', true, 'avatar');
         return;
       } else if (!response.ok) {
-        alert('Avatar upload failed.');
+        showSettingsMessage('Avatar upload failed.', true, 'avatar');
       }
 
       if (!response.ok) {

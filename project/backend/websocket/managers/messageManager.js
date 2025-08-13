@@ -79,23 +79,8 @@ function createBroadcast(message) {
   };
 }
 
-async function getFriendNames(username) {
-  const friends = await getFriends(username);
-  if (!friends || friends.length === 0) {
-    console.log(`No friends found for user: ${username}`);
-    return [];
-  }
-  const onlineFriends = [];
-  friends.forEach((friend) => {
-    if (connectionManager.getUserConnections(friend.userId) !== undefined) {
-      onlineFriends.push(friend.username);
-    }
-  });
-  return onlineFriends;
-}
-
 async function sendLoggedInFriends(connection) {
-  const friendNames = await getFriendNames(connection.username);
+  const friendNames = await connectionManager.getFriendNames(connection.username);
   createBroadcast({
     type: 'onlineFriends',
     friends: friendNames,

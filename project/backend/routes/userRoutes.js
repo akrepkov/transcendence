@@ -2,6 +2,7 @@ import userControllers from '../controllers/userControllers.js';
 import authControllers from '../controllers/authControllers.js';
 import gameControllers from '../controllers/gameControllers.js';
 import { websocketHandler } from '../websocket/websocket.js';
+import { connectionManager } from '../websocket/managers/connectionManager.js';
 // import snake from '../plugins/websocketSnake.js';
 
 export default async function userRoutes(fastify) {
@@ -41,6 +42,12 @@ export default async function userRoutes(fastify) {
   //     { preHandler: authControllers.authenticate },
   //     userControllers.deteleFriendHandler,
   //   );
+
+  fastify.get(
+    '/api/get_online_friends',
+    { preHandler: authControllers.authenticate },
+    connectionManager.getOnlineFriendsHandler,
+  );
 
   // Websocket
   fastify.get('/ws/connect', { websocket: true }, websocketHandler);

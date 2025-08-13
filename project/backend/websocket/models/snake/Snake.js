@@ -87,6 +87,10 @@ export class Snake {
     let loser = null;
     let gameOver = false;
     // console.log(`Player 1 ${player1.collision} Player 2 ${player2.collision}`);
+    if (player1.collision && player2.collision) {
+      this.resetGame();
+      return;
+    }
     if (player1.collision || player2.collision) {
       gameOver = true;
       if (player1.collision && !player2.collision) {
@@ -95,8 +99,6 @@ export class Snake {
       } else if (player2.collision && !player1.collision) {
         winner = player1.playerName;
         loser = player2.playerName;
-      } else {
-        winner = null;
       }
     }
     if (
@@ -145,18 +147,29 @@ export class Snake {
     player2.movedThisFrame = false;
     this.checkWinCondition();
   }
+
   resetGame() {
-    this.apple.getRandomApplePosition(this.players[0], this.players[1]);
+    this.stopGame();
+    messageManager
+      .createBroadcast({
+        type: 'resetGame',
+      })
+      .to.sockets(this.playerSockets);
     this.players.forEach((player) => {
       player.positions =
         player.playerId === this.players[0].playerId
-          ? SNAKE_CONSTS.LEFT_PLAYER
-          : SNAKE_CONSTS.RIGHT_PLAYER;
-      player.directions = { x: 0, y: -1 };
+          ? SNAKE_CONSTS.LEFT_PLAYER.map((pos) => ({ ...pos }))
+          : SNAKE_CONSTS.RIGHT_PLAYER.map((pos) => ({ ...pos }));
+      player.directions =
+        player.playerId === this.players[0].playerId ? { x: 1, y: 0 } : { x: -1, y: 0 };
       player.score = 0;
       player.collision = false;
     });
+    this.apple.position = { x: 400, y: 300 };
     console.log('Game reset');
+    setTimeout(() => {
+      this.startGame();
+    }, 1000);
   }
 
   startGame() {

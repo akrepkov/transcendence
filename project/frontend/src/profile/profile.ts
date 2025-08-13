@@ -170,7 +170,7 @@ export async function showFriends(username: string) {
     // Fetch profile + online list in parallel
     const [data, onlineFriends] = await Promise.all([
       fetchUserProfile(username),
-      globalSession.getOnlineFriends(),
+      globalSession.getOnlineFriends(username),
     ]);
 
     if (token !== friendsRenderToken) return;
