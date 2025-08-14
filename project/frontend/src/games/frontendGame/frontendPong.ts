@@ -101,25 +101,46 @@ class Player extends Paddle {
 class AI extends Paddle {
   private aiReactionCounter: number = 0;
   private aiReactionRate: number = 2;
+  private lastCheck: number = Date.now();
+  private direction: string = 'idle';
+  private targetY: number = (GAME_CONSTS.HEIGHT - this.height) / 2;
 
   constructor(x: number) {
     super(x, 'AI');
   }
 
+  // So we calculate first how far the ball is from the paddle.
+  // Then how long it will take to reach the paddle with the ball speedX.
+  // Then we predict where the ball will be after said time in the y-axis.
+  // This does not take into account bounces off the walls, so the Ai is beatable.
+  predictBallYPosition(ball: Ball): number {
+    const distanceBallToPaddle = GAME_CONSTS.WIDTH - ball.x;
+    const timeUntilImpact = distanceBallToPaddle / ball.speedX;
+    const predictedPaddleY = ball.y + ball.speedY * timeUntilImpact;
+    return predictedPaddleY;
+  }
+
   move(ball: Ball): void {
-    this.aiReactionCounter++;
-    if (this.aiReactionCounter % this.aiReactionRate !== 0) return;
-    if (ball.speedX > 0) {
-      if (ball.y < this.y + this.height / 2) {
-        this.y -= this.paddleSpeed;
-      } else if (ball.y > this.y + this.height / 2) {
-        this.y += this.paddleSpeed;
+    if (Date.now() - this.lastCheck > 1000) {
+      if (ball.speedX > 0) {
+        this.targetY = this.predictBallYPosition(ball);
+        if (this.targetY < this.y + this.height / 2) {
+          this.direction = 'up';
+        } else if (this.targetY > this.y + this.height / 2) {
+          this.direction = 'down';
+        } else {
+          this.direction = 'idle';
+        }
+        this.lastCheck = Date.now();
       }
-      if (this.y < 0) {
-        this.y = 0;
-      } else if (this.y + this.height > GAME_CONSTS.HEIGHT) {
-        this.y = GAME_CONSTS.HEIGHT - this.height;
-      }
+    }
+    if (this.direction === 'up' && this.y > 0) {
+      this.y -= this.paddleSpeed;
+    } else if (this.direction === 'down' && this.y + this.height < GAME_CONSTS.HEIGHT) {
+      this.y += this.paddleSpeed;
+    }
+    if (Math.abs(this.y - this.targetY) < this.paddleSpeed) {
+      this.direction = 'idle';
     }
   }
 }
