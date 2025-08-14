@@ -54,6 +54,7 @@ get_packages() {
 
 CURRENT_NODE_VERSION=$(node -v | cut -d'.' -f1-2)
 if [ "$CURRENT_NODE_VERSION" != "$NODE_VERSION" ]; then
+   echo -e $BLUE"\nCurrently your shell still doesn't see the correct version of node, fixing that"$END
    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
    if [ "$?" != "0" ]; then
        echo -e $RED"Something went wrong installing and initialising nvm and the correct version of Node, please consult troubleshooting.txt or JI"$END

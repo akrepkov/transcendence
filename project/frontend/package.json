@@ -7,7 +7,7 @@
     "lint": "eslint . --ignore-pattern 'src/unit-tests/*'",
     "lint:fix": "eslint . --fix --ignore-pattern 'src/unit-tests/*'",
     "start": "concurrently \"tsc --watch --preserveWatchOutput\" \"npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch\"",
-    "production": "concurrently \"tsc\" \"npx tailwindcss -i ./src/input.css -o ./src/output.css --minify\""
+    "production": "tsc &&  npx tailwindcss -i ./src/input.css -o ./src/output.css --minify"
   },
   "keywords": [],
   "author": "",

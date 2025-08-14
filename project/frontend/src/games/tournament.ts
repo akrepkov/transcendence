@@ -9,11 +9,12 @@ const addPlayerButton = document.getElementById('add-player-button') as HTMLButt
 const startButton = document.getElementById('start-button-tour') as HTMLButtonElement;
 const playerList = document.getElementById('player-list') as HTMLUListElement;
 const tournamentMessage = document.getElementById('TournamentMessage') as HTMLElement;
+const stopButton = document.getElementById('stop-button-tour') as HTMLButtonElement;
 
 type Player = string;
 const players: Player[] = [];
 type Match = { round: number; player1: string; player2: string; winner: string };
-type Tournament = Match[][];
+const tour: Match[][] = [];
 
 async function validatePlayers(username: string) {
   try {
@@ -52,7 +53,7 @@ function waitForGameToEnd(game: Game): Promise<void> {
   });
 }
 
-async function generatePlayerBrackets(rounds: number, currentRound: number, tour: Tournament) {
+async function generatePlayerBrackets(rounds: number, currentRound: number) {
   if (!tour[currentRound - 1]) {
     tour[currentRound - 1] = [];
   }
@@ -84,7 +85,7 @@ async function generatePlayerBrackets(rounds: number, currentRound: number, tour
   console.log('GENERATED BRACKETS: ', tour[currentRound - 1]);
 }
 
-async function playGame(tour: Tournament, currentRound: number) {
+async function playGame(currentRound: number) {
   for (let i = 0; i < tour[currentRound - 1].length; i++) {
     const player1 = tour[currentRound - 1][i].player1;
     const player2 = tour[currentRound - 1][i].player2;
@@ -117,12 +118,12 @@ async function playGame(tour: Tournament, currentRound: number) {
 }
 
 async function startTournament() {
+  tour.length = 0;
   const rounds = Math.log2(players.length);
-  const tour: Tournament = [];
   for (let i = 0; i < rounds; i++) {
-    await generatePlayerBrackets(rounds, i + 1, tour);
+    await generatePlayerBrackets(rounds, i + 1);
     await showModal(`Round ${i + 1} is about to start.`);
-    await playGame(tour, i + 1);
+    await playGame(i + 1);
     console.log('TOURNAMENT INFO THIS ROUND: ', tour[i]);
   }
   if (tour[rounds - 1]) {
@@ -134,6 +135,7 @@ async function startTournament() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: finalWinner }),
     });
+    tour.length = 0;
   }
 }
 
@@ -171,10 +173,14 @@ startButton?.addEventListener('click', async () => {
     await startTournament();
   }
 });
-
 // add Enter key support
 usernameInput.addEventListener('keydown', (event: KeyboardEvent) => {
   if (event.key === 'Enter') {
     addPlayerButton.click();
   }
+});
+
+stopButton?.addEventListener('click', async () => {
+  tour.length = 0;
+  toggleHandler.tourPage.reset();
 });

@@ -57,7 +57,7 @@ export function setupGameToggle(socket: WebSocket) {
   const snakeStop = document.getElementById('stop-button-snake');
   const practiceStop = document.getElementById('stop-button-practice');
   const aiStop = document.getElementById('stop-button-ai');
-  const tourStop = document.getElementById('stop-button-tour');
+  // const tourStop = document.getElementById('stop-button-tour');
 
   /* Canvas Container*/
   // const pongContainer = document.getElementById('pong-container');
@@ -111,7 +111,7 @@ export function setupGameToggle(socket: WebSocket) {
   //   toggleHandler.tourPage.start();
   // });
 
-  tourStop?.addEventListener('click', () => {
-    toggleHandler.tourPage.reset();
-  });
+  // tourStop?.addEventListener('click', () => {
+  //   toggleHandler.tourPage.reset();
+  // });
 }

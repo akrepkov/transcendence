@@ -25,7 +25,7 @@ RM=rm -rf
 
 all: dev
 
-production: node backend frontend
+production: clean node backend frontend
 	@echo "${GREEN}Running production script...${END}"
 	@${PRODUCTION_SCRIPT}
 
@@ -70,10 +70,6 @@ lint-fix:
 # cleanup package.json as well
 reset: clean
 	@${RM} ~/.nvm
-	@${RM} ${BACKEND}/package.json
-	@${RM} ${BACKEND}/package-lock.json
-	@${RM} ${FRONTEND}/package.json
-	@${RM} ${FRONTEND}/package-lock.json
 
 update_json:
 	@echo "${YELLOW}Updating packages...${END}"
