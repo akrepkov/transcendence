@@ -1,3 +1,6 @@
+import { translations } from '../translations/languages.js';
+import { languageSwitcherFunction } from '../translations/languageManager.js';
+
 /**
  * WeakMap frees entry if element is removed from DOM
  */
@@ -103,12 +106,22 @@ export function toggleOwnProfileButtons(isOwnProfile: boolean) {
   toggleElement('backToOwnProfile', !isOwnProfile);
 }
 
+/**
+ * Prevents the browser from scrolling the page when the up or down arrow keys are pressed.
+ *
+ * @param {KeyboardEvent} event - The keyboard event to check.
+ */
 export function turnOffKeyboardScrolling(event: KeyboardEvent): void {
   if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
     event.preventDefault();
   }
 }
 
+/**
+ * Scrolls the page so that the specified canvas element is centered in the viewport.
+ *
+ * @param {string} canvasId - The ID of the canvas element to center on screen.
+ */
 export function centerOnCanvas(canvasId: string) {
   const rect = document.getElementById(canvasId)?.getBoundingClientRect();
   if (!rect) return;
@@ -120,6 +133,13 @@ export function centerOnCanvas(canvasId: string) {
   });
 }
 
+/**
+ * Types text into a given element one character at a time, creating a "typewriter" effect.
+ *
+ * @param {HTMLElement} element - The element where the text will be typed.
+ * @param {string} text - The text to display.
+ * @param {number} [speed=40] - Delay (ms) between typing each character.
+ */
 function typeText(element: HTMLElement, text: string, speed = 40) {
   let i = 0;
   element.textContent = ''; // start with an empty string
@@ -130,6 +150,11 @@ function typeText(element: HTMLElement, text: string, speed = 40) {
   }, speed);
 }
 
+/**
+ * Shows the game instructions for the given game ID with a typing animation.
+ *
+ * @param {string} gameId - The ID of the game ('pong', 'snake', 'practice', 'ai', 'tour').
+ */
 export function showInstructions(gameId: string) {
   const instructionsPong = document.getElementById('instructionsPong') as HTMLParagraphElement;
   const instructionsSnake = document.getElementById('instructionsSnake') as HTMLParagraphElement;
@@ -148,48 +173,65 @@ export function showInstructions(gameId: string) {
   )
     return;
 
+  const currentLang = localStorage.getItem('lang') || 'en'; // Retrieve the current language
+  const gameTranslations = translations[currentLang];
+
   if (gameId === 'pong') {
     instructionsPong.classList.remove('hidden');
-    typeText(
-      instructionsPong,
-      'Up: ↑ / W\n' + 'Down: ↓ / S\n Rules: Keep the ball in play. First to 5 points wins.',
-    );
+    typeText(instructionsPong, gameTranslations.instructionsPong);
+    // typeText(
+    //   instructionsPong,
+    //   'Up: ↑ / W\n' + 'Down: ↓ / S\n Rules: Keep the ball in play. First to 5 points wins.',
+    // );
   } else if (gameId === 'ai') {
     instructionsAi.classList.remove('hidden');
-    typeText(
-      instructionsAi,
-      'Up: W\n ' + 'Down: S\n Rules: Keep the ball in play. First to 5 points wins.',
-    );
+    typeText(instructionsAi, gameTranslations.instructionsAi);
+    // typeText(
+    //   instructionsAi,
+    //   'Up: W\n ' + 'Down: S\n Rules: Keep the ball in play. First to 5 points wins.',
+    // );
   } else if (gameId === 'practice') {
     instructionsPractice.classList.remove('hidden');
-    typeText(
-      instructionsPractice,
-      'Up: ↑ / W\n' + 'Down: ↓ / S\n Rules: Keep the ball in play. First to 5 points wins.',
-    );
+    typeText(instructionsPractice, gameTranslations.instructionsPractice);
+    // typeText(
+    //   instructionsPractice,
+    //   'Up: ↑ / W\n' + 'Down: ↓ / S\n Rules: Keep the ball in play. First to 5 points wins.',
+    // );
   } else if (gameId === 'snake') {
     instructionsSnake.classList.remove('hidden');
-    typeText(
-      instructionsSnake,
-      'Up: ↑ / W \n   ' +
-        'Down: ↓ / S\n  ' +
-        'Left: ← / A\n   ' +
-        'Right: → / D\n   ' +
-        'Reverse: R\n ' +
-        'Rules: \n' +
-        'Eat apples to grow longer.\n' +
-        'Win by eating 10 apples the fastest, making your opponent crash into a wall, their own tail, or your snake.\n' +
-        'If both players crash in the same frame the game restarts.',
-    );
+    typeText(instructionsSnake, gameTranslations.instructionsSnake);
+    // typeText(
+    //   instructionsSnake,
+    //   'Up: ↑ / W \n   ' +
+    //     'Down: ↓ / S\n  ' +
+    //     'Left: ← / A\n   ' +
+    //     'Right: → / D\n   ' +
+    //     'Reverse: R\n ' +
+    //     'Rules: \n' +
+    //     'Eat apples to grow longer.\n' +
+    //     'Win by eating 10 apples the fastest, making your opponent crash into a wall, their own tail, or your snake.\n' +
+    //     'If both players crash in the same frame the game restarts.',
+    // );
   } else if (gameId === 'tour') {
     instructionsTour.classList.remove('hidden');
-    typeText(
-      instructionsTour,
-      'Up: ↑ / W\n' +
-        'Down: ↓ / S\n Rules: Keep the ball in play. First to 5 points wins. Amount of players needs to be 2^n. The player pairs will be assigned randomly, the winner from each pair will move on to the next round. After the final round, the Winner is declared.',
-    );
+    typeText(instructionsTour, gameTranslations.instructionsTour);
+    // typeText(
+    //   instructionsTour,
+    //   'Up: ↑ / W\n' +
+    //     'Down: ↓ / S\n Rules: Keep the ball in play. First to 5 points wins. Amount of players needs to be 2^n. The player pairs will be assigned randomly, the winner from each pair will move on to the next round. After the final round, the Winner is declared.',
+    // );
   }
 }
 
+/**
+ * Displays a modal dialog with a message and an OK button.
+ * Returns a Promise that resolves when the modal is closed.
+ *
+ * @param {string} message - The message text to display.
+ * @param {object} [config] - Optional configuration.
+ * @param {string} [config.okText='OK'] - Text for the OK button.
+ * @returns {Promise<void>} Resolves when the user closes the modal.
+ */
 export function showModal(message: string, { okText = 'OK' } = {}) {
   return new Promise<void>((resolve) => {
     // Backdrop
@@ -229,4 +271,53 @@ export function showModal(message: string, { okText = 'OK' } = {}) {
     // Focus the button if it exists
     setTimeout(() => okBtn?.focus(), 0);
   });
+}
+
+/**
+ * Replaces a hidden <select> element with a custom-styled language dropdown.
+ * The hidden select is still updated when the user chooses an option, so
+ * existing event listeners for the select will continue to work.
+ */
+export function mountCustomLanguageDropdown() {
+  const select = document.getElementById('language-switcher') as HTMLSelectElement | null;
+  const mount = document.getElementById('language-dropdown-mount');
+  if (!select || !mount) return;
+
+  const wrapper = document.createElement('div');
+  wrapper.style.position = 'relative';
+
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'language-switcher-btn';
+
+  const list = document.createElement('ul');
+  list.className = 'language-switcher-list';
+  list.style.display = 'none';
+
+  // Initial label
+  const current = select.selectedOptions[0] ?? select.options[0];
+  btn.textContent = current?.textContent ?? 'Select';
+
+  // Build items and click behavior
+  Array.from(select.options).forEach((opt) => {
+    const li = document.createElement('li');
+    li.className = 'language-switcher-item';
+    li.textContent = opt.textContent ?? opt.value;
+    li.addEventListener('click', () => {
+      select.value = opt.value; // update hidden select
+      select.dispatchEvent(new Event('change', { bubbles: true })); // trigger existing logic
+      btn.textContent = li.textContent; // update button label
+      list.style.display = 'none'; // close
+    });
+    list.appendChild(li);
+  });
+
+  // Toggle open/close
+  btn.addEventListener('click', () => {
+    list.style.display = list.style.display === 'none' ? 'block' : 'none';
+  });
+
+  wrapper.appendChild(btn);
+  wrapper.appendChild(list);
+  mount.appendChild(wrapper);
 }

@@ -6,9 +6,10 @@ import { initProfileEvents } from './profile/profile.js';
 import { initLandingEvents, initBackToLanding } from './landing/landing.js';
 import { initMainEvents } from './init/initMainEvents.js';
 import { initHistoryHandling } from './init/initHistory.js';
-// import { languageSwitcherFunction } from './translations/languageManager.js';
+import { languageSwitcherFunction } from './translations/languageManager.js';
 import { initCreditsNavigation } from './init/initCredits.js';
 import { initSettingsEvents } from './settings/settings.js';
+import { mountCustomLanguageDropdown } from './utils/uiHelpers.js';
 
 /**
  * Initializes the application after the DOM is fully loaded.
@@ -25,7 +26,8 @@ import { initSettingsEvents } from './settings/settings.js';
  * - Sets up back buttons for exiting mini-games and AI view
  */
 document.addEventListener('DOMContentLoaded', async () => {
-  // languageSwitcherFunction();
+  languageSwitcherFunction();
+  mountCustomLanguageDropdown();
   await handleLogin();
   await handleRegister();
   toggleForms();

@@ -1,32 +1,35 @@
 import { translations } from './languages.js';
 
-// export function languageSwitcherFunction() {
-//   const savedLang = localStorage.getItem('lang') as 'en' | 'pl' | 'ru' | null;
-//   const defaultLang = savedLang || 'en';
+export function languageSwitcherFunction() {
+  const savedLang = localStorage.getItem('lang') as 'en' | 'pl' | 'ru' | 'ko' | null;
+  const defaultLang = savedLang || 'en';
 
-//   const languageSwitcher = document.getElementById('language-switcher') as HTMLSelectElement;
-//   languageSwitcher.value = defaultLang;
-//   applyTranslations(defaultLang);
-// }
-// const languageSwitcher = document.getElementById('language-switcher') as HTMLSelectElement;
-// languageSwitcher.addEventListener('change', (event) => {
-//   const selectedLanguage = (event.target as HTMLSelectElement).value as 'en' | 'pl' | 'ru';
-//   localStorage.setItem('lang', selectedLanguage);
-//   console.log('Selected language:', selectedLanguage);
-//   applyTranslations(selectedLanguage);
-// });
+  const languageSwitcher = document.getElementById('language-switcher') as HTMLSelectElement;
+  languageSwitcher.value = defaultLang;
+  applyTranslations(translations[defaultLang]);
+}
 
-export function applyTranslations(lang: 'en' | 'pl' | 'ru') {
-  const t = translations[lang];
-  const titleEl = document.getElementById('title');
-  const formTitleEl = document.getElementById('formTitle');
-  const toggleFormEl = document.getElementById('toggleForm');
-  const loginUsernameEl = document.getElementById('loginUsername') as HTMLInputElement;
-  const loginPasswordEl = document.getElementById('loginPassword') as HTMLInputElement;
+const languageSwitcher = document.getElementById('language-switcher') as HTMLSelectElement;
+languageSwitcher.addEventListener('change', (event) => {
+  const selectedLanguage = (event.target as HTMLSelectElement).value as 'en' | 'pl' | 'ru' | 'ko';
+  localStorage.setItem('lang', selectedLanguage);
+  console.log('Selected language:', selectedLanguage);
+  applyTranslations(translations[selectedLanguage]);
+});
 
-  if (titleEl) titleEl.textContent = t.title;
-  if (formTitleEl) formTitleEl.textContent = t.formTitle;
-  if (toggleFormEl) toggleFormEl.textContent = t.toggleForm;
-  if (loginUsernameEl) loginUsernameEl.placeholder = t.loginUsername;
-  if (loginPasswordEl) loginPasswordEl.placeholder = t.loginPassword;
+export function applyTranslations(translations: Record<string, string>) {
+  document.querySelectorAll<HTMLElement>('[data-i18n]').forEach((el) => {
+    const key = el.getAttribute('data-i18n');
+    if (key && translations[key]) el.textContent = translations[key];
+  });
+
+  document.querySelectorAll<HTMLElement>('[data-i18n-placeholder]').forEach((el) => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (key && translations[key]) (el as HTMLInputElement).placeholder = translations[key];
+  });
+
+  document.querySelectorAll<HTMLElement>('[data-i18n-title]').forEach((el) => {
+    const key = el.getAttribute('data-i18n-title');
+    if (key && translations[key]) el.title = translations[key];
+  });
 }
