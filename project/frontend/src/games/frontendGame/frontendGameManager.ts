@@ -29,6 +29,12 @@ export async function handleStartGame(
 
   if (mode === 'ai') {
     game = new Game(canvasId, scoreFieldId, globalSession.getUsername());
+  } else if (mode === 'tournament') {
+    if (!player1Name || !player2Name) {
+      console.error('The tournament needs at least 2 players.');
+      return;
+    }
+    game = new Game(canvasId, scoreFieldId, player1Name, player2Name);
   } else {
     game = new Game(canvasId, scoreFieldId, player1Name!, player2Name!);
   }
@@ -38,7 +44,7 @@ export async function handleStartGame(
   centerOnCanvas(canvasId);
 
   // Backward-compatible default: previously started after ~500ms
-  const startDelay = options.delaysMs ?? 500;
+  const startDelay = options.delaysMs ?? 1;
 
   // If a promise was provided (e.g., showModal(...)), wait for it
   if (options.waitFor) {
