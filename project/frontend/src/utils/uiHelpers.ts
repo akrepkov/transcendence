@@ -1,4 +1,9 @@
 /**
+ * WeakMap frees entry if element is removed from DOM
+ */
+const __messageTimers = new WeakMap<HTMLElement, number>();
+
+/**
  * Hides all main application pages by adding the 'hidden' class to their elements.
  *
  * This function is typically used when navigating between different views
@@ -39,9 +44,33 @@ export function setView(viewName: string) {
  * @param {HTMLElement} el - The HTML element where the message should be displayed.
  * @param {string} text - The text content to show in the message element.
  */
-export function showMessage(el: HTMLElement, text: string): void {
-  el.classList.remove('hidden');
+export function showMessage(
+  el: HTMLElement,
+  text: string,
+  options?: { isError?: boolean; duration?: number },
+): void {
+  if (!el) return;
+
+  const isError = options?.isError ?? false;
+  const duration = options?.duration ?? 4000;
+
+  // clear prior timer for this element
+  const prev = __messageTimers.get(el);
+  if (prev) window.clearTimeout(prev);
+
+  // apply styles similar to settings.ts (green for success, yellow for error)
+  el.classList.remove('hidden', 'text-green-400', 'text-yellow-400');
+  el.classList.add(isError ? 'text-yellow-400' : 'text-green-400');
+
   el.textContent = text;
+
+  const t = window.setTimeout(() => {
+    // you can either clear or just hide; settings clears text, so mirror that
+    el.textContent = '';
+    el.classList.add('hidden');
+  }, duration);
+
+  __messageTimers.set(el, t);
 }
 
 /**
@@ -108,8 +137,16 @@ export function showInstructions(gameId: string) {
     'instructionsPractice',
   ) as HTMLParagraphElement;
   const instructionsAi = document.getElementById('instructionsAi') as HTMLParagraphElement;
+  const instructionsTour = document.getElementById('instructionsTour') as HTMLParagraphElement;
 
-  if (!instructionsPong || !instructionsSnake || !instructionsPractice || !instructionsAi) return;
+  if (
+    !instructionsPong ||
+    !instructionsSnake ||
+    !instructionsPractice ||
+    !instructionsAi ||
+    !instructionsTour
+  )
+    return;
 
   if (gameId === 'pong') {
     instructionsPong.classList.remove('hidden');
@@ -143,5 +180,53 @@ export function showInstructions(gameId: string) {
         'Win by eating 10 apples the fastest, making your opponent crash into a wall, their own tail, or your snake.\n' +
         'If both players crash in the same frame the game restarts.',
     );
+  } else if (gameId === 'tour') {
+    instructionsTour.classList.remove('hidden');
+    typeText(
+      instructionsTour,
+      'Up: ↑ / W\n' +
+        'Down: ↓ / S\n Rules: Keep the ball in play. First to 5 points wins. Amount of players needs to be 2^n. The player pairs will be assigned randomly, the winner from each pair will move on to the next round. After the final round, the Winner is declared.',
+    );
   }
+}
+
+export function showModal(message: string, { okText = 'OK' } = {}) {
+  return new Promise<void>((resolve) => {
+    // Backdrop
+    const backdrop = document.createElement('div');
+    backdrop.setAttribute('role', 'dialog');
+    backdrop.setAttribute('aria-modal', 'true');
+    backdrop.className = 'fixed inset-0 flex items-center justify-center z-50';
+
+    backdrop.innerHTML = `
+      <div class="absolute inset-0 bg-black/70"></div>
+      <div class="relative bg-black/80 text-white max-w-md w-[90%] p-6 rounded-lg pixelated-border text-center">
+        <p class="whitespace-pre-line text-xl mb-6">${message}</p>
+        <button id="__modal_ok__"
+          class="pixelated-button w-full hover:text-black text-xl">${okText}</button>
+      </div>
+    `;
+
+    document.body.appendChild(backdrop);
+
+    const okBtn = backdrop.querySelector('#__modal_ok__') as HTMLButtonElement | null;
+    const onClose = () => {
+      backdrop.remove();
+      document.body.style.overflow = '';
+      resolve();
+    };
+
+    okBtn?.addEventListener('click', onClose);
+    document.addEventListener('keydown', function onKey(e) {
+      if (e.key === 'Enter' || e.key === 'Escape') {
+        document.removeEventListener('keydown', onKey);
+        onClose();
+      }
+    });
+
+    document.body.style.overflow = 'hidden';
+
+    // Focus the button if it exists
+    setTimeout(() => okBtn?.focus(), 0);
+  });
 }

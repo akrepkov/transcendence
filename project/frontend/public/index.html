@@ -487,7 +487,6 @@
 		</main>
 	</div>
 
-
 	<!-- Ai Page -->
 	<div id="aiPage" class="hidden min-h-screen p-8 bg-gif-ai text-white">
 		<header class="flex justify-between items-center mb-12">
@@ -522,43 +521,70 @@
 	<!-- Tournament Page -->
 	<div id="tourPage" class="hidden min-h-screen p-8 bg-gif-tournament text-white">
 		<header class="flex justify-between items-center mb-12">
-			<h1 class="text-5xl font-bold">Tournament Mode</h1>
+			<h1 class="text-5xl font-bold text-pink-300">Tournament Mode</h1>
 		</header>
-		<main>
-			<div id="tour-start-container" class="absolute inset-0 flex flex-col items-center justify-center z-10" id="tourEnterOverlay">
-                <button id="backFromTour" class="back-button absolute top-8 right-8 text-xl underline hover:text-black">
-                    Back
-				</button>
-				  <!-- Username input field -->
-				<input
-					id="tournamentUsername"
-					type="text"
-					placeholder="Enter your username"
-					class="block mb-8 px-6 py-4 text-2xl rounded-lg text-black bg-white w-full max-w-md text-center"
-					required
-				/>
-				<button id="add-player-button"
-				class="mb-4 text-xl bg-blue-500 px-6 py-2 rounded-lg hover:bg-blue-700 transition">
-				Add Player
-				</button>
-				<button id="start-button-tour"
-					class="text-white text-7xl bg-black/60 px-16 py-8 rounded-lg pixelated-button hover:bg-white hover:text-black transition">
-					START
-				</button>
-				<ul id="player-list" class="mt-6 text-2xl text-black bg-white bg-opacity-70 rounded-lg p-4 w-full max-w-md"></ul>
-			</div>
-			<div id="tour-container" class="hidden flex flex-col items-center min-w-[800px]">
-				<div class="flex justify-center mt-4">
-					<div id="tournament-score" class="text-7xl font-bold leading-tight mb-8 text-center">0 : 0</div>
-                    <div id="tournament-winner" style="display:none; font-size:2em; text-align:center;"></div>
+            <main>
+                <!-- Overlay / start screen -->
+                <div id="tour-start-container"
+                     class="absolute inset-0 flex flex-col items-center justify-center gap-6 z-10 start-container">
+                    <button id="backFromTour"
+                            class="back-button absolute top-8 right-8 text-xl underline hover:text-black">
+                        Back
+                    </button>
+
+                    <div id="instructionsTour"
+                         class="hidden pixelated-border bg-black/70 p-4 max-w-md text-center text-xl whitespace-pre-line mb-6">
+                        <!-- typed text will be inserted here -->
+                    </div>
+
+                    <section class="bg-black/60 p-6 w-full mb-12 max-w-md pixelated-border rounded-lg border-white">
+                        <!-- Add Player row -->
+                        <div class="flex items-center mb-4">
+                            <input id="tournamentUsername"
+                                   type="text"
+                                   placeholder="Enter username"
+                                   class="flex-grow p-2 mr-2 bg-transparent border rounded-lg border-white text-white placeholder-white text-2xl focus:outline-none focus:ring-0"
+                                   required />
+                            <button id="add-player-button"
+                                    class="text-white hover:text-pink-300 text-2xl">
+                                Add
+                            </button>
+                        </div>
+
+                        <!-- Player list -->
+                        <ul id="player-list"
+                            class="space-y-2 max-h-64 overflow-y-auto border border-white rounded-lg p-3 bg-black/40 text-pink-300 text-2xl"></ul>
+
+                        <!-- Feedback message -->
+                        <p id="TournamentMessage"
+                           role="status"
+                           aria-live="polite"
+                           class="text-center text-lg text-white mt-3 min-h-[24px]"></p>
+                    </section>
+
+                    <!-- START centered under the block -->
+                    <button id="start-button-tour"
+                            class="text-white text-7xl bg-black/60 px-16 py-8 rounded-lg pixelated-button hover:bg-white hover:text-black transition">
+                        START
+                    </button>
+                </div> <!-- ✅ properly close the overlay -->
+
+                <!-- Actual tournament container (initially hidden) -->
+                <div id="tour-container" class="hidden flex flex-col items-center min-w-[800px]">
+                    <div class="flex justify-center mt-4">
+                        <div id="tournament-score"
+                             class="text-7xl font-bold leading-tight px-8 mb-4 text-center pixelated-border bg-black/60">0 : 0</div>
+                        <div id="tournament-winner" style="display:none; font-size:2em; text-align:center;"></div>
+                    </div>
+                    <canvas id="tournament" class="border-4 border-white mt-5 bg-black/60" width="800" height="600"></canvas>
+                    <div class="flex justify-between mt-4 w-full max-w-[800px]">
+                        <button id="stop-button-tour"
+                                class="back-button bg-black/60 text-white pixelated-border text-black font-bold py-3 px-6 text-xl">
+                            Back
+                        </button>
+                    </div>
                 </div>
-				<canvas id="tournament" class="border-4 border-white mt-5 bg-black/60 " width="800" height="600"></canvas>
-				<div class="flex justify-between mt-4 w-full max-w-[800px]">
-					<button id="stop-button-tour"
-						class="back-button bg-black/60  text-white pixelated-border text-black font-bold py-3 px-6 text-xl">Back</button>
-				</div>
-			</div>
-		</main>
+            </main>
 	</div>
 
 <!-- Credit Page -->

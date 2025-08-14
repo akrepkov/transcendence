@@ -2,17 +2,14 @@ import { Game } from '../games/frontendGame/frontendPong.js';
 import { toggleHandler } from './gameHandler.js';
 import * as frontendGameManager from '../games/frontendGame/frontendGameManager.js';
 import { globalSession } from '../auth/auth.js';
-
-export const MAX_SCORE = 3;
-
-const game: Game | null = null;
+import { showMessage, showModal } from '../utils/uiHelpers.js';
 
 const usernameInput = document.getElementById('tournamentUsername') as HTMLInputElement;
 const addPlayerButton = document.getElementById('add-player-button') as HTMLButtonElement;
 const startButton = document.getElementById('start-button-tour') as HTMLButtonElement;
 const playerList = document.getElementById('player-list') as HTMLUListElement;
+const tournamentMessage = document.getElementById('TournamentMessage') as HTMLElement;
 const stopButton = document.getElementById('stop-button-tour') as HTMLButtonElement;
-const tourWinner = document.getElementById('tournament-winner');
 
 type Player = string;
 const players: Player[] = [];
@@ -92,12 +89,14 @@ async function playGame(currentRound: number) {
   for (let i = 0; i < tour[currentRound - 1].length; i++) {
     const player1 = tour[currentRound - 1][i].player1;
     const player2 = tour[currentRound - 1][i].player2;
-
-    alert(
+    await showModal(
       `Round ${currentRound}: Match ${i + 1}: ${player1} vs ${player2}\nPress OK when ready to start!`,
     );
     console.log('Starting game for:', player1, player2);
-    frontendGameManager.handleStartGame('tournament', player1, player2);
+    await frontendGameManager.handleStartGame('tournament', player1, player2, {
+      waitFor: showModal('Ready?'),
+      delaysMs: 3000,
+    });
 
     // Wait for the game to be created and started
     await new Promise((resolve) => setTimeout(resolve, 600));
@@ -123,13 +122,14 @@ async function startTournament() {
   const rounds = Math.log2(players.length);
   for (let i = 0; i < rounds; i++) {
     await generatePlayerBrackets(rounds, i + 1);
-    alert(`Round ${i + 1} is about to start.`);
+    await showModal(`Round ${i + 1} is about to start.`);
     await playGame(i + 1);
     console.log('TOURNAMENT INFO THIS ROUND: ', tour[i]);
   }
   if (tour[rounds - 1]) {
     const finalWinner = tour[rounds - 1][0].winner;
 
+    //TODO this is not used
     const reply = await fetch('/api/auth/tournament', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -148,7 +148,7 @@ addPlayerButton?.addEventListener('click', async () => {
   const username = usernameInput.value.trim();
   if (players.includes(username)) {
     usernameInput.value = '';
-    alert("You're already in.");
+    showMessage(tournamentMessage, "You're already in.");
   }
   if (username && !players.includes(username)) {
     const isValid = await validatePlayers(username);
@@ -157,7 +157,7 @@ addPlayerButton?.addEventListener('click', async () => {
       renderPlayersList();
       usernameInput.value = '';
     } else {
-      alert('This user is not registered, please register first.');
+      showMessage(tournamentMessage, 'This user is not registered, please register first.');
       return;
     }
   }
@@ -165,27 +165,20 @@ addPlayerButton?.addEventListener('click', async () => {
 
 startButton?.addEventListener('click', async () => {
   if (players.length < 2 || (players.length & (players.length - 1)) !== 0) {
-    alert('The number of players must be a power of 2');
+    showMessage(tournamentMessage, 'The number of players must be a power of 2');
     return;
   } else {
     toggleHandler.tourPage.clean();
     toggleHandler.tourPage.start();
-    startTournament();
+    await startTournament();
   }
 });
-
 // add Enter key support
 usernameInput.addEventListener('keydown', (event: KeyboardEvent) => {
   if (event.key === 'Enter') {
     addPlayerButton.click();
   }
 });
-
-export function resetPlayerList() {
-  players.length = 0;
-  playerList.innerHTML = '';
-  renderPlayersList();
-}
 
 stopButton?.addEventListener('click', async () => {
   tour.length = 0;
