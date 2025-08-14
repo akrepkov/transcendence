@@ -45,14 +45,6 @@ function renderPlayersList() {
   });
 }
 
-function getWinnerAndLoser(game: Game, player1: string, player2: string) {
-  if (game.player1.score > game.player2.score) {
-    return { winner: game.player1, loser: game.player2 };
-  } else {
-    return { winner: game.player2, loser: game.player1 };
-  }
-}
-
 function waitForGameToEnd(game: Game): Promise<void> {
   return new Promise((resolve) => {
     const interval = setInterval(() => {
@@ -62,14 +54,6 @@ function waitForGameToEnd(game: Game): Promise<void> {
       }
     }, 100); // check every 100ms
   });
-}
-
-function checkWinCondition(game: Game, player1: string, player2: string) {
-  if (game.player1.score >= MAX_SCORE || game.player2.score >= MAX_SCORE) {
-    game.stopGame();
-    const { winner, loser } = getWinnerAndLoser(game, player1, player2);
-    alert('Game Over! And the winner is ' + winner + '!');
-  }
 }
 
 async function generatePlayerBrackets(rounds: number, currentRound: number) {
