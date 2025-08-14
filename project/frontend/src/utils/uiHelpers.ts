@@ -52,7 +52,7 @@ export function showMessage(
   if (!el) return;
 
   const isError = options?.isError ?? false;
-  const duration = options?.duration ?? 4000;
+  const duration = options?.duration ?? 1000;
 
   // clear prior timer for this element
   const prev = __messageTimers.get(el);

@@ -119,6 +119,19 @@
         .whitespace-pre-line {
             white-space: pre-line;
         }
+        .centered-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            font-size: 2.5rem;
+            color: #fff;
+            text-align: center;
+            background: rgba(0,0,0,0.7); /* optional for contrast */
+            padding: 2rem 3rem;
+            border-radius: 1rem;
+            }
     </style>
 </head>
 
@@ -559,7 +572,7 @@
                         <p id="TournamentMessage"
                            role="status"
                            aria-live="polite"
-                           class="text-center text-lg text-white mt-3 min-h-[24px]"></p>
+                           class="centered-message"></p>
                     </section>
 
                     <!-- START centered under the block -->
