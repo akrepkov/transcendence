@@ -179,47 +179,18 @@ export function showInstructions(gameId: string) {
   if (gameId === 'pong') {
     instructionsPong.classList.remove('hidden');
     typeText(instructionsPong, gameTranslations.instructionsPong);
-    // typeText(
-    //   instructionsPong,
-    //   'Up: ↑ / W\n' + 'Down: ↓ / S\n Rules: Keep the ball in play. First to 5 points wins.',
-    // );
   } else if (gameId === 'ai') {
     instructionsAi.classList.remove('hidden');
     typeText(instructionsAi, gameTranslations.instructionsAi);
-    // typeText(
-    //   instructionsAi,
-    //   'Up: W\n ' + 'Down: S\n Rules: Keep the ball in play. First to 5 points wins.',
-    // );
   } else if (gameId === 'practice') {
     instructionsPractice.classList.remove('hidden');
     typeText(instructionsPractice, gameTranslations.instructionsPractice);
-    // typeText(
-    //   instructionsPractice,
-    //   'Up: ↑ / W\n' + 'Down: ↓ / S\n Rules: Keep the ball in play. First to 5 points wins.',
-    // );
   } else if (gameId === 'snake') {
     instructionsSnake.classList.remove('hidden');
     typeText(instructionsSnake, gameTranslations.instructionsSnake);
-    // typeText(
-    //   instructionsSnake,
-    //   'Up: ↑ / W \n   ' +
-    //     'Down: ↓ / S\n  ' +
-    //     'Left: ← / A\n   ' +
-    //     'Right: → / D\n   ' +
-    //     'Reverse: R\n ' +
-    //     'Rules: \n' +
-    //     'Eat apples to grow longer.\n' +
-    //     'Win by eating 10 apples the fastest, making your opponent crash into a wall, their own tail, or your snake.\n' +
-    //     'If both players crash in the same frame the game restarts.',
-    // );
   } else if (gameId === 'tour') {
     instructionsTour.classList.remove('hidden');
     typeText(instructionsTour, gameTranslations.instructionsTour);
-    // typeText(
-    //   instructionsTour,
-    //   'Up: ↑ / W\n' +
-    //     'Down: ↓ / S\n Rules: Keep the ball in play. First to 5 points wins. Amount of players needs to be 2^n. The player pairs will be assigned randomly, the winner from each pair will move on to the next round. After the final round, the Winner is declared.',
-    // );
   }
 }
 
