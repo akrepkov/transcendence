@@ -66,9 +66,12 @@ const registerHandler = async (request, reply) => {
   if (!email || !password || !username) {
     return handleError(reply, new Error('Email, username and password are required'), 400);
   }
+  if (username.length > 10) {
+    return handleError(reply, new Error('Username is too long'), 418);
+  }
   const existUsername = await authServices.checkUniqueUsername(username);
   if (existUsername) {
-    return handleError(reply, new Error('Username is already in use'), 500);
+    return handleError(reply, new Error('Username is already in use'), 400);
   }
   // Hash the password before saving
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -79,7 +82,7 @@ const registerHandler = async (request, reply) => {
       username,
     });
     if (!registerUser) {
-      return handleError(reply, new Error('Registration failed'), 500);
+      return handleError(reply, new Error('Registration failed'), 400);
     }
     const token = setCookie(reply, registerUser);
     return reply.status(201).send({
@@ -90,7 +93,7 @@ const registerHandler = async (request, reply) => {
     });
   } catch (error) {
     console.error('Registration error:', error);
-    return handleError(reply, new Error('Registration failed'), 500);
+    return handleError(reply, new Error('Registration failed'), 400);
   }
 };
 

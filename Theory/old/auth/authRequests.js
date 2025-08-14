@@ -86,11 +86,17 @@ export function signupInDatabase() {
         body: JSON.stringify({ email, password, username }),
         credentials: 'include', // Include cookies in the request
       });
-      if (!response.ok) {
+      if (response.status == 418) {
+        loginWarning.style.display = 'block';
+        setTimeout(() => {
+        loginWarning.style.display = 'none';
+        }, 10000);
+        return;
+      } else if (!response.ok) {
         loginWarning.style.display = 'block';
         setTimeout(() => {
           loginWarning.style.display = 'none';
-        }, 3000);
+        }, 5000);
         return;
       }
       const data = await response.json();

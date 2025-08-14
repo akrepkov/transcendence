@@ -164,6 +164,11 @@ addPlayerButton?.addEventListener('click', async () => {
     usernameInput.value = '';
     showMessage(tournamentMessage, "You're already in.");
   }
+  if (players.length == 64) {
+    usernameInput.value = '';
+    showMessage(tournamentMessage, 'Maximum players achieved. Start Tournament');
+    return;
+  }
   if (username && !players.includes(username)) {
     const isValid = await validatePlayers(username);
     if (isValid) {

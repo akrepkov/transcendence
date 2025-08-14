@@ -33,7 +33,7 @@ const getAllUsersHandler = async (request, reply) => {
     reply.send(safeUsers);
   } catch (error) {
     console.error('Error fetching users:', error);
-    return reply.code(500).send({ error: 'Internal server error' });
+    return reply.code(400).send({ error: 'Bad request' });
   }
 };
 
@@ -49,7 +49,7 @@ const getUserProfileHandler = async (request, reply) => {
     reply.send(safeUser);
   } catch (error) {
     console.error('Error fetching user:', error);
-    return reply.code(500).send({ error: 'Internal server error' });
+    return reply.code(400).send({ error: 'Bad request' });
   }
 };
 
@@ -60,13 +60,16 @@ const addFriendHandler = async (request, reply) => {
     if (!username || !friendUsername) {
       return reply.status(404).send({ error: 'User/Friend name not found' });
     }
+    if (username == friendUsername) {
+      return reply.status(400).send({ error: 'You cannot add yourself as a friend.' });
+    }
     if (!(await userServices.addFriend(username, friendUsername))) {
       return reply.status(404).send({ error: 'Error adding friend' });
     }
     return reply.code(200).send({ success: true });
   } catch (error) {
     console.error('Adding friend error:', error);
-    return reply.code(500).send({ error: 'Internal server error' });
+    return reply.code(400).send({ error: 'Bad request' });
   }
 };
 
@@ -90,7 +93,7 @@ const updateUserHandler = async (request, reply) => {
     return reply.code(200).send({ success: true });
   } catch (error) {
     console.error('Error updating user', error);
-    return reply.code(500).send({ error: 'Internal server error' });
+    return reply.code(400).send({ error: 'Bad request' });
   }
 };
 
@@ -130,7 +133,7 @@ const updateUserAvatar = async (request, reply) => {
     if (username) {
       const existUsername = await authServices.checkUniqueUsername(username);
       if (existUsername) {
-        return reply.code(500).send({ error: 'Username already in use' });
+        return reply.code(400).send({ error: 'Username already in use' });
       }
       await userServices.updateUsername(user, username);
       await connectionManager.updateUsernameInConnections(user.userId, username);
@@ -153,7 +156,7 @@ const updateUserAvatar = async (request, reply) => {
     return reply.code(200).send({ success: true, avatarUrl: updatedAvatar });
   } catch (error) {
     console.error('Error updating user', error);
-    return reply.code(500).send({ error: 'Internal server error' });
+    return reply.code(400).send({ error: 'Bad request' });
   }
 };
 
@@ -210,7 +213,7 @@ const getAvatarHandler = async (request, reply) => {
     });
   } catch (error) {
     console.error('Get avatar error:', error);
-    return reply.code(500).send({ success: false, error: 'Failed to retrieve avatar' });
+    return reply.code(400).send({ success: false, error: 'Failed to retrieve avatar' });
   }
 };
 
