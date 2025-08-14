@@ -66,6 +66,9 @@ const registerHandler = async (request, reply) => {
   if (!email || !password || !username) {
     return handleError(reply, new Error('Email, username and password are required'), 400);
   }
+  if (username.length > 10) {
+    return handleError(reply, new Error('Username is too long'), 418);
+  }
   const existUsername = await authServices.checkUniqueUsername(username);
   if (existUsername) {
     return handleError(reply, new Error('Username is already in use'), 400);

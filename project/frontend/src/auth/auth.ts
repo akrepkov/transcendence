@@ -113,6 +113,9 @@ export async function handleRegister(): Promise<void> {
         globalSession.login(data.username, data.email, data.avatar);
         navigateTo('landing', '/landing', showLandingView);
         registerForm.reset();
+      } else if (res.status == 418) {
+        console.log('IM HEERE');
+        showMessage(registerMessage, 'The username is longer than 10 characters. Try agan!');
       } else {
         showMessage(registerMessage, 'Username or email is already in use');
       }
