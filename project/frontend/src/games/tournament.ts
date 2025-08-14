@@ -3,17 +3,11 @@ import { toggleHandler } from './gameHandler.js';
 import * as frontendGameManager from '../games/frontendGame/frontendGameManager.js';
 import { globalSession } from '../auth/auth.js';
 import { showMessage, showModal } from '../utils/uiHelpers.js';
-import { showFriends } from '../profile/profile';
-
-export const MAX_SCORE = 3;
-
-const game: Game | null = null;
 
 const usernameInput = document.getElementById('tournamentUsername') as HTMLInputElement;
 const addPlayerButton = document.getElementById('add-player-button') as HTMLButtonElement;
 const startButton = document.getElementById('start-button-tour') as HTMLButtonElement;
 const playerList = document.getElementById('player-list') as HTMLUListElement;
-const tourWinner = document.getElementById('tournament-winner');
 const tournamentMessage = document.getElementById('TournamentMessage') as HTMLElement;
 
 type Player = string;
@@ -47,14 +41,6 @@ function renderPlayersList() {
   });
 }
 
-function getWinnerAndLoser(game: Game, player1: string, player2: string) {
-  if (game.player1.score > game.player2.score) {
-    return { winner: game.player1, loser: game.player2 };
-  } else {
-    return { winner: game.player2, loser: game.player1 };
-  }
-}
-
 function waitForGameToEnd(game: Game): Promise<void> {
   return new Promise((resolve) => {
     const interval = setInterval(() => {
@@ -64,17 +50,6 @@ function waitForGameToEnd(game: Game): Promise<void> {
       }
     }, 100); // check every 100ms
   });
-}
-
-function checkWinCondition(game: Game, player1: string, player2: string) {
-  if (game.player1.score >= MAX_SCORE || game.player2.score >= MAX_SCORE) {
-    game.stopGame();
-    const { winner, loser } = getWinnerAndLoser(game, player1, player2);
-    // alert('Game Over! And the winner is ' + winner + '!');
-    showMessage(tournamentMessage, `Game Over! The winner is ${winner}!`);
-    // await showModal('Game Over! The winner is ' + winner + '!');
-    // await showModal('Game Over! The winner is ' + winner + '!');
-  }
 }
 
 async function generatePlayerBrackets(rounds: number, currentRound: number, tour: Tournament) {
@@ -117,7 +92,10 @@ async function playGame(tour: Tournament, currentRound: number) {
       `Round ${currentRound}: Match ${i + 1}: ${player1} vs ${player2}\nPress OK when ready to start!`,
     );
     console.log('Starting game for:', player1, player2);
-    frontendGameManager.handleStartGame('tournament', player1, player2);
+    await frontendGameManager.handleStartGame('tournament', player1, player2, {
+      waitFor: showModal('Ready?'),
+      delaysMs: 3000,
+    });
 
     // Wait for the game to be created and started
     await new Promise((resolve) => setTimeout(resolve, 600));
@@ -144,13 +122,13 @@ async function startTournament() {
   for (let i = 0; i < rounds; i++) {
     await generatePlayerBrackets(rounds, i + 1, tour);
     await showModal(`Round ${i + 1} is about to start.`);
-    // alert(`Round ${i + 1} is about to start.`);
     await playGame(tour, i + 1);
     console.log('TOURNAMENT INFO THIS ROUND: ', tour[i]);
   }
   if (tour[rounds - 1]) {
     const finalWinner = tour[rounds - 1][0].winner;
 
+    //TODO this is not used
     const reply = await fetch('/api/auth/tournament', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -200,9 +178,3 @@ usernameInput.addEventListener('keydown', (event: KeyboardEvent) => {
     addPlayerButton.click();
   }
 });
-
-export function resetPlayerList() {
-  players.length = 0;
-  playerList.innerHTML = '';
-  renderPlayersList();
-}
