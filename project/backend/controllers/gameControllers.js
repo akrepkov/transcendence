@@ -10,10 +10,10 @@ const saveGameHandler = (request, reply) => {
 
   const gameId = gameServices.saveGame(winnerName, loserName, scoreWinner, scoreLoser);
   if (!gameId) {
-    return reply.status(500).send({ error: 'Failed to save game results' });
+    return reply.status(400).send({ error: 'Failed to save game results' });
   }
   if (!userServices.saveGameResults(winnerName, loserName, gameId)) {
-    return reply.status(500).send({ error: 'Failed to save player scores' });
+    return reply.status(400).send({ error: 'Failed to save player scores' });
   }
   reply.send({ message: 'Game results saved', gameId });
 };
@@ -26,7 +26,7 @@ const getGameHandler = async (request, reply) => {
 
   const { game } = gameServices.getGame(gameId);
   if (!game) {
-    return reply.status(500).send({ error: 'Unable to retrieve game' });
+    return reply.status(400).send({ error: 'Unable to retrieve game' });
   }
   reply.send({ message: 'Game retrieved', game });
 };
