@@ -99,8 +99,6 @@ class Player extends Paddle {
 }
 
 class AI extends Paddle {
-  private aiReactionCounter: number = 0;
-  private aiReactionRate: number = 2;
   private lastCheck: number = Date.now();
   private direction: string = 'idle';
   private targetY: number = (GAME_CONSTS.HEIGHT - this.height) / 2;
