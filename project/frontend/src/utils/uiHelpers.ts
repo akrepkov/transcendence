@@ -6,6 +6,24 @@ import { translations } from '../translations/languages.js';
 const __messageTimers = new WeakMap<HTMLElement, number>();
 
 /**
+ * WeakMap to track active typewriter intervals per element.
+ * Ensures that when instructions change language mid-typing,
+ * we can cancel the ongoing typing effect.
+ */
+const __typewriterTimers = new WeakMap<HTMLElement, number>();
+
+/**
+ * Stop any in-progress typing for an element.
+ */
+function stopTyping(element: HTMLElement) {
+  const prev = __typewriterTimers.get(element);
+  if (prev) {
+    window.clearInterval(prev);
+    __typewriterTimers.delete(element);
+  }
+}
+
+/**
  * Hides all main application pages by adding the 'hidden' class to their elements.
  *
  * This function is typically used when navigating between different views
@@ -131,19 +149,39 @@ export function centerOnCanvas(canvasId: string) {
 
 /**
  * Types text into a given element one character at a time, creating a "typewriter" effect.
+ * canceling any previous typing on that element.
  *
  * @param {HTMLElement} element - The element where the text will be typed.
  * @param {string} text - The text to display.
  * @param {number} [speed=40] - Delay (ms) between typing each character.
  */
 function typeText(element: HTMLElement, text: string, speed = 40) {
-  let i = 0;
-  element.textContent = ''; // start with an empty string
+  if (!element) return;
 
-  const interval = setInterval(() => {
-    element.textContent += text[i++]; // add one character at a time
-    if (i >= text.length) clearInterval(interval); // stop when done
+  stopTyping(element);
+
+  let i = 0;
+  const langAtStart = localStorage.getItem('lang') || 'en';
+  element.textContent = '';
+
+  const id = window.setInterval(() => {
+    const currentLang = localStorage.getItem('lang') || 'en';
+
+    // Stop typing if language changed during the animation
+    if (currentLang !== langAtStart || __typewriterTimers.get(element) !== id) {
+      window.clearInterval(id);
+      __typewriterTimers.delete(element);
+      return;
+    }
+
+    element.textContent += text[i++];
+    if (i >= text.length) {
+      window.clearInterval(id);
+      __typewriterTimers.delete(element);
+    }
   }, speed);
+
+  __typewriterTimers.set(element, id);
 }
 
 /**
@@ -168,6 +206,20 @@ export function showInstructions(gameId: string) {
     !instructionsTour
   )
     return;
+
+  // ensure only one is shown & none are still typing
+  const all = [
+    instructionsPong,
+    instructionsSnake,
+    instructionsPractice,
+    instructionsAi,
+    instructionsTour,
+  ];
+  all.forEach((el) => {
+    stopTyping(el);
+    el.classList.add('hidden');
+    el.textContent = '';
+  });
 
   const currentLang = (localStorage.getItem('lang') || 'en') as keyof typeof translations;
   const gameTranslations = translations[currentLang];
