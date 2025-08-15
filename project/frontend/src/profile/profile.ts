@@ -1,9 +1,34 @@
 import { navigateTo, showProfileView, showSettingsView } from '../navigation/navigation.js';
 import { globalSession } from '../auth/auth.js';
+import { translations } from '../translations/languages.js';
 
 let friendsRenderToken = 0;
 let currentFriends = new Set<string>();
 let profileEventsInitialized = false;
+
+function getCurrentLang(): 'en' | 'pl' | 'ru' | 'ko' {
+  return (localStorage.getItem('lang') as 'en' | 'pl' | 'ru' | 'ko') || 'en';
+}
+
+export function reapplyDynamicText() {
+  const lang = getCurrentLang();
+
+  const noFriendsEl = document.querySelector('#friendsList ul li');
+  if (
+    noFriendsEl &&
+    Object.values(translations).some((t) => t.noFriends === noFriendsEl.textContent)
+  ) {
+    noFriendsEl.textContent = translations[lang].noFriends;
+  }
+
+  const noHistoryEl = document.querySelector('#historyList ul li');
+  if (
+    noHistoryEl &&
+    Object.values(translations).some((t) => t.noGameHistory === noHistoryEl.textContent)
+  ) {
+    noHistoryEl.textContent = translations[lang].noGameHistory;
+  }
+}
 
 /**
  * Initializes all event listeners related to the user profile section.
@@ -120,12 +145,16 @@ export async function addFriend() {
 
   const username = globalSession.getUsername();
   if (friendUsername === username) {
-    showFriendMessage('You cannot add yourself as a friend');
+    const lang = getCurrentLang();
+    showFriendMessage(translations[lang].friendSelfError);
+    // showFriendMessage('You cannot add yourself as a friend');
     return;
   }
 
   if (currentFriends.has(friendUsername)) {
-    showFriendMessage(`${friendUsername} is already your friend`, true);
+    const lang = getCurrentLang();
+    showFriendMessage(translations[lang].friendAlready.replace('{username}', friendUsername), true);
+    // showFriendMessage(`${friendUsername} is already your friend`, true);
     return;
   }
 
@@ -139,13 +168,19 @@ export async function addFriend() {
     if (res.ok) {
       await showFriends(username);
       input.value = ''; // clear input after adding
-      showFriendMessage('Friend added successfully');
+      const lang = getCurrentLang();
+      showFriendMessage(translations[lang].friendAdded);
+      // showFriendMessage('Friend added successfully');
     } else {
-      showFriendMessage('Profile does not exist');
+      const lang = getCurrentLang();
+      showFriendMessage(translations[lang].friendNotFound);
+      // showFriendMessage('Profile does not exist');
     }
   } catch (err) {
     console.error('Request failed:', err);
-    showFriendMessage('Server error. Please try again later.', true);
+    const lang = getCurrentLang();
+    showFriendMessage(translations[lang].serverError, true);
+    // showFriendMessage('Server error. Please try again later.', true);
   }
 }
 
@@ -184,6 +219,7 @@ export async function showFriends(username: string) {
       empty.className = 'text-black text-lg';
       empty.textContent = 'No friends yet';
       list.replaceChildren(empty);
+      reapplyDynamicText();
       return;
     }
 
@@ -307,7 +343,10 @@ export async function showGameHistory(username: string) {
     list.innerHTML = '';
 
     if (gameHistory.length === 0) {
-      list.innerHTML = '<li class="text-black text-lg">No game history yet</li>';
+      const lang = getCurrentLang();
+      list.innerHTML = `<li class="text-black text-lg">${translations[lang].noGameHistory}</li>`;
+      // list.innerHTML = '<li class="text-black text-lg">No game history yet</li>';
+      reapplyDynamicText();
       return;
     }
 

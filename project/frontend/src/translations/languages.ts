@@ -6,6 +6,8 @@ export const translations = {
     toggleForm: 'No account? Register',
     loginUsername: 'Enter your username',
     loginPassword: 'Enter your password',
+    meetTheTeam: 'Meet the team',
+    login: 'Login',
 
     // landing
     welcomePrefix: 'Welcome,',
@@ -46,6 +48,18 @@ export const translations = {
     dragDropImage: 'Drag & Drop your image',
     uploadAvatar: 'Upload Avatar',
     save: 'Save',
+    usernameRequired: 'Username is required.',
+    usernameTaken: 'Username is already in use, try another one.',
+    usernameChangeFailed: 'Username change failed',
+    usernameUpdated: 'Username updated successfully.',
+    passwordRequired: 'Password is required.',
+    passwordChangeFailed: 'Password change failed.',
+    passwordUpdated: 'Password updated successfully.',
+    onlyImages: 'Only image files are allowed.',
+    noImageSelected: 'No image selected.',
+    imageTooBig: 'Image is too big, try uploading something up to 1MB.',
+    avatarUploadFailed: 'Avatar upload failed.',
+    avatarUpdated: 'Avatar updated successfully.',
 
     // pong
     start: 'START',
@@ -89,6 +103,24 @@ export const translations = {
     wombatBy: 'Wombat by: Jan',
     ferretBy: 'Ferret by: Djoyke',
     specialThanksText: 'Special Thanks: to everyone who distracted us',
+
+    // Add to all languages
+    noFriends: 'No friends yet',
+    friendSelfError: 'You cannot add yourself as a friend',
+    friendAlready: '{username} is already your friend',
+    friendAdded: 'Friend added successfully',
+    friendNotFound: 'Profile does not exist',
+    serverError: 'Server error. Please try again later.',
+    noGameHistory: 'No game history yet',
+
+    ok: 'OK',
+    tourHostTag: ' (host)',
+    tourAlreadyIn: "You're already in.",
+    tourUserNotRegistered: 'This user is not registered, please register first.',
+    tourPlayersPowerOfTwo: 'The number of players must be a power of 2',
+    tourRoundAboutToStart: 'Round {round} is about to start.',
+    tourMatchIntro: 'Round {round}: Match {match}: {p1} vs {p2}\nPress OK when ready to start!',
+    tourReady: 'Ready?',
   },
 
   pl: {
@@ -98,6 +130,8 @@ export const translations = {
     toggleForm: 'Nie masz konta? Zarejestruj się',
     loginUsername: 'Wpisz swoją nazwę użytkownika',
     loginPassword: 'Wpisz swoje hasło',
+    meetTheTeam: 'Poznaj ekipę',
+    login: 'Zaloguj się',
 
     // landing
     welcomePrefix: 'Cześć,',
@@ -138,6 +172,18 @@ export const translations = {
     dragDropImage: 'Przeciągnij i upuść swój obrazek',
     uploadAvatar: 'Prześlij awatar',
     save: 'Zapisz',
+    usernameRequired: 'Nazwa użytkownika jest wymagana.',
+    usernameTaken: 'Nazwa użytkownika jest już zajęta, spróbuj inną.',
+    usernameChangeFailed: 'Zmiana nazwy użytkownika nie powiodła się',
+    usernameUpdated: 'Nazwa użytkownika została zaktualizowana.',
+    passwordRequired: 'Hasło jest wymagane.',
+    passwordChangeFailed: 'Zmiana hasła nie powiodła się.',
+    passwordUpdated: 'Hasło zostało zaktualizowane.',
+    onlyImages: 'Dozwolone są tylko pliki graficzne.',
+    noImageSelected: 'Nie wybrano obrazu.',
+    imageTooBig: 'Obraz jest za duży, prześlij plik do 1 MB.',
+    avatarUploadFailed: 'Przesyłanie awatara nie powiodło się.',
+    avatarUpdated: 'Awatar został zaktualizowany.',
 
     // pong
     start: 'START',
@@ -184,6 +230,25 @@ export const translations = {
     wombatBy: 'Wombat stworzony przez: Jan',
     ferretBy: 'Fretka stworzona przez: Djoyke',
     specialThanksText: 'Specjalne podziękowania: dla wszystkich, którzy nas rozpraszali',
+
+    noFriends: 'Brak znajomych',
+    friendSelfError: 'Nie możesz dodać siebie jako znajomego',
+    friendAlready: '{username} jest już twoim znajomym',
+    friendAdded: 'Znajomy został dodany',
+    friendNotFound: 'Profil nie istnieje',
+    serverError: 'Błąd serwera. Spróbuj ponownie później.',
+    noGameHistory: 'Brak historii gier',
+
+    ok: 'OK',
+    tourHostTag: ' (gospodarz)',
+    tourAlreadyIn: 'Już jesteś zapisany.',
+    tourUserNotRegistered:
+      'Ten użytkownik nie jest zarejestrowany, proszę najpierw się zarejestrować.',
+    tourPlayersPowerOfTwo: 'Liczba graczy musi być potęgą liczby 2',
+    tourRoundAboutToStart: 'Runda {round} zaraz się zacznie.',
+    tourMatchIntro:
+      'Runda {round}: Mecz {match}: {p1} kontra {p2}\nNaciśnij OK, gdy będziesz gotowy do rozpoczęcia!',
+    tourReady: 'Gotowy?',
   },
 
   ru: {
@@ -193,6 +258,8 @@ export const translations = {
     toggleForm: 'Нет аккаунта? Зарегистрируйся',
     loginUsername: 'Введи имя пользователя',
     loginPassword: 'Введи пароль',
+    meetTheTeam: 'Познакомься с командой',
+    login: 'Войти',
 
     // landing
     welcomePrefix: 'Привет,',
@@ -233,6 +300,18 @@ export const translations = {
     dragDropImage: 'Перетащи и отпусти картинку',
     uploadAvatar: 'Загрузить аватар',
     save: 'Сохранить',
+    usernameRequired: 'Требуется имя пользователя.',
+    usernameTaken: 'Имя пользователя уже занято, попробуй другое.',
+    usernameChangeFailed: 'Не удалось изменить имя пользователя',
+    usernameUpdated: 'Имя пользователя успешно обновлено.',
+    passwordRequired: 'Требуется пароль.',
+    passwordChangeFailed: 'Не удалось изменить пароль.',
+    passwordUpdated: 'Пароль успешно обновлён.',
+    onlyImages: 'Разрешены только изображения.',
+    noImageSelected: 'Изображение не выбрано.',
+    imageTooBig: 'Изображение слишком большое, попробуй до 1 МБ.',
+    avatarUploadFailed: 'Не удалось загрузить аватар.',
+    avatarUpdated: 'Аватар успешно обновлён.',
 
     // pong
     start: 'СТАРТ',
@@ -280,6 +359,25 @@ export const translations = {
     wombatBy: 'Вомбата сделал: Jan',
     ferretBy: 'Хорька сделал: Djoyke',
     specialThanksText: 'Отдельная благодарность: всем, кто нас отвлекал',
+
+    noFriends: 'Пока нет друзей',
+    friendSelfError: 'Нельзя добавить себя в друзья',
+    friendAlready: '{username} уже в твоих друзьях',
+    friendAdded: 'Друг успешно добавлен',
+    friendNotFound: 'Профиль не существует',
+    serverError: 'Ошибка сервера. Попробуй позже.',
+    noGameHistory: 'История игр отсутствует',
+
+    ok: 'OK',
+    tourHostTag: ' (хост)',
+    tourAlreadyIn: 'Ты уже участвуешь.',
+    tourUserNotRegistered:
+      'Этот пользователь не зарегистрирован, пожалуйста, зарегистрируйся сначала.',
+    tourPlayersPowerOfTwo: 'Количество игроков должно быть степенью числа 2',
+    tourRoundAboutToStart: 'Раунд {round} скоро начнётся.',
+    tourMatchIntro:
+      'Раунд {round}: Матч {match}: {p1} против {p2}\nНажми OK, когда будешь готов начать!',
+    tourReady: 'Готов?',
   },
 
   ko: {
@@ -289,6 +387,8 @@ export const translations = {
     toggleForm: '계정이 없으신가요? 회원가입',
     loginUsername: '사용자 이름을 입력하세요',
     loginPassword: '비밀번호를 입력하세요',
+    meetTheTeam: '팀 만나기',
+    login: '로그인',
 
     // landing
     welcomePrefix: '안녕,',
@@ -329,6 +429,18 @@ export const translations = {
     dragDropImage: '이미지를 드래그해서 놓으세요',
     uploadAvatar: '아바타 업로드',
     save: '저장',
+    usernameRequired: '사용자 이름이 필요합니다.',
+    usernameTaken: '이미 사용 중인 사용자 이름입니다. 다른 이름을 시도하세요.',
+    usernameChangeFailed: '사용자 이름 변경에 실패했습니다',
+    usernameUpdated: '사용자 이름이 업데이트되었습니다.',
+    passwordRequired: '비밀번호가 필요합니다.',
+    passwordChangeFailed: '비밀번호 변경에 실패했습니다.',
+    passwordUpdated: '비밀번호가 업데이트되었습니다.',
+    onlyImages: '이미지 파일만 업로드할 수 있습니다.',
+    noImageSelected: '선택된 이미지가 없습니다.',
+    imageTooBig: '이미지가 너무 큽니다. 1MB 이하로 업로드하세요.',
+    avatarUploadFailed: '아바타 업로드에 실패했습니다.',
+    avatarUpdated: '아바타가 업데이트되었습니다.',
 
     // pong
     start: '시작',
@@ -375,5 +487,22 @@ export const translations = {
     wombatBy: '웜뱃 제작: Jan',
     ferretBy: '페럿 제작: Djoyke',
     specialThanksText: '특별 감사: 우리를 방해한 모든 분들께',
+
+    noFriends: '아직 친구가 없습니다',
+    friendSelfError: '자기 자신을 친구로 추가할 수 없습니다',
+    friendAlready: '{username}님은 이미 친구입니다',
+    friendAdded: '친구가 성공적으로 추가되었습니다',
+    friendNotFound: '프로필이 존재하지 않습니다',
+    serverError: '서버 오류입니다. 나중에 다시 시도하세요.',
+    noGameHistory: '아직 게임 기록이 없습니다',
+
+    ok: '확인',
+    tourHostTag: ' (호스트)',
+    tourAlreadyIn: '이미 참가 중입니다.',
+    tourUserNotRegistered: '이 사용자는 등록되지 않았습니다. 먼저 회원가입을 해주세요.',
+    tourPlayersPowerOfTwo: '플레이어 수는 2의 거듭제곱이어야 합니다',
+    tourRoundAboutToStart: '{round}라운드가 곧 시작됩니다.',
+    tourMatchIntro: '{round}라운드: {match}경기: {p1} vs {p2}\n준비되면 확인을 누르세요!',
+    tourReady: '준비됐나요?',
   },
 };

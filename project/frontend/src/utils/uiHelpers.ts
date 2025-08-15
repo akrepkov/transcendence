@@ -1,5 +1,4 @@
 import { translations } from '../translations/languages.js';
-import { languageSwitcherFunction } from '../translations/languageManager.js';
 
 /**
  * WeakMap frees entry if element is removed from DOM
@@ -57,18 +56,15 @@ export function showMessage(
   const isError = options?.isError ?? false;
   const duration = options?.duration ?? 4000;
 
-  // clear prior timer for this element
   const prev = __messageTimers.get(el);
   if (prev) window.clearTimeout(prev);
 
-  // apply styles similar to settings.ts (green for success, yellow for error)
   el.classList.remove('hidden', 'text-green-400', 'text-yellow-400');
   el.classList.add(isError ? 'text-yellow-400' : 'text-green-400');
 
   el.textContent = text;
 
   const t = window.setTimeout(() => {
-    // you can either clear or just hide; settings clears text, so mirror that
     el.textContent = '';
     el.classList.add('hidden');
   }, duration);
@@ -173,7 +169,7 @@ export function showInstructions(gameId: string) {
   )
     return;
 
-  const currentLang = localStorage.getItem('lang') || 'en'; // Retrieve the current language
+  const currentLang = (localStorage.getItem('lang') || 'en') as keyof typeof translations;
   const gameTranslations = translations[currentLang];
 
   if (gameId === 'pong') {
