@@ -504,5 +504,6 @@ export const translations = {
     tourRoundAboutToStart: '{round}라운드가 곧 시작됩니다.',
     tourMatchIntro: '{round}라운드: {match}경기: {p1} vs {p2}\n준비되면 확인을 누르세요!',
     tourReady: '준비됐나요?',
+    // blank
   },
 };
