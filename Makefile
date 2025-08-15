@@ -12,7 +12,7 @@ NGINX = ./srcs/requirements/nginx/
 DOCKER_COMPOSE = ./srcs/docker-compose.yml
 BACKEND_ENV_FILE = ./project/backend/.env
 DATABASE_ENV_FILE = ./project/backend/database/prisma/.env
-CERTS = ./project/backend/certs1
+CERTS = ./project/backend/certs
 
 
 all: environment
@@ -29,7 +29,7 @@ ${BACKEND_ENV_FILE}:
 ${DATABASE_ENV_FILE}:
 	@echo "${YELLOW}Please create a .env file in the project/backend/database/prisma directory${END}"
 	@echo "${YELLOW}with the following content:${END}"
-	@echo "${YELLOW}DATABASE_URL=[name of database, in our case '../ft_transcendence']${END}"
+	@echo "${YELLOW}DATABASE_URL=[name of database, in our case '../ft_transcendence.db']${END}"
 	exit 1
 
 ${CERTS}:
