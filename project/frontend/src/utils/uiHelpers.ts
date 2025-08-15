@@ -72,7 +72,7 @@ export function showMessage(
   if (!el) return;
 
   const isError = options?.isError ?? false;
-  const duration = options?.duration ?? 4000;
+  const duration = options?.duration ?? 1000;
 
   const prev = __messageTimers.get(el);
   if (prev) window.clearTimeout(prev);

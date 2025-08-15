@@ -19,6 +19,7 @@ type Player = string;
 const players: Player[] = [];
 type Match = { round: number; player1: string; player2: string; winner: string };
 const tour: Match[][] = [];
+let tournamentActive = false;
 
 async function validatePlayers(username: string) {
   try {
@@ -30,14 +31,13 @@ async function validatePlayers(username: string) {
     }
     return false;
   } catch (error) {
-    console.log('Internal Server Error', error);
+    console.error('Could not validate player', error);
     return false;
   }
 }
 
 function renderPlayersList() {
   playerList.innerHTML = '';
-  console.log('PLAYERS WHEN RENDERING: ', players);
   const host = globalSession.getUsername();
   players.forEach((player) => {
     const li = document.createElement('li');
@@ -86,11 +86,11 @@ async function generatePlayerBrackets(rounds: number, currentRound: number) {
       tour[currentRound - 1].push(match);
     }
   }
-  console.log('GENERATED BRACKETS: ', tour[currentRound - 1]);
 }
 
 async function playGame(currentRound: number) {
   for (let i = 0; i < tour[currentRound - 1].length; i++) {
+    if (!tournamentActive) return;
     const player1 = tour[currentRound - 1][i].player1;
     const player2 = tour[currentRound - 1][i].player2;
     await showModal(
@@ -103,48 +103,61 @@ async function playGame(currentRound: number) {
     console.log('Starting game for:', player1, player2);
     await frontendGameManager.handleStartGame('tournament', player1, player2, {
       waitFor: showModal(translations[getLang()].tourReady),
-      delaysMs: 3000,
+      delaysMs: 100,
     });
-
+    if (!tournamentActive) return;
     // Wait for the game to be created and started
     await new Promise((resolve) => setTimeout(resolve, 600));
+    if (!tournamentActive) return;
 
     const game = frontendGameManager.getCurrentGame();
 
     if (game) {
-      console.log('Game started:', game);
       await waitForGameToEnd(game);
-      tour[currentRound - 1][i].winner = game.winner;
+      if (!tournamentActive) return;
+      if (game.winner != 'nobody' && tour[currentRound - 1])
+        tour[currentRound - 1][i].winner = game.winner;
       frontendGameManager.resetGame('tournament');
       // Wait a bit before starting the next game to ensure reset is complete
       await new Promise((resolve) => setTimeout(resolve, 200));
+      if (!tournamentActive) return;
     } else {
-      console.log('No game instance returned!');
+      console.error('No game instance returned!');
       return;
     }
   }
 }
 
 async function startTournament() {
+  tournamentActive = true;
   tour.length = 0;
   const rounds = Math.log2(players.length);
   for (let i = 0; i < rounds; i++) {
+    if (!tournamentActive) return;
     await generatePlayerBrackets(rounds, i + 1);
+    if (!tournamentActive) return;
     await showModal(
       translations[getLang()].tourRoundAboutToStart.replace('{round}', String(i + 1)),
     );
+    if (!tournamentActive) return;
     await playGame(i + 1);
-    console.log('TOURNAMENT INFO THIS ROUND: ', tour[i]);
   }
-  if (tour[rounds - 1]) {
+  if (tour[rounds - 1] && tournamentActive) {
+    tournamentActive = false;
     const finalWinner = tour[rounds - 1][0].winner;
+    // Hide the game canvas
+    document.getElementById('tournament')?.classList.add('hidden');
 
-    //TODO this is not used
     const reply = await fetch('/api/auth/tournament', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: finalWinner }),
     });
+    if (!reply.ok) {
+      console.error('Winner results not saved.');
+      return;
+    }
+  } else {
     tour.length = 0;
   }
 }
@@ -152,6 +165,7 @@ async function startTournament() {
 export function initTournamentPlayers() {
   players.length = 0;
   playerList.innerHTML = '';
+  document.getElementById('TournamentMessage')?.classList.add('hidden');
 }
 
 addPlayerButton?.addEventListener('click', async () => {
@@ -159,6 +173,11 @@ addPlayerButton?.addEventListener('click', async () => {
   if (players.includes(username)) {
     usernameInput.value = '';
     showMessage(tournamentMessage, translations[getLang()].tourAlreadyIn);
+  }
+  if (players.length == 64) {
+    usernameInput.value = '';
+    showMessage(tournamentMessage, 'Maximum players achieved. Start Tournament');
+    return;
   }
   if (username && !players.includes(username)) {
     const isValid = await validatePlayers(username);
@@ -191,6 +210,8 @@ usernameInput.addEventListener('keydown', (event: KeyboardEvent) => {
 });
 
 stopButton?.addEventListener('click', async () => {
+  tournamentActive = false;
   tour.length = 0;
+  players.length = 0;
   toggleHandler.tourPage.reset();
 });
