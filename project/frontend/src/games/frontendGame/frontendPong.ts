@@ -137,7 +137,7 @@ class AI extends Paddle {
     } else if (this.direction === 'down' && this.y + this.height < GAME_CONSTS.HEIGHT) {
       this.y += this.paddleSpeed;
     }
-    if (Math.abs(this.y - this.targetY) < this.paddleSpeed) {
+    if (Math.abs(this.y + this.height / 2 - this.targetY) < this.paddleSpeed) {
       this.direction = 'idle';
     }
   }
