@@ -40,7 +40,7 @@ export function showLoginView() {
 
   registerForm.classList.add('hidden');
   loginForm.classList.remove('hidden');
-  formTitle.textContent = 'Login';
+  formTitle.textContent = 'Login'; //TODO change this to applied language
   toggle.textContent = 'No account? Register';
 
   loginMessage.classList.remove('hidden');
