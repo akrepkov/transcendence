@@ -4,7 +4,7 @@ import { turnOffKeyboardScrolling } from '../../utils/uiHelpers.js';
 export const GAME_CONSTS = {
   WIDTH: 800,
   HEIGHT: 600,
-  MAX_SCORE: 3,
+  MAX_SCORE: 5,
   SPEED: 5.6,
 };
 
