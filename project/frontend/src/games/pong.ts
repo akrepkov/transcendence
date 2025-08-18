@@ -2,6 +2,7 @@ import { GameStatePong } from './types.js';
 import { GAME_CONSTS } from './types.js';
 import { getCanvasContext } from './render.js';
 import { centerOnCanvas, turnOffKeyboardScrolling } from '../utils/uiHelpers.js';
+import { translations } from '../translations/languages.js';
 
 /**
  * Stores the current animation frame ID for cancellation.
@@ -23,6 +24,10 @@ const keys: Record<'w' | 's' | 'ArrowUp' | 'ArrowDown', boolean> = {
   ArrowUp: false,
   ArrowDown: false,
 };
+
+function getCurrentLang(): 'en' | 'pl' | 'ru' | 'ko' {
+  return (localStorage.getItem('lang') as any) || 'en';
+}
 
 /**
  * Initializes a Pong game.
@@ -156,9 +161,16 @@ export function cleanPongField() {
 export function gameOverPong(winner: string) {
   cleanPongField();
   document.removeEventListener('keydown', turnOffKeyboardScrolling);
+
   console.log(`Game over, winner: ${winner}`);
+
   const pongScore = document.getElementById('pong-score');
-  const scoreText = `The winner is ${winner}`;
+  const lang = getCurrentLang();
+
+  const template = translations[lang].pongWinner ?? translations.en.pongWinner;
+  const scoreText = template.replace('{winner}', winner);
+
+  // const scoreText = `The winner is ${winner}`;
   if (pongScore && pongScore.offsetParent !== null) {
     pongScore.textContent = scoreText;
   }

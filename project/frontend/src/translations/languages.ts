@@ -39,6 +39,7 @@ export const translations = {
     gameHistory: 'Game History',
     returnToMyProfile: 'Return to My Profile',
     return: 'Return',
+    pongWinner: 'The winner is {winner}',
 
     // setting
     backToProfile: 'Back to Profile',
@@ -89,6 +90,7 @@ export const translations = {
     // ai
     ai: 'AI Mode',
     instructionsAi: 'Up: W\n ' + 'Down: S\n Rules: Keep the ball in play. First to 5 points wins.',
+    aiWinner: 'The winner is {winner}',
 
     // tournament
     instructionsTour:
@@ -121,6 +123,10 @@ export const translations = {
     tourRoundAboutToStart: 'Round {round} is about to start.',
     tourMatchIntro: 'Round {round}: Match {match}: {p1} vs {p2}\nPress OK when ready to start!',
     tourReady: 'Ready?',
+    snakeWinner: 'The winner is {winner}',
+    pongWaitMessage: 'Waiting for another player...',
+    gameStarting: 'Game starting...',
+    resetGameMessage: "You're both silly geese, resetting game...",
   },
 
   pl: {
@@ -163,6 +169,7 @@ export const translations = {
     gameHistory: 'Historia gier',
     returnToMyProfile: 'Wróć do mojego profilu',
     return: 'Powrót',
+    pongWinner: 'Zwycięzcą jest {winner}',
 
     // settings
     backToProfile: 'Powrót do profilu',
@@ -216,6 +223,7 @@ export const translations = {
     ai: 'Tryb SI',
     instructionsAi:
       'Góra: W\n ' + 'Dół: S\n Zasady: Utrzymuj piłkę w grze. Pierwszy do 5 punktów wygrywa.',
+    aiWinner: 'Zwycięzcą jest {winner}',
 
     // tournament
     instructionsTour:
@@ -249,6 +257,10 @@ export const translations = {
     tourMatchIntro:
       'Runda {round}: Mecz {match}: {p1} kontra {p2}\nNaciśnij OK, gdy będziesz gotowy do rozpoczęcia!',
     tourReady: 'Gotowy?',
+    snakeWinner: 'Zwycięzcą jest {winner}',
+    pongWaitMessage: 'Czekam na drugiego gracza...',
+    gameStarting: 'Gra się zaczyna...',
+    resetGameMessage: 'Ale z was gąski, gra się resetuje...',
   },
 
   ru: {
@@ -291,6 +303,7 @@ export const translations = {
     gameHistory: 'История игр',
     returnToMyProfile: 'Вернуться в мой профиль',
     return: 'Назад',
+    pongWinner: 'Победитель — {winner}',
 
     // settings
     backToProfile: 'Назад к профилю',
@@ -345,6 +358,7 @@ export const translations = {
     instructionsAi:
       'Вверх: W\n ' +
       'Вниз: S\n Правила: Держи мяч в игре. Первый, кто наберёт 5 очков, побеждает.',
+    aiWinner: 'Победитель — {winner}',
 
     // tournament
     instructionsTour:
@@ -378,6 +392,10 @@ export const translations = {
     tourMatchIntro:
       'Раунд {round}: Матч {match}: {p1} против {p2}\nНажми OK, когда будешь готов начать!',
     tourReady: 'Готов?',
+    snakeWinner: 'Победитель — {winner}',
+    pongWaitMessage: 'Ожидание второго игрока...',
+    gameStarting: 'Игра начинается...',
+    resetGameMessage: 'Ну вы и гусики, игра перезапускается...',
   },
 
   ko: {
@@ -420,6 +438,7 @@ export const translations = {
     gameHistory: '게임 기록',
     returnToMyProfile: '내 프로필로 돌아가기',
     return: '돌아가기',
+    pongWinner: '우승자는 {winner}',
 
     // settings
     backToProfile: '프로필로 돌아가기',
@@ -473,6 +492,7 @@ export const translations = {
     ai: 'AI 모드',
     instructionsAi:
       '위: W\n ' + '아래: S\n 규칙: 공을 계속 살려두세요. 먼저 5점을 얻는 사람이 승리합니다.',
+    aiWinner: '우승자는 {winner}',
 
     // tournament
     instructionsTour:
@@ -504,6 +524,9 @@ export const translations = {
     tourRoundAboutToStart: '{round}라운드가 곧 시작됩니다.',
     tourMatchIntro: '{round}라운드: {match}경기: {p1} vs {p2}\n준비되면 확인을 누르세요!',
     tourReady: '준비됐나요?',
-    // blank
+    snakeWinner: '우승자는 {winner}',
+    pongWaitMessage: '다른 플레이어를 기다리는 중...',
+    gameStarting: '게임이 시작됩니다...',
+    resetGameMessage: '둘 다 바보 거위네, 게임을 다시 시작합니다...',
   },
 };
