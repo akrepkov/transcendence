@@ -9,7 +9,7 @@ export default async function userRoutes(fastify) {
   //user manipulation
   fastify.get(
     '/api/users',
-    { preHandler: authControllers.authenticate },
+    // { preHandler: authControllers.authenticate },
     userControllers.getAllUsersHandler,
   );
 
@@ -53,5 +53,9 @@ export default async function userRoutes(fastify) {
   fastify.post('/api/auth/logout', authControllers.logoutHandler);
 
   // Tournament
-  fastify.post('/api/auth/tournament', gameControllers.tournamentHandler);
+  fastify.post(
+    '/api/auth/tournament',
+    { preHandler: authControllers.authenticate },
+    gameControllers.tournamentHandler,
+  );
 }
