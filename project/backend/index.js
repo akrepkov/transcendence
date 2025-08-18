@@ -7,21 +7,12 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import fastifyMultipart from '@fastify/multipart';
 import cookie from '@fastify/cookie';
-
-//npm install @fastify/swagger @fastify/swagger-ui
-import swagger from '@fastify/swagger';
-import swaggerUi from '@fastify/swagger-ui';
 import fs from 'fs';
-//console.log('Environment Variables:', process.env); // Log all environment variables for debugging
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const port = 3000; //TODO do we need to do something with port?
 const PINGINTERVAL = 30000;
-
-// console.log("File name in index.js:", __filename); // Debugging
-
-// console.log("Dirname name in index.js:", __dirname); // Debugging
 
 let isLoggerEnabled = true;
 
@@ -93,29 +84,6 @@ fastify.register(cookie);
 
 // Register all routes
 fastify.register(userRoutes);
-
-//DEBUGGING!
-// fastify.ready(() => {
-//   console.log(fastify.printRoutes());
-// });
-
-// Swagger setup
-await fastify.register(swagger, {
-  mode: 'static',
-  specification: {
-    path: './docs/openapi.yaml',
-    baseDir: './',
-  },
-});
-
-await fastify.register(swaggerUi, {
-  routePrefix: 'docs',
-  uiConfig: {
-    deepLinking: false,
-    defaultModelsExpandDepth: -1,
-  },
-  staticCSP: true,
-});
 
 fastify.ready().then(() => {
   const interval = setInterval(() => {
