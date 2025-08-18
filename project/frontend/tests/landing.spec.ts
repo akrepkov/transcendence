@@ -93,7 +93,7 @@ test('register and verify navigation for Pong/Snake/Practice/AI (arrows + Back b
   await page.click('#toggleForm');
   await page.waitForSelector('#registerForm');
 
-  const username = `nav_${Date.now()}`;
+  const username = `n_${Date.now()}`;
   await page.fill('#registerUsername', username);
   await page.fill('#registerEmail', `${username}@test.com`);
   await page.fill('#registerPassword', 'password123');

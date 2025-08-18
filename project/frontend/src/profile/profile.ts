@@ -147,14 +147,12 @@ export async function addFriend() {
   if (friendUsername === username) {
     const lang = getCurrentLang();
     showFriendMessage(translations[lang].friendSelfError);
-    // showFriendMessage('You cannot add yourself as a friend');
     return;
   }
 
   if (currentFriends.has(friendUsername)) {
     const lang = getCurrentLang();
     showFriendMessage(translations[lang].friendAlready.replace('{username}', friendUsername), true);
-    // showFriendMessage(`${friendUsername} is already your friend`, true);
     return;
   }
 
@@ -170,17 +168,14 @@ export async function addFriend() {
       input.value = ''; // clear input after adding
       const lang = getCurrentLang();
       showFriendMessage(translations[lang].friendAdded);
-      // showFriendMessage('Friend added successfully');
     } else {
       const lang = getCurrentLang();
       showFriendMessage(translations[lang].friendNotFound);
-      // showFriendMessage('Profile does not exist');
     }
   } catch (err) {
     console.error('Request failed:', err);
     const lang = getCurrentLang();
     showFriendMessage(translations[lang].serverError, true);
-    // showFriendMessage('Server error. Please try again later.', true);
   }
 }
 
@@ -202,7 +197,7 @@ export async function showFriends(username: string) {
   const token = ++friendsRenderToken;
 
   try {
-    // Fetch profile + online list in parallel
+    // Fetch profile plus online list in parallel
     const [data, onlineFriends] = await Promise.all([
       fetchUserProfile(username),
       globalSession.getOnlineFriends(username),
@@ -275,7 +270,8 @@ export async function showGameStats(username: string) {
     const pongLosses = data.pongLosses ?? 0;
     const snakeWins = data.snakeWins ?? 0;
     const snakeLosses = data.snakeLosses ?? 0;
-    const totalGames = pongWins + pongLosses + snakeWins + snakeLosses;
+    const tournamentWins = data.tourWins ?? 0;
+    const totalGames = pongWins + pongLosses + snakeWins + snakeLosses + tournamentWins;
 
     // Update DOM
     const setText = (id: string, value: number) => {
@@ -287,6 +283,7 @@ export async function showGameStats(username: string) {
     setText('pongLosses', pongLosses);
     setText('snakeWins', snakeWins);
     setText('snakeLosses', snakeLosses);
+    setText('tourWins', tournamentWins);
     setText('totalGames', totalGames);
   } catch (err) {
     console.error('Error loading game stats:', err);
@@ -300,8 +297,7 @@ interface Match {
   winnerId: number;
   player1Score: number;
   player2Score: number;
-  createdAt: string; // ISO
-  // Optional if backend ever supplies them:
+  createdAt: string;
   player1Name?: string;
   player2Name?: string;
 }
@@ -345,7 +341,6 @@ export async function showGameHistory(username: string) {
     if (gameHistory.length === 0) {
       const lang = getCurrentLang();
       list.innerHTML = `<li class="text-black text-lg">${translations[lang].noGameHistory}</li>`;
-      // list.innerHTML = '<li class="text-black text-lg">No game history yet</li>';
       reapplyDynamicText();
       return;
     }
@@ -374,7 +369,9 @@ export async function showGameHistory(username: string) {
 
       const title = document.createElement('span');
       title.className = 'font-bold';
-      title.textContent = game.gameType;
+
+      const lang = getCurrentLang();
+      title.textContent = translations[lang][game.gameType];
 
       left.appendChild(iconImg);
       left.appendChild(title);
@@ -396,8 +393,11 @@ export async function showGameHistory(username: string) {
             ? p2Name
             : `User#${game.winnerId}`;
 
+      const vsText = translations[lang].vsText || 'vs';
+      const winnerText = translations[lang].winnerText || 'Winner';
+
       const details = document.createElement('div');
-      details.textContent = `${p1Name}: ${game.player1Score} vs ${p2Name}: ${game.player2Score} — Winner: ${winnerName}`;
+      details.textContent = `${p1Name}: ${game.player1Score} ${vsText} ${p2Name}: ${game.player2Score} — ${winnerText}: ${winnerName}`;
 
       li.appendChild(header);
       li.appendChild(details);

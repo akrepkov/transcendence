@@ -1,4 +1,3 @@
-// tests/settings.simple.spec.ts
 import { test, expect, Page } from '@playwright/test';
 
 async function loginAndOpenSettings(page: Page) {

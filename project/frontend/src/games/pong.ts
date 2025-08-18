@@ -170,7 +170,6 @@ export function gameOverPong(winner: string) {
   const template = translations[lang].pongWinner ?? translations.en.pongWinner;
   const scoreText = template.replace('{winner}', winner);
 
-  // const scoreText = `The winner is ${winner}`;
   if (pongScore && pongScore.offsetParent !== null) {
     pongScore.textContent = scoreText;
   }

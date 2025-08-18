@@ -1,6 +1,7 @@
 import { translations } from './languages.js';
-import { reapplyDynamicText } from '../profile/profile.js';
+import { reapplyDynamicText, showGameHistory } from '../profile/profile.js';
 import { reapplySettingsMessages } from '../settings/settings.js';
+import { globalSession } from '../auth/auth.js';
 
 /**
  * Retrieves the current language preference from localStorage.
@@ -63,5 +64,10 @@ export function languageSwitcherFunction() {
     applyTranslations(translations[selectedLanguage]);
     reapplyDynamicText();
     reapplySettingsMessages();
+
+    if (history.state?.view === 'profile') {
+      const username = history.state?.username || globalSession.getUsername();
+      showGameHistory(username);
+    }
   });
 }

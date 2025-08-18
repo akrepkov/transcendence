@@ -56,14 +56,11 @@ export async function handleLogin(): Promise<void> {
         globalSession.login(data.username, data.email, data.avatar);
         navigateTo('landing', '/landing', showLandingView);
       } else {
-        // showMessage(loginMessage, translations[getLang()].loginFailed);
         showMessage(loginMessage, data.error || translations[getLang()].loginFailed);
-        showMessage(loginMessage, data.error || 'Login failed'); //TODO change this to applied language
       }
     } catch (err) {
       console.error(err);
       showMessage(loginMessage, translations[getLang()].loginServerError);
-      showMessage(loginMessage, 'Server error'); //TODO change this to applied language
     }
   });
 }
@@ -120,14 +117,13 @@ export async function handleRegister(): Promise<void> {
         navigateTo('landing', '/landing', showLandingView);
         registerForm.reset();
       } else if (res.status == 418) {
-        // showMessage(loginMessage, translations[getLang()].loginFail);
-        showMessage(registerMessage, 'The username is longer than 10 characters. Try agan!'); //TODO change this to applied language
+        showMessage(registerMessage, translations[getLang()].registerMaxChars);
       } else {
-        showMessage(registerMessage, 'Username or email is already in use'); //TODO change this to applied language
+        showMessage(registerMessage, translations[getLang()].invalidCredentials);
       }
     } catch (err) {
       console.error(err);
-      showMessage(registerMessage, 'Server error'); //TODO change this to applied language
+      showMessage(registerMessage, translations[getLang()].registerServerError);
     }
   });
 }
@@ -152,11 +148,11 @@ export async function handleLogout() {
       globalSession.logout();
       navigateTo('auth', 'login', showLoginView);
     } else {
-      await showModal('Failed to log out.'); //TODO add to applied language
+      await showModal(translations[getLang()].failedToLogout);
     }
   } catch (error) {
     console.error('Logout error:', error);
-    await showModal('Error logging out'); //TODO add to applied language
+    await showModal(translations[getLang()].errorLogout);
   }
 }
 

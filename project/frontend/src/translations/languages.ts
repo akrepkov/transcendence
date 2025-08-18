@@ -1,16 +1,18 @@
 export const translations = {
   en: {
     // auth
+    meetTheTeam: 'Meet the team',
+
     //login
     title: 'Transcendence',
     formTitle: 'LOGIN',
     toggleForm: 'No account? Register',
     loginUsername: 'Enter your username',
     loginPassword: 'Enter your password',
-    meetTheTeam: 'Meet the team',
     login: 'Login',
     loginFailed: 'Login failed',
     loginServerError: 'Server error',
+
     // register
     register: 'Register',
     goToLogin: 'Already have an account? login',
@@ -34,6 +36,8 @@ export const translations = {
     practiceMode: 'Practice Mode',
     aiMode: 'AI mode',
     tournamentMode: 'Tournament Mode',
+    failedToLogout: 'Failed to log out',
+    errorLogout: 'Error logging out',
 
     // profile
     profileHeading: 'My Profile',
@@ -47,6 +51,7 @@ export const translations = {
     pongLosses: 'Pong Losses',
     snakeWins: 'Snake Wins',
     snakeLosses: 'Snake Losses',
+    tourWins: 'Tournament Wins',
     gameHistory: 'Game History',
     returnToMyProfile: 'Return to My Profile',
     return: 'Return',
@@ -56,6 +61,10 @@ export const translations = {
     noFriends: 'No friends yet',
     friendSelfError: 'You cannot add yourself as a friend',
     noGameHistory: 'No game history yet',
+    Pong: 'Pong',
+    Snake: 'Snake',
+    vsText: 'vs',
+    winnerText: 'Winner',
 
     // setting
     backToProfile: 'Back to Profile',
@@ -106,11 +115,13 @@ export const translations = {
     practice: 'Practice Mode',
     instructionsPractice:
       'Up: ↑ / W\n' + 'Down: ↓ / S\n Rules: Keep the ball in play. First to 5 points wins.',
+    pressOkPractice: 'Press OK when ready to start!',
 
     // ai
     ai: 'AI Mode',
     instructionsAi: 'Up: W\n ' + 'Down: S\n Rules: Keep the ball in play. First to 5 points wins.',
     aiWinner: 'The winner is {winner}',
+    pressOkAi: 'Press OK when ready to start!',
 
     // tournament
     instructionsTour:
@@ -143,20 +154,27 @@ export const translations = {
 
   pl: {
     // auth
+    meetTheTeam: 'Poznaj ekipę',
+
     // login
     title: 'Transcendencja',
     formTitle: 'Logowanie',
     toggleForm: 'Nie masz konta? Zarejestruj się',
     loginUsername: 'Wpisz swoją nazwę użytkownika',
     loginPassword: 'Wpisz swoje hasło',
-    meetTheTeam: 'Poznaj ekipę',
+    loginFailed: 'Logowanie nieudane',
+    loginServerError: 'Błąd serwera',
     login: 'Zaloguj się',
+
     // register
     register: 'Zarejestruj się',
     goToLogin: 'Masz już konto? Zaloguj się',
     registerUsername: 'Wpisz swoją nazwę użytkownika',
     registerPassword: 'Wpisz swoje hasło',
     registerEmail: 'Wpisz swój e-mail',
+    registerMaxChars: 'Nazwa użytkownika ma więcej niż 10 znaków. Spróbuj jeszcze raz!',
+    invalidCredentials: 'Ta nazwa użytkownika albo e-mail jest już zajęty',
+    registerServerError: 'Błąd serwera',
 
     // landing
     welcomePrefix: 'Cześć,',
@@ -171,6 +189,8 @@ export const translations = {
     practiceMode: 'Tryb treningowy',
     aiMode: 'Tryb SI',
     tournamentMode: 'Tryb turniejowy',
+    failedToLogout: 'Nie udało się wylogować',
+    errorLogout: 'Błąd podczas wylogowywania',
 
     // profile
     profileHeading: 'Mój profil',
@@ -184,6 +204,7 @@ export const translations = {
     pongLosses: 'Przegrane w Pongu',
     snakeWins: 'Wygrane w Węża',
     snakeLosses: 'Przegrane w Węża',
+    tourWins: 'Wygrane turnieje',
     gameHistory: 'Historia gier',
     returnToMyProfile: 'Wróć do mojego profilu',
     return: 'Powrót',
@@ -193,6 +214,10 @@ export const translations = {
     friendAdded: 'Znajomy został dodany',
     friendNotFound: 'Profil nie istnieje',
     noGameHistory: 'Brak historii gier',
+    Pong: 'Pong',
+    Snake: 'Wąż',
+    vsText: 'vs',
+    winnerText: 'Zwycięzca',
 
     // settings
     backToProfile: 'Powrót do profilu',
@@ -245,12 +270,14 @@ export const translations = {
     instructionsPractice:
       'Góra: ↑ / W\n' +
       'Dół: ↓ / S\n Zasady: Utrzymuj piłkę w grze. Pierwszy do 5 punktów wygrywa.',
+    pressOkPractice: 'Naciśnij OK, kiedy będziesz gotowy do startu!',
 
     // ai
     ai: 'Tryb SI',
     instructionsAi:
       'Góra: W\n ' + 'Dół: S\n Zasady: Utrzymuj piłkę w grze. Pierwszy do 5 punktów wygrywa.',
     aiWinner: 'Zwycięzcą jest {winner}',
+    pressOkAi: 'Naciśnij OK, kiedy będziesz gotowy do startu!',
 
     // tournament
     instructionsTour:
@@ -285,20 +312,27 @@ export const translations = {
 
   ru: {
     // auth
+    meetTheTeam: 'Познакомься с командой',
+
     // login
     title: 'Трансцендентность',
     formTitle: 'Вход',
     toggleForm: 'Нет аккаунта? Зарегистрируйся',
     loginUsername: 'Введи имя пользователя',
     loginPassword: 'Введи пароль',
-    meetTheTeam: 'Познакомься с командой',
+    loginFailed: 'Ошибка входа',
+    loginServerError: 'Ошибка сервера',
     login: 'Войти',
+
     // register
     register: 'Регистрация',
     goToLogin: 'Уже есть аккаунт? Войди',
     registerUsername: 'Введи имя пользователя',
     registerPassword: 'Введи пароль',
     registerEmail: 'Введи свой e-mail',
+    registerMaxChars: 'Имя пользователя длиннее 10 символов. Попробуй ещё раз!',
+    invalidCredentials: 'Это имя пользователя или e-mail уже заняты',
+    registerServerError: 'Ошибка сервера',
 
     // landing
     welcomePrefix: 'Привет,',
@@ -313,6 +347,8 @@ export const translations = {
     practiceMode: 'Режим тренировки',
     aiMode: 'Режим ИИ',
     tournamentMode: 'Турнирный режим',
+    failedToLogout: 'Не удалось выйти',
+    errorLogout: 'Ошибка при выходе',
 
     // profile
     profileHeading: 'Мой профиль',
@@ -320,13 +356,13 @@ export const translations = {
     friends: 'Друзья',
     addFriendInput: 'Введи имя пользователя',
     add: 'Добавить',
-    // friendMessage: 'Сообщение о действии с другом...',
     gameStats: 'Статистика игр',
     totalGames: 'Всего игр',
     pongWins: 'Победы в Понге',
     pongLosses: 'Поражения в Понге',
     snakeWins: 'Победы в Змейке',
     snakeLosses: 'Поражения в Змейке',
+    tourWins: 'Победы в турнирах',
     gameHistory: 'История игр',
     returnToMyProfile: 'Вернуться в мой профиль',
     return: 'Назад',
@@ -336,6 +372,10 @@ export const translations = {
     friendAdded: 'Друг успешно добавлен',
     friendNotFound: 'Профиль не существует',
     noGameHistory: 'История игр отсутствует',
+    Pong: 'Понг',
+    Snake: 'Змейка',
+    vsText: 'против',
+    winnerText: 'Победитель',
 
     // settings
     backToProfile: 'Назад к профилю',
@@ -388,6 +428,7 @@ export const translations = {
     instructionsPractice:
       'Вверх: ↑ / W\n' +
       'Вниз: ↓ / S\n Правила: Держи мяч в игре. Первый, кто наберёт 5 очков, побеждает.',
+    pressOkPractice: 'Нажми OK, когда будешь готов начать!',
 
     // ai
     ai: 'Режим ИИ',
@@ -395,6 +436,7 @@ export const translations = {
       'Вверх: W\n ' +
       'Вниз: S\n Правила: Держи мяч в игре. Первый, кто наберёт 5 очков, побеждает.',
     aiWinner: 'Победитель — {winner}',
+    pressOkAi: 'Нажми OK, когда будешь готов начать!',
 
     // tournament
     instructionsTour:
@@ -429,6 +471,8 @@ export const translations = {
 
   ko: {
     // auth
+    loginFailed: '로그인 실패',
+
     // login
     title: '초월',
     formTitle: '로그인',
@@ -436,13 +480,18 @@ export const translations = {
     loginUsername: '사용자 이름을 입력하세요',
     loginPassword: '비밀번호를 입력하세요',
     meetTheTeam: '팀 만나기',
+    loginServerError: '서버 오류',
     login: '로그인',
+
     // register
     register: '회원가입',
     goToLogin: '이미 계정이 있나요? 로그인',
     registerUsername: '사용자 이름을 입력하세요',
     registerPassword: '비밀번호를 입력하세요',
     registerEmail: '이메일을 입력하세요',
+    registerMaxChars: '사용자 이름이 10자를 넘었습니다. 다시 시도해 주세요!',
+    invalidCredentials: '사용자 이름이나 이메일이 이미 사용 중입니다',
+    registerServerError: '서버 오류',
 
     // landing
     welcomePrefix: '안녕,',
@@ -457,6 +506,8 @@ export const translations = {
     practiceMode: '연습 모드',
     aiMode: 'AI 모드',
     tournamentMode: '토너먼트 모드',
+    failedToLogout: '로그아웃에 실패했습니다',
+    errorLogout: '로그아웃 중 오류 발생',
 
     // profile
     profileHeading: '내 프로필',
@@ -470,6 +521,7 @@ export const translations = {
     pongLosses: '퐁 패배',
     snakeWins: '스네이크 승리',
     snakeLosses: '스네이크 패배',
+    tourWins: '토너먼트 승리',
     gameHistory: '게임 기록',
     returnToMyProfile: '내 프로필로 돌아가기',
     return: '돌아가기',
@@ -479,6 +531,10 @@ export const translations = {
     friendAdded: '친구가 성공적으로 추가되었습니다',
     friendNotFound: '프로필이 존재하지 않습니다',
     noGameHistory: '아직 게임 기록이 없습니다',
+    Pong: '퐁',
+    Snake: '스네이크',
+    vsText: 'vs',
+    winnerText: '승자',
 
     // settings
     backToProfile: '프로필로 돌아가기',
@@ -531,11 +587,13 @@ export const translations = {
     instructionsPractice:
       '위: ↑ / W\n' +
       '아래: ↓ / S\n 규칙: 공을 계속 살려두세요. 먼저 5점을 얻는 사람이 승리합니다.',
+    pressOkPractice: '준비되면 OK를 누르세요!',
 
     // ai
     ai: 'AI 모드',
     instructionsAi:
       '위: W\n ' + '아래: S\n 규칙: 공을 계속 살려두세요. 먼저 5점을 얻는 사람이 승리합니다.',
+    pressOkAi: '준비되면 OK를 누르세요!',
     aiWinner: '우승자는 {winner}',
 
     // tournament
