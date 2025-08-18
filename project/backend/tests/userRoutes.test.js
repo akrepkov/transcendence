@@ -119,7 +119,10 @@ describe('User Routes', () => {
 
 
 
-//  curl -X GET "https://localhost:3000/api/view_user_profile?username=lena" -H "Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE2LCJzZXNzaW9uSWQiOiJiZTBlN2RhZWIxMjFmNzM0N2ZmYmE3OTgxODBmYzI1MDkwZDJiYWVlMjI4NDlmZGZhYTg1MWEyMDRkOWJjODgzIiwiaWF0IjoxNzU1NTE1MTYwLCJleHAiOjE3NTU1MzMxNjB9.45NZSZ5rB42ExMnnIUJj11nBBusMb2hWOxh_wFU3yPg" -k
+//  curl -X GET "https://localhost:3000/api/view_user_profile?username=lena" -H "Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE3LCJzZXNzaW9uSWQiOiI5NDFiNThmMTY1NDEwYjA1YTI3ZmUxMDdmMzhlMjAyZGQwZjg5ZTAwNDQxOTY4YWQ4YWVlN2FjNjRhMzllNTEzIiwiaWF0IjoxNzU1NTE4OTM3LCJleHAiOjE3NTU1MzY5Mzd9.KUpGT__49WDdElQrbADohxJgnDpcRqdzOwDudvTTalA" -k
 
 
-//  curl -X GET https://localhost:3000/api/users -H "Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE2LCJzZXNzaW9uSWQiOiJiZTBlN2RhZWIxMjFmNzM0N2ZmYmE3OTgxODBmYzI1MDkwZDJiYWVlMjI4NDlmZGZhYTg1MWEyMDRkOWJjODgzIiwiaWF0IjoxNzU1NTE1MTYwLCJleHAiOjE3NTU1MzMxNjB9.45NZSZ5rB42ExMnnIUJj11nBBusMb2hWOxh_wFU3yPg" -k
+//  curl -X GET https://localhost:3000/api/users -H "Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE3LCJzZXNzaW9uSWQiOiI5NDFiNThmMTY1NDEwYjA1YTI3ZmUxMDdmMzhlMjAyZGQwZjg5ZTAwNDQxOTY4YWQ4YWVlN2FjNjRhMzllNTEzIiwiaWF0IjoxNzU1NTE4OTM3LCJleHAiOjE3NTU1MzY5Mzd9.KUpGT__49WDdElQrbADohxJgnDpcRqdzOwDudvTTalA" -k
+
+
+//  curl -X POST https://localhost:3000/api/auth/tournament -H "Content-Type: application/json" -H "Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE3LCJzZXNzaW9uSWQiOiI5NDFiNThmMTY1NDEwYjA1YTI3ZmUxMDdmMzhlMjAyZGQwZjg5ZTAwNDQxOTY4YWQ4YWVlN2FjNjRhMzllNTEzIiwiaWF0IjoxNzU1NTE4OTM3LCJleHAiOjE3NTU1MzY5Mzd9.KUpGT__49WDdElQrbADohxJgnDpcRqdzOwDudvTTalA" -d '{"username":"lena"}'-k
