@@ -90,6 +90,14 @@ export async function changeUsername() {
       showSettingsMessage('Username is already in use, try another one.', true, 'username');
       return;
     }
+    if (response.status === 411) {
+      showSettingsMessage(
+        'Username is longer than 10 characters, try another one.',
+        true,
+        'username',
+      );
+      return;
+    }
     if (!response.ok) {
       showSettingsMessage('Username change failed', true, 'username');
       return;
