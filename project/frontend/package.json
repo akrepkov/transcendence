@@ -26,7 +26,6 @@
     "typescript-eslint": "^8.32.1"
   },
   "dependencies": {
-    "@tailwindcss/cli": "^4.1.11",
-    "tailwindcss": "^4.1.11"
+    "@tailwindcss/cli": "^4.1.11"
   }
 }
