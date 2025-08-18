@@ -60,29 +60,29 @@ describe('User Routes', () => {
     const body = await JSON.parse(response.body);
 	authCookie = body.token;
 	console.log("cookie after login: ", authCookie);
-	// console.log("body: ", body.message);
+	console.log("username: ", 'lena');
     expect(body.message).toBe('Login successful');
   });
 
-//     test('POST add_friend', async () => {
-//     const response = await fastify.inject({
-//       method: 'POST',
-//       url: '/api/add_friend',
-//       payload: {
-//         username: 'lena',
-//         friendUsername: 'djoyke',
-//       },
-// 	  	cookies: {
-// 		token: authCookie
-// 		}
-//     });
-// 	console.log("status code ", response.statusCode);
-// 	const user = await userServices.getUserByUsername('lena');
-// 	const friend = await userServices.getUserByUsername('djoyke');
-// 	console.log("lena's friends: ", user.friends[0]);
-//     expect(response.statusCode).toBe(200);
-//     expect(user.friends[0].username).toBe(friend.username);
-//   });
+    test('POST add_friend', async () => {
+    const response = await fastify.inject({
+      method: 'POST',
+      url: '/api/add_friend',
+      payload: {
+        username: 'lena',
+        friendUsername: 'djoyke',
+      },
+	  	cookies: {
+		token: authCookie
+		}
+    });
+	console.log("status code ", response.statusCode);
+	const user = await userServices.getUserByUsername('lena');
+	const friend = await userServices.getUserByUsername('djoyke');
+	console.log("lena's friends: ", user.friends[0]);
+    expect(response.statusCode).toBe(200);
+    expect(user.friends[0].username).toBe(friend.username);
+  });
 
     test('GET /api/view_user_profile', async () => {
 	const response = await fastify.inject({
@@ -115,8 +115,11 @@ describe('User Routes', () => {
 // TEST UPDATE USER PROFILE (AVATAR UPLOAD)
 // curl -X PATCH https://localhost:3000/api/update_user_profile \
 //   -F "avatar=@/Users/mbp14/Downloads/loki_mad.webp" \              
-//  -H "cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMzMCwic2Vzc2lvbklkIjoiNTJmZjQ0OWNkYzIzYmFiYjZjOGFiOWM5ZjVkNzRiY2NiMmJiNmU2OTMyNjhhODE2NDc5ZjQwOWZmNWFmNTE5ZiIsImlhdCI6MTc1NDc0NjU5MywiZXhwIjoxNzU0NzUwMTkzfQ.KAgFGavQWfl4mzyL_BNtJiPhTykRhzO1x-jj70EIxhI" -k
+//  -H "cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE2LCJzZXNzaW9uSWQiOiJiZTBlN2RhZWIxMjFmNzM0N2ZmYmE3OTgxODBmYzI1MDkwZDJiYWVlMjI4NDlmZGZhYTg1MWEyMDRkOWJjODgzIiwiaWF0IjoxNzU1NTE1MTYwLCJleHAiOjE3NTU1MzMxNjB9.45NZSZ5rB42ExMnnIUJj11nBBusMb2hWOxh_wFU3yPg" -k
 
 
 
-//  curl -X GET https://localhost:3000/api/view_user_profile?username=lena -H "Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInNlc3Npb25JZCI6ImU0ZDM1MWI2ZDUyNzJmYTZiOGMwNWJiYWY4NWU0MGI3OTRlZTg4NTllYjc3NmRiNjcwMjg0MWZlOTU5ZWIyNGUiLCJpYXQiOjE3NTUwOTkxMzEsImV4cCI6MTc1NTExNzEzMX0.WfvC-hsxB3KPNaHe_elSO_wCsmXf8ssLSqLHWEu7eTA" -k
+//  curl -X GET "https://localhost:3000/api/view_user_profile?username=lena" -H "Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE2LCJzZXNzaW9uSWQiOiJiZTBlN2RhZWIxMjFmNzM0N2ZmYmE3OTgxODBmYzI1MDkwZDJiYWVlMjI4NDlmZGZhYTg1MWEyMDRkOWJjODgzIiwiaWF0IjoxNzU1NTE1MTYwLCJleHAiOjE3NTU1MzMxNjB9.45NZSZ5rB42ExMnnIUJj11nBBusMb2hWOxh_wFU3yPg" -k
+
+
+//  curl -X GET https://localhost:3000/api/users -H "Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE2LCJzZXNzaW9uSWQiOiJiZTBlN2RhZWIxMjFmNzM0N2ZmYmE3OTgxODBmYzI1MDkwZDJiYWVlMjI4NDlmZGZhYTg1MWEyMDRkOWJjODgzIiwiaWF0IjoxNzU1NTE1MTYwLCJleHAiOjE3NTU1MzMxNjB9.45NZSZ5rB42ExMnnIUJj11nBBusMb2hWOxh_wFU3yPg" -k
