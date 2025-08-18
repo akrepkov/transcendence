@@ -2,6 +2,8 @@ import { globalSession } from '../auth/auth.js';
 
 let settingsMessageTimer: number | undefined;
 
+const backToProfile = document.getElementById('backToProfile') as HTMLButtonElement;
+
 function showSettingsMessage(
   text: string,
   isError = false,
@@ -240,3 +242,32 @@ export function initAvatarUpload() {
     }
   });
 }
+
+// User navigated with browser back/forward
+window.addEventListener('popstate', () => {
+  const username = document.getElementById('newUsername') as HTMLInputElement;
+  username.value = '';
+  const password = document.getElementById('newPassword') as HTMLInputElement;
+  password.value = '';
+  const avatar = document.getElementById('avatar-input') as HTMLInputElement;
+  avatar.value = '';
+});
+
+// User is leaving or refreshing the page
+window.addEventListener('beforeunload', () => {
+  const username = document.getElementById('newUsername') as HTMLInputElement;
+  username.value = '';
+  const password = document.getElementById('newPassword') as HTMLInputElement;
+  password.value = '';
+  const avatar = document.getElementById('avatar-input') as HTMLInputElement;
+  avatar.value = '';
+});
+
+backToProfile.addEventListener('click', () => {
+  const username = document.getElementById('newUsername') as HTMLInputElement;
+  username.value = '';
+  const password = document.getElementById('newPassword') as HTMLInputElement;
+  password.value = '';
+  const avatar = document.getElementById('avatar-input') as HTMLInputElement;
+  avatar.value = '';
+});
