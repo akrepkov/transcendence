@@ -12,6 +12,7 @@ import {
   showInstructions,
 } from '../utils/uiHelpers.js';
 import { initTournamentPlayers } from '../games/tournament.js';
+import { translations } from '../translations/languages.js';
 
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
@@ -24,6 +25,10 @@ const landingPage = document.getElementById('landingPage');
 const profilePage = document.getElementById('profilePage');
 const creditPage = document.getElementById('creditPage');
 const tourPage = document.getElementById('tourPage');
+
+function getCurrentLang(): 'en' | 'pl' | 'ru' | 'ko' {
+  return (localStorage.getItem('lang') as any) || 'en';
+}
 
 /**
  * Displays the login form view.
@@ -40,8 +45,10 @@ export function showLoginView() {
 
   registerForm.classList.add('hidden');
   loginForm.classList.remove('hidden');
-  formTitle.textContent = 'Login'; //TODO change this to applied language
-  toggle.textContent = 'No account? Register';
+
+  const lang = getCurrentLang();
+  formTitle.textContent = translations[lang].login;
+  toggle.textContent = translations[lang].toggleForm;
 
   loginMessage.classList.remove('hidden');
   setView('login'); //new
@@ -67,8 +74,10 @@ export function showRegisterView() {
 
   loginForm.classList.add('hidden');
   registerForm.classList.remove('hidden');
-  formTitle.textContent = 'Register';
-  toggle.textContent = 'Already have an account? Login';
+
+  const lang = getCurrentLang();
+  formTitle.textContent = translations[lang].register;
+  toggle.textContent = translations[lang].goToLogin;
 
   loginMessage.classList.add('hidden');
   registerMessage.classList.remove('hidden');
@@ -200,7 +209,6 @@ export async function showProfileView(username?: string) {
     if (avatarProfile) {
       if (jsonResult.avatar === null) {
         console.log('avatar is null');
-        avatarProfile.src = '/uploads/avatars/wow_cat.jpg'; //TODO remove after backend database fix
       } else {
         avatarProfile.src = jsonResult.avatar;
       }

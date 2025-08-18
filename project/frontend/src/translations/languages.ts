@@ -1,6 +1,7 @@
 export const translations = {
   en: {
-    // login
+    // auth
+    //login
     title: 'Transcendence',
     formTitle: 'LOGIN',
     toggleForm: 'No account? Register',
@@ -8,6 +9,17 @@ export const translations = {
     loginPassword: 'Enter your password',
     meetTheTeam: 'Meet the team',
     login: 'Login',
+    loginFailed: 'Login failed',
+    loginServerError: 'Server error',
+    // register
+    register: 'Register',
+    goToLogin: 'Already have an account? login',
+    registerUsername: 'Enter your username',
+    registerPassword: 'Enter your password',
+    registerEmail: 'Enter your email',
+    registerMaxChars: 'The username is longer than 10 characters. Try agan!',
+    invalidCredentials: 'Username or email is already in use',
+    registerServerError: 'Server error',
 
     // landing
     welcomePrefix: 'Welcome,',
@@ -29,7 +41,6 @@ export const translations = {
     friends: 'Friends',
     addFriendInput: 'Enter username',
     add: 'Add',
-    // friendMessage: 'Friend action message...',
     gameStats: 'Game Stats',
     totalGames: 'Total Games',
     pongWins: 'Pong Wins',
@@ -39,7 +50,12 @@ export const translations = {
     gameHistory: 'Game History',
     returnToMyProfile: 'Return to My Profile',
     return: 'Return',
-    pongWinner: 'The winner is {winner}',
+    friendAlready: '{username} is already your friend',
+    friendAdded: 'Friend added successfully',
+    friendNotFound: 'Profile does not exist',
+    noFriends: 'No friends yet',
+    friendSelfError: 'You cannot add yourself as a friend',
+    noGameHistory: 'No game history yet',
 
     // setting
     backToProfile: 'Back to Profile',
@@ -61,6 +77,7 @@ export const translations = {
     imageTooBig: 'Image is too big, try uploading something up to 1MB.',
     avatarUploadFailed: 'Avatar upload failed.',
     avatarUpdated: 'Avatar updated successfully.',
+    usernameTenChars: 'Username must be at least 10 characters long.',
 
     // pong
     start: 'START',
@@ -68,6 +85,8 @@ export const translations = {
     instructionsPong:
       'Up: ↑ / W\n' + 'Down: ↓ / S\n Rules: Keep the ball in play. First to 5 points wins.',
     pongMessage: 'Waiting for another player...',
+    pongWinner: 'The winner is {winner}',
+    pongWaitMessage: 'Waiting for another player...',
 
     // snake
     instructionsSnake:
@@ -81,6 +100,7 @@ export const translations = {
       'Win by eating 10 apples the fastest, making your opponent crash into a wall, their own tail, or your snake.\n' +
       'If both players crash in the same frame the game restarts.',
     snakeMessage: 'Waiting to start...',
+    snakeWinner: 'The winner is {winner}',
 
     // practice
     practice: 'Practice Mode',
@@ -97,6 +117,15 @@ export const translations = {
       'Up: ↑ / W\n' +
       'Down: ↓ / S\n Rules: Keep the ball in play. First to 5 points wins. Amount of players needs to be 2^n. The player pairs will be assigned randomly, the winner from each pair will move on to the next round. After the final round, the Winner is declared.',
     enterUsername: 'Enter username',
+    ok: 'OK',
+    tourHostTag: ' (host)',
+    tourAlreadyIn: "You're already in.",
+    tourUserNotRegistered: 'This user is not registered, please register first.',
+    tourPlayersPowerOfTwo: 'The number of players must be a power of 2',
+    tourRoundAboutToStart: 'Round {round} is about to start.',
+    tourMatchIntro: 'Round {round}: Match {match}: {p1} vs {p2}\nPress OK when ready to start!',
+    tourReady: 'Ready?',
+    tourMaxPlayers: 'Maximum players achieved. Start Tournament',
 
     // credit
     creditPage: 'Credits',
@@ -106,30 +135,14 @@ export const translations = {
     ferretBy: 'Ferret by: Djoyke',
     specialThanksText: 'Special Thanks: to everyone who distracted us',
 
-    // Add to all languages
-    noFriends: 'No friends yet',
-    friendSelfError: 'You cannot add yourself as a friend',
-    friendAlready: '{username} is already your friend',
-    friendAdded: 'Friend added successfully',
-    friendNotFound: 'Profile does not exist',
+    // etc
     serverError: 'Server error. Please try again later.',
-    noGameHistory: 'No game history yet',
-
-    ok: 'OK',
-    tourHostTag: ' (host)',
-    tourAlreadyIn: "You're already in.",
-    tourUserNotRegistered: 'This user is not registered, please register first.',
-    tourPlayersPowerOfTwo: 'The number of players must be a power of 2',
-    tourRoundAboutToStart: 'Round {round} is about to start.',
-    tourMatchIntro: 'Round {round}: Match {match}: {p1} vs {p2}\nPress OK when ready to start!',
-    tourReady: 'Ready?',
-    snakeWinner: 'The winner is {winner}',
-    pongWaitMessage: 'Waiting for another player...',
     gameStarting: 'Game starting...',
     resetGameMessage: "You're both silly geese, resetting game...",
   },
 
   pl: {
+    // auth
     // login
     title: 'Transcendencja',
     formTitle: 'Logowanie',
@@ -138,6 +151,12 @@ export const translations = {
     loginPassword: 'Wpisz swoje hasło',
     meetTheTeam: 'Poznaj ekipę',
     login: 'Zaloguj się',
+    // register
+    register: 'Zarejestruj się',
+    goToLogin: 'Masz już konto? Zaloguj się',
+    registerUsername: 'Wpisz swoją nazwę użytkownika',
+    registerPassword: 'Wpisz swoje hasło',
+    registerEmail: 'Wpisz swój e-mail',
 
     // landing
     welcomePrefix: 'Cześć,',
@@ -159,7 +178,6 @@ export const translations = {
     friends: 'Znajomi',
     addFriendInput: 'Wpisz nazwę użytkownika',
     add: 'Dodaj',
-    // friendMessage: 'Wiadomość o akcji związanej ze znajomym...',
     gameStats: 'Statystyki gier',
     totalGames: 'Łączna liczba gier',
     pongWins: 'Wygrane w Pongu',
@@ -169,7 +187,12 @@ export const translations = {
     gameHistory: 'Historia gier',
     returnToMyProfile: 'Wróć do mojego profilu',
     return: 'Powrót',
-    pongWinner: 'Zwycięzcą jest {winner}',
+    noFriends: 'Brak znajomych',
+    friendSelfError: 'Nie możesz dodać siebie jako znajomego',
+    friendAlready: '{username} jest już twoim znajomym',
+    friendAdded: 'Znajomy został dodany',
+    friendNotFound: 'Profil nie istnieje',
+    noGameHistory: 'Brak historii gier',
 
     // settings
     backToProfile: 'Powrót do profilu',
@@ -191,6 +214,7 @@ export const translations = {
     imageTooBig: 'Obraz jest za duży, prześlij plik do 1 MB.',
     avatarUploadFailed: 'Przesyłanie awatara nie powiodło się.',
     avatarUpdated: 'Awatar został zaktualizowany.',
+    usernameTenChars: 'Nazwa użytkownika musi mieć co najmniej 10 znaków.',
 
     // pong
     start: 'START',
@@ -199,6 +223,8 @@ export const translations = {
       'Góra: ↑ / W\n' +
       'Dół: ↓ / S\n Zasady: Utrzymuj piłkę w grze. Pierwszy do 5 punktów wygrywa.',
     pongMessage: 'Czekam na drugiego gracza...',
+    pongWaitMessage: 'Czekam na drugiego gracza...',
+    pongWinner: 'Zwycięzcą jest {winner}',
 
     // snake
     instructionsSnake:
@@ -212,6 +238,7 @@ export const translations = {
       'Wygraj, jedząc 10 jabłek najszybciej, sprawiając, by przeciwnik uderzył w ścianę, swój ogon lub twojego węża.\n' +
       'Jeśli obaj gracze zderzą się w tym samym momencie, gra zaczyna się od nowa.',
     snakeMessage: 'Czekam na rozpoczęcie...',
+    snakeWinner: 'Zwycięzcą jest {winner}',
 
     // practice
     practice: 'Tryb treningowy',
@@ -230,23 +257,6 @@ export const translations = {
       'Góra: ↑ / W\n' +
       'Dół: ↓ / S\n Zasady: Utrzymuj piłkę w grze. Pierwszy do 5 punktów wygrywa. Liczba graczy musi być w formacie 2^n. Pary graczy zostaną przydzielone losowo, zwycięzca z każdej pary przechodzi do następnej rundy. Po finałowej rundzie zostaje ogłoszony zwycięzca.',
     enterUsername: 'Wpisz nazwę użytkownika',
-
-    // credit
-    creditPage: 'Twórcy',
-    everythingBy: 'Wszystko stworzone przez: Anna',
-    donkeyBy: 'Osioł stworzony przez: Lena',
-    wombatBy: 'Wombat stworzony przez: Jan',
-    ferretBy: 'Fretka stworzona przez: Djoyke',
-    specialThanksText: 'Specjalne podziękowania: dla wszystkich, którzy nas rozpraszali',
-
-    noFriends: 'Brak znajomych',
-    friendSelfError: 'Nie możesz dodać siebie jako znajomego',
-    friendAlready: '{username} jest już twoim znajomym',
-    friendAdded: 'Znajomy został dodany',
-    friendNotFound: 'Profil nie istnieje',
-    serverError: 'Błąd serwera. Spróbuj ponownie później.',
-    noGameHistory: 'Brak historii gier',
-
     ok: 'OK',
     tourHostTag: ' (gospodarz)',
     tourAlreadyIn: 'Już jesteś zapisany.',
@@ -257,13 +267,24 @@ export const translations = {
     tourMatchIntro:
       'Runda {round}: Mecz {match}: {p1} kontra {p2}\nNaciśnij OK, gdy będziesz gotowy do rozpoczęcia!',
     tourReady: 'Gotowy?',
-    snakeWinner: 'Zwycięzcą jest {winner}',
-    pongWaitMessage: 'Czekam na drugiego gracza...',
+    tourMaxPlayers: 'Osiągnięto maksymalną liczbę graczy. Rozpocznij turniej',
+
+    // credit
+    creditPage: 'Twórcy',
+    everythingBy: 'Wszystko stworzone przez: Anna',
+    donkeyBy: 'Osioł stworzony przez: Lena',
+    wombatBy: 'Wombat stworzony przez: Jan',
+    ferretBy: 'Fretka stworzona przez: Djoyke',
+    specialThanksText: 'Specjalne podziękowania: dla wszystkich, którzy nas rozpraszali',
+
+    // etc
+    serverError: 'Błąd serwera. Spróbuj ponownie później.',
     gameStarting: 'Gra się zaczyna...',
     resetGameMessage: 'Ale z was gąski, gra się resetuje...',
   },
 
   ru: {
+    // auth
     // login
     title: 'Трансцендентность',
     formTitle: 'Вход',
@@ -272,6 +293,12 @@ export const translations = {
     loginPassword: 'Введи пароль',
     meetTheTeam: 'Познакомься с командой',
     login: 'Войти',
+    // register
+    register: 'Регистрация',
+    goToLogin: 'Уже есть аккаунт? Войди',
+    registerUsername: 'Введи имя пользователя',
+    registerPassword: 'Введи пароль',
+    registerEmail: 'Введи свой e-mail',
 
     // landing
     welcomePrefix: 'Привет,',
@@ -303,7 +330,12 @@ export const translations = {
     gameHistory: 'История игр',
     returnToMyProfile: 'Вернуться в мой профиль',
     return: 'Назад',
-    pongWinner: 'Победитель — {winner}',
+    noFriends: 'Пока нет друзей',
+    friendSelfError: 'Нельзя добавить себя в друзья',
+    friendAlready: '{username} уже в твоих друзьях',
+    friendAdded: 'Друг успешно добавлен',
+    friendNotFound: 'Профиль не существует',
+    noGameHistory: 'История игр отсутствует',
 
     // settings
     backToProfile: 'Назад к профилю',
@@ -325,6 +357,7 @@ export const translations = {
     imageTooBig: 'Изображение слишком большое, попробуй до 1 МБ.',
     avatarUploadFailed: 'Не удалось загрузить аватар.',
     avatarUpdated: 'Аватар успешно обновлён.',
+    usernameTenChars: 'Имя пользователя должно быть не короче 10 символов.',
 
     // pong
     start: 'СТАРТ',
@@ -333,6 +366,8 @@ export const translations = {
       'Вверх: ↑ / W\n' +
       'Вниз: ↓ / S\n Правила: Держи мяч в игре. Первый, кто наберёт 5 очков, побеждает.',
     pongMessage: 'Ожидание второго игрока...',
+    pongWaitMessage: 'Ожидание второго игрока...',
+    pongWinner: 'Победитель — {winner}',
 
     // snake
     instructionsSnake:
@@ -346,6 +381,7 @@ export const translations = {
       'Побеждай, съев 10 яблок быстрее всех, заставив соперника врезаться в стену, свой хвост или твою змею.\n' +
       'Если оба игрока врезаются в один кадр, игра начинается заново.',
     snakeMessage: 'Ожидание начала...',
+    snakeWinner: 'Победитель — {winner}',
 
     // practice
     practice: 'Режим тренировки',
@@ -365,23 +401,6 @@ export const translations = {
       'Вверх: ↑ / W\n' +
       'Вниз: ↓ / S\n Правила: Держи мяч в игре. Первый, кто наберёт 5 очков, побеждает. Количество игроков должно быть в формате 2^n. Пары игроков распределяются случайным образом, победитель каждой пары проходит в следующий раунд. После финального раунда объявляется Победитель.',
     enterUsername: 'Введи имя пользователя',
-
-    // credit
-    creditPage: 'Авторы',
-    everythingBy: 'Всё сделано: Anna',
-    donkeyBy: 'Осла сделал: Lena',
-    wombatBy: 'Вомбата сделал: Jan',
-    ferretBy: 'Хорька сделал: Djoyke',
-    specialThanksText: 'Отдельная благодарность: всем, кто нас отвлекал',
-
-    noFriends: 'Пока нет друзей',
-    friendSelfError: 'Нельзя добавить себя в друзья',
-    friendAlready: '{username} уже в твоих друзьях',
-    friendAdded: 'Друг успешно добавлен',
-    friendNotFound: 'Профиль не существует',
-    serverError: 'Ошибка сервера. Попробуй позже.',
-    noGameHistory: 'История игр отсутствует',
-
     ok: 'OK',
     tourHostTag: ' (хост)',
     tourAlreadyIn: 'Ты уже участвуешь.',
@@ -392,13 +411,24 @@ export const translations = {
     tourMatchIntro:
       'Раунд {round}: Матч {match}: {p1} против {p2}\nНажми OK, когда будешь готов начать!',
     tourReady: 'Готов?',
-    snakeWinner: 'Победитель — {winner}',
-    pongWaitMessage: 'Ожидание второго игрока...',
+    tourMaxPlayers: 'Достигнуто максимальное количество игроков. Запускай турнир',
+
+    // credit
+    creditPage: 'Авторы',
+    everythingBy: 'Всё сделано: Anna',
+    donkeyBy: 'Осла сделал: Lena',
+    wombatBy: 'Вомбата сделал: Jan',
+    ferretBy: 'Хорька сделал: Djoyke',
+    specialThanksText: 'Отдельная благодарность: всем, кто нас отвлекал',
+
+    // etc
+    serverError: 'Ошибка сервера. Попробуй позже.',
     gameStarting: 'Игра начинается...',
     resetGameMessage: 'Ну вы и гусики, игра перезапускается...',
   },
 
   ko: {
+    // auth
     // login
     title: '초월',
     formTitle: '로그인',
@@ -407,6 +437,12 @@ export const translations = {
     loginPassword: '비밀번호를 입력하세요',
     meetTheTeam: '팀 만나기',
     login: '로그인',
+    // register
+    register: '회원가입',
+    goToLogin: '이미 계정이 있나요? 로그인',
+    registerUsername: '사용자 이름을 입력하세요',
+    registerPassword: '비밀번호를 입력하세요',
+    registerEmail: '이메일을 입력하세요',
 
     // landing
     welcomePrefix: '안녕,',
@@ -428,7 +464,6 @@ export const translations = {
     friends: '친구',
     addFriendInput: '사용자 이름 입력',
     add: '추가',
-    // friendMessage: '친구 관련 액션 메시지...',
     gameStats: '게임 통계',
     totalGames: '총 게임 수',
     pongWins: '퐁 승리',
@@ -438,7 +473,12 @@ export const translations = {
     gameHistory: '게임 기록',
     returnToMyProfile: '내 프로필로 돌아가기',
     return: '돌아가기',
-    pongWinner: '우승자는 {winner}',
+    noFriends: '아직 친구가 없습니다',
+    friendSelfError: '자기 자신을 친구로 추가할 수 없습니다',
+    friendAlready: '{username}님은 이미 친구입니다',
+    friendAdded: '친구가 성공적으로 추가되었습니다',
+    friendNotFound: '프로필이 존재하지 않습니다',
+    noGameHistory: '아직 게임 기록이 없습니다',
 
     // settings
     backToProfile: '프로필로 돌아가기',
@@ -460,6 +500,7 @@ export const translations = {
     imageTooBig: '이미지가 너무 큽니다. 1MB 이하로 업로드하세요.',
     avatarUploadFailed: '아바타 업로드에 실패했습니다.',
     avatarUpdated: '아바타가 업데이트되었습니다.',
+    usernameTenChars: '사용자 이름은 최소 10자 이상이어야 합니다.',
 
     // pong
     start: '시작',
@@ -468,6 +509,8 @@ export const translations = {
       '위: ↑ / W\n' +
       '아래: ↓ / S\n 규칙: 공을 계속 살려두세요. 먼저 5점을 얻는 사람이 승리합니다.',
     pongMessage: '다른 플레이어를 기다리는 중...',
+    pongWaitMessage: '다른 플레이어를 기다리는 중...',
+    pongWinner: '우승자는 {winner}',
 
     // snake
     instructionsSnake:
@@ -481,6 +524,7 @@ export const translations = {
       '10개의 사과를 가장 빨리 먹거나 상대를 벽, 자신의 꼬리, 또는 당신의 뱀에 부딪히게 하면 승리합니다.\n' +
       '두 플레이어가 같은 프레임에 충돌하면 게임이 재시작됩니다.',
     snakeMessage: '시작을 기다리는 중...',
+    snakeWinner: '우승자는 {winner}',
 
     // practice
     practice: '연습 모드',
@@ -499,6 +543,15 @@ export const translations = {
       '위: ↑ / W\n' +
       '아래: ↓ / S\n 규칙: 공을 계속 살려두세요. 먼저 5점을 얻는 사람이 승리합니다. 플레이어 수는 2^n 형태여야 합니다. 플레이어는 무작위로 짝지어지고, 각 짝의 승자가 다음 라운드로 진출합니다. 마지막 라운드 후 최종 우승자가 결정됩니다.',
     enterUsername: '사용자 이름 입력',
+    ok: '확인',
+    tourHostTag: ' (호스트)',
+    tourAlreadyIn: '이미 참가 중입니다.',
+    tourUserNotRegistered: '이 사용자는 등록되지 않았습니다. 먼저 회원가입을 해주세요.',
+    tourPlayersPowerOfTwo: '플레이어 수는 2의 거듭제곱이어야 합니다',
+    tourRoundAboutToStart: '{round}라운드가 곧 시작됩니다.',
+    tourMatchIntro: '{round}라운드: {match}경기: {p1} vs {p2}\n준비되면 확인을 누르세요!',
+    tourReady: '준비됐나요?',
+    tourMaxPlayers: '최대 인원에 도달했습니다. 토너먼트를 시작하세요',
 
     // credit
     creditPage: '크레딧',
@@ -508,24 +561,8 @@ export const translations = {
     ferretBy: '페럿 제작: Djoyke',
     specialThanksText: '특별 감사: 우리를 방해한 모든 분들께',
 
-    noFriends: '아직 친구가 없습니다',
-    friendSelfError: '자기 자신을 친구로 추가할 수 없습니다',
-    friendAlready: '{username}님은 이미 친구입니다',
-    friendAdded: '친구가 성공적으로 추가되었습니다',
-    friendNotFound: '프로필이 존재하지 않습니다',
+    // etc
     serverError: '서버 오류입니다. 나중에 다시 시도하세요.',
-    noGameHistory: '아직 게임 기록이 없습니다',
-
-    ok: '확인',
-    tourHostTag: ' (호스트)',
-    tourAlreadyIn: '이미 참가 중입니다.',
-    tourUserNotRegistered: '이 사용자는 등록되지 않았습니다. 먼저 회원가입을 해주세요.',
-    tourPlayersPowerOfTwo: '플레이어 수는 2의 거듭제곱이어야 합니다',
-    tourRoundAboutToStart: '{round}라운드가 곧 시작됩니다.',
-    tourMatchIntro: '{round}라운드: {match}경기: {p1} vs {p2}\n준비되면 확인을 누르세요!',
-    tourReady: '준비됐나요?',
-    snakeWinner: '우승자는 {winner}',
-    pongWaitMessage: '다른 플레이어를 기다리는 중...',
     gameStarting: '게임이 시작됩니다...',
     resetGameMessage: '둘 다 바보 거위네, 게임을 다시 시작합니다...',
   },

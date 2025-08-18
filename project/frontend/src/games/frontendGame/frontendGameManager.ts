@@ -39,6 +39,8 @@ export async function handleStartGame(
     game = new Game(canvasId, scoreFieldId, player1Name!, player2Name!);
   }
 
+  // if (!game)
+  //   startDelay = options.delaysMs ??
   console.log('INSIDE MANAGER: ', canvasId, player1Name, player2Name);
   game!.drawCanvas();
   centerOnCanvas(canvasId);

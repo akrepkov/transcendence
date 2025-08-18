@@ -83,6 +83,11 @@ const updateUserHandler = async (request, reply) => {
       if (existUsername) {
         return reply.code(418).send({ error: 'Username already in use' });
       }
+      if (username.length > 10) {
+        return reply
+          .code(411)
+          .send({ error: 'Username is longer than 10 characters, try shorten it.' });
+      }
       await userServices.updateUsername(user, username);
       await connectionManager.updateUsernameInConnections(user.userId, username);
     }
@@ -129,21 +134,6 @@ const updateUserAvatar = async (request, reply) => {
       } else {
         if (part.file) part.file.resume();
       }
-    }
-    if (username) {
-      const existUsername = await authServices.checkUniqueUsername(username);
-      if (existUsername) {
-        return reply.code(400).send({ error: 'Username already in use' });
-      }
-      await userServices.updateUsername(user, username);
-      await connectionManager.updateUsernameInConnections(user.userId, username);
-    }
-    if (email) {
-      await userServices.updateEmail(user, email);
-    }
-    if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      await userServices.updatePassword(user, hashedPassword);
     }
     if (avatarBuf) {
       await uploadAvatarHandler(

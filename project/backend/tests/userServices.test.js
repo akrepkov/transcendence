@@ -33,11 +33,11 @@ describe('Prisma direct database tests', () => {
     expect(newUser2.username).toBe('jan');
   });
 
-//   test('registerting user with the same username', async () => {
-//     await authServices.registerUser({ username: 'lena', email: 'lena', password: 'lena' });
-//     const user = await userServices.getUserByUsername('lena');
-//     expect(user.email).toBe('lena@mail.com');
-//   });
+  test('registerting user with the same username', async () => {
+    await authServices.registerUser({ username: 'lena', email: 'lena', password: 'lena' });
+    const user = await userServices.getUserByUsername('lena');
+    expect(user.email).toBe('lena@mail.com');
+  });
 
   test('users table exists', async () => {
     const users = await userServices.getUsers();
@@ -75,15 +75,6 @@ describe('Prisma direct database tests', () => {
     expect(updatedLoser.pong[0].gameId).toBe(pong.gameId);
   });
 
-//   test('can add personalized avatar', async () => {
-//     const filepath = 'project/backend/uploads/avatars/avatar_1748704618618_apollo_baby.jpeg';
-//     const username = 'lena';
-//     const user = await userServices.uploadAvatarInDatabase(filepath, username);
-// 	const updatedUser = await userServices.getUserByUsername(username);
-//     expect(user).toBeDefined();
-//     expect(user.avatar).toBe(filepath);
-//   });
-
       test('can retrieve avatar', async () => {
         const username = 'lena';
         const avatar = await userServices.getAvatarFromDatabase(username);
@@ -111,9 +102,12 @@ describe('Prisma direct database tests', () => {
   test('can delete user by username', async () => {
     await userServices.deleteUser('lena');
     await userServices.deleteUser('jan');
+    await userServices.deleteUser('loca');
     const user1 = await userServices.getUserByUsername('lena');
     const user2 = await userServices.getUserByUsername('jan');
+    const user3 = await userServices.getUserByUsername('loca');
     expect(user1).toBeNull();
     expect(user2).toBeNull();
+    expect(user3).toBeNull();
   });
 });

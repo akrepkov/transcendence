@@ -36,6 +36,13 @@ async function validatePlayers(username: string) {
   }
 }
 
+function shufflePlayers() {
+  for (let i = players.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [players[i], players[j]] = [players[j], players[i]];
+  }
+}
+
 function renderPlayersList() {
   playerList.innerHTML = '';
   const host = globalSession.getUsername();
@@ -62,6 +69,8 @@ async function generatePlayerBrackets(rounds: number, currentRound: number) {
     tour[currentRound - 1] = [];
   }
   if (currentRound == 1) {
+    shufflePlayers();
+    console.log('SHUFFLED PLAYERS LIST: ', players);
     for (let i = 0; i < players.length; i += 2) {
       const player1 = players[i];
       const player2 = players[i + 1];
@@ -89,6 +98,7 @@ async function generatePlayerBrackets(rounds: number, currentRound: number) {
 }
 
 async function playGame(currentRound: number) {
+  if (!tournamentActive) return;
   for (let i = 0; i < tour[currentRound - 1].length; i++) {
     if (!tournamentActive) return;
     const player1 = tour[currentRound - 1][i].player1;
@@ -130,6 +140,7 @@ async function playGame(currentRound: number) {
 
 async function startTournament() {
   tournamentActive = true;
+  document.getElementById('tournament')?.classList.remove('hidden');
   tour.length = 0;
   const rounds = Math.log2(players.length);
   for (let i = 0; i < rounds; i++) {
@@ -154,10 +165,12 @@ async function startTournament() {
       body: JSON.stringify({ username: finalWinner }),
     });
     if (!reply.ok) {
+      if (!tournamentActive) return;
       console.error('Winner results not saved.');
       return;
     }
   } else {
+    if (!tournamentActive) return;
     tour.length = 0;
   }
 }
@@ -176,7 +189,7 @@ addPlayerButton?.addEventListener('click', async () => {
   }
   if (players.length == 64) {
     usernameInput.value = '';
-    showMessage(tournamentMessage, 'Maximum players achieved. Start Tournament');
+    showMessage(tournamentMessage, translations[getLang()].tourMaxPlayers);
     return;
   }
   if (username && !players.includes(username)) {
@@ -214,4 +227,18 @@ stopButton?.addEventListener('click', async () => {
   tour.length = 0;
   players.length = 0;
   toggleHandler.tourPage.reset();
+});
+
+// User navigated with browser back/forward
+window.addEventListener('popstate', () => {
+  tournamentActive = false;
+  tour.length = 0;
+  players.length = 0;
+});
+
+// User is leaving or refreshing the page
+window.addEventListener('beforeunload', () => {
+  tournamentActive = false;
+  tour.length = 0;
+  players.length = 0;
 });

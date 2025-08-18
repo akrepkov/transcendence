@@ -3,6 +3,8 @@ import { translations } from '../translations/languages.js';
 
 let settingsMessageTimer: number | undefined;
 
+const backToProfile = document.getElementById('backToProfile') as HTMLButtonElement;
+
 /**
  * Retrieves the current language preference from localStorage.
  *
@@ -131,6 +133,10 @@ export async function changeUsername() {
 
     if (response.status === 418) {
       showSettingsMessageKey('usernameTaken', true, 'username');
+      return;
+    }
+    if (response.status === 411) {
+      showSettingsMessageKey('usernameTenChars', true, 'username');
       return;
     }
     if (!response.ok) {
@@ -280,3 +286,32 @@ export function initAvatarUpload() {
     }
   });
 }
+
+// User navigated with browser back/forward
+window.addEventListener('popstate', () => {
+  const username = document.getElementById('newUsername') as HTMLInputElement;
+  username.value = '';
+  const password = document.getElementById('newPassword') as HTMLInputElement;
+  password.value = '';
+  const avatar = document.getElementById('avatar-input') as HTMLInputElement;
+  avatar.value = '';
+});
+
+// User is leaving or refreshing the page
+window.addEventListener('beforeunload', () => {
+  const username = document.getElementById('newUsername') as HTMLInputElement;
+  username.value = '';
+  const password = document.getElementById('newPassword') as HTMLInputElement;
+  password.value = '';
+  const avatar = document.getElementById('avatar-input') as HTMLInputElement;
+  avatar.value = '';
+});
+
+backToProfile.addEventListener('click', () => {
+  const username = document.getElementById('newUsername') as HTMLInputElement;
+  username.value = '';
+  const password = document.getElementById('newPassword') as HTMLInputElement;
+  password.value = '';
+  const avatar = document.getElementById('avatar-input') as HTMLInputElement;
+  avatar.value = '';
+});
