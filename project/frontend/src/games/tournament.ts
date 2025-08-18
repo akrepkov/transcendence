@@ -3,6 +3,10 @@ import { toggleHandler } from './gameHandler.js';
 import * as frontendGameManager from '../games/frontendGame/frontendGameManager.js';
 import { globalSession } from '../auth/auth.js';
 import { showMessage, showModal } from '../utils/uiHelpers.js';
+import { translations } from '../translations/languages.js';
+
+type Lang = 'en' | 'pl' | 'ru' | 'ko';
+const getLang = (): Lang => (localStorage.getItem('lang') as Lang) || 'en';
 
 const usernameInput = document.getElementById('tournamentUsername') as HTMLInputElement;
 const addPlayerButton = document.getElementById('add-player-button') as HTMLButtonElement;
@@ -99,12 +103,16 @@ async function playGame(currentRound: number) {
     if (!tournamentActive) return;
     const player1 = tour[currentRound - 1][i].player1;
     const player2 = tour[currentRound - 1][i].player2;
-
+    await showModal(
+      translations[getLang()].tourMatchIntro
+        .replace('{round}', String(currentRound))
+        .replace('{match}', String(i + 1))
+        .replace('{p1}', player1)
+        .replace('{p2}', player2),
+    );
     console.log('Starting game for:', player1, player2);
     await frontendGameManager.handleStartGame('tournament', player1, player2, {
-      waitFor: showModal(
-        `Round ${currentRound}: Match ${i + 1}: ${player1} vs ${player2}\nPress OK when ready to start!`,
-      ),
+      waitFor: showModal(translations[getLang()].tourReady),
       delaysMs: 100,
     });
     if (!tournamentActive) return;
@@ -139,7 +147,9 @@ async function startTournament() {
     if (!tournamentActive) return;
     await generatePlayerBrackets(rounds, i + 1);
     if (!tournamentActive) return;
-    await showModal(`Round ${i + 1} is about to start.`);
+    await showModal(
+      translations[getLang()].tourRoundAboutToStart.replace('{round}', String(i + 1)),
+    );
     if (!tournamentActive) return;
     await playGame(i + 1);
   }
@@ -175,11 +185,11 @@ addPlayerButton?.addEventListener('click', async () => {
   const username = usernameInput.value.trim();
   if (players.includes(username)) {
     usernameInput.value = '';
-    showMessage(tournamentMessage, "You're already in.");
+    showMessage(tournamentMessage, translations[getLang()].tourAlreadyIn);
   }
   if (players.length == 64) {
     usernameInput.value = '';
-    showMessage(tournamentMessage, 'Maximum players achieved. Start Tournament');
+    showMessage(tournamentMessage, translations[getLang()].tourMaxPlayers);
     return;
   }
   if (username && !players.includes(username)) {
@@ -189,7 +199,7 @@ addPlayerButton?.addEventListener('click', async () => {
       renderPlayersList();
       usernameInput.value = '';
     } else {
-      showMessage(tournamentMessage, 'This user is not registered, please register first.');
+      showMessage(tournamentMessage, translations[getLang()].tourUserNotRegistered);
       return;
     }
   }
@@ -197,7 +207,7 @@ addPlayerButton?.addEventListener('click', async () => {
 
 startButton?.addEventListener('click', async () => {
   if (players.length < 2 || (players.length & (players.length - 1)) !== 0) {
-    showMessage(tournamentMessage, 'The number of players must be a power of 2');
+    showMessage(tournamentMessage, translations[getLang()].tourPlayersPowerOfTwo);
     return;
   } else {
     toggleHandler.tourPage.clean();
