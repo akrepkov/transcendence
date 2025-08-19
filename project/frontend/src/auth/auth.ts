@@ -1,6 +1,10 @@
 import { showLoginView, showLandingView, navigateTo } from '../navigation/navigation.js';
 import { Session } from '../session/session.js';
-import { showMessage } from '../utils/uiHelpers.js';
+import { showMessage, showModal } from '../utils/uiHelpers.js';
+import { translations } from '../translations/languages.js';
+
+type Lang = 'en' | 'pl' | 'ru' | 'ko';
+const getLang = (): Lang => (localStorage.getItem('lang') as Lang) || 'en';
 
 export const globalSession = new Session();
 
@@ -50,14 +54,13 @@ export async function handleLogin(): Promise<void> {
       const data = await res.json();
       if (res.ok) {
         globalSession.login(data.username, data.email, data.avatar);
-        showMessage(loginMessage, 'Logged in successfully');
         navigateTo('landing', '/landing', showLandingView);
       } else {
-        showMessage(loginMessage, data.error || 'Login failed');
+        showMessage(loginMessage, data.error || translations[getLang()].loginFailed);
       }
     } catch (err) {
       console.error(err);
-      showMessage(loginMessage, 'Server error');
+      showMessage(loginMessage, translations[getLang()].loginServerError);
     }
   });
 }
@@ -114,14 +117,13 @@ export async function handleRegister(): Promise<void> {
         navigateTo('landing', '/landing', showLandingView);
         registerForm.reset();
       } else if (res.status == 418) {
-        console.log('IM HEERE');
-        showMessage(registerMessage, 'The username is longer than 10 characters. Try agan!');
+        showMessage(registerMessage, translations[getLang()].registerMaxChars);
       } else {
-        showMessage(registerMessage, 'Username or email is already in use');
+        showMessage(registerMessage, translations[getLang()].invalidCredentials);
       }
     } catch (err) {
       console.error(err);
-      showMessage(registerMessage, 'Server error');
+      showMessage(registerMessage, translations[getLang()].registerServerError);
     }
   });
 }
@@ -146,11 +148,11 @@ export async function handleLogout() {
       globalSession.logout();
       navigateTo('auth', 'login', showLoginView);
     } else {
-      alert('Failed to log out.');
+      await showModal(translations[getLang()].failedToLogout);
     }
   } catch (error) {
     console.error('Logout error:', error);
-    alert('Error logging out.');
+    await showModal(translations[getLang()].errorLogout);
   }
 }
 

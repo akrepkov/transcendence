@@ -1,11 +1,33 @@
 import { globalSession } from '../auth/auth.js';
+import { translations } from '../translations/languages.js';
 
 let settingsMessageTimer: number | undefined;
 
 const backToProfile = document.getElementById('backToProfile') as HTMLButtonElement;
 
-function showSettingsMessage(
-  text: string,
+/**
+ * Retrieves the current language preference from localStorage.
+ *
+ * @returns {'en' | 'pl' | 'ru' | 'ko'} The current language code, defaults to 'en' if not set.
+ */
+function getCurrentLang(): 'en' | 'pl' | 'ru' | 'ko' {
+  return (localStorage.getItem('lang') as any) || 'en';
+}
+
+/**
+ * Displays a localized settings message for username, password, or avatar changes.
+ *
+ * - Chooses the correct message element based on `messageType`.
+ * - Sets the text color based on `isError`.
+ * - Looks up the translation for the given key based on the current language.
+ * - Clears the message after 4 seconds.
+ *
+ * @param {keyof (typeof translations)['en']} key - The translation key to display.
+ * @param {boolean} [isError=false] - Whether the message indicates an error.
+ * @param {'username' | 'password' | 'avatar'} [messageType='username'] - The type of message to show.
+ */
+function showSettingsMessageKey(
+  key: keyof (typeof translations)['en'],
   isError = false,
   messageType: 'username' | 'password' | 'avatar' = 'username',
 ) {
@@ -14,34 +36,55 @@ function showSettingsMessage(
   const avatarMessage = document.getElementById('AvatarSettingsMessage');
   if (!usernameMessage || !passwordMessage || !avatarMessage) return;
 
-  // reset timeout
   if (settingsMessageTimer) {
     clearTimeout(settingsMessageTimer);
     settingsMessageTimer = undefined;
   }
 
-  const element =
+  const el =
     messageType === 'username'
       ? usernameMessage
       : messageType === 'password'
         ? passwordMessage
-        : messageType === 'avatar'
-          ? avatarMessage
-          : null;
+        : avatarMessage;
 
-  if (!element) return;
+  if (!el) return;
 
-  // reset colors
-  element.classList.remove('text-green-400', 'text-yellow-400', 'hidden');
-  element.classList.add(isError ? 'text-yellow-400' : 'text-green-400');
-  element.textContent = text;
+  el.classList.remove('text-green-400', 'text-yellow-400', 'hidden');
+  el.classList.add(isError ? 'text-yellow-400' : 'text-green-400');
 
-  // empty after 4 seconds
+  el.setAttribute('data-i18n-msg-key', String(key));
+
+  const lang = getCurrentLang();
+  el.textContent = translations[lang][key] ?? translations['en'][key] ?? '';
+
   settingsMessageTimer = window.setTimeout(() => {
-    element.textContent = '';
+    el.textContent = '';
+    el.removeAttribute('data-i18n-msg-key');
   }, 4000);
 }
 
+/**
+ * Re-applies translated messages to settings message elements after a language change.
+ *
+ * - Checks for stored `data-i18n-msg-key` attributes on message elements.
+ * - Updates the text content to the translation in the current language.
+ */
+export function reapplySettingsMessages() {
+  const lang = getCurrentLang();
+  ['UsernameSettingsMessage', 'PasswordSettingsMessage', 'AvatarSettingsMessage'].forEach((id) => {
+    const el = document.getElementById(id);
+    const key = el?.getAttribute('data-i18n-msg-key') as keyof (typeof translations)['en'] | null;
+    if (el && key) el.textContent = translations[lang][key];
+  });
+}
+
+/**
+ * Initializes event listeners for settings actions.
+ *
+ * - Binds click events for username and password save buttons.
+ * - Initializes avatar upload drag-and-drop functionality.
+ */
 export function initSettingsEvents() {
   const usernameButton = document.getElementById('saveUsername');
   const passwordButton = document.getElementById('savePassword');
@@ -76,7 +119,7 @@ export async function changeUsername() {
   const username = input?.value;
 
   if (!username) {
-    showSettingsMessage('Username is required.', true, 'username');
+    showSettingsMessageKey('usernameRequired', true, 'username');
     return;
   }
 
@@ -89,24 +132,20 @@ export async function changeUsername() {
     });
 
     if (response.status === 418) {
-      showSettingsMessage('Username is already in use, try another one.', true, 'username');
+      showSettingsMessageKey('usernameTaken', true, 'username');
       return;
     }
     if (response.status === 411) {
-      showSettingsMessage(
-        'Username is longer than 10 characters, try another one.',
-        true,
-        'username',
-      );
+      showSettingsMessageKey('usernameTenChars', true, 'username');
       return;
     }
     if (!response.ok) {
-      showSettingsMessage('Username change failed', true, 'username');
+      showSettingsMessageKey('usernameChangeFailed', true, 'username');
       return;
     }
 
     const data = await response.json();
-    showSettingsMessage('Username updated successfully.', false, 'username');
+    showSettingsMessageKey('usernameUpdated', false, 'username');
     globalSession.setUsername(data?.username ?? username);
   } catch (err) {
     alert((err as Error).message);
@@ -126,7 +165,7 @@ export async function changePassword() {
   const password = passwordInput?.value;
 
   if (!password) {
-    showSettingsMessage('Password is required.', true, 'password');
+    showSettingsMessageKey('passwordRequired', true, 'password');
     return;
   }
 
@@ -139,35 +178,40 @@ export async function changePassword() {
     });
 
     if (!response.ok) {
-      showSettingsMessage('Password change failed.', true, 'password');
+      showSettingsMessageKey('passwordChangeFailed', true, 'password');
       return;
     }
 
-    showSettingsMessage('Password updated successfully.', false, 'password');
+    showSettingsMessageKey('passwordUpdated', false, 'password');
   } catch (err) {
     alert((err as Error).message);
   }
 }
 
+/**
+ * Initializes avatar upload functionality with drag-and-drop and file input.
+ *
+ * - Supports image file selection via click, drag-and-drop, or file input.
+ * - Previews the selected image.
+ * - Sends a PATCH request with the avatar file to the server.
+ * - Updates the displayed avatar on success.
+ */
 export function initAvatarUpload() {
-  const dropZone = document.getElementById('avatar-drop-zone') as HTMLElement;
-  const input = document.getElementById('avatar-input') as HTMLInputElement;
-  const preview = document.getElementById('avatar-preview') as HTMLImageElement;
-  const saveButton = document.getElementById('saveAvatar') as HTMLButtonElement;
+  const dropZone = document.getElementById('avatar-drop-zone') as HTMLElement | null;
+  const input = document.getElementById('avatar-input') as HTMLInputElement | null;
+  const preview = document.getElementById('avatar-preview') as HTMLImageElement | null;
+  const saveButton = document.getElementById('saveAvatar') as HTMLButtonElement | null;
+
+  if (!dropZone || !input || !preview || !saveButton) return;
 
   let selectedFile: File | null = null;
 
-  // Click to browse
   dropZone.addEventListener('click', () => input.click());
 
-  // File selected manually
   input.addEventListener('change', () => {
-    if (input.files && input.files[0]) {
-      previewFile(input.files[0]);
-    }
+    if (input.files && input.files[0]) previewFile(input.files[0]);
   });
 
-  // Drag events
   dropZone.addEventListener('dragover', (e) => {
     e.preventDefault();
     dropZone.classList.add('bg-black/70');
@@ -180,20 +224,26 @@ export function initAvatarUpload() {
   dropZone.addEventListener('drop', (e) => {
     e.preventDefault();
     dropZone.classList.remove('bg-black/70');
-
     const file = e.dataTransfer?.files?.[0];
     if (file) previewFile(file);
   });
 
+  /**
+   * Previews the selected image file in the avatar preview element.
+   *
+   * @param {File} file - The image file to preview.
+   */
   function previewFile(file: File) {
     if (!file.type.startsWith('image/')) {
-      showSettingsMessage('Only image files are allowed.', true, 'avatar');
+      showSettingsMessageKey('onlyImages', true, 'avatar');
       return;
     }
 
     selectedFile = file;
+
     const reader = new FileReader();
     reader.onload = () => {
+      if (!preview) return; // guard to satisfy TS18047
       preview.src = reader.result as string;
       preview.classList.remove('hidden');
     };
@@ -202,14 +252,12 @@ export function initAvatarUpload() {
 
   saveButton.addEventListener('click', async () => {
     if (!selectedFile) {
-      showSettingsMessage('No image selected.', true, 'avatar');
+      showSettingsMessageKey('noImageSelected', true, 'avatar');
       return;
     }
 
     const formData = new FormData();
-    console.log(formData);
     formData.append('avatar', selectedFile);
-    console.log(formData);
 
     try {
       const response = await fetch('/api/update_user_avatar', {
@@ -218,22 +266,18 @@ export function initAvatarUpload() {
         body: formData,
       });
 
-      if (response.status == 418) {
-        showSettingsMessage('Image is too big, try uploading something up to 1MB.', true, 'avatar');
+      if (response.status === 418) {
+        showSettingsMessageKey('imageTooBig', true, 'avatar');
         return;
-      } else if (!response.ok) {
-        showSettingsMessage('Avatar upload failed.', true, 'avatar');
       }
-
       if (!response.ok) {
-        showSettingsMessage('Avatar upload failed.', true, 'avatar');
+        showSettingsMessageKey('avatarUploadFailed', true, 'avatar');
         return;
       }
 
       const result = await response.json();
-      showSettingsMessage('Avatar updated successfully.', false, 'avatar');
+      showSettingsMessageKey('avatarUpdated', false, 'avatar');
 
-      // Update avatars across app
       globalSession.setAvatar(result.avatarUrl);
       document.getElementById('avatar')?.setAttribute('src', result.avatarUrl);
       document.getElementById('avatar-profile')?.setAttribute('src', result.avatarUrl);

@@ -6,7 +6,11 @@ import { cleanSnakeField } from './snake.js';
 import { handleStartGame, resetGame } from './frontendGame/frontendGameManager.js';
 import { getRandomPlayerNames } from './frontendGame/playerNames.js';
 import { globalSession } from '../auth/auth.js';
-import { showMessage, showModal } from '../utils/uiHelpers.js';
+import { showModal } from '../utils/uiHelpers.js';
+import { translations } from '../translations/languages.js';
+
+type Lang = 'en' | 'pl' | 'ru' | 'ko';
+const getLang = (): Lang => (localStorage.getItem('lang') as Lang) || 'en';
 
 /**
  * Handles game-specific logic bindings for Pong and Snake.
@@ -170,7 +174,7 @@ export const toggleHandler = {
       document.getElementById(this.gameContainer)?.classList.remove('hidden');
       const [player1Name, player2Name] = getRandomPlayerNames();
       handleStartGame('practice', player1Name, player2Name, {
-        waitFor: showModal(`Press OK when ready to start!`),
+        waitFor: showModal(translations[getLang()].pressOkPractice),
         delaysMs: 100,
       });
       window.addEventListener('popstate', handleHistoryPopPractice);
@@ -207,7 +211,7 @@ export const toggleHandler = {
       document.getElementById(this.startContainer)?.classList.add('hidden');
       document.getElementById(this.gameContainer)?.classList.remove('hidden');
       handleStartGame('ai', undefined, undefined, {
-        waitFor: showModal(`Press OK when ready to start!`),
+        waitFor: showModal(translations[getLang()].pressOkAi),
         delaysMs: 100,
       });
       window.addEventListener('popstate', handleHistoryPopAi);
@@ -256,7 +260,7 @@ export const toggleHandler = {
     },
 
     /**
-     * Resets  game UI and hides the Tournament page.
+     * Resets game UI and hides the Tournament page.
      */
     reset() {
       document.getElementById(this.startContainer)?.classList.remove('hidden');
