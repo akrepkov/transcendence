@@ -1,5 +1,10 @@
 import { gameHandler, toggleHandler } from './gameHandler.js';
 import { showRenderMessage } from './renderMessageHandler.js';
+import { translations } from '../translations/languages.js';
+
+function getCurrentLang(): 'en' | 'pl' | 'ru' | 'ko' {
+  return (localStorage.getItem('lang') as any) || 'en';
+}
 
 export const REJECT = {
   NOT_AUTHENTICATED: 4001,
@@ -65,11 +70,11 @@ export function renderGame(socket: WebSocket, gameType: string) {
     switch (data.type) {
       case 'waitingForOpponent':
         console.log('Waiting for the opponent');
-        handler.showMessage('Waiting for an opponent...');
+        handler.showMessage(translations[getCurrentLang()].pongWaitMessage);
         break;
       case 'gameStarting':
         handler.create(data, socket);
-        handler.showMessage('Game starting...');
+        handler.showMessage(translations[getCurrentLang()].gameStarting);
         break;
       case 'updateGameState':
         console.log('Sent updateGameState');
@@ -85,9 +90,9 @@ export function renderGame(socket: WebSocket, gameType: string) {
         break;
       case 'resetGame':
         console.log('resetGame', data);
-        handler.showMessage("You're both silly geese, resetting game...");
+        handler.showMessage(translations[getCurrentLang()].resetGameMessage);
         break;
-      /* What do we do in these situations?*/
+      /* Other cases */
       case 'logoutRequest':
         console.log('logoutRequest', data);
         break;

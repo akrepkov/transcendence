@@ -1,5 +1,10 @@
 import { getCanvasContext } from './frontendRender.js';
 import { turnOffKeyboardScrolling } from '../../utils/uiHelpers.js';
+import { translations } from '../../translations/languages.js';
+
+function getCurrentLang(): 'en' | 'pl' | 'ru' | 'ko' {
+  return (localStorage.getItem('lang') as any) || 'en';
+}
 
 export const GAME_CONSTS = {
   WIDTH: 800,
@@ -255,8 +260,13 @@ export class Game {
       console.warn('Canvas could not be reset:', e);
     }
     console.log('Game stopped, winner:', this.winner);
+
     const scoreField = document.getElementById(this.scoreFieldId);
-    const scoreText = `The winner is ${this.winner}`;
+    const lang = getCurrentLang();
+
+    const template = translations[lang]?.pongWinner ?? translations.en.pongWinner;
+    const scoreText = template.replace('{winner}', this.winner);
+
     if (scoreField && scoreField.offsetParent !== null) {
       scoreField.textContent = scoreText;
     }

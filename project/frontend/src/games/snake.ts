@@ -2,9 +2,14 @@ import { GameStateSnake } from './types.js';
 import { GAME_CONSTS } from './types.js';
 import { getCanvasContext } from './render.js';
 import { centerOnCanvas, turnOffKeyboardScrolling } from '../utils/uiHelpers.js';
+import { translations } from '../translations/languages.js';
 
 let running = false;
 let keyListener: ((event: KeyboardEvent) => void) | undefined;
+
+function getCurrentLang(): 'en' | 'pl' | 'ru' | 'ko' {
+  return (localStorage.getItem('lang') as any) || 'en';
+}
 
 /**
  * Initializes the Snake game logic.
@@ -143,8 +148,13 @@ export function gameOverSnake(winner: string) {
   }
   cleanSnakeField();
   document.removeEventListener('keydown', turnOffKeyboardScrolling);
+
   const snakeScore = document.getElementById('snake-score');
-  const scoreText = `The winner is ${winner}`;
+  const lang = getCurrentLang();
+
+  const template = translations[lang].snakeWinner ?? translations.en.snakeWinner;
+  const scoreText = template.replace('{winner}', winner);
+
   if (snakeScore && snakeScore.offsetParent !== null) {
     snakeScore.textContent = scoreText;
   }
