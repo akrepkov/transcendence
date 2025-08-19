@@ -24,12 +24,4 @@ export function initMainEvents(): void {
       showLandingView();
     });
   }
-
-  const backToProfile = document.getElementById('backToProfile');
-  if (backToProfile) {
-    backToProfile.addEventListener('click', () => {
-      history.pushState({ view: 'profile' }, '', '/profile');
-      showProfileView();
-    });
-  }
 }
