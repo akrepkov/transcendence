@@ -38,27 +38,27 @@ export const gameHandler = {
   },
 };
 
-function handleHistoryPopPong(event: PopStateEvent): void {
+export function handleHistoryPopPong(event: PopStateEvent): void {
   toggleHandler.pongPage.reset(globalSession.getSocket());
   window.removeEventListener('popstate', handleHistoryPopPong);
 }
 
-function handleHistoryPopSnake(event: PopStateEvent): void {
+export function handleHistoryPopSnake(event: PopStateEvent): void {
   toggleHandler.snakePage.reset(globalSession.getSocket());
   window.removeEventListener('popstate', handleHistoryPopSnake);
 }
 
-function handleHistoryPopPractice(event: PopStateEvent): void {
+export function handleHistoryPopPractice(event: PopStateEvent): void {
   toggleHandler.practicePage.reset();
   window.removeEventListener('popstate', handleHistoryPopPractice);
 }
 
-function handleHistoryPopAi(event: PopStateEvent): void {
+export function handleHistoryPopAi(event: PopStateEvent): void {
   toggleHandler.aiPage.reset();
   window.removeEventListener('popstate', handleHistoryPopAi);
 }
 
-function handleHistoryPopTour(event: PopStateEvent): void {
+export function handleHistoryPopTour(event: PopStateEvent): void {
   toggleHandler.tourPage.reset();
   window.removeEventListener('popstate', handleHistoryPopTour);
 }

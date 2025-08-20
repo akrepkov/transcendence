@@ -270,8 +270,8 @@ export async function showGameStats(username: string) {
     const pongLosses = data.pongLosses ?? 0;
     const snakeWins = data.snakeWins ?? 0;
     const snakeLosses = data.snakeLosses ?? 0;
-    const tournamentWins = data.tourWins ?? 0;
-    const totalGames = pongWins + pongLosses + snakeWins + snakeLosses + tournamentWins;
+    const tournamentWins = data.tournamentWins ?? 0;
+    const totalGames = pongWins + pongLosses + snakeWins + snakeLosses;
 
     // Update DOM
     const setText = (id: string, value: number) => {

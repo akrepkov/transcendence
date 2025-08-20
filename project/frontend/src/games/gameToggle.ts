@@ -1,4 +1,10 @@
 import { toggleHandler } from './gameHandler.js';
+import {
+  handleHistoryPopPractice,
+  handleHistoryPopPong,
+  handleHistoryPopSnake,
+  handleHistoryPopAi,
+} from './gameHandler.js';
 
 // let gameType: string | null = null;
 
@@ -73,6 +79,7 @@ export function setupGameToggle(socket: WebSocket) {
 
   pongStop?.addEventListener('click', () => {
     toggleHandler.pongPage.reset(socket);
+    window.removeEventListener('popstate', handleHistoryPopPong);
   });
 
   startSnake.addEventListener('click', () => {
@@ -82,6 +89,7 @@ export function setupGameToggle(socket: WebSocket) {
 
   snakeStop?.addEventListener('click', () => {
     toggleHandler.snakePage.reset(socket);
+    window.removeEventListener('popstate', handleHistoryPopSnake);
   });
 
   startPractice.addEventListener('click', () => {
@@ -91,6 +99,7 @@ export function setupGameToggle(socket: WebSocket) {
 
   practiceStop?.addEventListener('click', () => {
     toggleHandler.practicePage.reset();
+    window.removeEventListener('popstate', handleHistoryPopPractice);
   });
 
   startAi.addEventListener('click', () => {
@@ -100,6 +109,7 @@ export function setupGameToggle(socket: WebSocket) {
 
   aiStop?.addEventListener('click', () => {
     toggleHandler.aiPage.reset();
+    window.removeEventListener('popstate', handleHistoryPopAi);
   });
 
   // startTour.addEventListener('click', () => {

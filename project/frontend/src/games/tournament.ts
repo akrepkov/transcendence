@@ -1,5 +1,5 @@
 import { Game } from '../games/frontendGame/frontendPong.js';
-import { toggleHandler } from './gameHandler.js';
+import { handleHistoryPopTour, toggleHandler } from './gameHandler.js';
 import * as frontendGameManager from '../games/frontendGame/frontendGameManager.js';
 import { globalSession } from '../auth/auth.js';
 import { showMessage, showModal } from '../utils/uiHelpers.js';
@@ -227,6 +227,7 @@ stopButton?.addEventListener('click', async () => {
   tour.length = 0;
   players.length = 0;
   toggleHandler.tourPage.reset();
+  window.removeEventListener('popstate', handleHistoryPopTour);
 });
 
 // User navigated with browser back/forward
