@@ -182,12 +182,12 @@ export class Snake {
     console.log('Game starts');
     setTimeout(() => {
       this.broadcastState();
-    }, 500);
+    }, 1500);
     setTimeout(() => {
       this.gameLoop = setInterval(() => {
         this.updatePlayers();
         if (this.running) this.broadcastState();
-      }, 500);
-    }, 1000);
+      }, 250);
+    }, 3000);
   }
 }

@@ -2,7 +2,6 @@ import { PONG_CONSTS } from './Pong.js';
 
 export class Player {
   constructor(username, userId, startX) {
-    console.log('Create a player');
     this.paddleY = PONG_CONSTS.HEIGHT / 2 - PONG_CONSTS.PADDLE_HEIGHT / 2;
     this.paddleX = startX;
     this.score = 0;

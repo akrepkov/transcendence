@@ -2,7 +2,6 @@ import { PONG_CONSTS } from './Pong.js';
 
 export class Ball {
   constructor() {
-    console.log('Create a ball');
     this.size = PONG_CONSTS.BALL_SIZE;
     this.reset();
     this.color = 'white';

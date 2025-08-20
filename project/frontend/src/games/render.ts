@@ -63,8 +63,6 @@ export function renderGame(socket: WebSocket, gameType: string) {
   }
   const handler = gameHandler[gameType as 'pong' | 'snake'];
 
-  console.log(`Game type ${gameType}`);
-
   socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
     switch (data.type) {
@@ -77,7 +75,6 @@ export function renderGame(socket: WebSocket, gameType: string) {
         handler.showMessage(translations[getCurrentLang()].gameStarting);
         break;
       case 'updateGameState':
-        console.log('Sent updateGameState');
         handler.score?.(data);
         handler.draw(data, ctx);
         break;

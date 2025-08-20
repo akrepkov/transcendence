@@ -9,7 +9,7 @@ function getCurrentLang(): 'en' | 'pl' | 'ru' | 'ko' {
 export const GAME_CONSTS = {
   WIDTH: 800,
   HEIGHT: 600,
-  MAX_SCORE: 3,
+  MAX_SCORE: 5,
   SPEED: 5.6,
 };
 
@@ -56,8 +56,6 @@ export class Ball {
     this.y = GAME_CONSTS.HEIGHT / 2;
     this.speedX = this.getRandomDirection();
     this.speedY = Math.sqrt(GAME_CONSTS.SPEED ** 2 - this.speedX ** 2);
-    console.log('Speed in reset X:', this.speedX);
-    console.log('Speed in reset Y:', this.speedY);
   }
 }
 

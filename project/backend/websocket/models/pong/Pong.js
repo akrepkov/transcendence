@@ -10,7 +10,7 @@ export const PONG_CONSTS = {
   PADDLE_HEIGHT: 100,
   PADDLE_WIDTH: 10,
   BALL_SIZE: 20,
-  MAX_SCORE: 3,
+  MAX_SCORE: 5,
   BALL_SPEED: 5.6,
   PADDLE_SPEED: 10,
 };
@@ -139,7 +139,7 @@ export class Pong {
     this.running = true;
     setTimeout(() => {
       this.broadcastState();
-    }, 500);
+    }, 1500);
     setTimeout(() => {
       this.gameLoop = setInterval(() => {
         this.ball.updateBall();
@@ -151,6 +151,6 @@ export class Pong {
           this.broadcastState();
         }
       }, 1000 / 60);
-    }, 1000);
+    }, 3000);
   }
 }

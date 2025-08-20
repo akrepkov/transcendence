@@ -23,3 +23,17 @@ curl -k -G "https://localhost:3000/api/view_user_profile" --data-urlencode "user
 7. Changes to prisma:
     npx prisma migrate dev --name fix-game-relations
 	npx prisma generate
+
+8. Usage of game through the command line
+
+- to connect
+npx wscat --no-check -c "wss://localhost:3000/ws/connect" -H "Cookie: token=" 
+
+- to join a game
+{"type": "joinWaitingRoom", "gameType": "snake"}
+
+- to move paddle
+{"type": "move", "direction": "up"}
+
+- to leave a game
+{"type": "leaveWaitingRoom"}

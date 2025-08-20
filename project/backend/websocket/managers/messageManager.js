@@ -55,7 +55,6 @@ function sendErrorToClient(socket, error) {
 
 function broadcastToAll(message) {
   const connectedUsers = connectionManager.getConnectedUsers();
-  console.log('New broadcast');
   connectedUsers.forEach((userConnections) => {
     userConnections.forEach((connection) => {
       if (connection.socket.readyState === 1) {

@@ -3,8 +3,8 @@ import { waitingListManager } from '../managers/waitingListManager.js';
 import { getUserByUsername } from '../../database/services/userServices.js';
 import { REJECT } from '../managers/messageManager.js';
 
-const MATCHMAKING_INTERVAL = 1000; // 5 seconds
-const MAX_WAIT_TIME = 3; // 10 seconds
+const MATCHMAKING_INTERVAL = 1000; // 1 seconds
+const MAX_WAIT_TIME = 10; // 10 seconds
 const MAX_RANK_DIFFERENCE = 10; // Players can be matched if their ranks differ by 5 or less
 
 async function getPlayerRank(username, gameType) {

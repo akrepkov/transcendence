@@ -43,8 +43,6 @@ export function setupSocketEvents(socket: WebSocket) {
  * @param {WebSocket} socket - The WebSocket connection for multiplayer games (Pong, Snake).
  */
 export function setupGameToggle(socket: WebSocket) {
-  console.log('Game Toggle');
-
   /* Container holding start*/
   // const pongStartContainer = document.getElementById('pong-start-container');
   // const snakeStartContainer = document.getElementById('snake-start-container');
@@ -105,7 +103,6 @@ export function setupGameToggle(socket: WebSocket) {
   });
 
   startAi.addEventListener('click', () => {
-    console.log('Starting AI game');
     toggleHandler.aiPage.clean();
     toggleHandler.aiPage.start();
   });

@@ -15,9 +15,7 @@ export function handleError(reply, error, statusCode = 500) {
 export async function fileExists(filePath) {
   try {
     let avatarFilepath = path.resolve(__dirname, filePath);
-    // console.log("Checking file path:", filePath); // Debugging
     const stats = await fsPromises.stat(avatarFilepath); // Await fs.promises.stat() to get file stats
-    // console.log("File stats:", stats); // Debugging
     return stats.isFile(); // Return true if it's a file
   } catch (err) {
     console.error('Error checking file:', err); // Debugging
