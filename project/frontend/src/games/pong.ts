@@ -145,7 +145,6 @@ export function cleanPongField() {
     running = false;
   }
   try {
-    console.log('cleaning canvas');
     const ctx = getCanvasContext('pong');
     ctx.clearRect(0, 0, GAME_CONSTS.WIDTH, GAME_CONSTS.HEIGHT);
   } catch (e) {

@@ -56,8 +56,6 @@ export class Ball {
     this.y = GAME_CONSTS.HEIGHT / 2;
     this.speedX = this.getRandomDirection();
     this.speedY = Math.sqrt(GAME_CONSTS.SPEED ** 2 - this.speedX ** 2);
-    console.log('Speed in reset X:', this.speedX);
-    console.log('Speed in reset Y:', this.speedY);
   }
 }
 

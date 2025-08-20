@@ -2,7 +2,6 @@ import { SNAKE_CONSTS } from './Snake.js';
 
 export class SnakePlayer {
   constructor(username, userId, positions, xDir) {
-    console.log('Create a player ', positions);
     this.positions = positions.map((pos) => ({ ...pos }));
     this.directions = { x: xDir, y: 0 };
     this.score = 0;

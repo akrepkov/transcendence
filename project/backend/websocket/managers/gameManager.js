@@ -23,7 +23,6 @@ function createGame(connection1, connection2, gameType) {
   if (gameType === 'pong') {
     game = new Pong(connection1, connection2, gameId);
   } else if (gameType === 'snake') {
-    console.log('Creating Snake game, sssssssssss');
     game = new Snake(connection1, connection2, gameId);
   }
   activeGames.set(gameId, game);

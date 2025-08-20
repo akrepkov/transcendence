@@ -157,7 +157,6 @@ export class Session {
    */
   public async getOnlineFriends(username: string = this.username) {
     try {
-      console.log('username', username);
       const res = await fetch(`/api/get_online_friends?username=${encodeURIComponent(username)}`, {
         method: 'GET',
         credentials: 'include',
@@ -170,7 +169,6 @@ export class Session {
         console.error('Error fetching online friends:', data.error);
         return [];
       }
-      console.log('friends', data);
       return data.friends;
     } catch (err) {
       console.error('Error fetching online friends:', err);

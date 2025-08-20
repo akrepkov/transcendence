@@ -2,7 +2,6 @@ import { SNAKE_CONSTS } from './Snake.js';
 
 export class Apple {
   constructor() {
-    console.log('Create an apple');
     this.position = { x: 400, y: 300 };
     this.size = 10;
     this.color = 'white';

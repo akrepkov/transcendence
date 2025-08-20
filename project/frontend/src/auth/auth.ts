@@ -110,7 +110,6 @@ export async function handleRegister(): Promise<void> {
         }),
       });
 
-      console.log(res);
       const data = await res.json();
       if (res.ok) {
         globalSession.login(data.username, data.email, data.avatar);
@@ -171,7 +170,6 @@ export async function checkLoginStatus() {
 
     if (res.ok) {
       const data = await res.json();
-      console.log('User data:', data);
       globalSession.login(data.username, data.email, data.avatar);
     }
   } catch (err) {

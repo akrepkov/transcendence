@@ -72,10 +72,8 @@ export function moveSnakes(game: GameStateSnake, event: KeyboardEvent, socket: W
   } else if (event.key === 'd' || event.key === 'ArrowRight') {
     direction = 'right';
   } else if (event.key === 'r') {
-    console.log('KEY ', event.key);
     direction = 'reverse';
   }
-  console.log('Moving snake', direction);
   if (direction && socket.readyState === WebSocket.OPEN) {
     socket.send(JSON.stringify({ type: 'move', direction }));
   }
@@ -119,7 +117,6 @@ export function showSnakeScore(data: GameStateSnake) {
  * - Clears the canvas and resets running flag.
  */
 export function cleanSnakeField() {
-  console.log('cleanSnakeField');
   if (keyListener) {
     document.removeEventListener('keydown', keyListener);
     keyListener = undefined;

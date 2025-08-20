@@ -50,8 +50,6 @@ function handleWebsocketError(connection, error) {
 }
 
 async function messageHandler(connection, message) {
-  console.log('Message.');
-  console.log(message.toString());
   try {
     const data = JSON.parse(message);
     await handleMessage(connection, data);
