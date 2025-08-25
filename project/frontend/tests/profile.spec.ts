@@ -3,7 +3,11 @@ import { test, expect, Page } from '@playwright/test';
 const APP_URL = 'https://localhost:3000';
 
 function uniq(prefix: string) {
-  return `${prefix}_${Date.now()}_${Math.floor(Math.random() * 1e6)}`;
+  const remain = Math.max(1, 10 - prefix.length);
+  const id = Math.random()
+    .toString(36)
+    .slice(2, 2 + remain);
+  return `${prefix}${id}`;
 }
 
 async function loginAs(page: Page, user = 'djoyke', pass = 'djoyke') {

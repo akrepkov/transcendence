@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { deleteUser } from '../../backend/database/services/userServices.js';
 
-const username = `t_${Date.now()}`;
+const username = `t_${Math.random().toString(36).slice(2, 8)}`;
 
 test.describe.serial('Auth Flow', () => {
   test.beforeEach(async ({ page }) => {

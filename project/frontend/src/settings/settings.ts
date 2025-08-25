@@ -102,7 +102,6 @@ export function initSettingsEvents() {
       changePassword();
     });
   }
-
   initAvatarUpload();
 }
 
